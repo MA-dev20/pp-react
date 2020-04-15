@@ -1,0 +1,12 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1>Hier ist <%= @admin == @turn.user ? 'deine' : @turn.user.fname + "'s" %> Bewertung!</h1>
+</div>
+<div class="middle">
+	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+</div>
+<div class="bottom">
+	<% if @admin.role != 'user' %>
+	<%= link_to 'zum nächsten Pitch', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>
+	<% end %>
+</div>

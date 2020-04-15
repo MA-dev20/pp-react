@@ -1,0 +1,162 @@
+<%= image_tag 'dash/letspitch1.png', id: "pitch1" %>
+<%= image_tag 'dash/letspitch2.png', id: 'pitch2' %>
+<div class="card" id="letspitch">
+	<h3>
+		<%= link_to '', dashboard_path('', team: @team.id), class: 'fas fa-arrow-left back' %>
+		Pitche nach deinen Regeln
+	</h3>
+	<%= form_for(:game, url: customize_game_path(@game)) do |f| %>
+		<div id="scroll">
+		<div class="form-group">
+			<label for="">Deine Zeit</label>
+			<div class="time-field">
+				<%= f.hidden_field :game_seconds, value: 80 %>
+				<div class="time" id="settime">1:20</div>
+				<i class="fa fa-angle-up up" onclick="timeUp()"></i>
+				<i class="fa fa-angle-down down" onclick="timeDown()"></i>
+			</div>
+		</div>
+		<div class="form-group" id="catchwords">
+			<label for="">Deine Catchwords</label>
+			<div class="form-list">
+				<div class="text">Original Peter's Catchwords</div>
+				<i class="fas fa-plus-circle" onclick="showCL()"></i>
+			</div>
+			<div class="unselected-list">
+				<% @uCL.each do |cw| %>
+				<label for="game_word_list_<%= cw.id %>" onclick="moveCL(this)"><%= cw.name %></label>
+				<input type="checkbox" name="game[word_list][]" value="<%= cw.id %>" multiple id="game_word_list_<%= cw.id %>">
+				<% end %>
+				<% @cCL.each do |cw| %>
+				<label class="company" for="game_word_list_<%= cw.id %>" onclick="moveCL(this)"><%= cw.name %></label>
+				<input type="checkbox" name="game[word_list][]" value="<%= cw.id %>" multiple id="game_word_list_<%= cw.id %>">
+				<% end %>
+				<% @pCL.each do |cw| %>
+				<label class="game" for="game_word_list_<%= cw.id %>" onclick="moveCL(this)"><%= cw.name %></label>
+				<input type="checkbox" name="game[word_list][]" value="<%= cw.id %>" multiple id="game_word_list_<%= cw.id %>">
+				<% end %>
+			</div>
+		</div>
+		<div class="form-group" id="objections">
+			<label for="">Deine Einwände</label>
+			<div class="form-list">
+				<div class="text">Original Peter's Einwände</div>
+				<i class="fas fa-plus-circle" onclick="showOL()"></i>
+			</div>
+			<div class="unselected-list">
+				<% @uOL.each do |ob| %>
+				<label for="game_objection_list_<%= ob.id %>" onclick="moveOL(this)"><%= ob.name %></label>
+				<input type="checkbox" name="game[objection_list][]" value="<%= ob.id %>" multiple id="game_objection_list_<%= ob.id %>">
+				<% end %>
+				<% @cOL.each do |ob| %>
+				<label class="company" for="game_objection_list_<%= ob.id %>" onclick="moveOL(this)"><%= ob.name %></label>
+				<input type="checkbox" name="game[objection_list][]" value="<%= ob.id %>" multiple id="game_objection_list_<%= ob.id %>">
+				<% end %>
+				<% @pOL.each do |ob| %>
+				<label class="game" for="game_objection_list_<%= ob.id %>" onclick="moveOL(this)"><%= ob.name %></label>
+				<input type="checkbox" name="game[objection_list][]" value="<%= ob.id %>" multiple id="game_objection_list_<%= ob.id %>">
+				<% end %>
+			</div>
+		</div>
+		<div class="form-group" id="scores">
+			<label for="">Deine Scores</label>
+			<div class="form-list">
+				<div class="text">Original Peter's Scores</div>
+				<i class="fas fa-plus-circle" onclick="showRL()"></i>
+			</div>
+			<div class="unselected-list">
+				<% @uRL.each do |sc| %>
+				<label for="game_rating_list_<%= sc.id%>" onclick="moveRL(this)"><%= sc.name %></label>
+				<input type="radio" name="game[rating_list_id]" value="<%= sc.id %>" multiple id="game_rating_list_<%= sc.id %>">
+				<% end %>
+				<% @cRL.each do |sc| %>
+				<label class="company" for="game_rating_list_<%= sc.id%>" onclick="moveRL(this)"><%= sc.name %></label>
+				<input type="radio" name="game[rating_list_id]" value="<%= sc.id %>" multiple id="game_rating_list_<%= sc.id %>">
+				<% end %>
+				<% @pRL.each do |sc| %>
+				<label class="game" for="game_rating_list_<%= sc.id%>" onclick="moveRL(this)"><%= sc.name %></label>
+				<input type="radio" name="game[rating_list_id]" value="<%= sc.id %>" multiple id="game_rating_list_<%= sc.id %>">
+				<% end %>
+			</div>
+		</div>
+		</div>
+		<%= f.submit 'starten!', class: 'btn btn-green' %>
+	<% end %>
+</div>
+
+<script>
+	new PerfectScrollbar("#scroll");
+	function timeUp() {
+		var value = $('#game_game_seconds').val();
+		if (value < 300) {
+			value = parseInt(value);
+			value = value + 10;
+			var min = Math.floor(value / 60).toString();
+			var sec = Math.floor(value % 60).toString();
+			if (sec == '0') {sec = '00'}
+			$('#settime').text(min + ':' + sec);
+			$('#game_game_seconds').val(value);
+		}
+	}
+	function timeDown() {
+		var value = $('#game_game_seconds').val();
+		if (value > 20) {
+			value = parseInt(value);
+			value = value - 10;
+			var min = Math.floor(value / 60).toString();
+			var sec = Math.floor(value % 60).toString();
+			if (sec == '0') {sec = '00'}
+			$('#settime').text(min + ':' + sec);
+			$('#game_game_seconds').val(value);
+		}
+	}
+	function showCL() {
+		$('#catchwords .unselected-list').toggle();
+	}
+	function moveCL(e) {
+		var id = e.getAttribute('for');
+		var checkbox = document.getElementById(id);
+		if (checkbox.checked) {
+			$('#catchwords .unselected-list').append(e)
+			if ($('#catchwords .form-list').children('label').length == 0) {
+				$('#catchwords .form-list .text').show();	
+			}
+		} else {
+			$('#catchwords .form-list .text').hide();
+			$('#catchwords .form-list').append(e);
+			$('#catchwords .unselected-list').toggle();
+		}
+	}
+	function showOL() {
+		$('#objections .unselected-list').toggle();
+	}
+	function moveOL(e) {
+		var id = e.getAttribute('for');
+		var checkbox = document.getElementById(id);
+		if (checkbox.checked) {
+			$('#objections .unselected-list').append(e)
+			if ($('#objections .form-list').children('label').length == 0) {
+				$('#objections .form-list .text').show();	
+			}
+		} else {
+			$('#objections .form-list .text').hide();
+			$('#objections .form-list').append(e);
+			$('#objections .unselected-list').toggle();
+		}
+	}
+	function showRL() {
+		$('#scores .unselected-list').toggle();
+	}
+	function moveRL(e) {
+		var id = e.getAttribute('for');
+		var checkbox = document.getElementById(id);
+		if (!checkbox.checked) {
+			$('#scores .form-list .text').hide();
+			$('#scores .form-list label').each(function() {
+				$('#scores .unselected-list').append($(this));
+			})
+			$('#scores .form-list').append(e);
+			$('#scores .unselected-list').toggle();
+		}
+	}
+</script>

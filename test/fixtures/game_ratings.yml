@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  game: one
+  rating_criterium: one
+  rating: 1
+
+two:
+  game: two
+  rating_criterium: two
+  rating: 1

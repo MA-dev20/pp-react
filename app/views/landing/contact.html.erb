@@ -1,0 +1,125 @@
+<% content_for :title, "Peter Pitch - Kontaktformular" %>
+<% content_for :description, 'Peter Pitch ist das digitale Trainingstool für Kommunication und Vertrieb. Erfahre mehr und sende uns eine Nachricht.'%>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=1853281&conversionId=1751577&fmt=gif" />
+<section id="navbar" class="contact-navbar">
+    <%= image_tag 'landing/logo.png', class: 'logo', alt: 'Peter Pitch Logo'%>
+</section>
+<div class="bg-image contact-hidden">
+</div>
+<%= video_tag 'landing.mp4', class: 'contact-hidden', id: 'bgVideo', controls: false, preload: 'auto', autoplay: false, muted: false, onended: 'videoEnd()' %>
+<i class="fas fa-play-circle overlay-play contact-hidden" onclick="videoAction()"></i>
+<div class="overlay-text contact-hidden">
+<span>Y</span>OU <br>
+<span>O</span>NLY <br>
+<span>W</span>ORK <br>
+<span>O</span>NCE
+	
+</div>
+
+<section id="contact" onclick="showContact()">
+   	<% if params[:subject] == 'demo' %>
+   	<h1>Jetzt kostenlose Demo vereinbaren!</h1>
+   	<% else %>
+    <h1>Jetzt kostenlosen Zugang zu <br> Peter Pitch erhalten!</h1>
+    <% end %>
+    <%= form_for(:company, url: register_company_path) do |f| %>
+        <div class="form-group l1">
+            <label for="">Vorname <span class="red">*</span></label>
+            <%= f.text_field :fname, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l2">
+            <label for="">Nachname <span class="red">*</span></label>
+            <%= f.text_field :lname, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l1">
+            <label for="">Tel Nr. <span class="red">*</span></label>
+            <%= f.text_field :phone, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l2">
+            <label for="">E-Mail <span class="red">*</span></label>
+            <%= f.email_field :email, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l1">
+            <label for="">Unternehmen <span class="red">*</span></label>
+            <%= f.text_field :name, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l21">
+            <label for="">Position <span class="red">*</span></label>
+            <%= f.text_field :position, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group l22">
+            <label for="">Mitarbeiter <span class="red">*</span></label>
+            <%= f.number_field :employees, class: 'form-field', required: true %>
+        </div>
+        <div class="form-group">
+            <label for="">Nachricht <span class="red">*</span></label>
+            <%= f.text_area :message, class: 'form-field message', required: true %>
+        </div>
+        <div class="switch-box">
+        	<div class="custom-control custom-switch">
+            	<input type="checkbox" class="custom-control-input" id="gdpr-toggle" onchange="gdpr()">
+            	<label for="gdpr-toggle" class="custom-control-label"><i class="fas fa-check"></i></label>
+            	<label for="gdpr-toggle" id="DS-label"><%= link_to 'Datenschutzerklärung', datenschutz_path %> akzeptieren!</label>
+        	</div>
+    	</div>
+        <div class="form-group center" id="registerBTN" style="display: none">
+            <%= f.submit 'Kostenlos testen!', id: 'registerBTN', class: 'btn btn-green' %>
+        </div>
+        <div class="form-group center" id="registerBTNFake">
+           <div class="btn btn-green" onclick="errorDS()">Kostenlos testen!</div>
+        </div>
+    <% end %>
+</section>
+
+<script>
+	function errorDS() {
+		$('#DS-label').css('color', 'red');
+		$('#DS-label a').css('color', 'red');
+	}
+	function gdpr() {
+		if($('#gdpr-toggle').is(":checked")) {
+			$('#registerBTN').show();
+			$('#registerBTNFake').hide();
+		} else {
+			$('#registerBTN').hide();
+			$('#registerBTNFake').show();
+		}
+	}
+	gdpr();
+    function showNavLinks() {
+        if($('#navLinks').is(":hidden")) {
+            $('#navLinks').show();   
+        } else {
+            $('#navLinks').hide();
+        }
+    }
+    function showContact() {
+        if ($('#contact').hasClass('slideOutLeft')) {
+			$('#contact').toggleClass('slideOutLeft slideInLeft');
+		}
+    }
+	function videoEnd() {
+		$('#contact').toggleClass('slideOutLeft slideInLeft');
+		$('.bg-image').show();
+		$('#bgVideo').hide();
+		$('.overlay-play').toggleClass('fadeOut fadeIn');
+		$('.overlay-text').toggleClass('fadeOut fadeIn');
+	}
+	function videoAction() {
+		if ($('#contact').hasClass('slideOutLeft')) {
+			$('#contact').toggleClass('slideOutLeft slideInLeft');
+			$('.bg-image').hide();
+			$('#bgVideo').show();
+			document.getElementById('bgVideo').play();
+			$('.overlay-play').addClass('animated fadeOut');
+			$('.overlay-text').addClass('animated fadeOut');
+		} else {
+			$('#contact').addClass('animated slideOutLeft');
+			$('.bg-image').hide();
+			$('#bgVideo').show();
+			document.getElementById('bgVideo').play();
+			$('.overlay-play').addClass('animated fadeOut');
+			$('.overlay-text').addClass('animated fadeOut');
+		}		
+	}
+</script>

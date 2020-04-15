@@ -1,0 +1,55 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1><%= @turn.user.fname %> pitcht!</h1>
+	<% if params[:process] %>
+	<h3>Das Pitch-Video wird in einem Hintergrund Tab hochgeladen. Du kannst hier einfach weiterspielen.</h3>
+	<% end %>
+</div>
+<div class="middle">
+	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+</div>
+<div class="bottom">
+	<% if @turn.record_pitch && @admin.role != 'user'%>
+		<% if params[:process] %>
+			<%= link_to 'Pitch beenden!', gm_set_state_path('', state: 'rate'), class: 'btn custom-btn', id: 'pitch-btn' %>
+		<% else %>
+			<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
+			<button class="btn custom-btn" id="video-btn">Kamera öffnen</button>
+		<% end %>
+	<% elsif @admin.role != 'user' %>
+		<%= link_to 'Pitch beenden!', gm_set_state_path('', state: 'rate'), class: 'btn custom-btn' %>
+	<% end %>
+</div>
+<script>
+	$('#video-btn').click(function(e) {
+		e.preventDefault();
+		App.videoInProgress = true;
+		$('#pitch_video').click();
+	})
+	$('#pitch_video').on('change', function(e) {
+		let file = e.target.files[0];
+		App.videoInProgress = false;
+		let blobURL = URL.createObjectURL(file)
+		uploadVideo(blobURL, file);
+	})
+	
+	function uploadVideo(blobUrl, file) {
+		App.game.unsubscribe();
+		var file1 = new window.File([file], ['pitch_', (new Date() + '').slice(4, 28), '.mp4'].join(''));
+		var form = new FormData();
+		form.append('file', file1);
+		window.open("<%= gm_game_url('', process: true) %>", '_blank');
+		$('.head h1').text('Video Upload');
+		$('.bottom').hide();
+		var URL = "<%= upload_pitch_url(@turn) %>"; 
+		$.ajax({
+			url: URL,
+			type: 'POST',
+			data: form,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		});
+	}
+</script>

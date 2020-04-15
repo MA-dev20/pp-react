@@ -1,0 +1,25 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1><%= @turn.user == @admin ? @turn.user.fname +  ', du bist dran!' : @turn.user.fname + ' ist dran!' %></h1>
+</div>
+<% if @admin.role != 'user' %>
+<%= form_for(:turn, url: turn_record_path(@turn)) do |f| %>
+<div class="middle">
+    <%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+    <div class="switch">
+    	<%= f.check_box :record_pitch, checked: false %>
+    	<label for="turn_record_pitch">
+    		<div class="checkbox"><div class="dot"></div></div>
+    		<div class="text">Mit Video Starten!</div>
+    	</label>
+    </div>
+</div>
+<div class="bottom">
+	<%= f.submit 'Pitch starten', class: 'btn custom-btn' %>
+</div>
+<% end %>
+<% else %>
+<div class="middle">
+	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+</div>
+<% end %>

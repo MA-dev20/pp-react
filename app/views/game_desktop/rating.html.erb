@@ -1,0 +1,225 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<section id="head">
+	<h1>Deine Bewertung</h1>
+</section>
+<section id="middle">
+	<div class="ratings">
+		<% if @turn.game_turn_ratings.count >= 1 %>
+			<% @rating1 = @turn.game_turn_ratings.first %>
+			<div class="rating-cat">
+				<div class="rating" id="rating1">?</div>
+				<div class="bar" id="bar1">
+					<svg height="<%= @rating1.rating %>%" viewBox="0 0 96 328" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M0 20.4L80 16.1L93.9 0L26.4 5.7L0 20.4Z" fill="rgb(var(--custcolor)" filter="grayscale(10%)"/>
+						<path d="M80 16.1L84.6 324.3L8.4 327.3L0 20.4L80 16.1Z" fill="rgb(var(--custcolor))"/>
+						<path d="M93.9 0L95.7 303.2L84.6 324.3L80 16.1L93.9 0Z" fill="rgb(var(--custcolor)" filter="grayscale(20%)"/>
+					</svg>
+				</div>
+				<div class="text"><%= @rating1.rating_criterium.name %></div>
+			</div>
+		<% end %>
+		<% if @turn.game_turn_ratings.count >= 2 %>
+			<% @rating2 = @turn.game_turn_ratings.second %>
+			<div class="rating-cat">
+				<div class="rating" id="rating2">?</div>
+				<div class="bar" id="bar2">
+					<svg height="<%= @rating2.rating %>%" viewBox="0 0 93 365" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M92.9998 20.2415H13.0811L0.817383 0.39304L67.8592 0L92.9998 20.2415Z" fill="rgb(var(--custcolor))" filter="grayscale(10%)"/>
+						<path d="M13.0811 20.2416L15.5338 361.036L90.3426 364.18L92.9998 20.2416H13.0811Z" fill="rgb(var(--custcolor))"/>
+						<path d="M0.817383 0.392944L2.9998 318.015L15.5339 360.035L13.0811 20.2414L0.817383 0.392944Z" fill="rgb(var(--custcolor))" filter="grayscale(20%)"/>
+					</svg>
+				</div>
+				<div class="text"><%= @rating2.rating_criterium.name %></div>
+			</div>
+		<% end %>
+		<% if @turn.game_turn_ratings.count >= 3 %>
+			<% @rating3 = @turn.game_turn_ratings.third %>
+			<div class="rating-cat">
+			<div class="rating" id="rating3">?</div>
+			<div class="bar" id="bar3">
+				<svg height="<%= @rating3.rating %>%" viewBox="0 0 96 328" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4L80 16.1L93.9 0L26.4 5.7L0 20.4Z" fill="rgb(var(--custcolor)" filter="grayscale(10%)"/>
+					<path d="M80 16.1L84.6 324.3L8.4 327.3L0 20.4L80 16.1Z" fill="rgb(var(--custcolor))"/>
+					<path d="M93.9 0L95.7 303.2L84.6 324.3L80 16.1L93.9 0Z" fill="rgb(var(--custcolor)" filter="grayscale(20%)"/>
+				</svg>
+			</div>
+			<div class="text"><%= "Verhandlungsgeschick" %></div>
+			</div>
+		<% end %>
+		<% if @turn.game_turn_ratings.count >= 4 %>
+			<% @rating4 = @turn.game_turn_ratings.fourth %>
+			<div class="rating-cat">
+			<div class="rating" id="rating4">?</div>
+			<div class="bar" id="bar4">
+				<svg height="<%= @rating4.rating %>%" viewBox="0 0 93 365" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M92.9998 20.2415H13.0811L0.817383 0.39304L67.8592 0L92.9998 20.2415Z" fill="rgb(var(--custcolor))" filter="grayscale(10%)"/>
+					<path d="M13.0811 20.2416L15.5338 361.036L90.3426 364.18L92.9998 20.2416H13.0811Z" fill="rgb(var(--custcolor))"/>
+					<path d="M0.817383 0.392944L2.9998 318.015L15.5339 360.035L13.0811 20.2414L0.817383 0.392944Z" fill="rgb(var(--custcolor))" filter="grayscale(20%)"/>
+				</svg>
+			</div>
+			<div class="text"><%= @rating4.rating_criterium.name %></div>
+			</div>
+		<% end %>
+	</div>
+	<div class="ges-rating">
+		<div class="rating" id="ges_rating">?</div>
+		<%= image_tag @turn.user.avatar.url %>
+	</div>
+</section>
+<section id="skip">
+	Skip mit Leertaste
+</section>
+<%= audio_tag 'game/rating/rating_bar.mp3', id: 'ratingBarSound' %>
+<%= audio_tag 'game/rating/swoosh.mp3', id: 'swoosh' %>
+<%= audio_tag 'game/rating/party.wav', id: 'party' %>
+<%= audio_tag 'game/rating/theme.wav', loop: true, id: 'theme' %>
+<script>
+	document.getElementById('theme').volume = 0.2;
+	document.getElementById('party').volume = 0.2;
+	var playCount = 0;
+	document.getElementById('ratingBarSound').addEventListener("ended", function() {
+		playCount++;
+		if (playCount < <%= @turn.game_turn_ratings.count %>) {
+			document.getElementById('ratingBarSound').play();
+		} else {
+			document.getElementById('swoosh').play();
+			setTimeout(function() {
+				document.getElementById('party').play();
+			}, 3900);
+			var i = 0.05;
+			MyApp.bar = setInterval(function() {
+				$('#ges_rating').text(Number(<%= @turn.ges_rating / 10.0 %> * i).toFixed(1));
+				i = i + 0.025;
+			}, 100)
+			setTimeout(function() {
+				clearInterval(MyApp.bar);
+				$('#ges_rating').text(Number(<%= @turn.ges_rating / 10.0 %>).toFixed(1));
+			}, 4000)												   
+		}
+	});
+	document.getElementById('party').addEventListener("ended", function() {
+		document.getElementById('theme').play();
+	});
+	<% if @turn.game_turn_ratings.count == 1 %>
+	$('#bar1').on("animationstart", function() {
+		document.getElementById('ratingBarSound').play();
+		var i = 0.1;
+		MyApp.bar1 = setInterval(function() {
+			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+    });
+	$('#bar1').on("animationend", function() {
+		clearInterval(MyApp.bar1);
+		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+	});
+	<% elsif @turn.game_turn_ratings.count == 2 %>
+	$('#bar1').on("animationstart", function() {
+		document.getElementById('ratingBarSound').play();
+		var i = 0.1;
+		MyApp.bar1 = setInterval(function() {
+			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
+			$('#rating2').text(Number(100 * i).toFixed(1))
+			i = i + 0.05;
+		}, 100)
+    });
+	$('#bar1').on("animationend", function() {
+		clearInterval(MyApp.bar1);
+		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar2 = setInterval(function() {
+			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+	});
+	$('#bar2').on("animationend", function() {
+		clearInterval(MyApp.bar2);
+		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+	});
+	<% elsif @turn.game_turn_ratings.count == 3 %>
+	$('#bar1').on("animationstart", function() {
+		document.getElementById('ratingBarSound').play();
+		var i = 0.1;
+		MyApp.bar1 = setInterval(function() {
+			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
+			$('#rating2').text(Number(10 * i).toFixed(1));
+			$('#rating3').text(Number(10 * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+    });
+	$('#bar1').on("animationend", function() {
+		clearInterval(MyApp.bar1);
+		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar2 = setInterval(function() {
+			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
+			$('#rating3').text(Number(10 - 10 * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+	});
+	$('#bar2').on("animationend", function() {
+		clearInterval(MyApp.bar2);
+		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar3 = setInterval(function() {
+			$('#rating3').text(Number(<%= @rating3.rating / 10.0 %> * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+	});
+	$('#bar3').on("animationend", function() {
+		clearInterval(MyApp.bar3);
+		$('#rating3').text(Number(<%= @rating3.rating / 10.0 %>).toFixed(1));
+	});
+	<% elsif @turn.game_turn_ratings.count == 4 %>
+	$('#bar1').on("animationstart", function() {
+		document.getElementById('ratingBarSound').play();
+		var i = 0.1;
+		MyApp.bar1 = setInterval(function() {
+			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
+			$('#rating2').text(Number(10 * i).toFixed(1));
+			$('#rating3').text(Number(10 * i).toFixed(1));
+			$('#rating4').text(Number(10 * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+    });
+	$('#bar1').on("animationend", function() {
+		clearInterval(MyApp.bar1);
+		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar2 = setInterval(function() {
+			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
+			$('#rating3').text(Number(10 - 10 * i).toFixed(1));
+			$('#rating4').text(Number(10 - 10 * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+	});
+	$('#bar2').on("animationend", function() {
+		clearInterval(MyApp.bar2);
+		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar3 = setInterval(function() {
+			$('#rating3').text(Number(<%= @rating3.rating / 10.0 %> * i).toFixed(1));
+			$('#rating4').text(Number(10 * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)			
+	});
+	$('#bar3').on("animationend", function() {
+		clearInterval(MyApp.bar3);
+		$('#rating3').text(Number(<%= @rating3.rating / 10.0 %>).toFixed(1));
+		var i = 0.1;
+		MyApp.bar4 = setInterval(function() {
+			$('#rating4').text(Number(10 - <%= 10 - @rating4.rating / 10.0 %> * i).toFixed(1));
+			i = i + 0.05;
+		}, 100)
+	});
+	$('#bar4').on("animationend", function() {
+		clearInterval(MyApp.bar4);
+		$('#rating4').text(Number(<%= @rating4.rating / 10.0 %>).toFixed(1));
+	});
+	<% end %>
+	$(window).keypress(function (e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+            window.location.replace('<%= gd_set_state_path('', state: 'choose') %>');
+        };
+    });
+</script>

@@ -1,0 +1,72 @@
+<div class="left">
+	<div class="card">
+		<h3>Einwand Listen</h3>
+		<div class="table" id="objection_lists">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Einwände</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @lists.each do |l| %>
+					<tr class="<%= @list == l ? 'highlighted' : '' %>">
+						<td><%= l.name %></td>
+						<td><%= l.objections.count %></td>
+						<td class="edit"><%= link_to '', '', class: 'far fa-edit' %></td>
+						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="right">
+	<div class="card">
+		<h3>Einwände</h3>
+		<%= form_for(:entry, url: list_add_sound_path(@list, type: 'objection'), html: {id: 'new_objection'}) do |f| %>
+			<label for="entry_sound" class="add-circle"><i class="fas fa-plus-circle"></i></label>
+			<%= f.file_field :sound, multiple: true, onchange: 'submitForm()', style: "display: none" %>
+		<% end %>
+		<div class="table" id="objections">
+			<table>
+				<thead>
+					<tr>
+						<th>Einwand</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @list.objections.each do |w| %>
+					<tr>
+						<td><%= w.name %></td>
+						<td class="play" id="play_<%=w.id%>"><%= audio_tag w.sound, id: w.id, onended: 'end('+w.id.to_s+')' %> <i class="fas fa-play-circle" onclick="play(<%= w.id %>)"></i></td>
+						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script>
+		new PerfectScrollbar('#objections')
+		function submitForm() {
+			$('#new_objection').submit();
+		}
+		function play(id) {
+			document.getElementById(id).play();
+			$('#play_'+id+' .fas').removeClass('fa-play-circle');
+			$('#play_'+id+' .fas').addClass('fa-pause-circle');
+		}
+		function end(id) {
+			$('#play_'+id+' .fas').removeClass('fa-pause-circle');
+			$('#play_'+id+' .fas').addClass('fa-play-circle');
+		}
+	</script>
+</div>

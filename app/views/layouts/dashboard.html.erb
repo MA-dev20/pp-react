@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= yield(:title) %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1dacf1"/>
+    <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
+  </head>
+  <style>
+	:root {
+	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
+	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
+	}
+	
+</style>
+
+  <body>
+   	<section id="navbar">
+   		<div class="dropdown" onclick="toggleDropdown()">
+   		Hallo, <%= @admin.fname %> <%= @admin.lname %>
+   		<i class="fas fa-caret-down dropdown-img"></i>
+   		</div>
+   		<div class="dropdown-content">
+   		<% if can? :manage, @company %>
+   			<div class="link">
+				Unternehmen
+				<%= link_to '', company_dash_path %>
+   			</div>
+   		<% end %>
+   		<% if @departement && (can? :manage, @department) %>
+   			<div class="link">
+				Abteilung
+				<%= link_to '', department_dash_path %>
+   			</div>
+   		<% end %>
+   		<% if can? :manage, :all %>
+   			<div class="link">
+				Backoffice
+				<%= link_to '', backoffice_path %>
+   			</div>
+   		<% end %>
+   		<div class="link">
+			Account
+			<%= link_to '', account_path %>
+   		</div>
+		<div class="link red">
+			Logout
+			<%= link_to '', destroy_user_session_path, method: 'delete' %>
+  		</div>
+   		</div>
+   		
+   	</section>
+   	<section id="sidebar">
+   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar' %>
+   		
+   		<div class="links">
+   			<% if can? :create, Game %>
+   			<div class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dash_pitch_path(@pitch)) ? 'active' : '' %>">
+   				<i class="fas fa-gamepad"></i>
+  				<div class="text">Let's Pitch</div>
+   				<%= link_to '', dashboard_path %>
+   			</div>
+   			<% end %>
+   			<% if can? :create, User %>
+   			<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) ? 'active' : '' %>">
+   				<i class="fas fa-user-friends"></i>
+   				<div class="text">Nutzer</div>
+   				<%= link_to '', dashboard_teams_path %>
+   			</div>
+   			<% end %>
+   			<% if can? :create, CatchwordList %>
+   			<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
+   				<i class="far fa-list-alt"></i>
+   				<div class="text">Customize</div>
+   				<%= link_to '', dashboard_customize_path %>
+   			</div>
+   			<% end %>
+   			<% if can? :read, GameTurn %>
+   			<div class="link <%= current_page?(dashboard_video_path) ? 'active' : '' %>"d>
+   				<i class="fab fa-youtube"></i>
+   				<div class="text">Video Tool</div>
+   				<%= link_to '', dashboard_video_path %>
+   			</div>
+   			<% end %>
+   		</div>
+   		<div class="logo">
+   			<%= image_tag @company.logo? ? @company.logo.url : 'logos/peterpitch.png' %>
+   		</div>
+   	</section>
+   	<section id="content">
+    	<%= yield %>
+   	</section>
+   	<% if flash[:alert] %>
+   	<div class="modal-blur">
+   		<div class="modal card">
+   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+   			<h3>Ups, da gabe es einen Fehler!</h3>
+   			<%= flash[:alert] %>
+   		</div>
+   	</div>
+   	<% end %>
+  </body>
+  <script>
+	  function toggleDropdown() {
+		  $(".dropdown-content").toggle();
+		  if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+		  	$(".dropdown .fas").addClass('fa-caret-up');
+		  	$(".dropdown .fas").removeClass('fa-caret-down');
+		  } else {
+			$(".dropdown .fas").addClass('fa-caret-down');
+		  	$(".dropdown .fas").removeClass('fa-caret-up');
+		  }
+	  }
+	  function toggleModal() {
+		  $('.modal-blur').toggle();
+	  }
+	  new PerfectScrollbar('#content');
+  </script>
+</html>

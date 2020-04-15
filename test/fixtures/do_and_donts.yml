@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  department: one
+  user: one
+  does: MyString
+  donts: MyString
+
+two:
+  company: two
+  department: two
+  user: two
+  does: MyString
+  donts: MyString

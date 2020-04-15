@@ -1,0 +1,27 @@
+<div class="card" id="letspitch">
+	<h3><%= @company.name %></h3>
+	<%= form_for(:company, url: edit_company_path(@company, site: 'company_dash')) do |f| %>
+	<div class="form-group logo">
+		<label for="company_logo">
+			<% if @company.logo? %>
+			<%= image_tag @company.logo.url, id: 'logo' %>
+			<% else %>
+			LOGO
+			<% end %>
+			<div class="hover"><i class="fas fa-plus"></i></div>			
+		</label>
+		<%= f.file_field :logo %>
+	</div>
+	<div class="form-group">
+		<label for="">Unternehmen</label>
+		<%= f.text_field :name, class: "form-field" %>
+	</div>
+	<div class="form-group color">
+		<label for="">Farbe</label> <br>
+		<%= f.number_field "color1_0", value: @company.color1[0], class: 'form-field' %>
+		<%= f.number_field "color1_1", value: @company.color1[1], class: 'form-field' %>
+		<%= f.number_field "color1_2", value: @company.color1[2], class: 'form-field' %>
+	</div>
+	<%= f.submit 'speichern!', class: 'btn btn-green' %>
+	<% end %>
+</div>

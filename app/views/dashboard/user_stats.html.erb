@@ -1,0 +1,332 @@
+<div class="head">
+	<%= image_tag @user.avatar.url, class: 'avatar' %>
+	<div class="text"><%= @user.fname %> <%= @user.lname %>'s Statistik</div>
+</div>
+
+<div class="rating-criteria">
+	<div class="card active" id="ratingCard_ges" onclick="setChart('ges')">
+		<div class="icon">
+			<i class="fas fa-star"></i>
+		</div>
+		<div class="rating" id="ges">
+			<div id="ges_text"></div>
+		</div>
+		<div class="name">Gesamt</div>
+		<div class="change"><%= @user.ges_change / 10.0 %></div>
+	</div>
+	<% @user_ratings.each do |r| %>
+	<div class="card" id="ratingCard_<%= r[:id] %>" onclick="setChart(<%= r[:id] %>)">
+		<div class="icon">
+			<div class="fas <%= r[:icon] %>"></div>
+		</div>
+		<div class="rating" id="rating_<%= r[:id] %>">
+			<div id="text_<%= r[:id]%>"></div>
+		</div>
+		<div class="name"><%= r[:name] %></div>
+		<div class="change">
+			<%= r[:change] / 10.0 %>
+		</div>
+	</div>
+	<% end %>
+</div>
+
+<h3>Details</h3>
+<div class="rating-details">
+	<div class="card">
+		<div class="head">aktive Tage</div>
+		<div class="count"><%= @days %></div>
+	</div>
+	<div class="card">
+		<div class="head">Pitches</div>
+		<div class="count"><%= @user.game_turns.count %></div>
+	</div>
+	<div class="card">
+		<div class="head">Siegrate</div>
+		<div class="count"><%= (@turns.where(place: 1).count / @turns.count) * 100.0 %>%</div>
+	</div>
+	<div class="card">
+		<div class="head">Bester Score</div>
+		<div class="count" id="best"><%= @turns.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 10.0 %></div>
+	</div>
+	<div class="card">
+		<div class="head">Schlechtester Score</div>
+		<div class="count" id='worst'><%= @turns.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 10.0 %></div>
+	</div>
+</div>
+
+<div class="card rating-stats">
+	<h3>Fortschritt</h3>
+	<div class="scrollChart" id="scrollChartLeft" onclick="scrollChartLeft()">
+		<i class="fas fa-chevron-circle-left"></i>
+	</div>
+	<div class="card" id="chart">
+		<canvas id="myChart" width="810px" height="270px"></canvas>
+	</div>
+	<div class="scrollChart disabled" id="scrollChartRight" onclick="scrollChartRight()">
+		<i class="fas fa-chevron-circle-right"></i>
+	</div>
+	
+	<div class="divider"></div>
+	
+	<div class="card" id="bestlist">
+		<div class="trophy">
+		<div class="gold">
+			<%= image_tag 'dash/icons/gold.png' %>
+			<div class="text">
+				<%= @turns.where(place: 1).count %>
+			</div>
+		</div>
+		<div class="silver">
+			<%= image_tag 'dash/icons/silver.png' %>
+			<div class="text">
+				<%= @turns.where(place: 2).count %>
+			</div>
+		</div>
+		<div class="bronze">
+			<%= image_tag 'dash/icons/bronze.png' %>
+			<div class="text">
+				<%= @turns.where(place: 3).count %>
+			</div>
+		</div>
+		</div>
+		<div class="divider"></div>
+		
+		<div class="bestlist">
+			<% if @team.users.count >= 1 %>
+			<div class="first <%= @team_users.first == @user ? 'highlighted' : '' %>">
+				1. <%= @team_users.first.fname %><span id="rating"><%= (@team_users.first.ges_rating / 10.0).to_s %></span>
+			</div>
+			<% if @team.users.count >= 2 %>
+			<div class="second <%= @team_users.second == @user ? 'highlighted' : '' %>">
+				2. <%= @team_users.second.fname %><span id="rating"><%= (@team_users.second.ges_rating / 10.0).to_s %></span>
+			</div>
+			<% if @team.users.count >= 3 %>
+			<div class="third <%= @team_users.third == @user ? 'highlighted' : '' %>">
+				3. <%= @team_users.third.fname %><span id="rating"><%= (@team_users.third.ges_rating / 10.0).to_s %></span>
+			</div>
+			<% end end end %>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	$('.rating-criteria').slick({
+		slidesToShow: 5,
+		slidesToScroll: 1,
+		infinite: false
+	})
+	$('.rating-details').slick({
+		slidesToShow: 5,
+		slidesToScroll: 1,
+		infinite: false
+	})
+	$('#worst').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 100.0 %>));
+	$('#best').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 100.0 %>));
+	
+	ratecircle('#ges', 'ges_text', <%= @user.ges_rating / 100.0 %>);
+	<% @user_ratings.each do |r| %>
+		ratecircle('#rating_<%= r[:id] %>', 'text_<%= r[:id] %>', <%= r[:rating] / 100.0 %>);
+	<% end %>
+	
+	var ctx = document.getElementById("myChart");
+	var datapoints = [];
+	var label = [];
+	var i = 0;
+	var user = "<%= @user.fname + ' ' + @user.lname %>";
+	<% @chartdata.each do |cd| %>
+		var json_data = <%= cd.to_json.html_safe %>;
+		label[i] = ["<%= cd[:date] %>", "<%= cd[:time] %>"];
+		datapoints[i] = {value: <%= cd[:ges] %>, data: json_data};
+		i++;
+	<% end %>
+	var data6 = [];
+	var datapoints6 = datapoints.slice(Math.max(datapoints.length - 6, 0));
+	var label6 = label.slice(Math.max(label.length - 6, 0));
+	var chartStart = Math.max(datapoints.length -6, 0);
+	i = 0;
+	datapoints6.forEach(function(el) {
+		data6[i] = el.value;
+		i++;
+	})
+	if (datapoints.length <= 6) {
+		$('#scrollChartLeft').addClass("disabled");
+		$('#scrollChartRight').addClass("disabled");
+	} else {
+		$('#scrollChartLeft').removeClass("disabled");
+		$('#scrollChartRight').addClass("disabled");
+	}
+	var myChart = new Chart(ctx, {
+		type: "line",
+		data: {
+			labels: label6,
+			datasets: [{
+				label: user,
+                data: data6,
+                fill: false,
+                lineTension:0,
+                spanGaps: true,
+                borderWidth: 3,
+                borderColor: "rgba(67, 148, 236, 1)",
+                pointBackgroundColor: "#4394ec",
+                pointBorderColor: "#fafafa",
+                pointBorderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 9,
+                hoverRadius: 9,
+                datapoints: datapoints6,
+                extra: datapoints6,
+				
+			}],
+		},
+		options: {
+			layout: {
+				padding: {
+					top: 10,
+				},
+			},
+			legend: {
+				display: false,
+			},
+			title: {
+				disply: false,
+			},
+			scales: {
+				yAxes: [{
+					stacked: true,
+					gridlines: {
+						display: true,
+						color: "rgba(94, 94, 94, .15)",
+						lineWidth: .2,
+						zeroLineColor: "rgba(94, 94, 94, .15)",
+					},
+					ticks: {
+						suggestedMin: 0,
+						suggestedMax: 10,
+						stepSize: 1,
+						fontColor: "rgba(0,0,0,1)",
+						fontSize: 14,
+						fontFamily: "Nunito",
+					}
+				}],
+				xAxes: [{
+                    gridLines: {
+                        display: false,
+                        color:"rgba(255,255,255,1)",
+                        lineWidth:0.2,
+                        zeroLineBorderDashOffset: 1.0,
+                    },
+                    ticks: {
+                        fontColor:"rgba(0,0,0,1)",
+                        fontSize: 14,
+                        fontFamily: 'Nunito',
+                    }
+                }],
+			},
+		}
+	});
+	
+	function setChart(id) {
+		$('.rating-criteria .active').removeClass('active');
+		datapoints = [NaN];
+		label = [NaN];
+		if (id == 'ges') {
+			i = 0;
+			<% @chartdata.each do |cd| %>
+				var json_data = <%= cd.to_json.html_safe %>;
+				datapoints[i] = {value: <%= cd[:ges] %>, data: json_data};
+				label[i] = ["<%= cd[:date] %>", "<%= cd[:time] %>"];
+				i++;
+			<% end %>		
+		} else {
+			i = 0;
+			<% @chartdata.each do |cd| %>
+				<% cd[:cust_ratings].each do |cr| %>
+					if(<%= cr[:id] %> == id) {
+						var json_data = <%= cd.to_json.html_safe %>;
+						datapoints[i] = {value: <%= cr[:rating] %>, data: json_data};
+						label[i] = ["<%= cd[:date] %>", "<%= cd[:time] %>"];
+						i++;
+					};
+				<% end %>
+			<% end %>
+		};
+		i = 0;
+		var datapoints6 = datapoints.slice(Math.max(datapoints.length - 6, 0));
+		var label6 = label.slice(Math.max(label.length - 6, 0));
+        chartStart = Math.max(datapoints.length -6, 0);
+		var data6 = [];
+		datapoints6.forEach(function(el) {
+			if(el.value == undefined){data6[i] = el;}
+			else{data6[i] = el.value;}
+			i++;
+		});
+		myChart.data.labels = label6;
+		myChart.data.datasets.forEach((dataset) => {
+			dataset.data = data6;
+		});
+		myChart.update();
+		$('#ratingCard_'+id).addClass('active');
+		if (datapoints.length <= 6) {
+			$('#scrollChartLeft').addClass("disabled");
+			$('#scrollChartRight').addClass("disabled");
+		} else {
+			$('#scrollChartLeft').removeClass("disabled");
+			$('#scrollChartRight').addClass("disabled");
+		}
+		}
+		function scrollChartLeft() {
+			if (chartStart != 0) {
+				chartStart = Math.max(chartStart - 6, 0);
+				if (chartStart == 0) {
+					datapoints6 = datapoints.slice(0, 6);
+					label6 = label.slice(0, 6)
+					$('#scrollChartLeft').addClass("disabled");
+				} else {
+					datapoints6 = datapoints.slice(chartStart, chartStart + 6);
+					label6 = label.slice(chartStart, chartStart + 6);
+				}
+				$('#scrollChartRight').removeClass("disabled");
+				i = 0;
+				datapoints6.forEach(function(el) {
+					if(el.value == undefined){data6[i] = el;}
+					else{data6[i] = el.value;}
+					i++;
+				});
+				myChart.data.labels = label6;
+				myChart.data.datasets.forEach((dataset) => {
+					dataset.data = data6;
+					dataset.datapoints = datapoints6;
+                	dataset.extra = datapoints6;
+				});
+				myChart.update();
+			}
+		}
+		function scrollChartRight() {
+			if (chartStart != datapoints.length - 6) {
+				chartStart = Math.min(chartStart + 6, datapoints.length - 6);
+				if (chartStart == datapoints.length - 6) {
+					datapoints6 = datapoints.slice(datapoints.length - 6);
+					label6 = label.slice(datapoints.length - 6)
+					$('#scrollChartRight').addClass("disabled");
+				} else {
+					datapoints6 = datapoints.slice(chartStart, chartStart + 6);
+					label6 = label.slice(chartStart, chartStart + 6);
+				}
+				i = 0;
+				$('#scrollChartLeft').removeClass("disabled");
+				datapoints6.forEach(function(el) {
+					if(el.value == undefined){data6[i] = el;}
+					else{data6[i] = el.value;}
+					i++;
+				});
+				myChart.data.labels = label6;
+				myChart.data.datasets.forEach((dataset) => {
+					dataset.data = data6;
+					dataset.datapoints = datapoints6;
+                	dataset.extra = datapoints6;
+				});
+				myChart.update();
+			}
+		}
+</script>

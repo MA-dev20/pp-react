@@ -1,0 +1,19 @@
+<div class="head">
+	<h1>Wie ist deine E-Mail?</h1>
+</div>
+<%= form_for(:user, url: email_game_path(@game), html: {autocomplete: 'off'}) do |f| %>
+<div class="middle">
+	<div class="form-group single-line">
+		<%= f.email_field :email, placeholder: 'E-Mail', class: 'form-field' %>
+	</div>
+</div>
+<div class="dots">
+	<div class="dot custom-bg"></div>
+	<div class="dot custom-bg"></div>
+	<div class="dot custom-bg"></div>
+</div>
+
+<div class="bottom">
+	<%= f.submit 'weiter', class: 'btn' %>
+</div>
+<% end %>

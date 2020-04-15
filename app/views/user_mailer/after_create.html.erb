@@ -1,0 +1,11 @@
+<h1>Hallo <%= @user.fname %> <%= @user.lname %></h1>
+
+<p>Herzlich Willkommen bei Peter Pitch!</p>
+<p>Um deinen Fortschritt zu verfolgen logge dich jetzt ein.</p>
+
+<p>Nutzer: <span class="bold"><%= @user.email %></span></p>
+<p>Password: <span class="bold"><%= @password %></span></p>
+
+<p><%= link_to 'Einloggen!', root_url, class: 'btn btn-green' %></p>
+
+<p>Viel Spaß <br> Dein Peter Pitch Team</p>

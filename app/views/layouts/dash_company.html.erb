@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= yield(:title) %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1dacf1"/>
+    <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
+  </head>
+ <style>
+	:root {
+	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
+	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
+	}
+	
+</style>
+  <body>
+   	<section id="navbar">
+   		<div class="dropdown" onclick="toggleDropdown()">
+   		Hallo, <%= @admin.fname %> <%= @admin.lname %>
+   		<i class="fas fa-caret-down dropdown-img"></i>
+   		</div>
+   		<div class="dropdown-content">
+   			<div class="link">
+				Dashboard
+				<%= link_to '', dashboard_path %>
+   			</div>
+   			<% if @departement && (can? :manage, @department) %>
+				<div class="link">
+					Abteilungs Dashboard
+					<%= link_to '', department_dash_path %>
+				</div>
+   			<% end %>
+   			<% if can? :manage, :all %>
+   			<div class="link">
+   				Backoffice
+   				<%= link_to '', backoffice_path %>
+   			</div>
+   			<% end %>
+   			<div class="link">
+				Account
+				<%= link_to '', account_path %>
+   			</div>
+			<div class="link red">
+				Logout
+				<%= link_to '', destroy_user_session_path, method: 'delete' %>
+  			</div>
+   		</div>
+   		
+   	</section>
+   	<section id="sidebar">
+   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar' %>
+   		
+   		<div class="links">
+   			<div class="link <%= current_page?(company_dash_path) ? 'active' : '' %>">
+   				<i class="fas fa-book-open"></i>
+   				<div class="text">Übersicht</div>
+   				<%= link_to '', company_dash_path %>
+   			</div>
+   			<div class="link <%= current_page?(company_dash_edit_path) ? 'active' : '' %>">
+   				<i class="far fa-building"></i>
+   				<div class="text">Unternehen</div>
+   				<%= link_to '', company_dash_edit_path %>
+   			</div>
+   			<div class="link <%= current_page?(company_dash_departments_path) || @department && current_page?(company_dash_department_path(@department)) ? 'active' : '' %>">
+   				<i class="far fa-building"></i>
+   				<div class="text">Abteilungen</div>
+   				<%= link_to '', company_dash_departments_path %>
+   			</div>
+   		</div>
+   	</section>
+   	<section id="content">
+    	<%= yield %>
+   	</section>
+   	<% if flash[:alert] %>
+   	<div class="modal-blur">
+   		<div class="modal card">
+   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+   			<h3>Ups, da gabe es einen Fehler!</h3>
+   			<%= flash[:alert] %>
+   		</div>
+   	</div>
+   	<% end %>
+  </body>
+  <script>
+	  function toggleDropdown() {
+		  $(".dropdown-content").toggle();
+		  if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+		  	$(".dropdown .fas").addClass('fa-caret-up');
+		  	$(".dropdown .fas").removeClass('fa-caret-down');
+		  } else {
+			$(".dropdown .fas").addClass('fa-caret-down');
+		  	$(".dropdown .fas").removeClass('fa-caret-up');
+		  }
+	  }
+	  function toggleModal() {
+		  $('.modal-blur').toggle();
+	  }
+  </script>
+</html>

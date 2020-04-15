@@ -1,0 +1,67 @@
+<div class="left">
+	<div class="search">
+		<i class="fas fa-search"></i>
+		<input type="text" placeholder="Unternehmens Admins suchen" id="searchCompanyAdmins" class="form-field">
+	</div>
+	
+	<div class="card">
+		<h3>Unternehmen Admins</h3>
+		<div class="table" id="company_admin-table">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Name</th>
+						<th>E-Mail</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @cAdmins.each do |u| %>
+					<tr>
+						<td class="img"><%= image_tag u.avatar.url %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+						<td><%= u.email %></td>
+						<td class="edit"> <i class="far fa-edit"></i></td>
+						<td class="remove"> <i class="far fa-trash-alt"></i></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="right">
+	<div class="search">
+		<i class="fas fa-search"></i>
+		<input type="text" placeholder="Nutzer suchen" id="searchCompanyAdmins" class="form-field">
+	</div>
+	
+	<div class="card">
+		<h3>Nutzer</h3>
+		<div class="table" id="users-table">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Name</th>
+						<th>E-Mail</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @users.each do |u| %>
+					<tr>
+						<td class="img"><%= image_tag u.avatar.url %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+						<td><%= u.email %></td>
+						<td class="edit"> <i class="far fa-edit"></i></td>
+						<td class="remove"> <i class="far fa-trash-alt"></i></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

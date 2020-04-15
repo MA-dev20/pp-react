@@ -1,0 +1,115 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<section id="play">
+<div class="head">
+	<%= image_tag 'logo-m.png', class: 'play-logo' %>
+	<% if @company.logo? %>
+	<div class="play-polygon">
+		<svg class="polygon" width="160" height="156" viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M59.1978 34.1955L95.7266 20.2435L120.385 50.5907L120.39 50.5959L144.947 81.0254L123.705 113.855L123.701 113.861L102.35 146.619L64.5626 136.562L64.5562 136.56L26.803 126.377L24.6912 87.3311L24.6908 87.3244L22.7097 48.2721L59.1916 34.1979L59.1978 34.1955Z" fill="white" stroke="rgb(var(--custcolor))" stroke-width="4"/>
+	</svg>
+		<%= image_tag @company.logo.url , class: 'logo' %>
+	</div>
+	<% end %>
+	<%= image_tag @turn.user.avatar.url, class: 'play-avatar' %>
+</div>
+<div class="word" id="word" data-target-resolver><%= @turn.catchword.name %></div>
+<div class="timer" id="game_timer">
+	<% minutes = @game.game_seconds / 60 %>
+	<% seconds = @game.game_seconds % 60 %>
+	<% minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s %> 
+	<% seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s %>
+	<%= minutes + ":" + seconds %>
+</div>
+<svg class="background-img" preserveAspectRatio="none" viewBox="0 0 750 500" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<path opacity="0.5" d="M95.5 66.9L33.9 0H16.3L95.5 66.9ZM0 93.7V106.1L66.9 112.3L0 93.7ZM626.4 67.5L659.5 0H644.9L626.4 67.5ZM0 481.5V500H7.6L117.4 374.8L0 481.5ZM106.4 43.2L94.6 0H85.3L106.4 43.2ZM721.4 0L637.3 91.2L745.4 0H721.4ZM128.2 414.7L58.9 500H77.3L128.2 414.7ZM750 470.4L636.8 367.5L750 496.6V470.4ZM659.1 108.2L750 62.4V44.7L659.1 108.2ZM605.1 432.7L613.2 500H629.6L605.1 432.7ZM149.1 440L127.3 500H141.9L149.1 440ZM626 407.4L681.2 500H701.2L626 407.4Z" fill="rgb(var(--custcolor))"/>
+<rect x="20" y="148" width="65" height="61" fill="url(#pattern0)"/>
+<rect x="682" y="288" width="68" height="22" fill="url(#pattern1)"/>
+<defs>
+<pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0" transform="scale(0.0105263 0.011236)"/>
+</pattern>
+<pattern id="pattern1" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1" transform="scale(0.00826446 0.025641)"/>
+</pattern>
+<clipPath id="clip0">
+<path d="M231 85H520V415H231V85Z" fill="white"/>
+</clipPath>
+<image id="image0" width="95" height="89" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABZCAYAAABYFfjoAAAEzUlEQVR4nO2da8hlUxjHf3MwrhmXIiOXST6YaWZiJrmV5gNpeMPrVmQUo0nMGJdR9OYSIRIGod6QjBgMyiVCPvABQ8alZogMGZeYEGGMS0/999s5b68zZ+9z1l5r7/386rT3OZ32Wuu/1trrWc+6TdrjyxUA2wJ7A5/jlEYLmAz8AbwL7ObSl4eJvwl4B9gFuKopCU+BluIwpOuFwD7NlaNcMvG/Ax4GtgOua0riY9NqC3+RrucA05snRfm0i2+N7qX67bSmCBCTrceFfQewKzDaLBniMF78f4Grm5L42LTSjl69cfEj4uJHxMWPiIsfkV7Et/+cCuxbWxUi0Yv4ewJPAC8C29RShUj0Iv43wEdyOSytpQqR6PWdP0/Xa93rOTh6Ff8H4C5gB7kgnAGQx9oxp9s/wDAw38XvnzzibwZO1P29wE4pJqhK5LXznwM+k9l5Q7Ol658inayjdF0MHJpSYqpGEfG/VaPbkt/fbf+CFHUvLAN+AmZ66S/O+MGUXtms149ZPm9XJK3JUVR842N9nIK4VzMiLn5EXPyIuPgRcfEjEkJ8m/ez2ke+tkwI8Y8E5gCPe++3OyHEvwj4FTgMuDnA82tDCPE/BRbq3sYATm6grj0RqsG1V849un8AmBYonEoT0tq5DHhPy42eAXZsgJ65CCn+n8ApwEZglmrApIDhVY7Qdv4XwOnA37ouq6GGhSmjk/UqcLnubwKOKSHMSlBWD9dGvh5ReAt7+H8j6MefnxcT/U3gpaaLnlGm+NYA31dieMnjjrWIuPgRcfEj4uJHJBXx9wOeV0esMZRp7XRjrmY+H6cxgBVNyIBUSr453h5VfGz3k7MSiFNwUin55vtZoPszlQHUvQak1OBmGdBeA85OIF7BSM3amSgDFicQryCkaGpmGXC/vi8HrokcpyCkaudbBlzQNgBvqyBvjxyngZNyJ8v2/rkSuELfl9Zt+7FUrJ1u3AqsB2YA69KNZn6qIL6xMoE4DBz37UTExY+Iix+RuohvG7G+pvmhlaEu4p+gnVHeAEaArRKI0xapi/i2FfFTEv164HWNESRNXcTfqK3Izgd+0xrhNXodJUvdGlzbjuAQHcQwBXhI84SSrAV1tHY+AQ6XP8gOZjhWi7WXpJbeupqaf+kcAKsFb2l6+p3ACwnEbYy62/lW4o8ALlFbMDuBOI2RnRbUBHZXjfgllbRWxbE2CH5MLULuXoiIi9/JiKaxn6eD24Li4ncyTw30qAZwRtRW9MuoFgd24OJ3Mqyhyw3aQ9pcFV9pXcGcPp57IHCwMnYMF7+TnzVoP02uiQ+B7eU7Wi2XxZICtSEb/H+5fUWmiz8xmzRnaLYW8K3Ub7PUWbOacUuO5z2rPod19k7KfnTxu2MzKF4BzgCmAhcDH+gwz+Gcz8k2gX0w071JnaxBMlP9hg05nml9qrXAAcC5lgkuflgeAw4C3tdnqtYkf2/3Ln5YrGbs9T8h3NYk90IM7PV0tBZ/zNXuu1MUj/ne4IbF2oVVcmXv3Cb802ZJeckPy3T1G7LDntdrG7SvcVMzGNYbflIH/Qxp1rW5LvbPhKdhLuUymCzRh9rCsr7B3TrypAMv+YPF3A7Hq6TfKM/o8omEx0v+wLEzxcwlYUeb/N716cB/vLa1fB1Vtz4AAAAASUVORK5CYII="/>
+<image id="image1" width="121" height="39" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHkAAAAnCAYAAAArfufOAAAEqElEQVR4nO2cW2hcVRSGv5kkWrXWNInYRG1Nq1VrvYNWrRdQ8aFqvdIXUby8SJ9UFBF8Ep8UH0RBiiCIgnilogjihQqxeMELtQq19UZTtW2aRJPa1DaRBd/AoDZzmplhbvuDQ2Ym55w55/x7rb33WmtP7sanhyliNjDm26OAUeAyYAD4m0RD0u5F3wn8BMwDLlDU24FB4GygE7gZ+CzJ3HiEyLcBDwELgS3AImC1d7JL614PnJREbkxC5OMUODgB+AJ4FLgQeB3o1sq/bfWH1aiEyIVOOfrirVrzOgU+FJho9YfU6OSBucAU8B0wB7gUeMD7SgI3AfmiW9gAPAlMKvI9rf5wmoVw15uAHPAb8BywF3gYGGn1h9MshMhfei/htrcDa4BfgZda/eE0C3ktOFjq3/EkcHMRIs8ysrUY6Gj1B9KMhMiH6Z5jZH1iqz+QZiT65N3AH4rdk+EeY79zdOvfAPta/SHWOyHyEPC1gZBtGa73GuA+4BfgCUOeeadeiTqkkKBYo8hDJS4xZ2QsMlQ3AQuAR4CPMxybqBFtS1Y8iBYcbnt/hssIkT9U6Cvd5jtKH0xC1h8FkTG0mYUQeYdh0JzJjQiFXmIcfCJZdX1RLPLBEBb/O/Cpbv4Y4CzgXOBoB3LbDqLhJKrITEUuECPsr4BXgS7gVCtJlpiLHnMOnqgh+Qp99ajx7juA16wmedaBWaLGtFfw6yPu/ZHu+0enVMMZjktUmUqKHPwFbAQeV+SdScDaU2mRC2zPuF97iphVn0r1yTMhCgTvBa53zp2oEtWy5CxcbXg06rk/Ad4C3k0BlcpT7hSqHDpMb55hLjsCKlcARwJ7ivLciTKppcgRFXtFKw6P0gecAizXhff7+eYUVCmPfy+TqSWnA3cDF2ndKO4HwJsWGSZmQD2JXCCSHasU+zyg18/Dlb9f+8trPGo58DoQkad+zIhZhEjPt4/OkvToSAvz/ks9ilwgXMwbwNvGxUsNxKIvP8QGMWlf3/J9OXUucoG9GUfa1wF3Ad9rzVtcnTlgxqzH9OiUKdKWaQCNIHJWBkx39pvjjiW4tyjwei183Ph6LN77vDFuq2zyzSRyLNL72YKGFRYxxIrN433d5X6rjLHHMqAXS5wz5ux/+voIG0nQVlRFUy9eodNVL0v1Yr2uSN3QTCLvcguecTvTuXfE0k8DVtpvz/bz6YgS5avcNjpf77MhbbYBDfl+vsmYrAGcXsug8TxbXUHabbHFyZ57p0UYO6Y5V4h7OXCDJVxzLN7Y5DmvrccpVDWYpbvOKXyXdWrTWeCxVrF2arkjljbFsT/4vtvuYNBES6wle6/E9a92fLDYkuZ+hYyB4jKvadTuJrqWF/RSB6LbxrDbrcfKnDHve14zWfJ07PF/U1ayZCEs7SnF2KfrXqTL3m/1y6RryJbZEEq5/z6rW+d67GTRuGilXcOInmHcGcPzJc4ZFn+rAaS1lmL1GEC6OAahrWLJ5ZDTtQ9rKcsVYFS3OKE48fn9Jb5nofstcKyw1qBPm9YaXuYdG0G8ftnxQ1aR/vdHA5LIM6N4sHWwv8ZQ+FWlEDYIr3C4DSgoDuiUP6gD/gE1sxLEap2xMgAAAABJRU5ErkJggg=="/>
+</defs>
+</svg>
+<%= image_tag 'game/illus/polygon_texture.svg', class: 'background-polygon' %>
+<div class="background-dots">
+	<div class="dot"></div>
+	<div class="dot cust"></div>
+	<div class="dot cust"></div>
+	<div class="dot"></div>
+</div>
+</section>
+<%= audio_tag 'game/play/aufbau.mp3', id: 'start' %>
+<%= audio_tag 'game/play/word.mp3', id: 'word_load' %>
+<%= audio_tag @turn.catchword.sound.url, id: 'word_sound' %>
+<%= audio_tag 'game/play/dong.mp3', id: 'dong' %>
+<%= audio_tag 'game/play/theme.wav', loop: true, id: 'theme' %>
+<%= audio_tag 'game/play/countdown.mp3', id: 'countdown' %>
+
+<%= audio_tag 'game/play/objection_ring.mp3', id: 'o_start' %>
+<%= audio_tag 'game/play/objection_theme.mp3', id: 'o_theme' %>
+<%= audio_tag 'game/play/objection_end.mp3', id: 'o_end' %>
+<script>
+	document.getElementById('word_load').volume = 0.5;
+	document.getElementById('dong').volume = .5;
+	document.getElementById('theme').volume = .2;
+	document.getElementById('countdown').volume = .3;
+	
+	document.getElementById('word_load').play();
+	
+	textanim();
+	function callback() {
+		document.getElementById('word_load').pause();
+		document.getElementById('dong').play();
+		document.getElementById('word_sound').play();
+		document.getElementById('theme').play();
+		MyApp.timer = startTimer(<%= @game.game_seconds %>, document.getElementById("game_timer"));
+	}
+	
+	$('#navbar').hide();
+	if(<%= @turn.catchword.name.length %> > 23) {
+		$('.word').css("font-size", '9vh');
+	}
+	if(<%= @turn.catchword.name.length %> > 26) {
+		$('.word').css("font-size", '8vh');
+	}
+	if(<%= @turn.catchword.name.length %> > 29) {
+		$('.word').css("font-size", '7vh');
+	}
+	if(<%= @turn.catchword.name.length %> > 33) {
+		$('.word').css('line-height','8vh');
+	}
+	function startTimer(duration, display) {
+		var timer = duration, minutes, seconds;
+		var setTimer = setInterval(function() {
+			minutes = parseInt(timer / 60, 10);
+			seconds = parseInt(timer % 60, 10);
+			minutes = minutes < 10 ? '0' + minutes : minutes;
+			seconds = seconds < 10 ? '0' + seconds : seconds;
+			display.textContent = minutes + ':' + seconds;
+			timer--;
+			if (timer == 5) {
+				document.getElementById('countdown').play();
+				document.getElementById('theme').volume = .15;
+			} else if (timer == 4) {
+				document.getElementById('theme').volume = .1;
+			} else if (timer == 3) {
+				document.getElementById('theme').volume = .05;
+			} else if (timer == 2) {
+				document.getElementById('theme').pause;
+			} else if (timer == 0) {
+				redirect();
+			}
+		}, 1000);
+	}
+	function redirect() {
+		window.location.replace('<%= gd_set_state_path('', state: 'rate') %>');
+	}
+</script>

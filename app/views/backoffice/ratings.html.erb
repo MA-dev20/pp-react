@@ -1,0 +1,61 @@
+<div class="left">
+	<div class="card">
+		<h3>Score Listen</h3>
+		<div class="table" id="rating_lists">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Score Criteria</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @lists.each do |l| %>
+					<tr class="<%= @list == l ? 'highlighted' : '' %>">
+						<td><%= l.name %></td>
+						<td><%= l.rating_criteria.count %></td>
+						<td class="edit"><%= link_to '', '', class: 'far fa-edit' %></td>
+						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="right">
+	<div class="card">
+		<h3>Kriterien</h3>
+		<%= form_for(:entry, url: list_add_entry_path(@list, type: 'rating', site: "backoffice_rating")) do |f| %>
+			<div class="form-group">
+				<label for="">Score Criterium</label>
+				<%= f.text_field :name, class: 'form-field' %>
+			</div>
+		<% end %>
+		<div class="table" id="ratings">
+			<table>
+				<thead>
+					<tr>
+						<th>Kriterium</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @list.rating_criteria.each do |w| %>
+					<tr>
+						<%= form_for(:rating, url: edit_rating_path(w.id)) do |f| %>
+						<td><%= w.name %></td>
+						<td><%= f.text_field :icon, value: w.icon %></td>
+						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+						<% end %>
+					</tr>
+					
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

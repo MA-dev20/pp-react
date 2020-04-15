@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= yield(:title) %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1dacf1"/>
+    <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+   	<section id="navbar">
+   		<div class="dropdown" onclick="toggleDropdown()">
+   		Hallo, <%= @root.fname %> <%= @root.lname %>
+   		<i class="fas fa-caret-down dropdown-img"></i>
+   		</div>
+   		<div class="dropdown-content">
+   			<div class="link">
+				Dashboard
+				<%= link_to '', dashboard_path %>
+   			</div>
+   			<% if can? :manage, @company %>
+				<div class="link">
+					Unternehmens Dashboard
+					<%= link_to '', company_dash_path %>
+				</div>
+   			<% end %>
+   			<% if @departement && (can? :manage, @department) %>
+				<div class="link">
+					Abteilungs Dashboard
+					<%= link_to '', department_dash_path %>
+				</div>
+   			<% end %>
+   			<div class="link">
+				Account
+				<%= link_to '', dashboard_teams_path %>
+   			</div>
+			<div class="link red">
+				Logout
+				<%= link_to '', destroy_user_session_path, method: 'delete' %>
+  			</div>
+   		</div>
+   		
+   	</section>
+   	<section id="sidebar">
+   		<%= image_tag @root.avatar? ? @root.avatar.url : 'dash/wolf.png', class: 'avatar' %>
+   		
+   		<div class="links">
+   			<div class="link <%= current_page?(backoffice_path) ? 'active' : '' %>">
+   				<i class="fas fa-book open"></i>
+   				<div class="text">Übersicht</div>
+   				<%= link_to '', backoffice_path %>
+   			</div>
+   			<% if can? :manage, :all %>
+   			<div class="link <%= current_page?(backoffice_companies_path) || @company && current_page?(backoffice_company_path(@company)) ? 'active' : '' %>">
+   				<i class="far fa-building"></i>
+   				<div class="text">Unternehmen</div>
+   				<%= link_to '', backoffice_companies_path %>
+   			</div>
+   			<h3>Peters List</h3>
+   			<div class="link <%= current_page?(backoffice_catchwords_path) ? 'active' : '' %>">
+   				<i class="far fa-file-word"></i>
+   				<div class="text">Catchwords</div>
+   				<%= link_to '', backoffice_catchwords_path %>
+   			</div>
+   			<div class="link <%= current_page?(backoffice_objections_path) ? 'active' : '' %>">
+   				<i class="far fa-comments"></i>
+   				<div class="text">Einwände</div>
+   				<%= link_to '', backoffice_objections_path %>
+   			</div>
+   			<div class="link <%= current_page?(backoffice_ratings_path) ? 'active' : '' %>">
+   				<i class="far fa-chart-bar"></i>
+   				<div class="text">Ratings</div>
+   				<%= link_to '', backoffice_ratings_path %>
+   			</div>
+   			<% end %>
+   		</div>
+   	</section>
+   	<section id="content">
+    	<%= yield %>
+   	</section>
+   	<% if flash[:alert] %>
+   	<div class="modal-blur">
+   		<div class="modal card">
+   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+   			<h3>Ups, da gabe es einen Fehler!</h3>
+   			<%= flash[:alert] %>
+   		</div>
+   	</div>
+   	<% end %>
+  </body>
+  <script>
+	  function toggleDropdown() {
+		  $(".dropdown-content").toggle();
+		  if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+		  	$(".dropdown .fas").addClass('fa-caret-up');
+		  	$(".dropdown .fas").removeClass('fa-caret-down');
+		  } else {
+			$(".dropdown .fas").addClass('fa-caret-down');
+		  	$(".dropdown .fas").removeClass('fa-caret-up');
+		  }
+	  }
+	  function toggleModal() {
+		  $('.modal-blur').toggle();
+	  }
+  </script>
+</html>

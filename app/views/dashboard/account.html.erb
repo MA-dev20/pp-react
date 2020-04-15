@@ -1,0 +1,30 @@
+<div class="card" id="account">
+	<h3><%= @admin.fname %> <%= @admin.lname %></h3>
+	<%= form_for(:user, url: edit_user_path(@admin), html: {autocomplete: false}) do |f| %>
+		<div class="form-group avatar">
+			<label for="user_avatar">
+				<%= image_tag @admin.avatar.url, id: 'avatar'%>
+				<div class="hover"><i class="fas fa-plus"></i></div>
+			</label>
+			<%= f.file_field :avatar %>
+		</div>
+		
+		<div class="form-group half-left">
+			<label for="">Vorname</label>
+			<%= f.text_field :fname, value: @admin.fname, autocomplete: false, class: "form-field" %>
+		</div>
+		<div class="form-group half-right">
+			<label for="">Nachname</label>
+			<%= f.text_field :lname, value: @admin.lname, class: "form-field" %>
+		</div>
+		<div class="form-group half-left">
+			<label for="">E-Mail</label>
+			<%= f.email_field :email, value: @admin.email, autocomplete: false, class: 'form-field', autocomplete: false %>
+		</div>
+		<div class="form-group half-right">
+			<label for="">Passwort</label>
+			<%= f.password_field :password, autocomplete: false, class: 'form-field' %>
+		</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+	<% end %>
+</div>

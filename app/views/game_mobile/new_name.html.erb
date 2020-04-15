@@ -1,0 +1,21 @@
+<div class="head">
+	<h1>Wie heißt du?</h1>
+</div>
+<%= form_for(:user, url: name_game_path(@game, @admin)) do |f| %>
+<div class="middle">
+	<div class="form-group two-line">
+		<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field' %>
+	</div>
+	<div class="form-group two-line">
+		<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field' %>
+	</div>
+</div>
+<div class="dots">
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
+</div>
+<div class="bottom">
+	<%= f.submit 'speichern', class: 'btn' %>
+</div>
+<% end %>

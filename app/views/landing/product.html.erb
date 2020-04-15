@@ -1,0 +1,233 @@
+<% content_for :title, "Peter Pitch - Das Produkt" %>
+<% content_for :description, 'Peter Pitch ist das digitale Trainingstool für Kommukation und Vertrieb.'%>
+<section id="navbar">
+    <%= link_to image_tag('landing/logo.png', alt: 'Peter Pitch Logo'), root_path, class: 'logo'%>
+    <div class="navbar-links" id="navLinks">
+       	<div class="link">
+       		<%= link_to 'Produkt', product_path %>
+       		<div class="line"></div>
+       	</div>
+        <div class="link">
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Kontakt', contact_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Blog', blog_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+          	<i class="login-link" onclick="showLoginModal()">Login</i>
+        </div>
+        <div class="link">
+            <%= link_to 'Demo vereinbaren', contact_path("", subject: "demo"), class: 'btn btn-white' %>
+        </div>
+    </div>
+    <div class="login">
+        <i class="login-link" onclick="showLoginModal()">Login</i>
+        <%= link_to 'Demo vereinbaren', contact_path("", subject: "demo"), class: 'btn btn-white' %>
+    </div>
+    <div class="navbar-mobile" onclick="showNavLinks()">
+        <i class="fas fa-bars"></i>
+    </div>
+</section>
+<section id="product">
+	<div class="head animated fadeIn">
+		<h1>Einfach. Individuell. Vielseitig.</h1>
+		Peter Pitch macht deine Trainings und Mitarbeiter besser.
+		<%= link_to 'Demo vereinbaren', contact_path('', subject: 'demo'), class: 'btn btn-green' %>
+		<%= image_tag 'landing/shape.svg', class: "shape", id: 's1', alt: ''%>
+		<%= image_tag 'landing/shape.svg', class: "shape", id: 's2', alt: ''%>
+	</div>
+	<section id="create">
+		<div class="text animated fadeIn">
+		<h3>Erstelle einen Pitch</h3>
+		Für jedes Team gibt es verschiedenste Anwendungsszenarien. Im Dashboard wählst du das Team aus, mit dem du trainieren möchtest. Doch das ist nur die Ausgangsbasis. Du kannst jedes Training an deine Anforderungen und Bedürfnisse anpassen. Das Dashboard ist einfach und übersichtlich gestaltet. So kannst du schon nach wenigen Klicks dein Training starten.</div>
+		<div class="image animated fadeIn">
+			<%= video_tag 'product/erstellen.mp4',class: 'create', autoplay: true, muted: true, loop: true %>
+			<%= image_tag 'landing/product/create.png', class: 'create', alt: 'Pitch erstellen' %>
+			<%= image_tag 'landing/product/polygons.png', class: 'pol', alt: '' %>
+			<%= image_tag 'landing/product/splosh.png', class: 'splosh', alt: '' %>
+			<%= image_tag 'landing/product/dots.png', class: 'dots', alt: '' %>
+		</div>
+	</section>
+	<div class="wow fadeIn" data-wow-delay=".2s" data-wow-duration="1s">
+	<section id="headlines">
+		<div class="headline active" id="pitch" onclick="showPar('#pitch')">
+			<div class="number">1</div>
+			<div class="text">Pitch beitreten</div>
+		</div>
+		<div class="headline" id='pitchit' onclick="showPar('#pitchit')">
+			<div class="number">2</div>
+			<div class="text">Pitch it</div>
+		</div>
+		<div class="headline" id="objections" onclick="showPar('#objections')">
+			<div class="number">3</div>
+			<div class="text">Keine Zeit?</div>
+		</div>
+	</section>
+	<section id="pitch" class="active">
+		<div class="text">
+			<h3>Pitch beitreten</h3>
+			So einfach die Erstellung einer neuen Pitchgruppe ist, so unkompliziert ist auch der Gruppenbeitritt. Jeder Mitarbeiter scannt intuitiv mit dem Smartphone den angezeigten QR-Code oder gibt in seinem Browser die individuelle Pitch-URL ein. (<span>www.peterpitch.com/company</span>)
+		</div>
+		<div class="image">
+			<%= image_tag 'landing/product/pitch.png', class: 'rounded', alt: 'Jetzt Pitchgruppe beitreten' %>
+			<%= image_tag 'landing/product/pitch-mobile.png', class: 'mobile', alt: 'Pitch beigetreten' %>
+			<%= image_tag 'landing/product/arrow.png', class: 'arrow', alt: '' %>
+			<%= image_tag 'landing/product/arrow_green.png', class: 'arrow2', alt: '' %>
+		</div>
+	</section>
+	<section id="pitchit">
+		<div class="text">
+			<h3>Pitch it</h3>
+			Während des Pitches hat ein Mitarbeiter die Aufgabe einen auf dem Bildschirm angezeigten Begriff zu verkaufen oder zu erklären. Ein kreatives Catchword oder doch die hauseigene Produktpalette? Mit Peter Pitch können viele unterschiedliche Gesprächssituationen trainiert werden, von der klassischen Kaltakquise bis hin zur ausführlichen Beratung.
+		</div>
+		<div class="image">
+			<%= image_tag 'landing/product/pitchit.png', class: 'rounded', alt: 'Peter pitcht' %>
+			<%= image_tag 'landing/product/pitchit-mobile.png', class: 'mobile', alt: 'Jetzt Peter bewerten' %>
+			<%= image_tag 'landing/product/arrow.png', class: 'arrow', alt: '' %>
+			<%= image_tag 'landing/product/arrow_green.png', class: 'arrow2', alt: '' %>
+		</div>
+	</section>
+	<section id="objections">
+		<div class="text">
+			<h3>Keine Zeit, kein Budget!</h3>
+			Das klassische Verkaufs- und Beratungsgespräch verläuft in der Regel nicht ohne Vor- und Einwände des potentiellen Kunden. Peter Pitch macht aus unsicheren Angestellten souveräne Mitarbeiter, die in jeder Situation die bestmögliche Antwort haben.
+		</div>
+		<div class="image">
+			<%= image_tag 'landing/product/objections.png', class: 'rounded', alt: 'Einwände einwerfen' %>
+			<%= image_tag 'landing/product/objections-mobile.png', class: 'mobile', alt: 'Peter pitcht mobile' %>
+			<%= image_tag 'landing/product/arrow.png', class: 'arrow', alt: '' %>
+			<%= image_tag 'landing/product/arrow_green.png', class: 'arrow2', alt: '' %>
+		</div>
+	</section>
+	</div>
+	<section id="success">
+		<div class="text wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+		<h3>Messe deinen Erfolg</h3>
+		Im Dashboard werden die Daten deiner Trainings gespeichert, ausgewertet und visualisiert. So behältst du den Fortschritt deiner Mitarbeiter genau im Auge. Auf Basis deiner Performance-Daten erkennst du die Stärken und Schwächen deines Teams. Vergleiche Mitarbeiter, um in zukünftigen Trainings gezielt auf die individuellen Kompetenzen deines Teams einzugehen.</div>
+		<div class="image wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+			<%= image_tag 'landing/product/polygons.png', class: 'pol', alt: '' %>
+			<%= image_tag 'landing/product/stats.png', class: 'stats', alt: 'Statistiken' %>
+			<%= image_tag 'landing/product/bestlist.png', class: 'bestlist', alt: 'Bestenliste' %>
+			<%= image_tag 'landing/product/splosh.png', class: 'splosh', alt: '' %>
+			<%= image_tag 'landing/product/arrow_blue.png', class: 'arrow', alt: '' %>
+			<%= video_tag 'product/stats.mp4', class: 'statvideo', autoplay: true, muted: true, loop: true %>
+		</div>
+	</section>
+	<section id="ki">
+		<div class="text wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+		<h3>KI-Videoanalyse</h3>
+		Leider existiert häufig eine Kluft zwischen der eigenen Einschätzung und der Fremdwahrnehmung, sodass man sich am Ende fragt: Was ist denn eigentlich schief gelaufen? Peter Pitch revolutioniert die klassische Videoanalyse und hält mit Hilfe von künstlicher Intelligenz deinem Team den Spiegel vor. Sekundengenaues, kritisches Feedback hilft deinen Mitarbeitern, die Eigen- und Fremdwahrnehmung in Einklang zu bringen. Spieglein, Spieglein an der Wand, wer ist der beste Verkäufer im ganzen Land?</div>
+		<div class="image wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+			<%= image_tag 'landing/product/ki-video.png', class: 'ki-video', alt: 'KI Video Analyse' %>
+			<%= image_tag 'landing/product/ki-analysis.png', class: 'ki-anaylysis', alt: 'KI Auswertung'%>
+			<%= image_tag 'landing/product/ki-comment.png', class: 'ki-comment', alt: 'KI Kommentare'%>
+			<%= image_tag 'landing/product/arrow_right.png', class: 'arrow-down', alt: ''%>
+			<%= image_tag 'landing/product/arrow_left.png', class: 'arrow-up', alt: ''%>
+			<%= image_tag 'landing/product/splosh.png', class: 'splosh', alt: '' %>
+			<%= image_tag 'landing/product/polygons.png', class: 'pol', alt: '' %>
+			<%= image_tag 'landing/shape.svg', class: "shape", alt: ''%>
+		</div>
+	</section>
+	<section id="customize">
+		<div class="text wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+		<h3>Personalisieren</h3>
+		Welche Produkte werden verkauft, welche Wörter werden dabei benutzt? Welche Einwände müssen deine Mitarbeiter behandeln können? Entscheide selbst, was für dein Training wichtig ist. Verwende unsere Customize-Funktion, um Peter Pitch zu deinem Tool zu machen. Passe die Trainings und das Dashboard an deine Sprach- und Unternehmenskultur an.</div>
+		<div class="image wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+			<%= image_tag 'landing/product/custom-catchwords.png', class: 'catchword', alt: 'Personalisieren Catchwords' %>
+			<%= image_tag 'landing/product/custom-doanddonts.png', class: 'does', alt: 'Personalisieren Wortwahl' %>
+			<%= image_tag 'landing/product/custom-objections.png', class: 'objection', alt: 'Personalisieren Einwände' %>
+			<%= image_tag 'landing/product/custom-skills.png', class: 'skills', alt: 'Personalisieren Skills' %>
+			<%= image_tag 'landing/product/dots.png', class: 'dots', alt: '' %>
+		</div>
+	</section>
+	<div id="content">
+	<div class="startnow wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+    Jetzt mit Peter Pitch durchstarten!
+    <%= link_to "Demo vereinbaren", contact_path("", subject: "demo"), class: 'btn btn-white' %>
+    
+</div>
+</div>
+</section>
+<section id="footer" class="wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
+    <div class="logo">
+        <%= image_tag 'landing/logo.png', alt: 'Peter Pitch Logo' %>
+    </div>
+    <div class="company">
+        <div class="heading">Unternehmen</div>
+        <div class="links">
+            <%= link_to 'Registrieren', contact_path %>
+            <%= link_to 'Preise', contact_path %>
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <%= link_to 'Login', '#login', onclick: 'showLoginModal()' %>
+        </div>
+    </div>
+    <div class="legal">
+        <div class="heading">Rechtliches</div>
+        <div class="links">
+            <%= link_to 'Impressum', impressum_path %>
+            <%= link_to 'Datenschutz', datenschutz_path %>
+        </div>
+    </div>
+    <div class="social">
+        <%= link_to '', 'https://www.instagram.com/peterpitchcom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-instagram" %>
+        <%= link_to '', 'https://www.youtube.com/channel/UCN7MeKNNdXK28uIiJjJ4Fdg', target: "_blank", rel: "noopener noreferrer", class: "fab fa-youtube" %>
+        <%= link_to '', 'https://www.facebook.com/PeterPitchCom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-facebook-f" %>
+    </div>
+</section>
+<div class="fullscreen-modal" id="loginModal">
+    
+    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+    <div class="card">
+    <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
+        <h2>Login</h2>
+        <div class="form-group ">
+            <label for="">Email</label>
+            <%= f.email_field :email, class: 'form-field', id: 'loginEmail', required: true  %>
+        </div>
+        <div class="form-group">
+            <label for="">Passwort</label>
+            <div class="right"><%= link_to "Passwort vergessen?", forget_password_path %></div>
+            <%= f.password_field :password, class: 'form-field',id: 'loginPassword', required: true  %>
+            <br>
+        </div>
+        <div class="form-group center">
+            <%= f.submit 'Login', class: 'btn btn-green', id: "loginButton" %>
+        </div>
+    <% end %>
+    </div>
+</div>
+<script>
+	function showPar(eID) {
+		$('#headlines .active').removeClass('active');
+		$('#headlines ' + eID).addClass('active');
+		$('section.active').addClass('fadeOutPar');
+		$('section.active').removeClass('fadeIn wow');
+		setTimeout(function(){
+			$('section.active').removeClass('active');
+			$('section' + eID).addClass('active');
+			$('section' + eID).addClass('fadeInPar');
+			$('.fadeOutPar').removeClass('fadeOutPar');
+		},500);
+		setTimeout(function(){
+			$('.fadeInPar').removeClass('fadeInPar');
+		},1500);
+	}
+	var wow = new WOW();
+	wow.init();
+	function showLoginModal() {
+        $('#loginModal').toggle();
+    }
+	function showNavLinks() {
+        if($('#navLinks').is(":hidden")) {
+            $('#navLinks').show();   
+        } else {
+            $('#navLinks').hide();
+        }
+    }
+</script>

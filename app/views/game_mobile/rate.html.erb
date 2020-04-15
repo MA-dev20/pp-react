@@ -1,0 +1,83 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<% if @turn.ratings.find_by(user: @admin) %>
+<div class="head">
+	<h1>Bewertung abgegeben!</h1>
+</div>
+<div class="middle">
+	<div class="text">
+		Aktuell haben den Pitch bewertet: <br>
+		<span><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_turns.count - 1).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s %></span>
+	</div>
+</div>
+<div class="dots" style="top: 60vh;">
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
+</div>
+<div class="bottom">
+	<% if @admin.role != 'user' %>
+	<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
+	<% end %>
+</div>
+<% elsif @turn.user == @admin %>
+<div class="head">
+	<h1>Du wirst bewertet!</h1>
+</div>
+<div class="middle">
+	<div class="text">
+		Aktuell haben den Pitch bewertet: <br>
+		<span><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_turns.count - 1).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s %></span>
+	</div>
+</div>
+<div class="dots" style="top: 60vh;">
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
+</div>
+<div class="bottom">
+	<% if @admin.role != 'user' %>
+	<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
+	<% end %>
+</div>
+<% else %>
+<div class="head">
+	<h1>Jetzt <%= @turn.user.fname %> bewerten!</h1>
+</div>
+<%= form_for(:rating, url: new_rating_path(@turn)) do |f| %>
+<div class="middle">
+	<% @game.rating_list.rating_criteria.each do |rc| %>
+	<div class="form-group">
+		<label for="" class="rangeLabel"><%= rc.name %></label>
+		<div id="rangeVal_<%= rc.id %>" class="rangeVal">5.0</div>
+		<%= f.range_field rc.id, min: 0, max: 100, id: 'slider_'+ rc.id.to_s %>
+	</div>
+	<script>
+		$('input[type="range"]').rangeslider({
+			polyfill: false,
+			rangeClass: 'rangeslider',
+			disabledClass: 'rangeslider--disabled',
+			horizontalClass: 'rangeslider--horizontal',
+			verticalClass: 'rangeslider--vertical',
+			fillClass: 'rangeslider__fill',
+			handleClass: 'rangeslider__handle',
+
+			// Callback function
+			onInit: function() {},
+
+			// Callback function
+			onSlide: function(position, value) {},
+
+			// Callback function
+			onSlideEnd: function(position, value) {}
+		});
+		document.getElementById('slider_<%= rc.id %>').oninput = function() {
+			document.getElementById('rangeVal_<%= rc.id %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		}
+	</script>
+	<% end %>
+</div>
+<div class="bottom">
+	<%= f.submit 'Bewertung abgeben!', class: 'btn custom-btn' %>
+</div>
+<% end %>
+<% end %>

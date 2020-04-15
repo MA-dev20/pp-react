@@ -1,0 +1,39 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<section id="head">
+	<h1><%= @turn.user.fname %> mache dich bereit!</h1>
+</section>
+<section id="middle">
+	<% if @turn1 %>
+	<div class="circle-left">
+        <%= image_tag @turn1.user.avatar.url, id: 'left-img' %>
+    </div>
+    <div class="circle-right">
+        <%= image_tag @turn2.user.avatar.url, id: 'right-img' %>
+    </div>
+	<% else %>
+	<%= image_tag @turn.user.avatar.url, class: 'mid-img pulse' %>
+	<% end %>
+</section>
+<section id="skip">
+	Skip mit Leertaste
+</section>
+<%= audio_tag(turn_sound, autoplay: true, id: 'theme') %>
+<script>
+	document.getElementById('theme').volume = 0.2;
+	$(window).keypress(function (e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+            window.location.replace('<%= gd_set_state_path('', state: 'play') %>');
+        };
+    })
+	<% if @turn1 && @turn1 == @turn %>
+		$("#head").addClass("delay2");
+		$('.circle-right').addClass('fadeOut');
+		$('.circle-left').addClass('moveMiddleLeft');
+		window.setTimeout(function() {$('.circle-left img').addClass('pulse');}, 2000);
+	<% elsif @turn1 && @turn2 == @turn %>
+		$("#head").addClass("delay2");
+		$('.circle-left').addClass('fadeOut');
+		$('.circle-right').addClass('moveMiddleRight');
+		window.setTimeout(function() {$('.circle-right img').addClass('pulse');}, 2000);
+	<% end %>
+</script>

@@ -1,0 +1,1180 @@
+#product {
+	color: #7c82a4;
+	text-align: center;
+	section {
+		width: 300px;
+		margin: 0 auto;
+	}
+	.shape {
+		display: none
+	}
+	.head {
+		width: 250px;
+		margin: 0 auto 50px;
+		line-height: 30px;
+		font-size: 20px;
+		color: #676f94;
+		h1 {
+			font-size: 25px;
+			color: #0d0d0d;
+		}
+		a {
+			width: 200px;
+			display: block !important;
+			margin: 20px auto;
+		}
+	}
+	h3 {
+		color: #3e3e3e;
+	}
+	.text {
+		h3 {
+			font-size: 24px;
+			margin-bottom: 0;
+		}
+		margin: 0 20px 20px;
+		font-size: 14px;
+	}
+	.image {
+		position: relative;
+		width: 300px;
+		margin: 0 auto 50px;
+		img {
+			width: 100%;
+		}
+		video {
+			display: none;
+			width: 100%;
+			border-radius: 15px;
+			box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+		}
+	}
+	#create {
+		.dots,
+		.splosh {
+			display: none;
+		}
+		.pol {
+			position: absolute;
+			transform: rotate(90deg);
+			width: 200px;
+			left: 50px;
+			top: 60px;
+			z-index: -10;
+			opacity: .6;
+		}
+	}
+	#headlines {
+		.headline {
+			color: #878787;
+			line-height: 30px;
+			margin: 10px;
+			font-size: 20px;
+			font-weight: bold;
+			text-align: left;
+			cursor: pointer;
+			.number {
+				display: inline-block;
+				float: left;
+				font-weight: normal;
+				height: 28px;
+				width: 28px;
+				text-align: center;
+				line-height: 28px;
+				border: 1px solid #878787;
+				border-radius: 50%;
+				margin-right: 5px;
+			}
+			.text {
+				margin-left: 35px;
+			}
+			h3 {
+				color: inherit;
+				margin: 0;
+			}
+		}
+		.headline:hover,
+		.active {
+			color: #a3c6f6;
+			.number {
+				border-color: #a3c6f6;
+			}
+		}
+	}
+	section#pitch,
+	section#pitchit,
+	section#objections {
+		display: none;
+		.text {
+			span {
+				color: #a3c6f6;
+				text-decoration: underline;
+			}
+		}
+		.image {
+			img {
+				width: 290px;
+				margin: 0 auto;
+			}
+			.mobile {
+				position: absolute;
+				left: 0;
+				top: 70px;
+				width: 70px;
+			}
+			.dots {
+				position: absolute;
+				left: -10px;
+				top: 60px;
+				width: 60px;
+				z-index: -10;
+			}
+			.arrow {
+				position: absolute;
+				top: 180px;
+				width: 80px;
+				left: 80px;
+			}
+			.arrow2 {display: none;}
+			.rounded {
+				border-radius: 15px;
+				box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+			}
+		}
+	}
+	section#pitch.active,
+	section#pitchit.active,
+	section#objections.active {
+		display: block;
+	}
+	#success {
+		z-index: -2;
+		padding: 20px 0 300px;
+		background-color: #f7fcff;
+		width: 100vw;
+		.text {
+			width: 300px;
+			margin: 0 auto 20px;
+		}
+		img {
+			position: absolute;
+			z-index: 100;
+		}
+		.stats {
+			top: 0;
+			left: 0;
+			width: 100%;
+			margin: 0 auto;
+		}
+		.bestlist {
+			top: 175px;
+			width: 180px;
+			left: 70px;
+		}
+		.splosh {
+			width: 20px;
+			top: 270px;
+			left: 60px;
+		}
+		.pol {
+			width: 150px;
+			top: 150px;
+			right: 0;
+			opacity: .4;
+			z-index: 0;
+		}
+		.arrow {display: none;}
+	}
+	#ki {
+		.image {
+			.ki-video {
+				width: 150px;
+				margin: 0 auto 50px;
+			}
+			.ki-anaylysis {
+				position: absolute;
+				left: 0;
+				top: 20px;
+				width: 120px;
+			}
+			.ki-comment {
+				position: absolute;
+				top: 150px;
+				right: 0;
+				width: 120px;
+			}
+			.arrow-down {
+				position: absolute;
+				top: 80px;
+				right: 30px;
+				width: 40px;
+			}
+			.arrow-up {
+				position: absolute;
+				top: 120px;
+				left: 30px;
+				width: 40px;
+			}
+			.pol {
+				position: absolute;
+				top: 200px;
+				left: 100px;
+				width: 150px;
+				z-index: -10;
+				opacity: .4;
+			}
+			.splosh {display: none;}
+			.shape {
+				display: none;
+			}
+		}
+	}
+	#customize {
+		.image {
+			margin-bottom: 500px;
+			img {
+				position: absolute;
+				width: 135px;
+			}
+			.objection {
+				left: 0;
+				top: 0;
+				border-radius: 10px;
+				box-shadow: 0 5px 10px 0 rgba(0,0,0,.2);
+			}
+			.catchword {
+				top: 50px;
+				right: 0;
+				border-radius: 10px;
+				box-shadow: 0 5px 10px 0 rgba(0,0,0,.2);
+			}
+			.skills {
+				top: 170px;
+				left: 0;
+				border-radius: 10px;
+				box-shadow: 0 5px 10px 0 rgba(0,0,0,.2);
+			}
+			.does {
+				top: 220px;
+				right: 0;
+				border-radius: 10px;
+				box-shadow: 0 5px 10px 0 rgba(0,0,0,.2);
+			}
+			.dots {
+				z-index: -1;
+				top: 270px;
+				left: 120px;
+				width: 60px;
+				transform: rotate(90deg);
+			}
+		}
+	}
+	#demo {
+		background-color: #52b7ff;
+		color: white;
+		width: 280px;
+		margin: 20px auto 50px;
+		padding: 20px 10px 10px;
+		border-radius: .75rem;
+		box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+		.text {
+			font-weight: bold;
+			font-size: 20px;
+		}
+	}
+}
+.fadeInPar {
+	animation-name: fadeInPar;
+	animation-duration: 1s;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-out;
+}
+.fadeOutPar {
+	animation-name: fadeOutPar;
+	animation-duration: .5s;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-out;
+}
+@keyframes fadeInPar {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+@keyframes fadeOutPar {
+	from {opacity: 1}
+	to {opacity: 0}
+}
+
+@media (min-width: 500px) {
+	#product {
+		.head {
+			width: 400px;
+		}
+		section {
+			width: 500px;
+		}
+		.image {
+			width: 500px;
+		}
+		#create {
+			margin-bottom: 100px;
+			.pol {
+				top: 150px;
+				left: 100px;
+				width: 300px;
+			}
+		}
+		section#pitch,
+		section#pitchit,
+		section#objections {
+			.image {
+				img {
+					width: 450px;
+				}
+				.dots,
+				.mobile {
+					width: 100px;
+					top: 100px;
+				}
+				.arrow {
+					left: 100px;
+					top: 260px;
+				}
+			}
+		}
+		#success {
+			.text {
+				width: 500px;
+			}
+			.image {
+				margin-bottom: 200px;
+				.bestlist {
+					top: 270px;
+					width: 250px;
+				}
+				.splosh {
+					top: 400px;
+				}
+				.pol {
+					width: 200px;
+					top: 300px;
+				}
+			}
+		}
+		#ki {
+			.image {
+				margin-bottom: 100px;
+				.ki-video {
+					width: 250px;
+				}
+				.ki-anaylysis {
+					width: 220px;
+				}
+				.ki-comment {
+					width: 220px;
+				}
+				.arrow-down {
+					top: 60px;
+					right: 70px;
+					width: 50px;
+				}
+				.arrow-up {
+					width: 50px;
+					top: 180px;
+					left: 70px;
+				}
+				.pol {
+					top: 300px;
+					width: 250px;
+				}
+			}
+		}
+		#customize {
+			.image {
+				margin-bottom: 700px;
+				img {
+					width: 220px;
+				}
+				.skills {
+					top: 270px;
+				}
+				.does {
+					top: 320px;
+				}
+				.dots {
+					top: 450px;
+					width: 80px;
+					left: 220px;
+				}
+			}
+		}
+		#demo {
+			width: 480px;
+		}
+	}
+}
+@media (min-width: 700px) {
+	#product {
+		section {
+			width: 700px;
+			position: relative;
+		}
+		.text {
+			font-size: 14px;
+		}
+		#create {
+			.image{
+				margin: 0;
+				width: 350px;
+				.create {
+					margin-top: 10px;
+				}
+				.pol {
+					top: 30px;
+					left: 50px;
+					width: 300px;
+				}
+				.splosh {
+					position: absolute;
+					display: block;
+					transform: rotate(180deg);
+					width: 30px;
+					top: -10px;
+					left: 335px;
+				}
+				.dots {
+					display: block;
+					position: absolute;
+					width: 50px;
+					top: 120px;
+					left: -20px;
+					z-index: -10;
+				}
+				
+			}
+			.text {
+				margin: 0;
+				text-align: left;
+				position: absolute;
+				left: 400px;
+				width: 300px;
+				font-size: 12px;
+			}
+		}
+		#headlines {
+			height: 0;
+			.headline {
+				position: absolute;
+				top: 0px;
+				font-size: 10px;
+				line-height: 11px;
+				width: 110px;
+				height: 30px;
+				margin: 10px 0;
+				z-index: 100;
+				.text {
+					margin: 9.5px 0;
+				}
+			}
+			.headline:first-child {
+				left: 0;
+			}
+			.headline:nth-child(2) {
+				left: 110px;
+			}
+			.headline:nth-child(3) {
+				left: 220px;
+			}
+			.headline:first-child .text {
+				margin: 4px 0;
+			}
+		}
+		section#pitch,
+		section#pitchit,
+		section#objections {
+			min-height: 300px;
+			top: 0;
+			.text {
+				padding-top: 20px;
+				width: 300px;
+				text-align: left;
+				font-size: 12px;
+				margin: 0;
+			}
+			.image {
+				position: absolute;
+				top: 0;
+				left: 350px;
+				width: 350px;
+				img {
+					width: 290px;
+				}
+				.dots,
+				.mobile {
+					top: 70px;
+					width: 70px;
+				}
+				.arrow {display: none;}
+				.arrow2 {
+					display: block;
+					position: absolute;
+					width: 50px;
+					top: 120px;
+					left: -50px;
+				}
+			}
+		}
+		#success {
+			.image {
+				margin: 0;
+				margin-left: calc(50% - 350px);
+				width: 350px;
+				.bestlist {
+					top: 0;
+					left: 0;
+					width: 180px;
+				}
+				.stats {
+					left: 50px;
+					top: 20px;
+				}
+				.splosh {
+					width: 20px;
+					top: 90px;
+					left: -5px;
+				}
+				.pol {
+					width: 150px;
+					top: 150px;
+					left: 0;
+				}
+				.arrow {
+					display: block;
+					position: absolute;
+					right: -120px;
+					top: 190px;
+					width: 50px;
+				}
+			}
+			.text {
+				position: absolute;
+				width: 280px;
+				left: calc(50% + 70px);
+				font-size: 12px;
+				text-align: left;
+			}
+		}
+		#ki {
+			min-height: 400px;
+			.text {
+				width: 300px;
+				font-size: 12px;
+				text-align: left;
+				padding: 50px 0;
+				margin: 50px 0;
+			}
+			.image {
+				position: absolute;
+				top: 0;
+				left: 350px;
+				width: 350px;
+				.ki-video {
+					width: 200px;
+					margin: 0 auto 50px;
+				}
+				.ki-anaylysis {
+					top: 20px;
+					width: 120px;
+				}
+				.ki-comment {
+					width: 120px;
+					top: 150px;
+				}
+				.arrow-down {
+					top: 80px;
+					right: 30px;
+					width: 40px;
+				}
+				.arrow-up {
+					width: 40px;
+					top: 120px;
+					left: 30px;
+				}
+				.pol {
+					top: 250px;
+					left: 50px;
+					width: 250px;
+				}
+				.splosh {
+					display: block;
+					position: absolute;
+					transform: rotate(180deg);
+					width: 30px;
+					top: 130px;
+					right: -12px;
+				}
+				.shape {
+					display: block;
+					position: absolute;
+					width: 100px;
+					top: 300px;
+					left: -200px;
+				}
+			}
+		}
+		#customize {
+			min-height: 500px;
+			.text {
+				position: absolute;
+				left: 400px;
+				top: 0;
+				width: 300px;
+				text-align: left;
+				font-size: 12px;
+				margin: 100px 0;
+			}
+			.image {
+				margin: 0;
+				width: 350px;
+				img {
+					width: 160px;
+				}
+				.does {
+					top: 240px;
+				}
+				.skills {
+					top: 190px;
+				}
+				.dots {
+					top: 250px;
+					left: -50px;
+					width: 80px;
+				}
+			}
+		}
+	}
+}
+@media (min-width: 900px) {
+	#product {
+		section {
+			width: 900px;
+		}
+		.head {
+			position: relative;
+			width: 900px;
+			margin: 0 auto 50px;
+			padding-top: 50px;
+			.shape {
+				position: absolute;
+				display: block;
+			}
+			#s1 {
+				left: -100px;
+				top: 0;
+				width: 200px;
+			}
+			#s2 {
+				width: 150px;
+				top: 25px;
+				right: -75px;
+			}
+		}
+		#create {
+			.image{
+				width: 450px;
+				.create {
+					margin-top: 10px;
+				}
+				.pol {
+					top: 80px;
+					left: 50px;
+					width: 300px;
+				}
+				.splosh {
+					left: 445px;
+					top: -25px;
+				}
+				.dots {
+					width: 60px;
+					top: 180px;
+					left: -30px;
+				}
+				video {
+					display: block;
+				}
+				img.create {
+					display: none;
+				}
+				
+			}
+			.text {
+				left: 500px;
+				width: 400px;
+				font-size: 14px;
+				margin-top: 40px;
+			}
+		}
+		#headlines {
+			margin-left: calc(50% - 450px);
+		}
+		section#pitch,
+		section#pitchit,
+		section#objections {
+			min-height: 300px;
+			.text {
+				width: 400px;
+				font-size: 14px;
+			}
+			.image {
+				left: 450px;
+				width: 450px;
+				img {
+					width: 390px;
+				}
+				.dots,
+				.mobile {
+					width: 120px;
+				}
+				.arrow2 {
+					width: 60px;
+					top: 200px;
+					left: -70px;
+				}
+			}
+		}
+		#success {
+			min-height: 120px;
+			.image {
+				margin-left: calc(50% - 450px);
+				width: 450px;
+				.bestlist {
+					width: 200px;
+					z-index: 120;
+				}
+				.stats {
+					width: 400px;
+				}
+				.splosh {
+					width: 25px;
+					top: 100px;
+					left: -10px;
+				}
+				.pol {
+					width: 200px;
+					top: 200px;
+				}
+				.arrow {
+					right: -80px;
+					top: 230px;
+					width: 60px;
+					transform: rotate(20deg)
+				}
+				video {
+					display: block;
+					position: absolute;
+					top: 60px;
+					left: 70px;
+					width: 360px;
+					border-radius: 0;
+					border: none;
+					box-shadow: none;
+					z-index: 110;
+				}
+			}
+			.text {
+				position: absolute;
+				width: 380px;
+				left: calc(50% + 20px);
+				font-size: 14px;
+				margin-top: 30px;
+			}
+		}
+		#ki {
+			min-height: 450px;
+			.text {
+				width: 400px;
+				font-size: 14px;
+				padding: 50px 0;
+			}
+			.image {
+				left: 450px;
+				width: 450px;
+				.ki-video {
+					width: 250px;
+					margin: 0 auto 50px;
+				}
+				.ki-anaylysis {
+					width: 200px;
+				}
+				.ki-comment {
+					width: 200px;
+				}
+				.arrow-down {
+					top: 80px;
+					right: 50px;
+				}
+				.arrow-up {
+					top: 170px;
+					left: 50px;
+				}
+				.pol {
+					width: 300px;
+				}
+				.shape {
+					width: 150px;
+					left: -300px;
+				}
+			}
+		}
+		#customize {
+			min-height: 550px;
+			.text {
+				left: 500px;
+				width: 400px;
+				font-size: 14px;
+				padding-top: 50px;
+			}
+			.image {
+				width: 450px;
+				img {
+					width: 210px;
+				}
+				.does {
+					top: 300px;
+				}
+				.skills {
+					top: 250px;
+				}
+				.dots {
+					top: 350px;
+				}
+			}
+		}
+	}
+}
+@media (min-width: 1100px) {
+	#product {
+		section {
+			width: 1100px;
+		}
+		.text {
+			h3 {
+				margin-bottom: 5px;
+			}
+		}
+		.head {
+			width: 1100px;
+			#s1 {left: 0;}
+			#s2 {right: 0;}
+		}
+		#create {
+			min-height: 450px;
+			.image{
+				width: 550px;
+				.create {
+					margin-top: 10px;
+				}
+				.pol {
+					top: 100px;
+					left: 50px;
+					width: 400px;
+				}
+				.splosh {
+					left: 545px;
+				}
+				.dots {
+					width: 80px;
+					top: 220px;
+				}
+				
+			}
+			.text {
+				left: 600px;
+				width: 500px;
+				margin: 70px 0;
+			}
+		}
+		#headlines {
+			margin-left: calc(50% - 550px);
+		}
+		section#pitch,
+		section#pitchit,
+		section#objections {
+			min-height: 350px;
+			.text {
+				width: 500px;
+				padding: 50px 0;
+			}
+			.image {
+				left: 550px;
+				width: 550px;
+				img {
+					width: 490px;
+				}
+				.dots,
+				.mobile {
+					top: 100px;
+				}
+				.arrow2 {
+					top: 200px;
+				}
+			}
+		}
+		#success {
+			min-height: 170px;
+			.image {
+				margin-left: calc(50% - 550px);
+				width: 550px;
+				.bestlist {
+					width: 250px;
+				}
+				.stats {
+					width: 500px;
+				}
+				.splosh {
+					top: 130px;
+				}
+				.pol {
+					width: 300px;
+					top: 170px;
+					left: -50px;
+				}
+				.arrow {
+					top: 250px;
+				}
+				video {
+					top: 70px;
+					left: 75px;
+					width: 450px;
+				}
+			}
+			.text {
+				width: 480px;
+				margin: 50px 0;
+			}
+		}
+		#ki {
+			min-height: 450px;
+			.text {
+				width: 500px;
+				margin: 50px 0;
+				padding: 100px 0;
+			}
+			.image {
+				left: 550px;
+				width: 550px;
+			}
+		}
+		#customize {
+			min-height: 700px;
+			.text {
+				left: 600px;
+				width: 500px;
+				margin: 150px 0;
+			}
+			.image {
+				width: 550px;
+				img {
+					width: 260px;
+				}
+				.does {
+					top: 350px;
+				}
+				.skills {
+					top: 300px;
+				}
+				.dots {
+					top: 450px;
+					width: 100px;
+				}
+			}
+		}
+	}
+}
+@media (min-width: 1300px) {
+	#product {
+		.text {
+			font-size: 16px !important;
+			h3 {
+				font-size: 32px;
+			}
+		}
+		section {
+			width: 1300px;
+		}
+		.head {
+			width: 1300px;
+			margin-bottom: 100px;
+		}
+		#create {
+			min-height: 500px;
+			.image{
+				width: 700px;
+				.pol {
+					top: 200px;
+					left: 100px;
+					width: 450px;
+				}
+				.splosh {
+					left: 695px;
+				}
+				.dots {
+					width: 100px;
+					top: 300px;
+				}
+				
+			}
+			.text {
+				left: 750px;
+				width: 550px;
+				margin: 100px 0;
+			}
+		}
+		#headlines {
+			margin-left: calc(50% - 650px);
+			.headline {
+				top: 20px;
+				width: 120px;
+			}
+			.headline:nth-child(2) {
+				left: 120px;
+			}
+			.headline:nth-child(3) {
+				left: 240px;
+			}
+			
+		}
+		section#pitch,
+		section#pitchit,
+		section#objections {
+			min-height: 450px;
+			.text {
+				width: 600px;
+				padding: 50px 0;
+			}
+			.image {
+				left: 650px;
+				width: 650px;
+				img {
+					width: 590px;
+				}
+				.dots,
+				.mobile {
+					width: 150px;
+					top: 100px;
+				}
+				.arrow2 {
+					top: 250px;
+				}
+			}
+		}
+		#success {
+			min-height: 220px;
+			.image {
+				margin-left: calc(50% - 650px);
+				width: 650px;
+				.bestlist {
+					width: 300px;
+				}
+				.stats {
+					top: 30px;
+					width: 600px;
+				}
+				.splosh {
+					top: 150px;
+				}
+				.pol {
+					width: 350px;
+					top: 200px;
+					left: -70px;
+				}
+				.arrow {
+					top: 300px;
+				}
+				video {
+					top: 90px;
+					left: 80px;
+					width: 540px;
+				}
+			}
+			.text {
+				width: 580px;
+				margin: 100px 0;
+				font-size: 16px;
+			}
+		}
+		#ki {
+			min-height: 450px;
+			.text {
+				width: 600px;
+				margin: 50px 0;
+				padding: 75px 0;
+				font-size: 16px;
+			}
+			.image {
+				left: 650px;
+				width: 650px;
+				.ki-video {
+					width: 300px;
+				}
+				.ki-anaylysis {
+					width: 250px;
+				}
+				.ki-comment {
+					top: 200px;
+					width: 250px;
+				}
+				.arrow-down {
+					width: 60px;
+					top: 100px;
+					right: 100px;
+				}
+				.arrow-up {
+					top: 200px;
+					left: 100px;
+					width: 60px;
+				}
+				.splosh {
+					top: 170px;
+				}
+				.pol {
+					top: 350px;
+				}
+			}
+		}
+		#customize {
+			min-height: 800px;
+			.text {
+				left: 700px;
+				width: 600px;
+				margin: 170px 0;
+				font-size: 16px;
+			}
+			.image {
+				width: 650px;
+				img {
+					width: 310px;
+				}
+				.does {
+					top: 400px;
+				}
+				.skills {
+					top: 350px;
+				}
+				.dots {
+					top: 550px;
+					width: 100px;
+				}
+			}
+		}
+		#demo {
+			min-height: 100px;
+			width: 1300px;
+			.btn {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 20px;
+			}
+		}
+	}
+}

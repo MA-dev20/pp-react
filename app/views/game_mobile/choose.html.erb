@@ -1,0 +1,13 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1>Wer soll pitchen?</h1>
+	<h3>Tippe auf den Teilnehmer der <br> als nächstes pitchen soll!</h3>
+</div>
+<div class="middle">
+	<div class="circle-left">
+		<%= link_to image_tag(@turn1.user.avatar.url), gm_choosen_path('', turn: @turn1.id), class: 'custom-border', id: "left-img" %>
+	</div>
+	<div class="circle-right">
+		<%= link_to image_tag(@turn2.user.avatar.url), gm_choosen_path('', turn: @turn2.id), class: 'custom-border', id: 'right-img' %>
+	</div>
+</div>

@@ -1,0 +1,50 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div id="count_channel" data-game-id='<%= @game.id %>'></div>
+
+<section id="head">
+	<h1>Jetzt Pitchgruppe beitreten!</h1>
+	<h3 class="white">mit Smartphone beitreten.</h3>
+	<h5>peterpitch.com/<%= @game.password %></h5>
+</section>
+<section id="middle">
+	<div id="left">
+		<div class="count" id="count">
+			<%= @game.game_turns.playable.count %>
+		</div>
+	</div>
+	<div id="center">
+		<div class="handy">
+			<%= image_tag 'game/illus/hand.svg', id: 'hand' %>
+			<div class="qr-code-wrapper">
+				<%= generate_qr("#{request.host_with_port}/1234567890123456789").html_safe %>
+			</div>
+		</div>
+	</div>
+	<div id="right">
+		<div id="user-rain"></div>
+	</div>
+	
+</section>
+
+<section id="skip">Skip mit Leertaste</section>
+
+<%= audio_tag 'game/ping.mp3', autoplay: false, loop: false, id: 'ping' %>
+<%= audio_tag 'game/ringdoor.mp3', autoplay: false, loop: false, id: 'ring' %>
+<%= audio_tag(wait_sound, autoplay: true, loop: false, id: 'theme') %>
+
+
+<script>
+	document.getElementById('theme').volume = 0.2;
+	document.getElementById('ring').volume = 0.5;
+	document.getElementById('ping').volume = 0.5;
+	$(window).keypress(function (e) {
+		if (e.key === ' ' || e.key === 'Spacebar') {
+			window.location.replace('<%= gd_set_state_path('', state: 'intro') %>');
+		}
+	})
+	<% @game.game_turns.each do |t| %>
+	var left1 = Math.random() * 80;
+	var userDIV = '<img src="<%= t.user.avatar %>" style="left:' + left1 +'%;">';
+	$('#user-rain').append(userDIV);
+	<% end %>
+</script>

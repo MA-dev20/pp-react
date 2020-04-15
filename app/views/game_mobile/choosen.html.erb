@@ -1,0 +1,12 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1>Du hast für <%= @turn.user.fname %> gestimmt!</h1>
+</div>
+<div class="middle">
+	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+</div>
+<div class="bottom">
+	<% if @admin.role != 'user' %>
+	<%= link_to 'weiter', gm_set_state_path('', state: 'turn'), class: 'btn custom-btn' %>
+	<% end %>
+</div>

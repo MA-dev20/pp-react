@@ -1,0 +1,16 @@
+<%= image_tag 'dash/letspitch1.png', id: "pitch1" %>
+<%= image_tag 'dash/letspitch2.png', id: 'pitch2' %>
+<div class="card" id="letspitch">
+	<h1>Du hast einen Aktiven Pitch!</h1>
+	<div class="form-group">
+		<label for="">Team</label>
+		<input type="text" disabled value="<%= @game.team.name %>" class="form-field">
+	</div>
+	<div class="form-group">
+		<label for="">Pitch-URL</label>
+		<div class="form-field">
+			<div class="text">peterpitch.com/<%= @game.password %></div>
+		</div>
+	</div>
+	<%= link_to 'beitreten!', gd_join_path(@game), class: 'btn btn-green' %>
+</div>

@@ -1,0 +1,56 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<section id="head">
+	<h1>Ihr seid die Besten!</h1>
+</section>
+<section id="middle">
+<div class="bestlist">
+	<div class="first">
+		<% if @turns.count > 0 %>
+			<div class="rating"><%= @turns.first.ges_rating / 10.0 %></div>
+			<%= image_tag @turns.first.user.avatar.url, class: 'avatar' %>
+		<% end %>
+		<svg viewBox="0 0 255 205" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M0.474609 56.401L254.573 48.7368L209.339 0L52.3957 9.03988L0.474609 56.401Z" fill="#DF9A32"/>
+			<path d="M254.573 48.7368L243.953 192.982L22.5017 204.184L0.474609 56.4011L254.573 48.7368Z" fill="#EFB051"/>
+		</svg>
+		<div class="rang">1</div>
+	</div>
+	<div class="second">
+		<% if @turns.count > 1 %>
+			<div class="rating"><%= @turns.second.ges_rating / 10.0 %></div>
+			<%= image_tag @turns.second.user.avatar.url, class: 'avatar' %>
+		<% end %>
+		<svg viewBox="0 0 189 133" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M0 40.3168L157.337 31.8665L184.674 0.226929L51.9211 11.4285L0 40.3168Z" fill="#979797"/>
+			<path d="M157.337 31.8665L166.383 126.589L16.5203 132.484L0 40.3168L157.337 31.8665Z" fill="#AFAFAF"/>
+			<path d="M184.674 0.226929L188.214 85.1232L166.384 126.589L157.337 31.8665L184.674 0.226929Z" fill="#747474"/>
+		</svg>
+		<div class="rang">2</div>
+	</div>
+	<div class="third">
+		<% if @turns.count > 2 %>
+			<div class="rating"><%= @turns.third.ges_rating / 10.0 %></div>
+			<%= image_tag @turns.third.user.avatar.url, class: 'avatar' %>
+		<% end %>
+		<svg viewBox="0 0 179 81" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M179 20.715H25.203L1.60254 0.866551L130.619 0.473511L179 20.715Z" fill="#D2731B"/>
+			<path d="M25.2031 20.715L29.9232 77.5091L173.886 80.6534L179 20.715H25.2031Z" fill="#E37F23"/>
+			<path d="M1.60267 0.866501L0.0292969 33.4887L29.9233 77.509L25.2032 20.7149L1.60267 0.866501Z" fill="#A9580D"/>
+		</svg>
+		<div class="rang">3</div>
+	</div>
+</div>
+</section>
+<section id="skip">
+	Beenden mit Leertaste
+</section>
+<%= audio_tag bestlist_sound, id: 'theme' %>
+<script>
+	document.getElementById('theme').volume = 0.2;
+	document.getElementById('theme').play();
+	$(window).keypress(function (e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+            window.location.replace('<%= gd_set_state_path('', state: 'ended') %>');
+        };
+    })
+</script>

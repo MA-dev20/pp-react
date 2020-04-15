@@ -1,0 +1,194 @@
+<div class="left">
+	<div class="search">
+		<i class="fas fa-search"></i>
+		<input type="text" placeholder="Unternehmen suchen" id="searchCompanies" class="form-field">
+		<button class="btn btn-green" onclick="toggleCompany()">Unternehmen anlegen</button>
+	</div>
+	<div class="card" id="company" style="<%= @company && !@company.activated || params[:edit] ? 'display: none' : '' %>">
+		<h3>Unternehmen</h3>
+		<div class="table" id="company-table">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Nutzer</th>
+						<th>Pitches</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @companies.each do |c| %>
+					<tr class="<%= @company && @company == c ? 'highlighted' : '' %>">
+						<td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
+						<td onclick="redirect(<%= c.id %>)"><%= c.users.count %></td>
+						<td onclick="redirect(<%= c.id %>)"><%= c.games.count %></td>
+						<td class="edit"><%= link_to '', backoffice_company_path(c.id, edit: ''), class: 'far fa-edit' %></td>
+						<td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<% if @company && params[:edit] %>
+	<div class="card" id="editCompany">
+		<h3><%= link_to '', backoffice_company_path(@company), class: 'fas fa-arrow-left back' %>Unternehmen bearbeiten</h3>
+		<%= form_for(:company, url: edit_company_path(@company, site: "backoffice_company")) do |f| %>
+			<div class="form-group">
+				<label for="">Unternehmensname</label>
+				<%= f.text_field :name, class: 'form-field' %>
+			</div>
+			<div class="form-group">
+				<label for="">Angestellte</label>
+				<%= f.number_field :employees, class: 'form-field' %>
+			</div>
+			<div class="form-group">
+				<label for="">Nachricht</label>
+				<%= f.text_field :message, class: 'form-field' %>
+			</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% end %>
+	<% if @company && !@company.activated %>
+	<div class="card" id="companyMessage">
+		<h3><%= link_to '', backoffice_companies_path, class: 'fas fa-arrow-left back' %>Message</h3>
+		<div class="table" id="user-table">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>E-Mail</th>
+						<th>Telefon</th>
+						<th>Position</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><%= @company.users.first.fname %> <%= @company.users.first.lname %></td>
+						<td><%= @company.users.first.email %></td>
+						<td><%= @company.users.first.phone %></td>
+						<td><%= @company.users.first.position %></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text"><%= @company.message %></div>
+		</div>
+	</div>
+	<script>new PerfectScrollbar('#user-table');</script>
+	<% end %>
+	<div class="card" id="createCompany" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleCompany()"></i>Unternehmen anlegen</h3>
+		<%= form_for(:company, url: new_company_path) do |f| %>
+			<div class="form-group">
+				<label for="">Unternehmensname</label>
+				<%= f.text_field :name, class: 'form-field' %>
+			</div>
+			<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+</div>
+<div class="right">
+	<div class="search">
+		<i class="fas fa-search"></i>
+		<input type="text" placeholder="User suchen" id="searchUsers" class="form-field">
+		<button class="btn btn-green" onclick="toggleUser()">User erstellen</button>
+	</div>
+	<div class="card" id='inactive-company' style="<%= @company && @company.activated ? 'display: none' : '' %>">
+		<h3>Inactive Unternehmen</h3>
+		<div class="table" id="inactive-company-table">
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>E-Mail</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @unactivated_companies.each do |c| %>
+					<tr class="red <%= c == @company ? 'highlighted' : '' %>">
+						<td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
+						<td onclick="redirect(<%= c.id %>)"><%= c.users.first.email %></td>
+						<td class="accept"><%= link_to '', accept_company_path(c.id), class: 'far fa-check-circle' %></td>
+						<td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<% if @company && @company.activated && !@user %>
+	<div class="card" id="users">
+		<h3><%= link_to '', backoffice_companies_path, class: 'fas fa-arrow-left back' %><%= @company.name %> - Users</h3>
+		<div class="table" id="users-table">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Name</th>
+						<th>Pitches</th>
+						<th>Score</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @users.each do |u| %>
+					<tr>
+						<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/wolf.png' %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+						<td><%= u.games.count %></td>
+						<td>10</td>
+						<td class="edit"><%= link_to '', backoffice_company_path(@company, edit_user: u.id), class: 'far fa-edit' %></td>
+						<td class="remove"><%= link_to '', destroy_user_path(u.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script>new PerfectScrollbar('#users-table');</script>
+	<% end %>
+	<% if @user %>
+	<div class="card" id="editUser">
+		<h3><%= link_to '', backoffice_company_path(@company), class: 'fas fa-arrow-left back' %>Edit User</h3>
+		<%= form_for(:user, url: edit_user_path(@user, site: 'backoffice_company')) do |f| %>
+			<div class="form-group">
+				<label for="">Vorname</label>
+				<%= f.text_field :fname, class: 'form-field' %>
+			</div>
+			<div class="form-group">
+				<label for="">Nachname</label>
+				<%= f.text_field :lname, class: 'form-field' %>
+			</div>
+			<div class="form-group">
+				<label for="">E-Mail</label>
+				<%= f.email_field :email, class: 'form-field' %>
+			</div>
+			<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% end %>
+	<div class="card" id="createUser">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleUser()"></i>User anlegen!</h3>
+		
+	</div>
+</div>
+<script>
+	function toggleCompany() {
+		$('#company').toggle();
+		$('#createCompany').toggle();
+	}
+	function toggleUser() {
+		$('#user').toggle();
+		$('#createUser').toggle();
+	}
+	function redirect(cID) {
+		var url = "<%= backoffice_companies_url %>/" + cID;
+		location.replace(url)
+	}
+	new PerfectScrollbar('#inactive-company-table');
+	new PerfectScrollbar('#company-table');
+</script>

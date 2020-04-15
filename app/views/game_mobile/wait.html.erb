@@ -1,0 +1,23 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<% if @admin.role == 'user' %>
+	<h1>PITCH BEIGETRETEN</h1>
+	<% else %>
+	<h1>Alle beigetreten?</h1>
+	<% end %>
+</div>
+<div class="middle">
+	<%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
+</div>
+<div class="dots" style="top: 67vh;">
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
+</div>
+<div class="bottom">
+	<% if @admin.role == 'user' %>
+	<div class="text">Gleich gehts los...</div>
+	<% else %>
+	<%= link_to "los geht's!", gm_set_state_path('', state: 'intro'), class: 'btn custom-btn' %>
+	<% end %>
+</div>

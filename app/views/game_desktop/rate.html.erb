@@ -1,0 +1,49 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<section id="head">
+	<h1>Jetzt <%= @turn.user.fname %> bewerten!</h1>
+</section>
+<section id="middle">
+	<div class="smartphone-rate">
+		<%= image_tag 'game/illus/smartphone.svg', class: 'smart' %>
+		<div class="rate">
+		<h3>Jetzt bewerten!</h3>
+		<% @game.rating_list.rating_criteria.each do |rc| %>
+			<div class="form-group">
+				<label for=""><%= rc.name %></label>
+				<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
+			</div>
+		<% end %>
+		</div>
+		<%= image_tag 'game/illus/finger.svg', class: 'hand' %>
+	</div>
+</section>
+<section id="skip">
+	Skip mit Leertaste
+</section>
+<%= audio_tag(rate_sound, autoplay: true, id: "theme") %>
+<script>
+	document.getElementById('theme').volume = 0.2;
+	$(window).keypress(function (e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+            window.location.replace('<%= gd_set_state_path('', state: 'rating') %>');
+        };
+    }) 
+	$('input[type="range"]').rangeslider({
+		polyfill: false,
+		rangeClass: 'rangeslider',
+		disabledClass: 'rangeslider--disabled',
+    	horizontalClass: 'rangeslider--horizontal',
+    	verticalClass: 'rangeslider--vertical',
+    	fillClass: 'rangeslider__fill',
+    	handleClass: 'rangeslider__handle',
+		
+		// Callback function
+    	onInit: function() {},
+
+    	// Callback function
+    	onSlide: function(position, value) {},
+
+    	// Callback function
+    	onSlideEnd: function(position, value) {}
+	});
+</script>

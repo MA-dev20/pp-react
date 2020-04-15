@@ -1,0 +1,17 @@
+.pulse-shadow {
+    animation: pulse-shadow 1.5s ease-out;
+    animation-iteration-count: infinite;
+}
+@keyframes pulse-shadow {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0px rgba(22, 226, 165, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 35px rgba(22, 226, 165, 0);
+    }
+}

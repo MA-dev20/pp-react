@@ -1,0 +1,277 @@
+<div class="left small">
+	<div class="card" id="catchwords" style="<%= @CL ? 'display:none' : '' %>">
+		<h3>Catchwords <i class="fas fa-plus-circle add" onclick="toggleCatchword()"></i></h3>
+		<div class="karten" id="CWkarten">
+		<% @CLs.each do |w| %>
+		<div class="karte" onclick="redirect('WL', '<%= w.id %>')">
+			<div class="name"><%= w.name %></div>
+			<div class="count"><%= w.catchwords.count %></div>
+			<%= image_tag w.image_url, class: "image" %>
+		</div>
+		<% end %>
+		</div>
+	</div>
+	<% if @CL %>
+	<div class="card" id="editCatchword">
+		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', '0')"></i>Liste bearbeiten</h3>
+		<%= form_for(:list, url: edit_list_path(@CL)) do |f| %>
+		<%= f.hidden_field :type, value: 'word' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, value: @CL.name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<%= form_for(:entry, url: list_add_entry_path(@CL, type: 'word')) do |f| %>
+		<div class="form-group">
+			<label for="">Catchword hinzufügen</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<div class="form-group" style="border-bottom: 1px solid gray; margin-bottom: 0">
+			<label for="">Catchwords</label>
+		</div>
+		<div class="table edit" id="edit-word">
+
+		<table>
+			<tbody>
+				<% @CL.catchwords.each do |w| %>
+				<tr>
+					<td><%= w.name %></td>
+					<td><i class="fas fa-microphone record"></i></td>
+					<td><i class="far fa-play-circle play"></i></td>
+					<td><i class="far fa-trash-alt delete"></i></td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<script>
+		new PerfectScrollbar('#edit-word');
+	</script>
+	<% end %>
+	<div class="card" id="newCatchword" style="display:none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleCatchword()"></i>Catchword hinzufügen</h3>
+		<%= form_for(:list, url: new_list_path) do |f| %>
+		<%= f.hidden_field :type, value: 'word' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<div class="card" id="scores" style="<%= @RL ? 'display:none' : '' %>">
+		<h3>Scores <i class="fas fa-plus-circle add" onclick="toggleScore()"></i></h3>
+		<div class="karten" id="SLkarten">
+		<% @RLs.each do |s| %>
+		<div class="karte" onclick="redirect('SL', '<%= s.id %>')">
+			<div class="name"><%= s.name %></div>
+			<div class="count"><%= s.rating_criteria.count %></div>
+			<%= image_tag s.image_url, class: 'image' %>
+		</div>
+		<% end %>
+		</div>
+	</div>
+	<div class="card" id="newScore" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleScore()"></i>Score List hinzufügen</h3>
+		<%= form_for(:list, url: new_list_path) do |f| %>
+		<%= f.hidden_field :type, value: 'rating' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% if @RL %>
+	<div class="card" id="editScore">
+		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', 'o')"></i>Liste bearbeiten</h3>
+		<%= form_for(:list, url: edit_list_path(@RL)) do |f| %>
+		<%= f.hidden_field :type, value: 'rating' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, value: @RL.name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<%= form_for(:entry, url: list_add_entry_path(@RL, type: 'rating')) do |f| %>
+		<div class="form-group">
+			<label for="">Kriterium hinzufügen</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<div class="table edit" id="edit-score">
+		<table>
+			<tbody>
+			<% @RL.rating_criteria.each do |s| %>
+				<tr>
+					<td><%= s.name %></td>
+					<td></td>
+					<td></td>
+					<td><i class="far fa-trash-alt delete"></i></td>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<script>
+		new PerfectScrollbar('#edit-score');
+	</script>
+	<% end %>
+</div>
+<div class="right small">
+	<div class="card" id="objections" style="<%= @OL ? 'display:none' : '' %>">
+		<h3>Einwände <i class="fas fa-plus-circle add" onclick="toggleObjection()"></i></h3>
+		<div class="karten" id="OLkarten">
+		<% @OLs.each do |o| %>
+		<div class="karte" onclick="redirect('OL', '<%= o.id %>')">
+			<div class="name"><%= o.name %></div>
+			<div class="count"><%= o.objections.count %></div>
+			<%= image_tag o.image_url, class: 'image' %>
+		</div>
+		<% end %>
+		</div>
+	</div>
+	<div class="card" id="newObjection" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleObjection()"></i>Einwandliste hinzufügen</h3>
+		<%= form_for(:list, url: new_list_path) do |f| %>
+		<%= f.hidden_field :type, value: 'objection' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% if @OL %>
+	<div class="card" id="editObjection">
+		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', 'o')"></i>Liste bearbeiten</h3>
+		<%= form_for(:list, url: edit_list_path(@OL)) do |f| %>
+		<%= f.hidden_field :type, value: 'objection' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, value: @OL.name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<%= form_for(:entry, url: list_add_entry_path(@OL, type: 'objection')) do |f| %>
+		<div class="form-group">
+			<label for="">Einwand hinzufügen</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<div class="table edit" id="edit-objection">
+		<table>
+			<tbody>
+			<% @OL.objections.each do |o| %>
+				<tr>
+					<td><%= o.name %></td>
+					<td><i class="fas fa-microphone record"></i></td>
+					<td><i class="far fa-play-circle play"></i></td>
+					<td><i class="far fa-trash-alt delete"></i></td>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<script>
+		new PerfectScrollbar('#edit-objection');
+	</script>
+	<% end %>
+	<div class="card">
+		<h3>Wortwahl</h3>
+		<div class="choose" id="wordChoosen" onclick="toggleWordOptions()">Do say</div>
+		<div class="options" id="wordOptions">
+			<div id="do" onclick="toggleWORDS('do')">Do say</div>
+			<div id="dont" onclick="toggleWORDS('dont')">Don't say</div>
+		</div>
+		<%= form_for(:word, url: new_do_and_dont_path, html: {id: 'do-form'}) do |f| %>
+		<div class="form-group">
+			<label for="">Do say Wort hinzufügen</label>
+			<%= f.text_field :do, class: 'form-field' %>
+		</div>
+		<% end %>
+		<%= form_for(:word, url: new_do_and_dont_path, html: {id: 'dont-form', style: 'display: none'}) do |f| %>
+		<div class="form-group">
+			<label for="">Don't say Wort hinzufügen</label>
+			<%= f.text_field :dont, class: 'form-field' %>
+		</div>
+		<% end %>
+		<div class="table" id="do-say">
+			<table>
+				<tbody>
+					<% if @admin.do_and_dont %>
+					<% @admin.do_and_dont.does.each do |dw| %>
+					<tr>
+						<td><%= dw %></td>
+						<td><i class="far fa-trash-alt delete"></i></td>
+					</tr>
+					<% end end %>
+				</tbody>
+			</table>
+		</div>
+		<div class="table" id="dont-say" style="display: none">
+			<table>
+				<tbody>
+					<% if @admin.do_and_dont %>
+					<% @admin.do_and_dont.donts.each do |dw| %>
+					<tr>
+						<td><%= dw %></td>
+						<td><i class="far fa-trash-alt delete"></i></td>
+					</tr>
+					<% end end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+	function toggleCatchword() {
+		$('#catchwords').toggle();
+		$('#newCatchword').toggle();
+	}
+	function toggleScore() {
+		$('#scores').toggle();
+		$('#newScore').toggle();
+	}
+	function toggleObjection() {
+		$('#objections').toggle();
+		$('#newObjection').toggle();
+	}
+	function toggleWordOptions() {
+		$('#wordOptions').toggle();
+	}
+	function toggleWORDS(type) {
+		if (type == 'do') {
+			$('#wordChoosen').text('Do say');
+			$('#do-say').show();
+			$('#dont-say').hide();
+			$('#wordOptions').hide();
+			$('#do-form').show();
+			$('#dont-form').hide();
+		} else if (type == 'dont') {
+			$('#wordChoosen').text("Don't say");
+			$('#do-say').hide();
+			$('#dont-say').show();
+			$('#wordOptions').hide();
+			$('#do-form').hide();
+			$('#dont-form').show();
+		}
+	}
+	<% if params[:words] == 'dont' %>
+		toggleWORDS('dont');
+	<% end %>
+	function redirect(type, id) {
+		if (type == "WL") {var url = "<%= dashboard_customize_url %>" + '?CL='+ id}
+		if (type == "SL") {var url = "<%= dashboard_customize_url %>" + '?RL='+ id}
+	    if (type == "OL") {var url = "<%= dashboard_customize_url %>" + '?OL='+ id}
+		if (type == 'none') {var url = '<%= dashboard_customize_url %>'}
+		location.replace(url);
+	}
+	new PerfectScrollbar('#CWkarten');
+	new PerfectScrollbar('#SLkarten');
+	new PerfectScrollbar('#OLkarten');
+    new PerfectScrollbar('#dont-say');
+    new PerfectScrollbar('#do-say');
+</script>

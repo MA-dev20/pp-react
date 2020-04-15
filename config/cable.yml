@@ -1,0 +1,7 @@
+redis: &redis
+  adapter: any_cable
+
+production: *redis
+staging: *redis
+development: *redis
+test: *redis

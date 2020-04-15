@@ -1,0 +1,46 @@
+.countdown {
+	position: absolute;
+	left: calc(50vw - 15vh);
+	top: 35vh;
+	height: 30vh;
+	width: 30vh;
+	z-index: 100;
+}
+.countdown .circle {
+	height: 30vh;
+	width: 30vh;
+	margin: 0;
+}
+.countdown .circle #timer {
+	font-family: "BarackPro-Solid";
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 30vh;
+	width: 30vh;
+	line-height: 30vh;
+	text-align: center;
+	color: white;
+	font-size: 30vh;
+	margin: 0;
+	font-weight: bold;
+}
+.zoomIn {
+	animation-name: zoomIn;
+	animation-duration: .5s;
+	animation-fill-mode: forwards;
+}
+#video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    object-fit: fill;
+    min-width: 100%;
+    min-height: 100%;
+    background-color: black;
+    z-index: 0;
+}
+.countdown-blur {
+	filter: blur(10px);
+}

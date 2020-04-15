@@ -1,0 +1,33 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<% if @video %>
+<div class="video-bg">
+	<%= video_tag @video, id: 'video-blur', autoplay: false, controls: false, muted: true %>
+	<%= video_tag @video, id: 'video', autoplay: false, controls: false, onended: 'redir()' %>	
+</div>
+
+<% else %>
+<%= video_tag 'gameintro.mp4', id: 'video-bg', autoplay: false, controls: false, onended: 'redirect()' %>
+<% end %>
+<section id="skip">
+   Skip mit Leertaste
+</section>
+<script>
+    $('#navbar').hide();
+	<% if @video %>
+	document.getElementById('video-blur').play();
+	document.getElementById('video').volume = 0.5;
+	document.getElementById('video').play();
+	<% else %>
+	document.getElementById('video-bg').volume = 0.5;
+    document.getElementById('video-bg').play();
+	<% end %>
+	function redirect() {
+		window.location.replace('<%= gd_set_state_path('', state: 'choose') %>');
+	}
+    $(window).keypress(function (e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+            window.location.replace('<%= gd_set_state_path('', state: 'choose') %>');
+        };
+    }) 
+
+</script>
