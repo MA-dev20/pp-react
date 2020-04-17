@@ -13,6 +13,7 @@ class Company < ApplicationRecord
   has_many :rating_lists, dependent: :destroy
   has_many :do_and_donts, dependent: :destroy
   has_one :coach, dependent: :destroy
+  has_many :videos, dependent: :destroy
 	
   after_create do
 	self.histories.create(history: 'Unternehmen erstellt!', users: self.users.count)

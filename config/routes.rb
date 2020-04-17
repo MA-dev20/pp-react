@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'	
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   get 'mobile/game/choosen', to: 'game_mobile#choosen', as: 'gm_choosen'
+  post 'mobile/game/objection', to: 'game_mobile#objection', as: "gm_objection"
   get 'mibile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
   get 'mobile/game/set_state', to: 'game_mobile#set_state', as: "gm_set_state"
 	

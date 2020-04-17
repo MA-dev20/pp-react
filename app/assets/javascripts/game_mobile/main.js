@@ -5,4 +5,5 @@
  *= require jquery3
  *= require cable
  *= require rangeslider
+ *= require perfect-scrollbar.min
  */

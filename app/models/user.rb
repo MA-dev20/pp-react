@@ -19,6 +19,7 @@ class User < ApplicationRecord
   has_one :coach, dependent: :destroy
   has_many :pitch_videos, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :videos, dependent: :destroy
 	
   ROLES = %w[company_admin department_admin admin user].freeze
   BO_ROLES = %w[root sales].freeze

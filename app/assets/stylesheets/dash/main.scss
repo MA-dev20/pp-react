@@ -673,7 +673,7 @@ body {
 				}
 			}
 		}
-	}	
+	}
 	.form-group {
 		width: 100%;
 		margin-bottom: 2.5vh;
@@ -966,6 +966,123 @@ body {
 	#pitch2 {
 		top: 29vh;
 		right: 4vh;
+	}
+	.pitch-videos, .own-videos {
+		position: absolute;
+		top: 18.9vh;
+		h3 { text-align: left;}
+		.card {
+			height: 60vh;
+		}
+		.videos {
+			position: relative;
+			margin-top: 2vh;
+			.card {
+				position: relative;
+				float: left;
+				width: 10vw;
+				height: 27vh;
+				padding: 0;
+				margin-left: 1vw;
+				overflow: hidden;
+				cursor: pointer;
+				.thumb {
+					position: absolute;
+					left: 0;
+					widows: 100%;
+					height: 20vh;
+					img {
+						height: 100%;
+						width: 100%;
+					}
+					.overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						height: 100%;
+						width: 100%;
+						background-color: rgba(0,0,0,0.2);
+					}
+					.rating {
+						position: absolute;
+						top: 0;
+						left: 0;
+						margin: 1vh;
+						height: 3vh;
+						width: 3vh;
+						text-align: center;
+						line-height: 3vh;
+						color: white;
+						border-radius: 50%;
+						border: .25vh solid rgba(var(--custcolor), .8);
+					}
+					.time {
+						position: absolute;
+						top: 0;
+						right: 0;
+						height: 3vh;
+						margin: 1vh;
+						line-height: 3vh;
+						color: white;
+					}
+					.play {
+						position: absolute;
+						margin: 7vh calc(5vw - 3vh);
+						font-size: 6vh;
+						height: 6vh;
+						width: 6vh;
+						color: white;
+						background-color: rgba(255,255,255,.2);
+						font-size: 2vh;
+						line-height: 6vh;
+						text-align: center;
+						border-radius: 50%;
+					}
+				}
+				.word {
+					position: absolute;
+					top: 20vh;
+					width: 9vw;
+					margin: 0 .5vw;
+					font-size: 1.8vh;
+					line-height: 4vh;
+					font-weight: 600;
+					height: 4vh;
+					text-overflow: ellipsis;
+					overflow: hidden;
+				}
+				.user {
+					position: absolute;
+					top: 24vh;
+					width: 9vw;
+					margin: 0 .5vw;
+					font-size: 1.5vh;
+					font-weight: 100;
+					line-height: 3vh;
+					img {
+						float: left;
+						height: 2vh;
+						width: 2vh;
+						margin: .5vh .25vw .5vh 0;
+						border-radius: 50%;
+					}
+				}
+			}
+			.card:hover {
+				.play {
+					transform: scale(1.1);
+				}
+			}
+			.card:first-child {margin-left: 0;}
+		}
+	}
+	.pitch-videos {
+		right: calc(40% + 3vh);
+		width: 50%;
+	}
+	.own-videos {
+		left: calc(60% + 3vh);
+		width: 30%;
 	}
 }
 .modal-blur {

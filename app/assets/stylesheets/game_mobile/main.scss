@@ -1,6 +1,7 @@
 /*
  *= require barack
  *= require rangeslider
+  *= require perfect-scrollbar
  */
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
 @import 'font-awesome-sprockets';
@@ -25,13 +26,72 @@ body {
 	box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.15);
 	background-color: white;
 	z-index: 1000;
-	.logo, .company {
+	.logo, .company, .objection-btn {
 		position: absolute;
 		margin: 1.5vh;
 		height: 4vh;
 	}
 	.logo {left: 0;}
 	.company {right: 0;}
+	.objection-btn {
+		top: 0;
+		right: 0;
+		height: 2.5vh;
+		border-radius: 50%;
+		border: 1px solid rgb(var(--custcolor));
+		padding: .6vh 0;
+		cursor: pointer;
+		span {
+			display: block;
+			background-color: rgb(var(--custcolor));
+			width: 2.5vh;
+			height: .4vh;
+			margin: .4vh .75vh;
+			border-radius: .5vh;
+		}
+	}
+}
+#objections-menu {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	background-color: rgba(255,255,255,.9);
+	z-index: 2000;
+	.nav {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 5vh;
+		.fa-times {
+			position: absolute;
+			right: 1vh;
+			top: 1vh;
+			color: rgb(var(--custcolor));
+			font-size: 3vh;
+			cursor: pointer;
+		}
+	}
+	.objections {
+		position: absolute;
+		top: 5vh;
+		width: 100%;
+		height: 95vh;
+		overflow: auto;
+		span {
+			display: block;
+			text-align: center;
+			margin: 0 5vw;
+			width: 90vw;
+			padding: 3vh 0;
+			font-size: 3vh;
+			color: rgb(var(--custcolor));
+			border-bottom: 1px solid gray;
+		}
+	}
 }
 #content {
 	position: fixed;
@@ -91,6 +151,12 @@ body {
 			}
 		}
 		.switch {
+			opacity: 0;
+			animation-name: opacity;
+			animation-duration: 1s;
+			animation-delay: 2s;
+			animation-iteration-count: 1;
+			animation-fill-mode: forwards;
 			input:checked ~ label .checkbox {
 				background-color: rgb(var(--custcolor));
 				.dot {
@@ -136,6 +202,12 @@ body {
 			}
 		}
 		.switch.reverse {
+			opacity: 0;
+			animation-name: opacity;
+			animation-duration: 1s;
+			animation-delay: 2s;
+			animation-iteration-count: 1;
+			animation-fill-mode: forwards;
 			label .checkbox {
 				background-color: rgb(var(--custcolor));
 				.dot {
@@ -321,6 +393,11 @@ body {
 	from {
 		top: -50vh;
 		opacity: 0;
+	}
+}
+@keyframes opacity {
+	to {
+		opacity: 1;
 	}
 }
 *:focus {outline: none;}

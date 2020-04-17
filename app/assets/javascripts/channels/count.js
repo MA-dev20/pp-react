@@ -33,6 +33,14 @@ jQuery(document).ready(function() {
 					document.getElementById('ping').play();
 				  }
 			  }
+			  if (data['objection'] == true) {
+				  var userDiv = '<div class="objection"><div class="text" >'+data['objection_text']+'</div><div class="otimer">00:15</div></div>';
+				  if(data['objection_sound'] != "") {
+					  userDiv += '<audio src="'+data['objection_sound']+'" id="objection_sound" />'
+				  }
+				  $('#content').prepend(userDiv);
+				  startObjectionTimer();
+			  }
 		  }
 		});
 		$(window).bind('beforeunload', function(){

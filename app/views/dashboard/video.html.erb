@@ -1,0 +1,33 @@
+<div class="pitch-videos">
+	<div class="card">
+		<h3>Pitch Videos</h3>
+		<div class="videos">
+			<% @pitches.each do |p| %>
+			<div class="card">
+			<div class="thumb">
+				<%= image_tag p[:video].video.thumb.url %>
+				<div class="overlay">
+				<div class="rating"><%= p[:rating] %></div>
+				<div class="time"><%= p[:duration] %></div>
+				<div class="play"><i class="fas fa-play"></i></div>
+				</div>
+			</div>
+			<div class="word"><%= p[:word].name %></div>
+			<div class="user">
+				<%= image_tag p[:user].avatar.url %>
+				<%= p[:user].fname %> <%= p[:user].lname %>
+			</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="own-videos">
+	<div class="card">
+		<h3>Eigene Videos</h3>
+		<div class="videos">
+			<% @videos.each do |v| %>
+			<% end %>
+		</div>
+	</div>
+</div>

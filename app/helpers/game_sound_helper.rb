@@ -53,15 +53,15 @@ module GameSoundHelper
   def rating_sound
 	r = Random.rand(1...11)
 	return 'game/rating/befoerderung.mp3' if r == 1
-	return 'game/rating/bingespannt.mp3' if r == 2
-	return 'game/rating/gaensehaut.mp3' if r == 3
-	return 'game/rating/haettegekauft.mp3' if r == 4
-	return 'game/rating/ihrhabtbewertet.mp3' if r == 5
-	return 'game/rating/jaaaaa.mp3' if r == 6
-	return 'game/rating/neuerleitwolf.mp3' if r == 7
-	return 'game/rating/staunen.mp3' if r == 8
-	return 'game/rating/ueberzeugteperformance.mp3' if r == 9
-	return 'game/rating/wolfowelpe.mp3' if r == 10
+	return 'game/rating/haettegekauft.mp3' if r == 2
+	return 'game/rating/hopodertop.mp3' if r == 3
+	return 'game/rating/ihrhabtbewertet.mp3' if r == 4
+	return 'game/rating/jaaaaa.mp3' if r == 5
+	return 'game/rating/neuerleitwolf.mp3' if r == 6
+	return 'game/rating/staunen.mp3' if r == 7
+	return 'game/rating/ueberzeugendeperformance.mp3' if r == 8
+	return 'game/rating/wasfuereinpitch.mp3' if r == 9
+	return 'game/rating/wolfoderwelpe.mp3' if r == 10
   end
   def bestlist_sound
 	r = Random.rand(1...5)

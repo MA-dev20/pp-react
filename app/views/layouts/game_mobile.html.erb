@@ -23,7 +23,25 @@
 	<section id="navbar">
 		<%= image_tag 'logos/peterpitch.png', class: 'logo' %>
 		<%= @game.team.name %>
+		<% if @omenu && @admin.role != 'user' %>
+		<div class="objection-btn" onclick="toggleObjections()">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<% else %>
 		<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
+		<% end %>
+	</section>
+	<section id="objections-menu">
+		<div class="nav">
+			<i class="fas fa-times" onclick="toggleObjections()"></i>
+		</div>
+		<div class="objections" id="objection-list">
+		<% @game.objection_list.objections.each do |o| %>
+		<span onclick="sendObjection(<%= o.id %>)"><%= o.name %></span>
+		<% end %>
+		</div>
 	</section>
 	<section id="content">
 		<%= yield %>
@@ -36,3 +54,22 @@
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
 </svg>
 </body>
+
+
+<script>
+	new PerfectScrollbar('#objection-list')
+	function toggleObjections() {
+		$("#objections-menu").toggle()
+	}
+	function sendObjection(oID) {
+		$.ajax({
+			url: "<%= gm_objection_path %>",
+			type: 'post',
+			data: {objection: oID},
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#objections-menu').hide();	
+			},
+		});
+	}
+</script>

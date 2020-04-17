@@ -21,6 +21,7 @@ class GameMobileController < ApplicationController
   end
 	
   def game
+	@omenu = false
 	@turn1 = GameTurn.find(@game.turn1) if @game.turn1
 	@turn2 = GameTurn.find(@game.turn2) if @game.turn2
 	@turn = GameTurn.find(@game.current_turn) if @game.current_turn
@@ -124,6 +125,11 @@ class GameMobileController < ApplicationController
 	end
 	ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
     redirect_to gm_game_path
+  end
+	
+  def objection
+	@objection = Objection.find(params[:objection])
+	ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: @objection.name, objection_sound: @objection.sound? ? @objection.sound.url : ""
   end
 
   private

@@ -42,6 +42,43 @@ body {
 	width: 100%;
 	background-color: #f4faff;
 	color: #0e0e0e;
+	.objection {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		background-color: rgba(255,255,255,.9);
+		align-content: center;
+		animation: fadeIn 1s 1 forwards;
+		z-index: 1000;
+		.text {
+			display: inline-block;
+			color: rgb(var(--custcolor));
+			font-size: 10vh;
+			text-align: center;
+			width: 100%;
+			margin-top: 40vh;
+		}
+		.otimer {
+			position: absolute;
+			bottom: 0;
+			left: 40vw;
+			width: 20vw;
+			height: 16vh;
+			line-height: 16vh;
+			font-weight: bold;
+			text-align: center;
+			border-top-left-radius: 20px;
+			border-top-right-radius: 20px;
+			color: rgb(var(--custcolor));
+			font-size: 10vh;
+			z-index: 1010;
+			box-shadow: 0 5px 10px rgba(0,0,0,.4);
+			background-color: white;
+			animation: fadeInBottom 1s 1;
+		}
+	}
 	#background-images {
 		img {
 			position: absolute;
@@ -349,9 +386,9 @@ body {
 		.ratings {
 			position: absolute;
 			display: flex;
-			top: 5vw;
+			top: 5vh;
 			left: 5vw;
-			height: 60vh;
+			height: 70vh;
 			align-content: center;
 			width: 50vw;
 			animation: fadeInLeft 2s 1;
@@ -373,7 +410,7 @@ body {
 				}
 				.bar {
 					position: absolute;
-					bottom: 10vh;
+					top: 10vh;
 					width: 100%;
 					height: 40vh;
 					margin: 0;
@@ -437,8 +474,8 @@ body {
 				}
 				.text {
 					position: absolute;
-					bottom: 0;
-					line-height: 10vh;
+					top: 50vh;
+					line-height: 4vh;
 					font-weight: bold;
 					font-size: 2.5vh;
 					width: 100%;

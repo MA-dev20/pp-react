@@ -108,6 +108,27 @@ class DashboardController < ApplicationController
   def account
   end
 	
+  def video
+	@pitches = []
+	@admin.games.each do |p|
+	  p.game_turns.each do |t|
+	  	if t.pitch_video
+		  minutes = t.pitch_video.duration / 60
+		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+		  seconds = t.pitch_video.duration % 60
+		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t.catchword, user: t.user, rating: t.ges_rating / 10.0}
+	  	end
+	  end
+	end
+	@videos = @admin.videos
+	@videos << @company.videos
+  end
+	
+  def pitch_video
+	@turn = Turn.find_by(params[:turn_id])
+  end
+	
   private
 	def set_user
 	  if user_signed_in?

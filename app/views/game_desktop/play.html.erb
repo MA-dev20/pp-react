@@ -1,4 +1,5 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div id="count_channel" data-game-id='<%= @game.id %>'></div>
 <section id="play">
 <div class="head">
 	<%= image_tag 'logo-m.png', class: 'play-logo' %>
@@ -47,30 +48,34 @@
 </div>
 </section>
 <%= audio_tag 'game/play/aufbau.mp3', id: 'start' %>
-<%= audio_tag 'game/play/word.mp3', id: 'word_load' %>
+<%= audio_tag 'game/play/word.mp3', loop: true, id: 'word_load' %>
+<% if @turn.catchword.sound? %>
 <%= audio_tag @turn.catchword.sound.url, id: 'word_sound' %>
+<% end %>
 <%= audio_tag 'game/play/dong.mp3', id: 'dong' %>
 <%= audio_tag 'game/play/theme.wav', loop: true, id: 'theme' %>
 <%= audio_tag 'game/play/countdown.mp3', id: 'countdown' %>
 
 <%= audio_tag 'game/play/objection_ring.mp3', id: 'o_start' %>
-<%= audio_tag 'game/play/objection_theme.mp3', id: 'o_theme' %>
+<%= audio_tag 'game/play/objection_theme.mp3', loop: true, id: 'o_theme' %>
 <%= audio_tag 'game/play/objection_end.mp3', id: 'o_end' %>
 <script>
 	document.getElementById('word_load').volume = 0.5;
 	document.getElementById('dong').volume = .5;
 	document.getElementById('theme').volume = .2;
 	document.getElementById('countdown').volume = .3;
-	
 	document.getElementById('word_load').play();
-	
 	textanim();
+	MyApp.timer = startTimer(<%= @game.game_seconds %>, document.getElementById("game_timer"));
+	MyApp.timer.pause();
 	function callback() {
 		document.getElementById('word_load').pause();
 		document.getElementById('dong').play();
+		<% if @turn.catchword.sound? %>
 		document.getElementById('word_sound').play();
+		<% end %>
 		document.getElementById('theme').play();
-		MyApp.timer = startTimer(<%= @game.game_seconds %>, document.getElementById("game_timer"));
+		MyApp.timer.resume();
 	}
 	
 	$('#navbar').hide();
@@ -108,6 +113,58 @@
 				redirect();
 			}
 		}, 1000);
+		
+		var pause = function() { clearInterval(setTimer) };
+		var resume = function() {
+			setTimer = setInterval(function() {
+				minutes = parseInt(timer / 60, 10);
+				seconds = parseInt(timer % 60, 10);
+				minutes = minutes < 10 ? '0' + minutes : minutes;
+				seconds = seconds < 10 ? '0' + seconds : seconds;
+				display.textContent = minutes + ':' + seconds;
+				timer--;
+				if (timer == 5) {
+					document.getElementById('countdown').play();
+					document.getElementById('theme').volume = .15;
+				} else if (timer == 4) {
+					document.getElementById('theme').volume = .1;
+				} else if (timer == 3) {
+					document.getElementById('theme').volume = .05;
+				} else if (timer == 2) {
+					document.getElementById('theme').pause;
+				} else if (timer == 0) {
+					redirect();
+				}
+			}, 1000);
+		}
+		return {pause: pause , resume: resume }
+	};
+	function startObjectionTimer() {
+		document.getElementById('theme').pause();
+		MyApp.timer.pause();
+		document.getElementById('o_start').play();
+		document.getElementById('o_theme').play();
+		$('.objection').on('animationend', function() {
+			document.getElementById('objection_sound').play();
+			$('#objection_sound').on('ended', function() {
+				var secs = parseInt(15 % 60, 10);
+				var objectionTimer = setInterval(function() {
+					secs--;
+					secs = secs < 10 ? '0' + secs : secs;
+					$('.otimer').text('00:' + secs);
+					if (secs == 3) {
+						document.getElementById('o_end').play();
+					}
+					if (secs == 0) {
+						document.getElementById('o_theme').pause();
+						$('.objection').fadeOut();
+						clearInterval(objectionTimer);
+						document.getElementById('theme').play();
+						MyApp.timer.resume();
+					}
+				}, 1000);
+			});
+		})
 	}
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'rate') %>');
