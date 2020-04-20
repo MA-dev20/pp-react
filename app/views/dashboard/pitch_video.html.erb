@@ -1,0 +1,131 @@
+<div class="card pitch-video">
+	<div class="left">
+		<h3><%= @turn.catchword.name %></h3>
+		<div class="user">
+			<%= image_tag @turn.user.avatar.url %>
+			<%= @turn.user.fname %> <%= @turn.user.lname %> - <%= @turn.created_at.strftime("%d.%m.%y") %>
+		</div>
+		<div class="do-and-dont">
+			<h5>Do say &amp; Don't say</h5>
+			<div class="card">
+				<div class="do">
+					<h5>Do say</h5>
+					<div class="count"><%= @video.do_words %></div>
+				</div>
+				<div class="dont">
+					<h5>Don't say</h5>
+					<div class="count"><%= @video.dont_words %></div>
+				</div>
+				<div class="speed">
+					<h5>Sprechrate</h5>
+					<div class="count"><%= @video.words_count == 0 ? 0 : (@video.words_count / @video.duration) * 60 %></div>
+					<div class="unit">Worte / Minute</div>
+				</div>
+			</div>
+		</div>
+		<div class="transcript">
+			<h5>Transcript</h5>
+			<div class="card">
+				<div class="coming-soon">coming soon...</div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="middle card">
+		<%= video_tag @video.video.url, id: 'pitch-video' %>
+		<div class="progress">
+			<div class="progress-bar" onclick="setProgress(event)" onmousemove="setProgressMove(event)" id="progress-bar"><div class="bar" id="progress"></div></div>
+			<div class="time">0:00/<%= (@video.duration / 60).to_s %>:<%= @video.duration % 60 < 10 ? '0' + (@video.duration % 60).to_s : (@video.duration % 60).to_s %></div>
+		</div>
+		<div class="controls">
+			<div class="play" onclick="playVideo()"><i class="fas fa-play-circle"></i></div>
+			<div class="pause" onclick="pauseVideo()"><i class="fas fa-pause-circle"></i></div>
+			<div class="stop" onclick="stopVideo()"><i class="fas fa-stop-circle"></i></div>
+			<div class="mute" onclick="muteVideo()"><i class="fas fa-volume-up"></i></div>
+			<div class="muted" onclick="unmuteVideo()"><i class="fas fa-volume-mute"></i></div>
+		</div>
+	</div>
+	<div class="right">
+		<div class="comments">
+			<h5>Kommentare</h5>
+			<div class="card"></div>
+		</div>
+	</div>
+</div>
+<script>
+	var mouseDown = false;
+	document.body.onmousedown = function() { 
+  		mouseDown = true;
+	}
+	document.body.onmouseup = function() {
+  		mouseDown = false;
+	}
+	var pitch = document.getElementById('pitch-video');
+	var timer = '00:00'
+	var min = 0, sec = 0;
+	var playtime = "<%= @video.duration / 60 %>:<%= @video.duration % 60 < 10 ? '0' + (@video.duration % 60).to_s : (@video.duration % 60).to_s %>"
+	var duration = <%= @video.duration %>;
+	var time;
+	function setProgressMove(event) {
+		if(mouseDown) {
+		setProgress(event)
+		}
+	}
+	function setProgress(event) {
+		var posX = event.clientX;
+		var left = document.getElementById('progress').getBoundingClientRect().left;
+		var width= document.getElementById('progress-bar').offsetWidth;
+		min = Math.round((((posX - left) / width) * duration) / 60);
+		sec = Math.round((((posX - left) / width) * duration) % 60);
+		pitch.currentTime = ((posX - left) / width) * duration;
+		timer = min+':'+(sec < 10 ? '0' + sec : sec);
+		$(".progress .time").text(timer + "/" + playtime);
+		document.getElementById('progress').style.width = (((min * 60) + sec) / duration) * 100 + "%";
+	}
+	function playVideo() {
+		pitch.play();
+		$('.middle .controls .play').hide();
+		$('.middle .controls .pause').show();
+		time = setInterval(function() {
+			timer = min+':'+(sec < 10 ? '0' + sec : sec);
+			$(".progress .time").text(timer + "/" + playtime);
+			console.log("timer:" + timer);
+			document.getElementById('progress').style.width = (((min * 60) + sec) / duration) * 100 + "%";
+			console.log("width:" + ((((min * 60) + sec) / duration) * 100));
+			if(sec < 60) {
+				sec++;	
+			} else {
+				min++;
+				sec = 0;
+			}
+		}, 1000)
+	}
+	function pauseVideo() {
+		pitch.pause();
+		$('.middle .controls .pause').hide();
+		$('.middle .controls .play').show();
+		clearInterval(time);
+	}
+	function stopVideo() {
+		pitch.load();
+		$('.middle .controls .pause').hide();
+		$('.middle .controls .play').show();
+		clearInterval(time);
+		$(".progress .time").text("0:00/" + playtime);
+		document.getElementById('progress').style.width = 0;
+		min = 0; sec = 0;
+	}
+	function muteVideo() {
+		pitch.volume = 0;
+		$('.middle .controls .mute').hide();
+		$('.middle .controls .muted').show();
+	}
+	function unmuteVideo() {
+		pitch.volume = 1;
+		$('.middle .controls .muted').hide();
+		$('.middle .controls .mute').show();
+	}
+	pitch.addEventListener('ended', function() {
+		stopVideo();
+	})
+</script>

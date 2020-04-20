@@ -59,14 +59,14 @@
    		
    		<div class="links">
    			<% if can? :create, Game %>
-   			<div class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dash_pitch_path(@pitch)) ? 'active' : '' %>">
+   			<div class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dash_pitch_path(@pitch)) || @game && current_page?(dashboard_customize_game_path(@game)) ? 'active' : '' %>">
    				<i class="fas fa-gamepad"></i>
   				<div class="text">Let's Pitch</div>
    				<%= link_to '', dashboard_path %>
    			</div>
    			<% end %>
    			<% if can? :create, User %>
-   			<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) ? 'active' : '' %>">
+   			<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
    				<i class="fas fa-user-friends"></i>
    				<div class="text">Nutzer</div>
    				<%= link_to '', dashboard_teams_path %>
@@ -80,7 +80,7 @@
    			</div>
    			<% end %>
    			<% if can? :read, GameTurn %>
-   			<div class="link <%= current_page?(dashboard_video_path) ? 'active' : '' %>"d>
+   			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"d>
    				<i class="fab fa-youtube"></i>
    				<div class="text">Video Tool</div>
    				<%= link_to '', dashboard_video_path %>

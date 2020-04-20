@@ -30,6 +30,11 @@ class DashboardController < ApplicationController
 	
   def user_stats
 	@user = User.find(params[:user_id])
+	if @user.games.count == 0
+	  flash[:alert] = 'Der Spieler hat noch nicht gepitcht!'
+	  redirect_to dashboard_teams_path
+ 	  return
+	end
 	@user_ratings = []
 	@user.user_ratings.each do |r|
 	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
@@ -64,13 +69,22 @@ class DashboardController < ApplicationController
 	
   def team_stats
 	@team = Team.find(params[:team_id])
+	if @team.games.count == 0
+	  flash[:alert] = 'Das Team hat noch keine Spiele'
+	  redirect_to dashboard_teams_path
+	  return
+	end
 	@team_ratings = []
 	@team.team_ratings.each do |r|
 	  sum = 0
+	  tcount = 0
 	  @team.users.each do |u|
-		sum += u.user_ratings.find_by(rating_criterium: r.rating_criterium).change
+		if u.user_ratings.find_by(rating_criterium: r.rating_criterium)
+			sum += u.user_ratings.find_by(rating_criterium: r.rating_criterium).change
+			tcount += 1
+		end
 	  end
-	  @team_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: sum / @team.users.count / 10.0, id: r.rating_criterium.id}
+	  @team_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: sum / tcount / 10.0, id: r.rating_criterium.id}
 	end
 	@team_ratings = @team_ratings.sort_by{|e| -e[:name]}
 	@days = 1
@@ -126,7 +140,8 @@ class DashboardController < ApplicationController
   end
 	
   def pitch_video
-	@turn = Turn.find_by(params[:turn_id])
+	@turn = GameTurn.find(params[:turn_id])
+	@video = @turn.pitch_video
   end
 	
   private

@@ -17,6 +17,7 @@
 				<%= image_tag p[:user].avatar.url %>
 				<%= p[:user].fname %> <%= p[:user].lname %>
 			</div>
+			<%= link_to '', dashboard_pitch_video_path(p[:id]) %>
 			</div>
 			<% end %>
 		</div>

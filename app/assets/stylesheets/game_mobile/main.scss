@@ -8,11 +8,13 @@
 @import 'font-awesome';
 
 body {
+	position: fixed;
 	font-family: 'Barack-Medium';
 	height: 100vh;
 	width: 100vw;
 	margin: 0;
 	overflow: hidden;
+	background-color: #f4faff;
 }
 #navbar {
 	position: fixed;
@@ -99,11 +101,11 @@ body {
 	left: 0;
 	height: 100vh;
 	width: 100vw;
-	background-color: #f4faff;
 	color: gray;
 	animation-name: fadeIn;
 	animation-duration: 2s;
 	animation-iteration-count: 1;
+	z-index: 1000;
 	.head {
 		position: absolute;
 		margin-top: 10vh;
@@ -232,15 +234,23 @@ body {
 				float: right;
 				margin-right: 10vw;
 				font-size: 3vh;
+				line-height: 5vh;
 			}
 			.rangeLabel {
 				float: left;
 				margin-left: 10vw;
+				max-width: calc(80vw - 6.5vh);
 				font-size: 3vh;
+				text-align: left;
+				line-height: 5vh;
+				height: 5vh;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 			.rangeslider {
-				clear: left;
-				margin: 2vh 10vw;
+				float: left;
+				margin: 15px 10vw;
 				height: 10px;
 				width: 80vw;
 			}

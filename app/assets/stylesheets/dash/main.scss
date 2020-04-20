@@ -986,6 +986,11 @@ body {
 				margin-left: 1vw;
 				overflow: hidden;
 				cursor: pointer;
+				a {
+					position: absolute;
+					top: 0; left: 0; 
+					height: 100%; width: 100%;
+				}
 				.thumb {
 					position: absolute;
 					left: 0;
@@ -1083,6 +1088,154 @@ body {
 	.own-videos {
 		left: calc(60% + 3vh);
 		width: 30%;
+	}
+	.pitch-video {
+		position: fixed;
+		top: 20vh; left: 25vw;
+		height: 60vh; width: 60vw;
+		.left, .right {
+			float: left; position: relative;
+			top: 0; left: 0;
+			height: 55vh; width: 20vw;
+			margin: 2.5vh 0; padding: 0;
+			h3 {
+				line-height: 2.5vh; font-size: 2vh; font-weight: bold; text-align: left;
+				margin: 0 0 .5vh 0;
+			}
+			.user {
+				line-height: 3vh;
+				margin-bottom: 1vh;
+				img {
+					float: left;
+					margin: .5vh .5vh .5vh 0;
+					height: 2vh;
+					width: 2vh;
+					border-radius: 50%;
+				}
+			}
+			h5 {
+				font-size: 2vh;
+				margin: 0 0 1vh 0;
+			}
+			.card {
+				width: 100%; padding: 0;
+				box-shadow: 0px 0.2vh 1vh 0 rgba(172,172,172,0.5);
+			}
+			.do-and-dont {
+				position: absolute;
+				top: 10vh;
+				width: 100%;
+				.card {
+					height: 10vh;
+					display: flex;
+					.do, .dont, .speed {
+						width: 33%;
+						text-align: center;
+						h5 {
+							line-height: 3vh;
+							margin: 0;
+							font-size: 2vh; font-weight: normal;
+						}
+						.count {
+							line-height: 5vh; font-size: 4vh;
+						}
+						.unit {
+							line-height: 2vh; font-size: 1vh;
+						}
+					}
+					.do .count {color: rgba(22,226,165,0.8);}
+					.dont .count {color: rgba(204,51,51,0.8);}
+				}
+			}
+			.transcript {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				.card {
+					height: 25vh;
+					.coming-soon {
+						line-height: 25vh; text-align: center; font-size: 3vh;
+						color: rgba(0,0,0,0.3); font-weight: bold;
+					}	
+				}
+			}
+			.comments {
+				width: 100%;
+				.card {
+					height: 25vh;
+				}
+			}
+		}
+		.middle {
+			float: left; position: relative;
+			height: 55vh; width: 16vw;
+			margin: 2.5vh 2vw; padding: 0;
+			box-shadow: 0px 0.2vh 1vh 0 rgba(172,172,172,0.5);
+			video {
+				margin: 1vh .5vw 0 .5vw;
+				height: 45vh; width: 15vw;
+				background-color: black;
+				border-radius: 1vh;
+			}
+			.progress {
+				position: absolute;
+				top: 46vh;
+				height: 2vh; width: 15vw;
+				margin: 0 .5vw;
+				.progress-bar {
+					position: relative;
+					margin: .5vh 0 0;
+					width: 100%;
+					height: 1vh;
+					border-radius: .5vh;
+					background-color: rgba(0,0,0,.2);
+					overflow: hidden;
+					cursor: pointer;
+					.bar {
+						position: absolute;
+						top: 0; left: 0;
+						width: 0; height: 100%;
+						background-color: rgba(var(--btncolor),.8);
+					}
+				}
+			}
+			.controls {
+				position: absolute;
+				top: 48vh;
+				margin: 0 .5vw;
+				height: 6vh; width: 15vw;
+				.play, .pause {
+					position: absolute;
+					left: calc(7.5vw - 2vh); bottom: 0;
+					height: 4vh; width: 4vh;
+					color: rgba(var(--btncolor), .8);
+					text-align: center; line-height: 4vh;
+					font-size: 4vh;
+					cursor: pointer;
+				}
+				.play:hover, .pause:hover, .stop:hover, .mute:hover, .muted:hover {color: rgba(var(--btncolor), .5)}
+				.pause {display: none;}
+				.stop {
+					position: absolute;
+					right: calc(8vw + 2vh); bottom: 0;
+					height: 3vh; width: 3vh;
+					color: rgba(var(--btncolor), .8);
+					line-height: 3vh; text-align: center;
+					font-size: 3vh;
+					cursor: pointer;
+				}
+				.stop:hover {color: rgba(var(--btncolor), .5);}
+				.mute, .muted {
+					position: absolute;
+					right: 0; bottom: 0;
+					color: rgba(var(--btncolor), .8);
+					cursor: pointer;
+				}
+				.muted {
+					display: none;
+				}
+			}
+		}
 	}
 }
 .modal-blur {
