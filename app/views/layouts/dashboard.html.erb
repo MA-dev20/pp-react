@@ -58,6 +58,13 @@
    		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar' %>
    		
    		<div class="links">
+   			<% if @admin.role == 'user' %>
+   				<div class="link <%= current_page?(dashboard_path) ? 'active' : '' %>)">
+   			    <i class="fas fa-user-friends"></i>
+   				<div class="text">Statistik</div>
+   					<%= link_to '', dashboard_path(@admin) %>
+   				</div>
+   			<% end %>
    			<% if can? :create, Game %>
    			<div class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dash_pitch_path(@pitch)) || @game && current_page?(dashboard_customize_game_path(@game)) ? 'active' : '' %>">
    				<i class="fas fa-gamepad"></i>
@@ -70,7 +77,7 @@
    				<i class="fas fa-user-friends"></i>
    				<div class="text">Nutzer</div>
    				<%= link_to '', dashboard_teams_path %>
-   			</div>
+			</div>
    			<% end %>
    			<% if can? :create, CatchwordList %>
    			<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
@@ -79,15 +86,16 @@
    				<%= link_to '', dashboard_customize_path %>
    			</div>
    			<% end %>
-   			<% if can? :read, GameTurn %>
    			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"d>
    				<i class="fab fa-youtube"></i>
    				<div class="text">Video Tool</div>
    				<%= link_to '', dashboard_video_path %>
    			</div>
-   			<% end %>
    		</div>
    		<div class="logo">
+   			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M59.1978 34.1955L95.7266 20.2435L120.385 50.5907L120.39 50.5959L144.947 81.0254L123.705 113.855L123.701 113.861L102.35 146.619L64.5626 136.562L64.5562 136.56L26.803 126.377L24.6912 87.3311L24.6908 87.3244L22.7097 48.2721L59.1916 34.1979L59.1978 34.1955Z" fill="white" stroke="#FFFFFF" stroke-width="4"/>
+			</svg>
    			<%= image_tag @company.logo? ? @company.logo.url : 'logos/peterpitch.png' %>
    		</div>
    	</section>

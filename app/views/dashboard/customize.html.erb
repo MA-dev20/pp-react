@@ -14,6 +14,7 @@
 	<% if @CL %>
 	<div class="card" id="editCatchword">
 		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', '0')"></i>Liste bearbeiten</h3>
+		<%= link_to '', delete_list_path('word', @CL), class: 'far fa-trash-alt deleteList' %>
 		<%= form_for(:list, url: edit_list_path(@CL)) do |f| %>
 		<%= f.hidden_field :type, value: 'word' %>
 		<div class="form-group">
@@ -54,7 +55,7 @@
 		</div>
 	</div>
 	<script>
-		new PerfectScrollbar('#edit-word');
+		new PerfectScrollbar('#editCatchword');
 		var stream, form, globalForm,recorder, audio, timer;
   		globalForm = new FormData();
   		var processing= false;
@@ -200,6 +201,7 @@
 	<% if @RL %>
 	<div class="card" id="editScore">
 		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', 'o')"></i>Liste bearbeiten</h3>
+		<%= link_to '', delete_list_path('score', @RL), class: 'far fa-trash-alt deleteList' %>
 		<%= form_for(:list, url: edit_list_path(@RL)) do |f| %>
 		<%= f.hidden_field :type, value: 'rating' %>
 		<div class="form-group">
@@ -229,7 +231,7 @@
 		</div>
 	</div>
 	<script>
-		new PerfectScrollbar('#edit-score');
+		new PerfectScrollbar('#editScore');
 		function deleteScore(id) {
 			var url = '/delete/score/<%= @RL.id %>/' + id;
 			$.ajax({
@@ -275,6 +277,7 @@
 	<% if @OL %>
 	<div class="card" id="editObjection">
 		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', 'o')"></i>Liste bearbeiten</h3>
+		<%= link_to '', delete_list_path('objection', @OL), class: 'far fa-trash-alt deleteList' %>
 		<%= form_for(:list, url: edit_list_path(@OL)) do |f| %>
 		<%= f.hidden_field :type, value: 'objection' %>
 		<div class="form-group">
@@ -288,6 +291,9 @@
 			<%= f.text_field :name, class: 'form-field' %>
 		</div>
 		<% end %>
+		<div class="form-group" style="border-bottom: 1px solid gray; margin-bottom: 0">
+			<label for="">Einwände</label>
+		</div>
 		<div class="table edit" id="edit-objection">
 		<table>
 			<tbody>
@@ -311,7 +317,7 @@
 		</div>
 	</div>
 	<script>
-		new PerfectScrollbar('#edit-objection');
+		new PerfectScrollbar('#editObjection');
 		var stream, form, globalForm,recorder, audio, timer;
   		globalForm = new FormData();
   		var processing= false;

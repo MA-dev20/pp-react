@@ -134,6 +134,22 @@ class CustomizeController < ApplicationController
 	end
   end
 	
+  def deleteList
+	if params[:type] == 'word'
+	  @list = CatchwordList.find(params[:list])
+	elsif params[:type] == 'objection'
+	  @list = ObjectionList.find(params[:list])
+	elsif params[:type] == 'score'
+	  @list = RatingList.find(params[:list])
+	  @games = Game.where(rating_list: @list)
+	  @games.each do |g|
+		 g.update(rating_list: nil)
+	  end
+	end
+	@list.destroy
+	redirect_to dashboard_customize_path
+  end
+	
   private
 	def list_params
 	  params.require(:list).permit(:name)

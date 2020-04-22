@@ -42,6 +42,37 @@ body {
 	width: 100%;
 	background-color: #f4faff;
 	color: #0e0e0e;
+	#timeroverlay {
+		position: fixed;
+		top: 0; left: 0;
+		height: 100%; width: 100%;
+		background-color: rgba(255,255,255,.8);
+		color: rgb(var(--custcolor));
+		z-index: 1000;
+		#begintimer {
+			position: absolute;
+			top: 25vh; left: calc(50vw - 25vh);
+			height: 50vh; width: 50vh;
+			font-size: 30vh; line-height: 50vh;
+			text-align: center;
+		}
+		svg {
+			position: absolute;
+			fill: transparent;
+			top: 25vh; left: calc(50vw - 25vh);
+			height: 50vh; width: 50vh;
+			animation: countdownCircle 1s 5;
+			transform: rotate(-90deg);
+		}
+		@keyframes countdownCircle {
+			0% {
+				stroke-dasharray: 1000;
+			}
+			100% {
+				stroke-dasharray: 1 1000;
+			}
+		}
+	}
 	.objection {
 		position: absolute;
 		top: 0;

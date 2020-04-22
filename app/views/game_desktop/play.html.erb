@@ -1,5 +1,11 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div id="count_channel" data-game-id='<%= @game.id %>'></div>
+<section id="timeroverlay">
+		<svg viewbox="0 0 100 100">
+			<circle cx="50" cy="50" r="48" stroke="rgba(var(--custcolor))" stroke-width="4"></circle>
+		</svg>
+	<div class="circle" id="begintimer">5</div>
+</section>
 <section id="play">
 <div class="head">
 	<%= image_tag 'logo-m.png', class: 'play-logo' %>
@@ -13,7 +19,7 @@
 	<% end %>
 	<%= image_tag @turn.user.avatar.url, class: 'play-avatar' %>
 </div>
-<div class="word" id="word" data-target-resolver><%= @turn.catchword.name %></div>
+<div class="word" id="word" data-target-resolver></div>
 <div class="timer" id="game_timer">
 	<% minutes = @game.game_seconds / 60 %>
 	<% seconds = @game.game_seconds % 60 %>
@@ -64,10 +70,25 @@
 	document.getElementById('dong').volume = .5;
 	document.getElementById('theme').volume = .2;
 	document.getElementById('countdown').volume = .3;
-	document.getElementById('word_load').play();
-	textanim();
+	beginTimer();
 	MyApp.timer = startTimer(<%= @game.game_seconds %>, document.getElementById("game_timer"));
 	MyApp.timer.pause();
+	function beginTimer() {
+		var seconds = 4;
+		document.getElementById('countdown').play();
+		var beginTimer = setInterval(function() {
+			$('#begintimer').text(seconds);
+			if (seconds == 0) {
+				$('#timeroverlay').hide();
+				clearInterval(beginTimer);
+				document.getElementById('word_load').play();
+				$('#word').text("<%= @turn.catchword.name %>");
+				textanim();
+			}
+			seconds--;
+		},1000)
+		
+	}
 	function callback() {
 		document.getElementById('word_load').pause();
 		document.getElementById('dong').play();
@@ -110,7 +131,7 @@
 			} else if (timer == 2) {
 				document.getElementById('theme').pause;
 			} else if (timer == 0) {
-				redirect();
+				
 			}
 		}, 1000);
 		

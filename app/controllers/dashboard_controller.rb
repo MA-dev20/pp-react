@@ -5,6 +5,42 @@ class DashboardController < ApplicationController
   def index
 	@team = Team.find(params[:team]) if params[:team]
 	@game = @company.games.find_by(active: true, state: "wait")
+	  
+	if @admin.ratings.count != 0
+	@user_ratings = []
+	@admin.user_ratings.each do |r|
+	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
+	end
+	@user_ratings = @user_ratings.sort_by{|e| -e[:name]}
+	@days = 1
+	@turns = @admin.game_turns.order('created_at')
+	date = @turns.first.created_at.beginning_of_day
+	@chartdata = []
+	@turns.each do |t|
+	  bod = t.created_at.beginning_of_day
+	  if date != bod
+		@days += 1
+		date = bod
+	  end
+	end
+	@turns = @turns.where.not(ges_rating: nil)
+	@turns.each do |t|
+	  cust_rating = []
+	  if t.game_turn_ratings.count != 0
+	    t.game_turn_ratings.each do |tr|
+		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
+	    end
+	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), word: t.catchword.name, ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
+	  else
+		@turns = @turns.except(t)
+	  end
+	end
+	@team = TeamUser.find_by(user: @admin).team
+	@team_users = @team.users.sort_by{|e| - e[:ges_rating]}
+	elsif @admin.role == 'user'
+		flash.now[:alert] = 'Der Spieler hat noch nicht gepitcht!'
+	    render 'index'
+    end
   end
 	
   def customize_game
@@ -30,7 +66,7 @@ class DashboardController < ApplicationController
 	
   def user_stats
 	@user = User.find(params[:user_id])
-	if @user.games.count == 0
+	if @user.ratings.count == 0
 	  flash[:alert] = 'Der Spieler hat noch nicht gepitcht!'
 	  redirect_to dashboard_teams_path
  	  return
