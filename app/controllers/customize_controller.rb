@@ -99,6 +99,41 @@ class CustomizeController < ApplicationController
 	redirect_to dashboard_customize_path('', words: 'dont') if params[:word][:dont]
   end
 	
+  def recordWord
+	@word = Catchword.find(params[:id])
+    @word.update(sound: params[:file]) if params[:file].present? &&  @word.present?
+    render json: {sound:  @word.sound.url}
+  end
+	
+  def recordObjection
+	@objection = Objection.find(params[:id])
+    @objection.update(sound: params[:file]) if params[:file].present? &&  @objection.present?
+    render json: {sound:  @objection.sound.url}
+  end
+	
+  # PUT delete/:type/:id
+  def deleteEntry
+	if params[:type] == 'word'
+	  @entry = Catchword.find(params[:id])
+	  @list = CatchwordList.find(params[:list])
+	  @list.catchword_list_catchwords.find_by(catchword: @entry).destroy if @entry.catchword_lists.count > 1
+	  @entry.destroy if @entry.catchword_lists.count == 1
+	elsif params[:type] == 'objection'
+	  @entry = Objection.find(params[:id])
+	  @list = ObjectionList.find(params[:list])
+	  @list.objection_list_objections.find_by(objection: @entry).destroy if @entry.objection_lists.count > 1
+	  @entry.destroy if @entry.objection_lists.count == 1
+	elsif params[:type] == 'score'
+	  @entry = RatingCriterium.find(params[:id])
+	  @list = RatingList.find(params[:list])
+	  if @entry.rating_lists.count > 1 || @entry.ratings.count != 0
+		 @list.rating_list_rating_criteria.find_by(rating_criterium: @entry).destroy
+	  else
+		 @entry.destroy
+	  end
+	end
+  end
+	
   private
 	def list_params
 	  params.require(:list).permit(:name)

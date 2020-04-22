@@ -69,7 +69,7 @@ class DashboardController < ApplicationController
 	
   def team_stats
 	@team = Team.find(params[:team_id])
-	if @team.games.count == 0
+	if @team.games.count == 0 || @team.users.count == 0
 	  flash[:alert] = 'Das Team hat noch keine Spiele'
 	  redirect_to dashboard_teams_path
 	  return

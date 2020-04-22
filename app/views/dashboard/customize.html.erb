@@ -35,11 +35,18 @@
 		<table>
 			<tbody>
 				<% @CL.catchwords.each do |w| %>
-				<tr>
+				<tr id="word_<%=w.id%>">
 					<td><%= w.name %></td>
-					<td><i class="fas fa-microphone record"></i></td>
-					<td><i class="far fa-play-circle play"></i></td>
-					<td><i class="far fa-trash-alt delete"></i></td>
+					<td><i class="fas fa-microphone record" onclick="recordAudio(<%=w.id %>)"></i></td>
+					<td>
+						<% if w.sound? %>
+						<i class="far fa-play-circle play" onclick="playAudio(<%= w.id %>)"></i>
+						<%= audio_tag w.sound.url, id: 'wordSound' + w.id.to_s, onended: 'endedAudio('+w.id.to_s+')' %>
+						<% else %>
+						<i class="far fa-play-circle play disabled"></i>
+						<% end %>
+					</td>
+					<td><i class="far fa-trash-alt delete" onclick="deleteWord(<%= w.id %>)"></i></td>
 				</tr>
 				<% end %>
 			</tbody>
@@ -48,6 +55,112 @@
 	</div>
 	<script>
 		new PerfectScrollbar('#edit-word');
+		var stream, form, globalForm,recorder, audio, timer;
+  		globalForm = new FormData();
+  		var processing= false;
+  		audio = new Audio();
+		
+		function recordAudio(id) {
+			if (!processing) {
+				$('#word_' + id + ' .record').removeClass("fas");
+				$('#word_' + id + ' .record').removeClass("fa-microphone");
+				$('#word_' + id + ' .record').addClass("far");
+				$('#word_' + id + ' .record').addClass("fa-pause-circle");
+				requestAudio(id);
+				processing = true;
+			} else {
+				stopRecording(id)
+			}
+		}
+		function requestAudio(id) {
+			var seconds = 10;
+			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+				navigator.mediaDevices.getUserMedia({audio: true}).then(function(str) {
+					stream = str;
+					recorder = new MediaRecorder(stream);
+					let chunks = [];
+					recorder.ondataavailable = function(e) {
+						seconds -= 1;
+						chunks.push(e.data);
+						if (recorder.state == 'inactive') {
+							const blob = new Blob(chunks, {type: 'audio/webm'});
+							var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							globalForm.append('file', file);
+							sendAudio(id, globalForm);
+							processing = false;
+						}
+					};
+					recorder.start(1000);
+					timer = setTimeout(() => {
+                		stopRecording(id)
+            		}, 11000);
+				})
+			} else {
+				alert('Konnte Aufnahme nicht starten!')
+			}
+		}
+		function stopRecording(id) {
+        	clearTimeout(timer);
+        	if (recorder.state != 'inactive') {
+				recorder.stop()
+        	}
+        	$('#word_' + id + ' .record').addClass("fas");
+			$('#word_' + id + ' .record').addClass("fa-microphone");
+			$('#word_' + id + ' .record').removeClass("far");
+			$('#word_' + id + ' .record').removeClass("fa-pause-circle");
+        	stream.getTracks()[0].stop()
+    	}
+		function sendAudio(id, globalForm) {
+			var url = "/words/record/";
+			$.ajax({
+				url: url + id,
+				type: "put",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: globalForm,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function(res) {
+					globalForm = new FormData();
+					window.location.reload();
+				}
+			})
+		}
+		function playAudio(id) {
+			var wordSound = document.getElementById('wordSound'+ id);
+			if($('#word_'+ id + ' .play').hasClass('fa-play-circle')) {
+				$('#word_'+ id + ' .play').removeClass('fa-play-circle');
+				$('#word_'+ id + ' .play').addClass('fa-pause-circle');
+				wordSound.play();
+			} else {
+				$('#word_'+ id + ' .play').removeClass('fa-pause-circle');
+				$('#word_'+ id + ' .play').addClass('fa-play-circle');
+				wordSound.pause();
+			}	
+		}
+		function endedAudio(id) {
+			var sound = document.getElementById('wordSound' + id);
+			sound.load();
+			$('#word_'+ id + ' .play').removeClass('fa-pause-circle');
+			$('#word_'+ id + ' .play').addClass('fa-play-circle');
+		}
+		function deleteWord(id) {
+			var url = '/delete/word/' + '<%= @CL.id %>' + '/' + id;
+			$.ajax({
+				url: url,
+				type: 'get',
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+					window.location.reload();
+                }
+			})
+		}
+		
 	</script>
 	<% end %>
 	<div class="card" id="newCatchword" style="display:none">
@@ -108,7 +221,7 @@
 					<td><%= s.name %></td>
 					<td></td>
 					<td></td>
-					<td><i class="far fa-trash-alt delete"></i></td>
+					<td><i class="far fa-trash-alt delete" onclick="deleteScore(<%= s.id %>)"></i></td>
 				</tr>
 			<% end %>
 			</tbody>
@@ -117,6 +230,21 @@
 	</div>
 	<script>
 		new PerfectScrollbar('#edit-score');
+		function deleteScore(id) {
+			var url = '/delete/score/<%= @RL.id %>/' + id;
+			$.ajax({
+				url: url,
+				type: 'get',
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+					window.location.reload();
+                }
+			})
+		}
 	</script>
 	<% end %>
 </div>
@@ -164,11 +292,18 @@
 		<table>
 			<tbody>
 			<% @OL.objections.each do |o| %>
-				<tr>
+				<tr id="objection_<%= o.id %>">
 					<td><%= o.name %></td>
-					<td><i class="fas fa-microphone record"></i></td>
-					<td><i class="far fa-play-circle play"></i></td>
-					<td><i class="far fa-trash-alt delete"></i></td>
+					<td><i class="fas fa-microphone record" onclick="recordAudio(<%= o.id %>)"></i></td>
+					<td>
+						<% if o.sound? %>
+							<i class="far fa-play-circle play" onclick="playAudio(<%= o.id %>)"></i>
+							<%= audio_tag o.sound.url, id: 'objectionSound' + o.id.to_s, onended: 'endedAudio('+o.id.to_s+')' %>
+						<% else %>
+							<i class="far fa-play-circle play disabled"></i>
+						<% end %>
+					</td>
+					<td><i class="far fa-trash-alt delete" onclick="deleteObjection(<%= o.id %>)"></i></td>
 				</tr>
 			<% end %>
 			</tbody>
@@ -177,6 +312,111 @@
 	</div>
 	<script>
 		new PerfectScrollbar('#edit-objection');
+		var stream, form, globalForm,recorder, audio, timer;
+  		globalForm = new FormData();
+  		var processing= false;
+  		audio = new Audio();
+		
+		function recordAudio(id) {
+			if (!processing) {
+				$('#objection_' + id + ' .record').removeClass("fas");
+				$('#objection_' + id + ' .record').removeClass("fa-microphone");
+				$('#objection_' + id + ' .record').addClass("far");
+				$('#objection_' + id + ' .record').addClass("fa-pause-circle");
+				requestAudio(id);
+				processing = true;
+			} else {
+				stopRecording(id)
+			}
+		}
+		function requestAudio(id) {
+			var seconds = 10;
+			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+				navigator.mediaDevices.getUserMedia({audio: true}).then(function(str) {
+					stream = str;
+					recorder = new MediaRecorder(stream);
+					let chunks = [];
+					recorder.ondataavailable = function(e) {
+						seconds -= 1;
+						chunks.push(e.data);
+						if (recorder.state == 'inactive') {
+							const blob = new Blob(chunks, {type: 'audio/webm'});
+							var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							globalForm.append('file', file);
+							sendAudio(id, globalForm);
+							processing = false;
+						}
+					};
+					recorder.start(1000);
+					timer = setTimeout(() => {
+                		stopRecording(id)
+            		}, 11000);
+				})
+			} else {
+				alert('Konnte Aufnahme nicht starten!')
+			}
+		}
+		function stopRecording(id) {
+        	clearTimeout(timer);
+        	if (recorder.state != 'inactive') {
+				recorder.stop()
+        	}
+        	$('#objection_' + id + ' .record').addClass("fas");
+			$('#objection_' + id + ' .record').addClass("fa-microphone");
+			$('#objection_' + id + ' .record').removeClass("far");
+			$('#objection_' + id + ' .record').removeClass("fa-pause-circle");
+        	stream.getTracks()[0].stop()
+    	}
+		function sendAudio(id, globalForm) {
+			var url = "/objections/record/";
+			$.ajax({
+				url: url + id,
+				type: "put",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: globalForm,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function(res) {
+					globalForm = new FormData();
+					window.location.reload();
+				}
+			})
+		}
+		function playAudio(id) {
+			var wordSound = document.getElementById('objectionSound'+ id);
+			if($('#objection_'+ id + ' .play').hasClass('fa-play-circle')) {
+				$('#objection_'+ id + ' .play').removeClass('fa-play-circle');
+				$('#objection_'+ id + ' .play').addClass('fa-pause-circle');
+				wordSound.play();
+			} else {
+				$('#objection_'+ id + ' .play').removeClass('fa-pause-circle');
+				$('#objection_'+ id + ' .play').addClass('fa-play-circle');
+				wordSound.pause();
+			}	
+		}
+		function endedAudio(id) {
+			var sound = document.getElementById('objectionSound' + id);
+			sound.load();
+			$('#objection_'+ id + ' .play').removeClass('fa-pause-circle');
+			$('#objection_'+ id + ' .play').addClass('fa-play-circle');
+		}
+		function deleteObjection(id) {
+			var url = '/delete/objection/<%= @OL.id %>/' + id;
+			$.ajax({
+				url: url,
+				type: 'get',
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+					window.location.reload();
+                }
+			})
+		}
 	</script>
 	<% end %>
 	<div class="card">
@@ -227,6 +467,7 @@
 	</div>
 </div>
 <script>
+	
 	function toggleCatchword() {
 		$('#catchwords').toggle();
 		$('#newCatchword').toggle();

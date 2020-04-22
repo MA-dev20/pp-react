@@ -552,7 +552,13 @@ body {
 			.table.edit {
 				width: 47vh;
 				margin: 0;
-				height: 10vh;
+				height: 9vh;
+				td {
+					line-height: 3vh;
+					.fas, .far {
+						font-size: 2vh;
+					}
+				}
 				td:nth-child(2),
 				td:nth-child(3),
 				td:nth-child(4) {
@@ -562,6 +568,10 @@ body {
 				}
 				.record {color: #e21616}
 				.play {color: rgb(var(--btncolor))}
+				.disabled {
+					color: rgba(0,0,0,.2);
+					cursor: default;
+				}
 				.delete {color: #e2b416}
 			}
 			.choose {

@@ -5,6 +5,7 @@ class RatingCriterium < ApplicationRecord
   has_many :game_turn_ratings, dependent: :destroy
   has_many :game_ratings, dependent: :destroy
   has_many :user_ratings, dependent: :destroy
+  has_many :team_ratings, dependent: :destroy
 	
   def green
 	if self.name == 'Körpersprache'
