@@ -4,7 +4,6 @@ class DashboardController < ApplicationController
 	
   def index
 	@team = Team.find(params[:team]) if params[:team]
-	@game = @company.games.find_by(active: true, state: "wait")
 	  
 	if @admin.ratings.count != 0
 	@user_ratings = []
