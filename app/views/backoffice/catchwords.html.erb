@@ -17,7 +17,7 @@
 						<td><%= l.name %></td>
 						<td><%= l.catchwords.count %></td>
 						<td class="edit"><%= link_to '', '', class: 'far fa-edit' %></td>
-						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+						<td class="remove"><%= link_to '', delete_list_path('word', l.id), class: 'far fa-trash-alt' %></td>
 					</tr>
 					<% end %>
 				</tbody>

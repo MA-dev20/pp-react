@@ -2,7 +2,9 @@ class GamesController < ApplicationController
   before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch]
   before_action :set_game, only: [:customize, :email, :create_turn, :name]
   def create
-	@game = @company.games.new(game_params)
+	@game = @company.games.where(password: game_params[:password], state: 'wait', active: true).first
+	@game.update(game_params) if @game
+	@game = @company.games.new(game_params) if !@game
 	@game.user = @user
 	if @game.save
 	  redirect_to dashboard_customize_game_path(@game)
