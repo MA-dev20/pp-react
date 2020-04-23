@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get 'dashboard/users/:user_id/stats', to: 'dashboard#user_stats', as: 'dashboard_user_stats'
   get 'dashboard/customize', to: 'dashboard#customize', as: 'dashboard_customize'
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
+  get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
 	
   get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'
@@ -47,6 +48,8 @@ Rails.application.routes.draw do
 	
   get 'games/game', to: 'game_desktop#game', as: "gd_game"
   get 'games/game/set_state', to: 'game_desktop#set_state', as: 'gd_set_state'
+  get 'games/game/repeat', to: 'game_desktop#repeat', as: 'gd_repeat'
+  get 'games/game/ended', to: 'game_desktop#ended', as: 'gd_ended'
 	
   #GAME MOBILE
   get ':password', to: 'game_mobile#welcome', as: 'gm'
@@ -57,8 +60,9 @@ Rails.application.routes.draw do
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   get 'mobile/game/choosen', to: 'game_mobile#choosen', as: 'gm_choosen'
   post 'mobile/game/objection', to: 'game_mobile#objection', as: "gm_objection"
-  get 'mibile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
   get 'mobile/game/set_state', to: 'game_mobile#set_state', as: "gm_set_state"
+  get 'mibile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
+  get 'mibile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
 	
   # GAMES
   post 'games/create', to: 'games#create', as: 'new_game'
@@ -89,4 +93,8 @@ Rails.application.routes.draw do
   post 'lists/:list_id/sound/add', to: 'customize#list_add_sound', as: 'list_add_sound'
   post 'doanddonts/new', to: 'customize#new_doAndDont', as: "new_do_and_dont"
   post 'rating/:rating_criterium_id/edit', to: 'customize#edit_rating', as: 'edit_rating'
+  put 'words/record/:id', to: 'customize#recordWord', as: "record_word"
+  put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
+  get 'delete/:type/:list/:id', to: 'customize#deleteEntry', as: 'delete_entry'
+  get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
 end
