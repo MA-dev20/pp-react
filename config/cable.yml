@@ -3,5 +3,6 @@ redis: &redis
 
 production: *redis
 staging: *redis
+dev: *redis
 development: *redis
 test: *redis
