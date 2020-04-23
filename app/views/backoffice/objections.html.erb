@@ -28,8 +28,9 @@
 
 <div class="right">
 	<div class="card">
+		<% if @list %>
 		<h3>Einwände</h3>
-		<%= form_for(:entry, url: list_add_sound_path(@list, type: 'objection'), html: {id: 'new_objection'}) do |f| %>
+		<%= form_for(:entry, url: list_add_sound_path(list_id: @list.id, type: 'objection'), html: {id: 'new_objection'}) do |f| %>
 			<label for="entry_sound" class="add-circle"><i class="fas fa-plus-circle"></i></label>
 			<%= f.file_field :sound, multiple: true, onchange: 'submitForm()', style: "display: none" %>
 		<% end %>
@@ -53,20 +54,22 @@
 				</tbody>
 			</table>
 		</div>
+		<script>
+			new PerfectScrollbar('#objections')
+			function submitForm() {
+				$('#new_objection').submit();
+			}
+			function play(id) {
+				document.getElementById(id).play();
+				$('#play_'+id+' .fas').removeClass('fa-play-circle');
+				$('#play_'+id+' .fas').addClass('fa-pause-circle');
+			}
+			function end(id) {
+				$('#play_'+id+' .fas').removeClass('fa-pause-circle');
+				$('#play_'+id+' .fas').addClass('fa-play-circle');
+			}
+		</script>
+		<% end %>
 	</div>
-	<script>
-		new PerfectScrollbar('#objections')
-		function submitForm() {
-			$('#new_objection').submit();
-		}
-		function play(id) {
-			document.getElementById(id).play();
-			$('#play_'+id+' .fas').removeClass('fa-play-circle');
-			$('#play_'+id+' .fas').addClass('fa-pause-circle');
-		}
-		function end(id) {
-			$('#play_'+id+' .fas').removeClass('fa-pause-circle');
-			$('#play_'+id+' .fas').addClass('fa-play-circle');
-		}
-	</script>
+	
 </div>
