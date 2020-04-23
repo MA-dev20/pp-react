@@ -22,12 +22,12 @@ class GamesController < ApplicationController
 	  @CL = [CatchwordList.find_by(name: 'Peters Catchwords').id] if !@CL
 	  build_catchwords(@game, @CL)
 	  @OL = params[:game][:objection_list] if params[:game][:objection_list]
-	  if !@OL && ObjectionList.find_by(name: 'Peters Einwände').nil?
+	  if !@OL && ObjectionList.find_by(name: 'Peters Objections').nil?
 		flash[:alert] = 'Bitte Lade erst Objections hoch!'
 		redirect_to backoffice_path
 		return
 	  end
-	  @OL = [ObjectionList.find_by(name: 'Peters Einwände').id] if !@OL
+	  @OL = [ObjectionList.find_by(name: 'Peters Objections').id] if !@OL
 	  build_objections(@game, @CL)
 	  if !game_params[:rating_list_id] && RatingList.find_by(name: 'Peters Scores').nil?
 		flash[:alert] = 'Bitte Lade erst Ratings hoch!'

@@ -4,8 +4,8 @@ class DashboardController < ApplicationController
 	
   def index
 	@team = Team.find(params[:team]) if params[:team]
-	  
-	if @admin.ratings.count != 0
+	
+	if @admin.ratings.count != 0 && @admin.role == 'user'
 	@user_ratings = []
 	@admin.user_ratings.each do |r|
 	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}

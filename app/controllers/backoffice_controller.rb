@@ -25,7 +25,7 @@ class BackofficeController < ApplicationController
 	@list = @lists.first if @lists.count != 0 && !@list
   end
   def objections
-	ObjectionList.create(name: 'Peters Einwände') if ObjectionList.find_by(name: 'Peters Einwände').nil?
+	ObjectionList.create(name: 'Peters Objections') if ObjectionList.find_by(name: 'Peters Objections').nil?
 	@lists = @company.objection_lists if @company
 	@list = ObjectionList.find(params[:list_id]) if params[:list_id]
 	@lists = ObjectionList.where(company_id: nil, game_id: nil) if !@lists
