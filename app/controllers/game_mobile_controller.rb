@@ -51,6 +51,19 @@ class GameMobileController < ApplicationController
 	redirect_to root_path
   end
 	
+  def repeat
+	@game = current_game
+	@game_new = Game.where(password: @game.password, state: 'wait', active: true).first
+	if @game_new.nil?
+	@game_new = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list )
+	@game_new.catchword_list = @game.catchword_list
+	@game_new.objection_list = @game.objection_list
+	end
+	game_logout
+	game_login @game_new
+	redirect_to gm_join_path
+  end
+	
   def new_name
   end
 	
@@ -115,6 +128,11 @@ class GameMobileController < ApplicationController
 		@turn.update(played: true)
 		@game.update(state: 'rating')
 	  end
+	elsif params[:state] == 'repeat' && @game.state != "repeat"
+	  @game.update(state: 'repeat')
+	  ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+	  redirect_to gm_repeat_path
+	  return
 	elsif params[:state] == 'ended' && @game.state != "ended"
 	  @game.update(state: 'ended')
 	  ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
@@ -155,7 +173,9 @@ class GameMobileController < ApplicationController
 	def check_state
 	  @state = @game.state
 	  @turn = GameTurn.find(@game.current_turn) if @game.current_turn
-	  if @state == 'ended'
+	  if @state == 'repeat'
+		redirect_to gm_repeat_path
+	  elsif @state == 'ended'
 		redirect_to gm_ended_path
 	  end
 	end

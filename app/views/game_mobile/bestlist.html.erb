@@ -9,4 +9,5 @@
 	<% if @admin.role != 'user' %>
 	<%= link_to 'weiter', gm_set_state_path('', state: 'ended'), class: 'btn custom-btn' %>
 	<% end %>
+	<%= link_to 'wiederholen', gm_set_state_path('', state: 'repeat'), class: 'btn custom-btn' %>
 </div>

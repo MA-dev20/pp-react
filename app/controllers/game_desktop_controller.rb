@@ -1,7 +1,7 @@
 class GameDesktopController < ApplicationController
   layout 'game_desktop'
   before_action :check_user
-  before_action :check_game, except: [:join]
+  before_action :check_game, except: [:join, :repeat, :ended]
   before_action :check_state, only: [:game]
 	
   def join
@@ -17,6 +17,24 @@ class GameDesktopController < ApplicationController
 	@turn_ratings = @turn.game_turn_ratings if @turn
 	@turns = @game.game_turns.where.not(ges_rating: nil).all.order(ges_rating: :desc)
 	render @state
+  end
+	
+  def repeat
+	@game = current_game
+	@game_new = Game.where(password: @game.password, state: 'wait', active: true).first
+	if @game_new.nil?
+	@game_new = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list )
+	@game_new.catchword_list = @game.catchword_list
+	@game_new.objection_list = @game.objection_list
+	end
+	game_logout
+	game_login @game_new
+	redirect_to gd_game_path
+  end
+	
+  def ended
+	game_logout
+	redirect_to dashboard_path
   end
 	
   def set_state
@@ -83,7 +101,12 @@ class GameDesktopController < ApplicationController
 	elsif params[:state] == 'ended' && @game.state != "ended"
 	  @game.update(state: 'ended')
 	  ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-	  redirect_to root_path
+	  redirect_to gd_ended_path
+	  return
+	elsif params[:state] == 'repeat' && @game.state != "repeat"
+	  @game.update(state: 'repeat')
+	  ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+	  redirect_to gd_repeat_path
 	  return 
 	else
 	  @game.update(state: params[:state])
@@ -113,11 +136,10 @@ class GameDesktopController < ApplicationController
 	end
 	def check_state
 	  @state = @game.state
-	  if @state == 'wait' || @state == 'choose' || @state == 'rate'
-		@handy = true
-	  end
-	  if @state == 'ended'
-	    redirect_to dashboard_path
+	  if @state == 'repeat'
+		redirect_to gd_repeat_path
+	  elsif @state == 'ended'
+	    redirect_to gd_ended_path
 	  end
 	end
 end

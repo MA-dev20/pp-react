@@ -20,6 +20,7 @@ class Ability
 	  can :manage, CatchwordList, :company_id => user.company_id
 	  can :manage, ObjectionList, :company_id => user.company_id
 	  can :manage, RatingList, :company_id => user.company_id
+	  can :manage, Game, :company_id => user.company_id
 	elsif user.role == 'department_admin'
 	  can [:read, :update], Department, :id => user.department_id
 	  can :manage, User, :department_id => user.department_id
@@ -27,6 +28,7 @@ class Ability
 	  can :manage, CatchwordList, :department_id => user.department_id
 	  can :manage, ObjectionList, :department_id => user.department_id
 	  can :manage, RatingList, :user_id => user.id
+      can :manage, Game, :department_id => user.department_id
 	elsif user.role == 'admin'
 	  user.teams.find_by(name: 'all').users.each do |u|
 	    can :manage, User, :id => u.id, role: 'user'
@@ -35,6 +37,7 @@ class Ability
 	  can :manage, CatchwordList, :user_id => user.id
 	  can :manage, ObjectionList, :user_id => user.id
 	  can :manage, RatingList, :user_id => user.id
+	  can :manage, Game, :user_id => user.id
 	elsif user.role == 'user'
 	  can [:read, :update, :destroy], User, :id => user.id
 	end

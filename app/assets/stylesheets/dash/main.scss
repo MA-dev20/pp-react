@@ -15,6 +15,7 @@ body {
 	font-stretch: normal;
 	letter-spacing: normal;
 	background-color: #f4faff;
+	color: #212529;
 }
 #navbar {
 	z-index: 100;
@@ -125,21 +126,25 @@ body {
 		}
 	}
 	.logo {
+		display: grid;
+		align-content: center;
 		position: absolute;
 		margin-bottom: 2vh;
-		bottom: 0;
+		bottom: 2vh;
+		margin: 0 7.8vh;
+		width: 10vh;
+		height: 10vh;
 		svg {
 			position: absolute;
-			bottom: 0;
-			margin: 0vh 7.5vh;
-			width: 10vh;
+			bottom: 0; left: 0;
+			height: 100%;
+			width: 100%;
 		}
 		img {
-			position: absolute;
-			bottom: 0;
-			margin: 2vh 10vh;
+			position: relative;
 			width: 5vh;
-			max-height: 5vh;
+			margin: 3vh 2.5vh;
+			max-height: 4vh;
 		}
 	}
 }
@@ -160,6 +165,11 @@ body {
 		height: 85vh;
 		margin: 10vh 4vh 1vh 5vh;
 		padding-right: 2.3vh;
+	}
+	#teams-table,
+	#users-table {
+		margin-top: -1vh;
+		table thead {line-height: 4vh;}
 	}
 	.head {
 		width: auto;
@@ -758,7 +768,10 @@ body {
 			-webkit-appearance: none;
 			-moz-appearance: none;
 			cursor: pointer;
-			
+			font-family: "Nunito";
+			font-size: 1.8vh;
+			color: #495057 !important;
+			outline: none !important;
 		}
 		.custom-select.red {
 			border-color: #ff5f58;
@@ -1019,7 +1032,7 @@ body {
 	}
 	.pitch-videos, .own-videos {
 		position: absolute;
-		top: 18.9vh;
+		top: 15vh;
 		h3 { text-align: left;}
 		.card {
 			height: 60vh;
