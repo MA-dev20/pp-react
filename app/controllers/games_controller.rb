@@ -28,7 +28,7 @@ class GamesController < ApplicationController
 		return
 	  end
 	  @OL = [ObjectionList.find_by(name: 'Peters Objections').id] if !@OL
-	  build_objections(@game, @CL)
+	  build_objections(@game, @OL)
 	  if !game_params[:rating_list_id] && RatingList.find_by(name: 'Peters Scores').nil?
 		flash[:alert] = 'Bitte Lade erst Ratings hoch!'
 		redirect_to backoffice_path
