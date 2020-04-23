@@ -46,13 +46,109 @@
 		</div>
 	</div>
 	<div class="right">
+		<% if @ratings.count != 0 %>
+		<div class="ratings">
+			<% @ratings.each do |r| %>
+				<div class="rating">
+					<div class="name"><%= r.rating_criterium.name %></div>
+					<div class="rate"><%= r.rating / 10.0 %></div>
+					<div class="bar"><div class="fill" style="width: <%= r.rating %>%"></div></div>
+				</div>
+			<% end %>
+			<div class="switch" onclick="toggleRatings()">
+				<div class="dot"></div>
+			</div>
+			<div class="switch-text">&#216;	Bewertung</div>
+			<div class="ges-rating">
+				<div class="rate">
+					<%= @turn.ges_rating / 10.0 %>
+					<svg viewbox="0 0 100 100">
+						<circle cx="50" cy="50" r="48" stroke="rgb(var(--custcolor))" stroke-width="4" fill="none" stroke-dasharray="<%= 301.59 * (@turn.ges_rating / 100.0) %> 1000"></circle>
+					</svg>
+				</div>
+				<div class="name">Gesamt</div>
+			</div>
+		</div>
+		<% end %>
+		<% if @own_ratings.count != 0 %>
+		<div class="own-ratings">
+			<% @own_ratings.each do |r| %>
+				<div class="rating">
+					<div class="name"><%= r.rating_criterium.name %></div>
+					<div class="rate"><%= r.rating / 10.0 %></div>
+					<div class="bar"><div class="fill" style="width: <%= r.rating %>%"></div></div>
+				</div>
+			<% end %>
+			<div class="switch" onclick="toggleRatings()">
+				<div class="dot"></div>
+			</div>
+			<div class="switch-text">Eigene Bewertung</div>
+			<div class="ges-rating">
+				<div class="rate">
+					<%= (@own_ratings.average(:rating) / 10.0).round(1) %>
+					<svg viewbox="0 0 100 100">
+						<circle cx="50" cy="50" r="48" stroke="rgb(var(--custcolor))" stroke-width="4" fill="none" stroke-dasharray="<%= 301.59 * (@turn.ges_rating / 100.0) %> 1000"></circle>
+					</svg>
+				</div>
+				<div class="name">Meine Bewertung</div>
+			</div>
+		</div>
+		<% end %>
 		<div class="comments">
 			<h5>Kommentare</h5>
-			<div class="card"></div>
+			<div class="card" id="comment-card">
+				<% @comments.each do |c| %>
+					<div class="comment">
+						<div class="user">
+							<% cmin = (c.time / 60) < 10 ? '0' + (c.time / 60).round.to_s : (c.time / 60).round.to_s %>
+							<% csec = (c.time % 60) < 10 ? '0' + (c.time % 60).round.to_s : (c.time % 60).round.to_s %>
+							<% cTime = cmin + ':' + csec %> 
+							<%= image_tag c.user.avatar.url %>
+							<%= c.user.fname %> <%= c.user.lname %> - <%= cTime %>
+							<%= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
+						</div>
+						<div class="comment">
+							<div class="dot <%= c.positive %>"></div><%= c.text %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+			<div class="comment-form">
+				<div class="time">0:00</div>
+				<div class="negative" onclick="setMood('negative')"><div class="circle"><div class="dot"></div></div>Negativ</div>
+				<div class="neutral active" onclick="setMood('neutral')"><div class="circle"><div class="dot"></div></div>Neutral</div>
+				<div class="positive" onclick="setMood('positve')"><div class="circle"><div class="dot"></div></div>Positiv</div>
+				<div class="form-group">
+				<%= form_for(:comment, url: new_comment_path(@turn)) do |f| %>
+					<%= f.hidden_field :positive, value: 'neutral' %>
+					<%= f.hidden_field :user_id, value: @admin.id %>
+					<%= f.hidden_field :time, value: 0, class: 'form-field' %>
+					<%= f.text_field :text, placeholder: 'Kommentar hinzufügen', class: 'form-field' %>
+				<% end %>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 <script>
+	new PerfectScrollbar('#comment-card');
+	function setMood(mood) {
+		$('.comment-form .active').removeClass('active');
+		if (mood == "positve") {
+			$('.comment-form .positive').addClass('active');
+			$('#comment_positive').val("positive");
+		} else if (mood == 'neutral') {
+			$('.comment-form .neutral').addClass('active');
+			$('#comment_positive').val("neutral");
+		} else if (mood == "negative") {
+			$('.comment-form .negative').addClass('active');
+			$('#comment_positive').val("negative");
+		}
+	}
+	function toggleRatings() {
+		$(".own-ratings").toggle();
+		$(".ratings").toggle();
+	}
 	var mouseDown = false;
 	document.body.onmousedown = function() { 
   		mouseDown = true;
@@ -80,6 +176,8 @@
 		pitch.currentTime = ((posX - left) / width) * duration;
 		timer = min+':'+(sec < 10 ? '0' + sec : sec);
 		$(".progress .time").text(timer + "/" + playtime);
+		$('.comment-form .time').text(timer);
+		$('#comment_time').val(pitch.currentTime);
 		document.getElementById('progress').style.width = (((min * 60) + sec) / duration) * 100 + "%";
 	}
 	function playVideo() {
@@ -89,6 +187,8 @@
 		time = setInterval(function() {
 			timer = min+':'+(sec < 10 ? '0' + sec : sec);
 			$(".progress .time").text(timer + "/" + playtime);
+			$('.comment-form .time').text(timer);
+			$('#comment_time').val(Math.round(pitch.currentTime));
 			console.log("timer:" + timer);
 			document.getElementById('progress').style.width = (((min * 60) + sec) / duration) * 100 + "%";
 			console.log("width:" + ((((min * 60) + sec) / duration) * 100));
@@ -112,6 +212,8 @@
 		$('.middle .controls .play').show();
 		clearInterval(time);
 		$(".progress .time").text("0:00/" + playtime);
+		$('.comment-form .time').text("0:00");
+		$('#comment_time').val(Math.round(pitch.currentTime));
 		document.getElementById('progress').style.width = 0;
 		min = 0; sec = 0;
 	}

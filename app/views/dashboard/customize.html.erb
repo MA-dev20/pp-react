@@ -176,7 +176,7 @@
 		<% end %>
 	</div>
 	<div class="card" id="scores" style="<%= @RL ? 'display:none' : '' %>">
-		<h3>Scores <i class="fas fa-plus-circle add" onclick="toggleScore()"></i></h3>
+		<h3>Bewertungen <i class="fas fa-plus-circle add" onclick="toggleScore()"></i></h3>
 		<div class="karten" id="SLkarten">
 		<% @RLs.each do |s| %>
 		<div class="karte" onclick="redirect('SL', '<%= s.id %>')">

@@ -166,6 +166,15 @@ body {
 		margin: 10vh 4vh 1vh 5vh;
 		padding-right: 2.3vh;
 	}
+	#editTeam {
+		.comment {
+			position: absolute;
+			bottom: 0;
+			color: rgba(0,0,0,.5);
+			text-align: center;
+			width: 100%;
+		}
+	}
 	#teams-table,
 	#users-table {
 		margin-top: -1vh;
@@ -215,7 +224,7 @@ body {
 				width: 4.3vh;
 				border-radius: 50%;
 				background-color: #f3f1ff;
-				color: #4394ec;
+				color: white;
 				font-size: 2.2vh;
 				line-height: 4.3vh;
 			}
@@ -447,12 +456,12 @@ body {
 			.form-field {
 				width: 50%;
 				background-color: white;
-				border: .1vh solid #dfe1e5;
+				border: none;
 				height: 5.5vh;
 				border-radius: .8vh;
 				font-size: 1.8vh;
 				padding: 0 1vh 0 5vh;
-				box-shadow: 0 0 10px 0 rgba(172, 172, 172,.1)
+				box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
 			}
 			.btn {
 				position: absolute;
@@ -541,6 +550,7 @@ body {
 	.right {left: calc(50% + 3vh);}
 	.small {
 		top: 0;
+		width: 52vh;
 		.card {
 			margin-top: 1.5vh;
 			width: 47vh;
@@ -1225,8 +1235,168 @@ body {
 			}
 			.comments {
 				width: 100%;
+				position: absolute;
+				bottom: 0;
 				.card {
-					height: 25vh;
+					height: 20vh;
+					.comment {
+						margin: 0 1vh;
+						width: calc(100% - 2vh);
+						border-bottom: 1px solid rgba(0,0,0,.2);
+						.user {
+							img {
+								height: 3vh; width: 3vh;
+								margin: 1vh;
+							}
+							line-height: 5vh;
+							.delete {
+								color: rgba(0,0,0,.3);
+								float: right;
+								font-size: 2vh;
+								margin: 1.5vh;
+							}
+						}
+						.comment {
+							border-bottom: none;
+							margin-bottom: 1vh;
+							.dot {
+								float: left;
+								height: 2vh; width: 2vh;
+								margin-right: 1vh;
+								border-radius: 50%;
+							}
+							.dot.positive {background-color: #0ba653;}
+							.dot.neutral {background-color: #ffcc00;}
+							.dot.negative {background-color: #cc3333;}
+						}
+					}
+				}
+				.comment-form {
+					.time {
+						line-height: 5vh;
+						float: left;
+						font-weight: bold;
+						font-size: 2vh;
+					}
+					.positive, .negative, .neutral {
+						line-height: 5vh;
+						float: right;
+						.circle {
+							float: left;
+							display: inline-block;
+							height: 2.3vh; width: 2.3vh;
+							border-radius: 50%;
+							border: .1vh solid;
+							margin: 1.25vh 1vh;
+							.dot {
+								height: 1.5vh; width: 1.5vh;
+								margin: .5vh;
+								border-radius: 50%;
+								display: none;
+							}
+						}
+					}
+					.active .circle .dot {display: block;}
+					.positive {
+						color: #0ba653;
+						.circle {border-color: #0ba653;}
+						.dot {background-color: #0ba653;}
+					}
+					.neutral {
+						color: #ffcc00;
+						.circle {border-color: #ffcc00;}
+						.dot {background-color: #ffcc00;}
+					}
+					.negative {
+						color: #c33333;
+						.circle {border-color: #cc3333;}
+						.dot {background-color: #cc3333;}
+					}
+					.form-group {
+						clear: left;
+						bottom: 0;
+						margin-bottom: 0;
+					}
+				}
+			}
+			.own-ratings,
+			.ratings {
+				position: relative;
+				width: 100%;
+				height: 20vh;
+				.rating {
+					width: calc(100% - 12vh);
+					margin-bottom: 1vh;
+					.name {
+						float: left;
+					}
+					.rate {
+						float: right;
+					}
+					.bar {
+						width: 100%;
+						background-color: rgba(0,0,0,.2);
+						height: 1vh;
+						border-radius: .5vh;
+						clear: both;
+						overflow: hidden;
+						.fill {
+							height: 100%;
+							background-color: rgb(var(--custcolor));
+						}
+					}
+				}
+				.switch {
+					position: absolute;
+					bottom: 1vh;
+					width: 3vh;
+					height: 1.5vh;
+					background-color: rgba(0,0,0,.2);
+					border-radius: 1vh;
+					cursor: pointer;
+					.dot {
+						height: 1.5vh;
+						width: 1.5vh;
+						border-radius: 50%;
+						float: left;
+						background-color: rgb(var(--custcolor));
+					}
+				}
+				.switch-text {
+					position: absolute;
+					left: 4vh;
+					width: calc(100% - 4vh);
+					bottom: 1vh;
+					font-size: 1.5vh;
+					line-height: 1.5vh;
+				}
+				.ges-rating {
+					position: absolute;
+					top: 0;
+					left: calc(100% - 10vh);
+					width: 10vh;
+					height: 20vh;
+					.rate {
+						line-height: 10vh;
+						text-align: center;
+						font-size: 5vh;
+						svg {
+							position: absolute;
+							height: 10vh;
+							left: calc(50% - 5vh);
+							transform: rotate(-90deg);
+						}
+					}
+					.name {
+						line-height: 3vh;
+						text-align: center;
+					}
+				}
+			}
+			.own-ratings {
+				display: none;
+				.switch .dot {
+					float: right;
 				}
 			}
 		}

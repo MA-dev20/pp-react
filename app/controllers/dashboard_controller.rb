@@ -177,7 +177,10 @@ class DashboardController < ApplicationController
 	
   def pitch_video
 	@turn = GameTurn.find(params[:turn_id])
+	@ratings = @turn.game_turn_ratings
+	@own_ratings = @turn.ratings.where(user: @admin).all
 	@video = @turn.pitch_video
+	@comments = @turn.comments.order(:time)
   end
 	
   private

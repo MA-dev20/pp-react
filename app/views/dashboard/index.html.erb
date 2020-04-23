@@ -1,6 +1,4 @@
-<% if @game && (can? :create, Game) %>
-  <%= render 'dashboard/index/game' %>
-<% elsif can? :create, Game %>
+<% if can? :create, Game %>
  <%= render 'dashboard/index/create_game' %>
 <% else %>
  <%= render "dashboard/index/stats" %>

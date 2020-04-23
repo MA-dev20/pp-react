@@ -97,4 +97,9 @@ Rails.application.routes.draw do
   put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
   get 'delete/:type/:list/:id', to: 'customize#deleteEntry', as: 'delete_entry'
   get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
+	
+  #Comments
+  post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'
+  post 'turns/:turn_id/comments/:comment_id/update', to: 'comments#update', as: 'update_comment'
+  get 'turns/:turn_id/comments/:comment_id/destroy', to: 'comments#destroy', as: 'destroy_comment'
 end

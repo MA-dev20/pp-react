@@ -10,7 +10,13 @@
     <%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
   </head>
-
+ <style>
+	:root {
+	  --custcolor: <%= @root.company.color1[0] %>,<%= @root.company.color1[1] %>, <%= @root.company.color1[2] %>;
+	  --btncolor: <%= @root.company.color2[0] %>,<%= @root.company.color2[1] %>, <%= @root.company.color2[2] %>;
+	}
+	
+</style>
   <body>
    	<section id="navbar">
    		<div class="dropdown" onclick="toggleDropdown()">

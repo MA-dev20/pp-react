@@ -114,7 +114,7 @@ class GameMobileController < ApplicationController
 	  else
 	    @turn.game_turn_ratings.each do |tr|
 		  @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
-		  new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating)
+		  new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating).round
 		  if @rating
 		    old_rating = @rating.rating
 		    @rating.update(rating: new_rating, change: new_rating - old_rating)
@@ -122,7 +122,7 @@ class GameMobileController < ApplicationController
 		    @user.user_ratings.create(rating_criterium: tr.rating_criterium, rating: new_rating, change: new_rating)
 		  end
 		end
-		new_rating = @user.user_ratings.average(:rating)
+		new_rating = @user.user_ratings.average(:rating).round
 		old_rating = @user.ges_rating
 		@user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
 		@turn.update(played: true)
