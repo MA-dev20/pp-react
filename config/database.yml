@@ -86,8 +86,13 @@ production:
   username: peterpitch
   password: rCmMVs3GfPHkyLNK
 
-  #
 staging:
+  <<: *default
+  database: peterpitch_production
+  username: peterpitch
+  password: rCmMVs3GfPHkyLNK
+
+dev:
   <<: *default
   database: peterpitch_production
   username: peterpitch
