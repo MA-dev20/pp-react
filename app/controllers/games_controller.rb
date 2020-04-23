@@ -14,27 +14,27 @@ class GamesController < ApplicationController
   def customize
 	if @game.update(game_params)
 	  @CL = params[:game][:word_list] if params[:game][:word_list]
-	  @CL = [CatchwordList.find_by(name: 'Peters Catchwords').id] if !@CL
-	  if !@CL
+	  if !@CL && CatchwordList.find_by(name: 'Peters Catchwords').nil?
 		flash[:alert] = 'Bitte Lade erst Catchworte hoch!'
-		redirect_to dashboard_path
+		redirect_to backoffice_path
 		return
 	  end
+	  @CL = [CatchwordList.find_by(name: 'Peters Catchwords').id] if !@CL
 	  build_catchwords(@game, @CL)
 	  @OL = params[:game][:objection_list] if params[:game][:objection_list]
-	  @OL = [ObjectionList.find_by(name: 'Peters Einwände').id] if !@OL
-	  if !@CL
+	  if !@OL && ObjectionList.find_by(name: 'Peters Einwände').nil?
 		flash[:alert] = 'Bitte Lade erst Objections hoch!'
-		redirect_to dashboard_path
+		redirect_to backoffice_path
 		return
 	  end
+	  @OL = [ObjectionList.find_by(name: 'Peters Einwände').id] if !@OL
 	  build_objections(@game, @CL)
-	  if !game_params[:rating_list_id] && RatingList.find_by(name: 'Peters Scores').id
-	    @game.update(rating_list_id: RatingList.find_by(name: 'Peters Scores').id) if !game_params[:rating_list_id]
-	  else
+	  if !game_params[:rating_list_id] && RatingList.find_by(name: 'Peters Scores').nil?
 		flash[:alert] = 'Bitte Lade erst Ratings hoch!'
-		redirect_to dashboard_path
-		return
+		redirect_to backoffice_path
+		return  
+	  else
+	    @game.update(rating_list_id: RatingList.find_by(name: 'Peters Scores').id) if !game_params[:rating_list_id]
 	  end
 	  game_login @game
 	  redirect_to gd_join_path(@game)
