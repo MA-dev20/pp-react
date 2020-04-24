@@ -17,7 +17,7 @@
 						<td><%= l.name %></td>
 						<td><%= l.catchwords.count %></td>
 						<td class="edit"><%= link_to '', '', class: 'far fa-edit' %></td>
-						<td class="remove"><%= link_to '', '', class: 'far fa-trash-alt' %></td>
+						<td class="remove"><%= link_to '', delete_list_path('word', l.id), class: 'far fa-trash-alt' %></td>
 					</tr>
 					<% end %>
 				</tbody>
@@ -29,7 +29,8 @@
 <div class="right">
 	<div class="card">
 		<h3>Worte</h3>
-		<%= form_for(:entry, url: list_add_sound_path(@list, type: 'word'), html: {id: 'new_word'}) do |f| %>
+		<% if @list %>
+		<%= form_for(:entry, url: list_add_sound_path(list_id: @list.id, type: 'word'), html: {id: 'new_word'}) do |f| %>
 			<label for="entry_sound" class="add-circle"><i class="fas fa-plus-circle"></i></label>
 			<%= f.file_field :sound, multiple: true, onchange: 'submitForm()', style: "display: none" %>
 		<% end %>
@@ -53,20 +54,21 @@
 				</tbody>
 			</table>
 		</div>
+		<% end %>
+		<script>
+			new PerfectScrollbar('#catchwords');
+			function submitForm() {
+				$('#new_word').submit();
+			}
+			function play(id) {
+				document.getElementById(id).play();
+				$('#play_'+id+' .fas').removeClass('fa-play-circle');
+				$('#play_'+id+' .fas').addClass('fa-pause-circle');
+			}
+			function end(id) {
+				$('#play_'+id+' .fas').removeClass('fa-pause-circle');
+				$('#play_'+id+' .fas').addClass('fa-play-circle');
+			}
+		</script>
 	</div>
-	<script>
-		new PerfectScrollbar('#catchwords');
-		function submitForm() {
-			$('#new_word').submit();
-		}
-		function play(id) {
-			document.getElementById(id).play();
-			$('#play_'+id+' .fas').removeClass('fa-play-circle');
-			$('#play_'+id+' .fas').addClass('fa-pause-circle');
-		}
-		function end(id) {
-			$('#play_'+id+' .fas').removeClass('fa-pause-circle');
-			$('#play_'+id+' .fas').addClass('fa-play-circle');
-		}
-	</script>
 </div>
