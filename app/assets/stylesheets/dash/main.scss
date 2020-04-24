@@ -1568,36 +1568,15 @@ select:-moz-focusring {
     text-shadow: 0 0 0 #000;
 }
 
-
-.rate-type {
-	label {font-weight: normal;padding-top: 2vh;}
-	.form-group {
-		margin-bottom: 0;
-		label {
-			padding-top: 0;
-			font-size: 1.6vh;
-			font-weight: normal;
-			i {
-				float: right;
-				color: rgb(var(--btncolor));
-			}
-			i.fa-dot-circle {
-				display: none;
-			}
-			i.fa-circle {
-				padding-top: 1vh;
-				display: inline-block;
-			}
-		}
-		input[type="radio"] {display: none;}
-		input[type="radio"]:checked ~ label {
-			i.fa-dot-circle {
-				padding-top: 1vh;
-				display: inline-block;
-			}
-			i.fa-circle {
-				display: none;
-			}
-		}
+.checkbox-container {
+	margin-bottom: 1.5vh;
+	.far {
+		color: rgb(var(--btncolor));
+	}
+	.far:hover {
+		cursor: pointer;
+	}
+	label {
+		padding-left: 0.5em;
 	}
 }

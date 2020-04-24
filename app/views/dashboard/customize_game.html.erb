@@ -79,38 +79,30 @@
 				<% end %>
 			</div>
 		</div>
-		<div class="rate-type">
-        	<label for="">Function before Pitch</label>
-        	<div class="form-group">
-        		<input type="radio" id="skip_election" onclick="handleElection(this)" name="game[skip_elections]" value="true">
-        		<label for="skip_election">
-        			Skip Election
-        			<i class="far fa-dot-circle"></i><i class="far fa-circle"></i>        		
-        		</label>
-        	</div>
-        </div>
+		<div class="checkbox-container">
+			<%= f.hidden_field(:skip_elections) %>
+			<div class="form-group">
+				<i class="far fa-square"></i>
+				<label for="">Skip Election before Pitch</label>
+			</div>
+		</div>
 		</div>
 		<%= f.submit 'starten!', class: 'btn btn-green' %>
 	<% end %>
 </div>
 
 <script>
-	var radioState = false;
-    function handleElection(element){
-        if(radioState == false) {
-            check();
-            radioState = true;
-        }else{
-            uncheck();
-            radioState = false;
-        }
-    }
-    function check() {
-        document.getElementById("skip_election").checked = true;
-    }
-    function uncheck() {
-        document.getElementById("skip_election").checked = false;
-    }
+
+	$('.far').on('click', function() {
+		if ($(this).hasClass('fa-square')) {
+			$(this).removeClass('fa-square').addClass('fa-check-square')
+            $('#game_skip_elections').attr('value', 'true')
+		} else {
+			$(this).removeClass('fa-check-square').addClass('fa-square')
+            $('#game_skip_elections').attr('value', 'false')
+		}
+	})
+
 	new PerfectScrollbar("#scroll");
 	function timeUp() {
 		var value = $('#game_game_seconds').val();
