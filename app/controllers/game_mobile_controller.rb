@@ -70,8 +70,12 @@ class GameMobileController < ApplicationController
   def set_state
 	if params[:state] == "choose" && @game.state != "choose"
 	  if @game.game_turns.playable.count >= 2
-        @turns = @game.game_turns.playable.sample(2)
-	  	@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		@turns = @game.game_turns.playable.sample(2)
+		if @game.skip_elections
+			@game.update(state: 'turn', turn1: nil, turn2: nil, current_turn: @turns.first.id, active: false)		
+		else  
+			@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		end
 	  elsif @game.game_turns.playable.count == 1
 		@game.update(state: 'turn', turn1: nil, turn2: nil, current_turn: @game.game_turns.playable.first.id, active: false)
 	  else

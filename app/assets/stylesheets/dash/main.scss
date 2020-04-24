@@ -1567,3 +1567,38 @@ select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
 }
+
+
+.rate-type {
+	padding-right: 2vh;
+	label {font-weight: normal;padding-top: 2vh;}
+	.form-group {
+		margin-bottom: 0;
+		label {
+			padding-top: 0;
+			font-size: 1.6vh;
+			font-weight: normal;
+			i {
+				float: right;
+				color: rgb(var(--btncolor));
+			}
+			i.fa-dot-circle {
+				display: none;
+			}
+			i.fa-circle {
+				padding-top: 1vh;
+				display: inline-block;
+			}
+		}
+		input[type="radio"] {display: none;}
+		input[type="radio"]:checked ~ label {
+			i.fa-dot-circle {
+				padding-top: 1vh;
+				display: inline-block;
+			}
+			i.fa-circle {
+				display: none;
+			}
+		}
+	}
+}
