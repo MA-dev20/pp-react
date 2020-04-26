@@ -1,0 +1,33 @@
+<div class="head">
+	<h1>Tolle Runde</h1>
+	<h3>Willst du nochmal pitchen?</h3>
+</div>
+<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
+<div class="middle">
+	<%= image_tag @admin.avatar.url, class: 'custom-border' %>
+	<div class="switch reverse">
+		<%= f.check_box :play, checked: true, id: 'turn_play' %>
+		<label for="turn_play">
+			<div class="checkbox"><div class="dot"></div></div>
+			<div class="text">Ich möchte selbst nicht pitchen, <br>
+			sondern nur bewerten</div>
+		</label>
+	</div>
+</div>
+<div class="bottom">
+	<%= link_to 'beenden', gm_ended_path, class: 'btn inverted' %>
+	<%= f.submit 'beitreten', class: 'btn' %>
+</div>
+<% end %>
+<% if flash[:alert] %>
+<div class="popup">
+	<h1>FEHLER!</h1>
+	<i class="fas fa-times close" onclick="toggleModal()"></i>
+	<div class="text">Bitte warte bis das Spiel gestartet wurde</div>
+</div>
+<script>
+	function toggleModal() {
+		$('.popup').hide();
+	}
+</script>
+<% end %>

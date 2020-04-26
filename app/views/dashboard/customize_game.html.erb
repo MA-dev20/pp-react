@@ -111,22 +111,24 @@
 		var value = $('#game_game_seconds').val();
 		if (value < 300) {
 			value = parseInt(value);
-			value = value + 10;
+			value = value + 5;
 			var min = Math.floor(value / 60).toString();
 			var sec = Math.floor(value % 60).toString();
 			if (sec == '0') {sec = '00'}
+			if (sec == '5') {sec = '05'}
 			$('#settime').text(min + ':' + sec);
 			$('#game_game_seconds').val(value);
 		}
 	}
 	function timeDown() {
 		var value = $('#game_game_seconds').val();
-		if (value > 20) {
+		if (value > 10) {
 			value = parseInt(value);
-			value = value - 10;
+			value = value - 5;
 			var min = Math.floor(value / 60).toString();
 			var sec = Math.floor(value % 60).toString();
 			if (sec == '0') {sec = '00'}
+			if (sec == '5') {sec = '05'}
 			$('#settime').text(min + ':' + sec);
 			$('#game_game_seconds').val(value);
 		}

@@ -3,7 +3,7 @@
 	<h1>Deine Bewertung</h1>
 </section>
 <section id="middle">
-	<div class="ratings">
+	<div class="ratings" style="<%= @turn.comments.count == 0 ? "left: 5vw" : '0'%>">
 		<% if @turn.game_turn_ratings.count >= 1 %>
 			<% @rating1 = @turn.game_turn_ratings.first %>
 			<div class="rating-cat">
@@ -61,9 +61,20 @@
 			</div>
 		<% end %>
 	</div>
-	<div class="ges-rating">
+	<div class="ges-rating" style="<%= @turn.comments.count == 0 ? "left: 66.5vw" : '0'%>">
 		<div class="rating" id="ges_rating">?</div>
 		<%= image_tag @turn.user.avatar.url %>
+		<svg viewBox="0 0 100 100" id="ges_rating_svg">
+			<circle cx="50" cy="50" r="48" stroke-width="4" stroke="rgb(var(--custcolor))" fill="none" stroke-dasharray="0 1000"></circle>
+		</svg>
+	</div>
+	<div class="ratings_comments">
+		<% @turn.comments.last(5).each do |c| %>
+		<div class="comment">
+			<%= image_tag c.user.avatar.url %>
+			<div class="text"><%= c.text %></div>
+		</div>
+		<% end %>
 	</div>
 </section>
 <section id="skip">
@@ -106,11 +117,15 @@
 			var i = 0.05;
 			MyApp.bar = setInterval(function() {
 				$('#ges_rating').text(Number(<%= @turn.ges_rating.nil? ? 0 : @turn.ges_rating / 10.0 %> * i).toFixed(1));
+				var stroke_arr = Number(<%= 301.59 * (@turn.ges_rating.nil? ? 0 : @turn.ges_rating / 100.0) %> * i).toFixed(0);
+				$('#ges_rating_svg circle').attr("stroke-dasharray", "" + stroke_arr + " 1000");
 				i = i + 0.025;
 			}, 100)
 			setTimeout(function() {
 				clearInterval(MyApp.bar);
 				$('#ges_rating').text(Number(<%= @turn.ges_rating.nil? ? 0 : @turn.ges_rating / 10.0 %>).toFixed(1));
+				var stroke_arr = Number(<%= 301.59 * (@turn.ges_rating.nil? ? 0 : @turn.ges_rating / 100.0) %>).toFixed(0);
+				$('#ges_rating_svg circle').attr("stroke-dasharray", "" + stroke_arr +" 1000");
 			}, 4000)												   
 		}
 	});

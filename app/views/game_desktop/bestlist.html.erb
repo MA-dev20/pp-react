@@ -40,6 +40,7 @@
 		<div class="rang">3</div>
 	</div>
 </div>
+<div class="confetti" id="confetti"></div>
 </section>
 <section id="skip">
 	Beenden mit Leertaste
@@ -48,9 +49,22 @@
 <script>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('theme').play();
+	setTimeout(function() {
+		confetti();
+	}, 8000);
 	$(window).keypress(function (e) {
         if (e.key === ' ' || e.key === 'Spacebar') {
             window.location.replace('<%= gd_set_state_path('', state: 'ended') %>');
         };
     })
+	function confetti(){
+    var flakes = '',
+        randomColor;
+    var colors=new Array(["#EDE275"],["#FFFFFF"],["#1ddaaf"],["#1a8ed6"]);
+    for(var i = 0, len = 400; i < len; i++) {
+        randomColor = colors[Math.floor(Math.random()*4)];
+        flakes += '<div class="ball" style="background: '+randomColor+'; animation-duration: '+(Math.random() * 9 + 2)+'s; animation-delay: '+(Math.random() * 2 + 0)+'s; transform: translate3d(0,0,0) rotate3d(0,'+Math.random()+',1,'+Math.floor(Math.random()*180)+'deg);"></div>';
+    }
+        document.getElementById('confetti').innerHTML = flakes;
+    };
 </script>

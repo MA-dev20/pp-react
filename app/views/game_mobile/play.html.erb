@@ -2,16 +2,44 @@
 <% @omenu = true %>
 <div class="head">
 	<h1><%= @turn.user.fname %> pitcht!</h1>
-	<% if params[:process] %>
-	<h3>Das Pitch-Video wird in einem Hintergrund Tab hochgeladen. Du kannst hier einfach weiterspielen.</h3>
-	<% end %>
+	<h3><% if params[:process] %>Das Pitch-Video wird in einem Hintergrund Tab hochgeladen. Du kannst hier einfach weiterspielen.<% end %></h3>
 </div>
 <div class="middle">
-	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+	<div class="emojis">
+		<div class="emoji" onclick="sendEmoji('&#x1f680;')">&#x1f680;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f4aa;')">&#x1f4aa;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f60e;')">&#x1f60e;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f43a;')">&#x1f43a;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1F910;')">&#x1F910;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f393;')">&#x1f393;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f44c;')">&#x1f44c;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f634;')">&#x1f634;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f929;')">&#x1f929;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f37e;')">&#x1f37e;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f9e0;')">&#x1f9e0;</div>
+		<div class="emoji" onclick="sendEmoji('&#x1f4b8;')">&#x1f4b8;</div>
+	</div>
+	<%= form_for(:comment, url: new_comment_path(@turn), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
+	<%= f.hidden_field :time, value: nil %>
+	<%= f.hidden_field :user_id, value: @admin.id %>
+	<%= f.hidden_field :positive, value: 'neutral' %>
+	<div class="form-group single-line">
+		<%= f.text_field :text, placeholder: 'Feedback senden!', class: 'form-field', maxlength: "30"%>
+		<i class="far fa-paper-plane" onclick='submitComment()'></i>
+		<div class="info30">Max 30 Zeichen</div>
+	</div>
+	<% end %>
+</div>
+<div class="dots">
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
 </div>
 <div class="bottom">
 	<% if @turn.record_pitch && @admin.role != 'user'%>
-		<% if params[:process] %>
+		<% if params[:process] && @game.state != 'play' %>
+			<% redirect_to gm_game_path %>
+		<% elsif params[:process] %>
 			<%= link_to 'Pitch beenden!', gm_set_state_path('', state: 'rate'), class: 'btn custom-btn', id: 'pitch-btn' %>
 		<% else %>
 			<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
@@ -22,18 +50,108 @@
 	<% end %>
 </div>
 <script>
+	function sendEmoji(emoji, id) {
+		$('#'+id).addClass('emoji_send');
+		$.ajax({
+			url: "<%= gm_send_emoji_url.to_s %>?emoji=" + emoji,
+			type: 'put',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		});
+	}
+	$('.emoji_send').on('animationend', function() {
+		this.removeClass()
+	})
+	function submitComment() {
+		$('#comment_form').submit();	
+	}
+	$('#comment_form').submit(function(e) {
+		e.preventDefault();
+		$('#comment_text').removeClass('red');
+		if( $('#comment_text').val().length > 30) {
+			$('#comment_text').addClass('red');
+			$('#comment_text').val('');
+			$('#comment_text').attr('placeholder', 'Bitte nicht mehr als 30 Zeichen!')
+		} else if($('#comment_text').val().length != 0){
+		var form = $(this);
+		var url = "<%= new_comment_path(@turn, site: 'game') %>";
+		$.ajax({
+			type: 'post',
+			url: url,
+			data: form.serialize(),
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(data) {
+				$("#comment_text").val('');
+			}
+		})
+		}
+	})
 	$('#video-btn').click(function(e) {
 		e.preventDefault();
 		App.videoInProgress = true;
+		setTimeout(function() {
+		$.ajax({
+			url: "<%= gm_set_timer_url(timer: "start") %>",
+			type: 'put',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		});
+		}, 2000)
 		$('#pitch_video').click();
 	})
+	var commentTimer = NaN;
+	App.commentTimer = startCommentTimer();
+	App.commentTimer.pause();
 	$('#pitch_video').on('change', function(e) {
-		let file = e.target.files[0];
+		$.ajax({
+			url: "<%= gm_set_timer_url(timer: "stop") %>",
+			type: 'put',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		});
+	 	App.commentTimer.stop();
 		App.videoInProgress = false;
+		let file = e.target.files[0];
 		let blobURL = URL.createObjectURL(file)
 		uploadVideo(blobURL, file);
 	})
-	
+	function startCommentTimer() {
+		commentTimer = 0;
+		var setTimer = setInterval(function() {
+			commentTimer++;
+			$('#comment_time').val(commentTimer);
+			console.log(commentTimer);
+		}, 1000)
+		var pause = function() { clearInterval(setTimer) };
+		var resume = function() {
+			setTimer = setInterval(function() {
+				commentTimer++;
+				$('#comment_time').val(commentTimer);
+				console.log(commentTimer);
+			}, 1000)
+		}
+		var restart = function() {
+			commentTimer = 0;
+			$('#comment_time').val(commentTimer);
+			setTimer = setInterval(function() {
+				commentTimer++;
+				$('#comment_time').val(commentTimer);
+				console.log(commentTimer);
+			}, 1000)
+		}
+		var stop = function() {
+			clearInterval(setTimer);
+			commentTimer = NaN;
+			$('#comment_time').val('');
+		}
+		return {pause: pause , resume: resume, restart: restart, stop: stop }
+	}
 	function uploadVideo(blobUrl, file) {
 		App.game.unsubscribe();
 		var file1 = new window.File([file], ['pitch_', (new Date() + '').slice(4, 28), '.mp4'].join(''));
@@ -41,6 +159,7 @@
 		form.append('file', file1);
 		window.open("<%= gm_game_url('', process: true) %>", '_blank');
 		$('.head h1').text('Video Upload');
+		$('.head h3').text('Tab nicht schließen!');
 		$('.bottom').hide();
 		var URL = "<%= upload_pitch_url(@turn) %>"; 
 		$.ajax({
@@ -51,6 +170,10 @@
 			contentType: false,
 			processData: false,
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				$('.head h1').text('Video Upload fertig!');
+				$('.head h3').text('Du kannst den Tab nun schließen!');
+			}
 		});
 	}
 </script>

@@ -27,16 +27,35 @@
 		</div>
 		<%= image_tag 'game/illus/finger.svg', class: 'hand' %>
 	</div>
+	<div class="timer-left fadeInLeft" id="rate_timer">
+    	15s
+    </div>
 </section>
 <section id="skip">
 	Skip mit Leertaste
 </section>
 <%= audio_tag(rate_sound, autoplay: true, id: "theme") %>
 <script>
+	setTimeout(function() {
+		beginTimer();
+	},1000);
+	function beginTimer() {
+		var seconds = 15;
+		var beginTimer = setInterval(function() {
+			$('#rate_timer').text(seconds + 's');
+			if (seconds == 0) {
+			  redirect();
+			}
+			seconds--;
+		},1000)
+	}
+	function redirect() {
+		window.location.replace('<%= gd_set_state_path('', state: 'rating') %>');
+	}
 	document.getElementById('theme').volume = 0.2;
 	$(window).keypress(function (e) {
         if (e.key === ' ' || e.key === 'Spacebar') {
-            window.location.replace('<%= gd_set_state_path('', state: 'rating') %>');
+            redirect();
         };
     }) 
 	$('input[type="range"]').rangeslider({

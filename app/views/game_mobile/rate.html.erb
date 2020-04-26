@@ -1,44 +1,34 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
-<% if @turn.ratings.find_by(user: @admin) %>
-<div class="head">
-	<h1>Bewertung abgegeben!</h1>
-</div>
-<div class="middle">
-	<div class="text">
-		Aktuell haben den Pitch bewertet: <br>
-		<span><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_turns.count - 1).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s %></span>
+<% if @turn.ratings.find_by(user: @admin) || @turn.user == @admin %>
+	<div class="head">
+		<% if @turn.user == @admin %>
+			<h1>Du wirst bewertet!</h1>
+		<% else %>
+			<h1>Bewertung abgegeben!</h1>
+		<% end %>
 	</div>
-</div>
-<div class="dots" style="top: 60vh;">
-	<div class="dot"></div>
-	<div class="dot"></div>
-	<div class="dot"></div>
-</div>
-<div class="bottom">
 	<% if @admin.role != 'user' %>
-	<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
-	<% end %>
-</div>
-<% elsif @turn.user == @admin %>
-<div class="head">
-	<h1>Du wirst bewertet!</h1>
-</div>
-<div class="middle">
-	<div class="text">
-		Aktuell haben den Pitch bewertet: <br>
-		<span><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_turns.count - 1).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s %></span>
+	<div class="middle">
+		<div class="text">
+			Aktuell haben den Pitch bewertet: <br>
+			<span id="rating_count"><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_turns.count - 1).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s %></span>
+		</div>
 	</div>
-</div>
-<div class="dots" style="top: 60vh;">
-	<div class="dot"></div>
-	<div class="dot"></div>
-	<div class="dot"></div>
-</div>
-<div class="bottom">
-	<% if @admin.role != 'user' %>
-	<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
+	<div class="dots" style="top: 60vh;">
+		<div class="dot"></div>
+		<div class="dot"></div>
+		<div class="dot"></div>
+	</div>
+	<div class="bottom">
+		<% if @admin.role != 'user' %>
+		<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
+		<% end %>
+	</div>
+	<% else %>
+		<div class="middle">
+			<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+		</div>
 	<% end %>
-</div>
 <% else %>
 <div class="head">
 	<h1>Jetzt <%= @turn.user.fname %> bewerten!</h1>

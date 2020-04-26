@@ -98,6 +98,7 @@
 			<h5>Kommentare</h5>
 			<div class="card" id="comment-card">
 				<% @comments.each do |c| %>
+					<% if c.time < @video.duration %>
 					<div class="comment">
 						<div class="user">
 							<% cmin = (c.time / 60) < 10 ? '0' + (c.time / 60).round.to_s : (c.time / 60).round.to_s %>
@@ -111,6 +112,7 @@
 							<div class="dot <%= c.positive %>"></div><%= c.text %>
 						</div>
 					</div>
+					<% end %>
 				<% end %>
 			</div>
 			<div class="comment-form">

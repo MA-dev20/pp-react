@@ -27,7 +27,10 @@
 	<% seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s %>
 	<%= minutes + ":" + seconds %>
 </div>
-<svg class="background-img" preserveAspectRatio="none" viewBox="0 0 750 500" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<div class="comments" id="game_comments">
+</div>
+
+<svg class="background-img zoom-bg-img" preserveAspectRatio="none" viewBox="0 0 750 500" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <path opacity="0.5" d="M95.5 66.9L33.9 0H16.3L95.5 66.9ZM0 93.7V106.1L66.9 112.3L0 93.7ZM626.4 67.5L659.5 0H644.9L626.4 67.5ZM0 481.5V500H7.6L117.4 374.8L0 481.5ZM106.4 43.2L94.6 0H85.3L106.4 43.2ZM721.4 0L637.3 91.2L745.4 0H721.4ZM128.2 414.7L58.9 500H77.3L128.2 414.7ZM750 470.4L636.8 367.5L750 496.6V470.4ZM659.1 108.2L750 62.4V44.7L659.1 108.2ZM605.1 432.7L613.2 500H629.6L605.1 432.7ZM149.1 440L127.3 500H141.9L149.1 440ZM626 407.4L681.2 500H701.2L626 407.4Z" fill="rgb(var(--custcolor))"/>
 <rect x="20" y="148" width="65" height="61" fill="url(#pattern0)"/>
 <rect x="682" y="288" width="68" height="22" fill="url(#pattern1)"/>
@@ -45,12 +48,12 @@
 <image id="image1" width="121" height="39" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHkAAAAnCAYAAAArfufOAAAEqElEQVR4nO2cW2hcVRSGv5kkWrXWNInYRG1Nq1VrvYNWrRdQ8aFqvdIXUby8SJ9UFBF8Ep8UH0RBiiCIgnilogjihQqxeMELtQq19UZTtW2aRJPa1DaRBd/AoDZzmplhbvuDQ2Ym55w55/x7rb33WmtP7sanhyliNjDm26OAUeAyYAD4m0RD0u5F3wn8BMwDLlDU24FB4GygE7gZ+CzJ3HiEyLcBDwELgS3AImC1d7JL614PnJREbkxC5OMUODgB+AJ4FLgQeB3o1sq/bfWH1aiEyIVOOfrirVrzOgU+FJho9YfU6OSBucAU8B0wB7gUeMD7SgI3AfmiW9gAPAlMKvI9rf5wmoVw15uAHPAb8BywF3gYGGn1h9MshMhfei/htrcDa4BfgZda/eE0C3ktOFjq3/EkcHMRIs8ysrUY6Gj1B9KMhMiH6Z5jZH1iqz+QZiT65N3AH4rdk+EeY79zdOvfAPta/SHWOyHyEPC1gZBtGa73GuA+4BfgCUOeeadeiTqkkKBYo8hDJS4xZ2QsMlQ3AQuAR4CPMxybqBFtS1Y8iBYcbnt/hssIkT9U6Cvd5jtKH0xC1h8FkTG0mYUQeYdh0JzJjQiFXmIcfCJZdX1RLPLBEBb/O/Cpbv4Y4CzgXOBoB3LbDqLhJKrITEUuECPsr4BXgS7gVCtJlpiLHnMOnqgh+Qp99ajx7juA16wmedaBWaLGtFfw6yPu/ZHu+0enVMMZjktUmUqKHPwFbAQeV+SdScDaU2mRC2zPuF97iphVn0r1yTMhCgTvBa53zp2oEtWy5CxcbXg06rk/Ad4C3k0BlcpT7hSqHDpMb55hLjsCKlcARwJ7ivLciTKppcgRFXtFKw6P0gecAizXhff7+eYUVCmPfy+TqSWnA3cDF2ndKO4HwJsWGSZmQD2JXCCSHasU+zyg18/Dlb9f+8trPGo58DoQkad+zIhZhEjPt4/OkvToSAvz/ks9ilwgXMwbwNvGxUsNxKIvP8QGMWlf3/J9OXUucoG9GUfa1wF3Ad9rzVtcnTlgxqzH9OiUKdKWaQCNIHJWBkx39pvjjiW4tyjwei183Ph6LN77vDFuq2zyzSRyLNL72YKGFRYxxIrN433d5X6rjLHHMqAXS5wz5ux/+voIG0nQVlRFUy9eodNVL0v1Yr2uSN3QTCLvcguecTvTuXfE0k8DVtpvz/bz6YgS5avcNjpf77MhbbYBDfl+vsmYrAGcXsug8TxbXUHabbHFyZ57p0UYO6Y5V4h7OXCDJVxzLN7Y5DmvrccpVDWYpbvOKXyXdWrTWeCxVrF2arkjljbFsT/4vtvuYNBES6wle6/E9a92fLDYkuZ+hYyB4jKvadTuJrqWF/RSB6LbxrDbrcfKnDHve14zWfJ07PF/U1ayZCEs7SnF2KfrXqTL3m/1y6RryJbZEEq5/z6rW+d67GTRuGilXcOInmHcGcPzJc4ZFn+rAaS1lmL1GEC6OAahrWLJ5ZDTtQ9rKcsVYFS3OKE48fn9Jb5nofstcKyw1qBPm9YaXuYdG0G8ftnxQ1aR/vdHA5LIM6N4sHWwv8ZQ+FWlEDYIr3C4DSgoDuiUP6gD/gE1sxLEap2xMgAAAABJRU5ErkJggg=="/>
 </defs>
 </svg>
-<%= image_tag 'game/illus/polygon_texture.svg', class: 'background-polygon' %>
+<%= image_tag 'game/illus/polygon_texture.svg', class: 'background-polygon fadeInMiddle50Once' %>
 <div class="background-dots">
-	<div class="dot"></div>
-	<div class="dot cust"></div>
-	<div class="dot cust"></div>
-	<div class="dot"></div>
+	<div class="dot fadeInMiddle50Once"></div>
+	<div class="dot cust fadeInMiddle50Once"></div>
+	<div class="dot cust fadeInMiddle50Once"></div>
+	<div class="dot fadeInMiddle50Once"></div>
 </div>
 </section>
 <%= audio_tag 'game/play/aufbau.mp3', id: 'start' %>
@@ -84,6 +87,12 @@
 				document.getElementById('word_load').play();
 				$('#word').text("<%= @turn.catchword.name %>");
 				textanim();
+				$(".background-img").removeClass('zoom-bg-img');
+				$(".background-img").addClass('bg-animation');
+				$('.background-dots .dot:first-child').removeClass('fadeInMiddle50Once');
+				$('.background-dots .dot:nth-child(2)').removeClass('fadeInMiddle50Once');
+				$('.background-dots .dot:nth-child(3)').removeClass('fadeInMiddle50Once');
+				$('.background-dots .dot:nth-child(4)').removeClass('fadeInMiddle50Once');
 			}
 			seconds--;
 		},1000)
@@ -131,7 +140,7 @@
 			} else if (timer == 2) {
 				document.getElementById('theme').pause;
 			} else if (timer == 0) {
-				
+				redirect();
 			}
 		}, 1000);
 		

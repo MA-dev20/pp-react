@@ -1,7 +1,7 @@
 <div class="pitch-videos">
-	<div class="card">
+	<div class="card" >
 		<h3>Pitch Videos</h3>
-		<div class="videos">
+		<div class="videos" id="pitch-videos">
 			<% @pitches.each do |p| %>
 			<div class="card">
 			<div class="thumb">
@@ -32,3 +32,6 @@
 		</div>
 	</div>
 </div>
+<script>
+	new PerfectScrollbar('#pitch-videos')
+</script>

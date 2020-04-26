@@ -50,14 +50,13 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="users">
 					<% @users.each do |u| %>
-					<tr>
+					<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>">
 						<td class="img"><%= image_tag u.avatar.url %></td>
 						<td><%= u.fname %> <%= u.lname %></td>
 						<td><%= u.email %></td>
-						<td class="edit"> <i class="far fa-edit"></i></td>
-						<td class="remove"> <i class="far fa-trash-alt"></i></td>
+						<td class="remove" onclick="makeUser(<%= u.id %>)"> <i class="far fa-trash-alt"></i></td>
 					</tr>
 					<% end %>
 				</tbody>
@@ -65,3 +64,48 @@
 		</div>
 	</div>
 </div>
+
+
+<script>
+	function dropCompanyAdmin(e) {
+		e.preventDefault();
+		var uID = e.dataTransfer.getData('ID');
+		makeCAdmin(uID);
+	}
+	function allowDrop(ev) {
+		ev.preventDefault();
+	}
+	function drag(e) {
+		e.dataTransfer.setData('ID', e.target.getAttribute('data-id'))
+	}
+	function makeCAdmin(uID) {
+		var url = '/users/'+ uID + '/company_admin';
+		$.ajax({
+			url: url,
+			type: "put",
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				$('#company_admins').append($('#user_'+uID));
+			}
+		})
+	}
+	function makeUser(uID) {
+		var url = '/users/'+ uID +'/make_user';
+		$.ajax({
+			url: url,
+			type: "put",
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				$('#users').append($('#user_'+uID));
+			}
+		})
+	}
+</script>

@@ -1,10 +1,18 @@
 <div class="head">
+	<% if @admin.avatar? %>
 	<h1>Wow!</h1>
 	<h3>Drücke auf "weiter" oder auf das <br> Bild für einen neuen Versuch!</h3>
+	<% else %>
+	<h1>Bild auswählen!</h1>
+	<h3>Drücke auf den Wolf um ein Bild von dir hinzuzufügen!</h3>
+	<% end %>
 </div>
-<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
 <div class="middle">
-	<%= image_tag @admin.avatar.url, class: 'custom-border' %>
+	<input type="file" id="avatar" style="display: none">
+	<label for="avatar">
+	<%= image_tag @admin.avatar.url, class: 'custom-border', id: 'avatar-img' %>
+	</label>
+<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
 	<div class="switch reverse">
 		<%= f.check_box :play, checked: true, id: 'turn_play' %>
 		<label for="turn_play">
@@ -22,7 +30,7 @@
 <div class="popup">
 	<h1>FEHLER!</h1>
 	<i class="fas fa-times close" onclick="toggleModal()"></i>
-	<div class="text">Bitte warte bis das Spiel gestartet wurde</div>
+	<div class="text"><%= flash[:alert] %></div>
 </div>
 <script>
 	function toggleModal() {
@@ -30,3 +38,25 @@
 	}
 </script>
 <% end %>
+<script>
+	$("#avatar").change(function(e) {
+		var date = new Date().getTime();
+		var file = e.target.files[0]
+		var formData = new FormData();
+		formData.append('file', file, 'avatar_'+date+'.' + file.type);
+		var url = '<%= update_avatar_user_path(@admin) %>';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				window.location.reload();
+			}
+		})
+	})
+</script>

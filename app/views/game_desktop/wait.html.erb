@@ -16,7 +16,7 @@
 		<div class="handy">
 			<%= image_tag 'game/illus/hand.svg', id: 'hand' %>
 			<div class="qr-code-wrapper">
-				<%= generate_qr("#{request.host_with_port}/1234567890123456789").html_safe %>
+				<%= generate_qr("#{request.host_with_port}/#{@game.password}").html_safe %>
 			</div>
 		</div>
 	</div>

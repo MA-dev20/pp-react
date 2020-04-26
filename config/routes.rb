@@ -58,11 +58,13 @@ Rails.application.routes.draw do
   
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'	
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
+  put 'mobile/game/set_timer', to: 'game_mobile#set_timer', as: 'gm_set_timer'
+  put 'mobile/game/send_emoji', to: 'game_mobile#send_emoji', as: 'gm_send_emoji'
   get 'mobile/game/choosen', to: 'game_mobile#choosen', as: 'gm_choosen'
   post 'mobile/game/objection', to: 'game_mobile#objection', as: "gm_objection"
   get 'mobile/game/set_state', to: 'game_mobile#set_state', as: "gm_set_state"
-  get 'mibile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
-  get 'mibile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
+  get 'mobile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
+  get 'mobile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
 	
   # GAMES
   post 'games/create', to: 'games#create', as: 'new_game'
@@ -85,6 +87,8 @@ Rails.application.routes.draw do
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
+  put 'users/:user_id/company_admin', to: 'users#company_admin', as: 'make_company_admin'
+  put 'users/:user_id/make_user', to: 'users#user', as: 'make_user'
 	
   #Customize
   post 'lists/new', to: 'customize#new_list', as: 'new_list'
