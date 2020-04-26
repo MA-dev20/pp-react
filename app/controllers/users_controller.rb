@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :check_user
-  before_action :set_user, only: [:edit, :edit_avatar, :destroy]
+  before_action :check_user, except: [:edit_avatar]
+  before_action :set_user, only: [:edit, :edit_avatar, :destroy, :company_admin, :user]
   def create
 	authorize! :create, User
 	@teamAll = @admin.teams.find_by(name: 'all')
@@ -26,7 +26,6 @@ class UsersController < ApplicationController
   end
 	
   def edit_avatar
-	authorize! :update, @user
 	@user.update(avatar: params[:file]) if params[:file].present? && @user.present?
 	render json: {file: @user.avatar.url}
   end
@@ -42,6 +41,15 @@ class UsersController < ApplicationController
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
   end
 	
+  def company_admin
+	@user.update(role: "company_admin")
+	render json: {user: @user}
+  end
+	
+  def user
+	@user.update(role: "company_admin")
+	render json: {user: @user}
+  end
   private
 	def user_params
 	  params.require(:user).permit(:fname, :lname, :email, :avatar)

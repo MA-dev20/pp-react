@@ -3,7 +3,13 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:update, :destroy]
   def create
 	@comment = @turn.comments.create(comment_params)
-	redirect_to dashboard_pitch_video_path(@turn)
+	if params[:site] == 'game'
+	  @game = @turn.game
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, comment_user_avatar: @comment.user.avatar.url
+	  render json: {comment: @comment.text}
+	else
+	  redirect_to dashboard_pitch_video_path(@turn)
+	end
   end
 	
   def update

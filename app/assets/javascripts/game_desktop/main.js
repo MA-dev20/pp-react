@@ -87,7 +87,7 @@ const options = {
   // Initial position
   offset: 0,
   // Timeout between each random character
-  timeout: 15,
+  timeout: 10,
   // Number of random characters to show
   iterations: 10,
   // Random characters to pick from

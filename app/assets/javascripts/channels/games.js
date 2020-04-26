@@ -13,10 +13,19 @@ jQuery(document).ready(function() {
 			  return console.log('disconnected');
 		  },
           received: function(data) {
-			  if(App.videoInProgress && data['game_state'] == 'changed') {
+			  if(App.videoInProgress == true && data['game_state'] == 'changed') {
 				  
-			  } if(data['game_state'] == 'changed'){
+			  } else if(data['game_state'] == 'changed'){
 				  return window.location.reload();
+			  }
+			  if(data['rating'] == 'added' && $('#rating_count').length > 0) {
+				  $('#rating_count').text(data['rating_count']);
+			  }
+			  if(data['comment_timer'] == 'start') {
+				  App.commentTimer.restart();
+			  }
+			  if(data['comment_timer'] == 'stop') {
+				  App.commentTimer.stop();
 			  }
 		  }
 		});

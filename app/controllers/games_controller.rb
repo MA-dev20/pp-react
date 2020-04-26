@@ -92,7 +92,15 @@ class GamesController < ApplicationController
 	else
 	@turn = @game.game_turns.new(turn_params) if !@turn
 	@turn.user = @user
+	@catchwords = @game.catchword_list.catchwords.order("RANDOM()").map{ |c| c.id }
+	@game.game_turns.each do |t|
+	  @catchwords.delete(t.catchword_id)
+	end
+	if @catchwords.length != 0
+	@turn.catchword_id = @catchwords.first
+	else
 	@turn.catchword = @game.catchword_list.catchwords.order("RANDOM()").first
+	end
 	@turn.team = @game.team
 	if @turn.save
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
@@ -110,8 +118,12 @@ class GamesController < ApplicationController
 	@user = current_game_user
 	params[:rating].each do |r|
 	  @rating = @turn.ratings.find_by(rating_criterium_id: r.first, user: @user)
-	  @rating.update(rating: r.last) if @rating
-	  @rating = @turn.ratings.create(rating_criterium_id: r.first, user: @user, rating: r.last) if !@rating
+	  if @rating
+	  	@rating.update(rating: r.last) if @rating
+	  else
+	  	@rating = @turn.ratings.create(rating_criterium_id: r.first, user: @user, rating: r.last)
+		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s)
+	  end
 	end
 	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_turns.count - 1)
 	  redirect_to gm_set_state_path('', state: 'rating')
@@ -134,6 +146,7 @@ class GamesController < ApplicationController
 	@video.user = current_game_user
 	@video.game_turn = @turn
 	flash[:alert] = 'Konnte Video nicht uploaden!' if !@video.save
+	render json: {file: @video.video.url}
   end
 	
   private

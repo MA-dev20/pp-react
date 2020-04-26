@@ -27,7 +27,7 @@ body {
 	color: rgb(var(--custcolor));
 	box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.15);
 	background-color: white;
-	z-index: 1000;
+	z-index: 1200;
 	.logo, .company, .objection-btn {
 		position: absolute;
 		margin: 1.5vh;
@@ -103,7 +103,7 @@ body {
 	width: 100vw;
 	color: gray;
 	animation-name: fadeIn;
-	animation-duration: 2s;
+	animation-duration: .5s;
 	animation-iteration-count: 1;
 	z-index: 1000;
 	.head {
@@ -127,6 +127,23 @@ body {
 		width: 100%;
 		text-align: center;
 		line-height: 10vh;
+		.emojis {
+			position: absolute;
+			top: calc(11.25vh - 15vw);
+			left: 5vw;
+			height: 15vw;
+			width: 90vw;
+			.emoji {
+				float: left;
+				border-radius: 50%;
+				line-height: 10vw;
+				font-size: 6vw;
+				text-align: center;
+				background-color: white;
+				height: 10vw; width: 10vw;
+				margin: 2.5vw;
+			}
+		}
 		.text span {
 			font-size: 5vh;
 		}
@@ -156,7 +173,7 @@ body {
 			opacity: 0;
 			animation-name: opacity;
 			animation-duration: 1s;
-			animation-delay: 2s;
+			animation-delay: .5s;
 			animation-iteration-count: 1;
 			animation-fill-mode: forwards;
 			input:checked ~ label .checkbox {
@@ -207,7 +224,7 @@ body {
 			opacity: 0;
 			animation-name: opacity;
 			animation-duration: 1s;
-			animation-delay: 2s;
+			animation-delay: .5s;
 			animation-iteration-count: 1;
 			animation-fill-mode: forwards;
 			label .checkbox {
@@ -230,6 +247,18 @@ body {
 			text-align: center;
 			width: 100%;
 			line-height: 5vh;
+			i.far {
+				position: absolute;
+				right: 0;
+				top: .25vh;
+				margin: .25vh 12vw.25vh 0;
+				height: 5vh;
+				line-height: 5vh;
+				font-size: 3vh;
+				background-color: transparent;
+				color: rgb(var(--custcolor));
+				border: none;
+			}
 			.rangeVal {
 				float: right;
 				margin-right: 10vw;
@@ -267,6 +296,10 @@ body {
 				border: .5px solid rgb(var(--custcolor));
 				box-shadow: 0 0 0 rgba(0, 0, 0, 0)
 			}
+			.info30 {
+				font-size: 1vh;
+				font-weight: normal;
+			}
 			.form-field {
 				font-family: 'Nunito', sans-serif !important;
 				display: inline-block;
@@ -288,6 +321,13 @@ body {
 				font-family: 'Nunito', sans-serif  !important;
 				color: #212529;
 				opacity: .4;
+			}
+			.form-field.red {
+				border: 1px solid red;
+			}
+			.form-field.red::placeholder {
+				color: red;
+				opacity: 1;
 			}
 			.radio-label {
 				display: inline-block;
@@ -357,6 +397,11 @@ body {
 	text-decoration: none;
 	font-family: 'BarackPro-Solid' !important;
 	background-color: rgb(var(--custcolor));	
+}
+.btn.inverted {
+	color: rgb(var(--custcolor));
+	background-color: white;
+	margin-bottom: 1vh;
 }
 .pulse {
 	animation: pulse 1.5s infinite;

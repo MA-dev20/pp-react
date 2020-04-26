@@ -6,7 +6,7 @@
 	
 	<div class="card">
 		<h3>Unternehmen Admins</h3>
-		<div class="table" id="company_admin-table">
+		<div class="table" id="company_admin-table" ondrop="dropCompanyAdmin(event)" ondragover="allowDrop(event)">
 			<table>
 				<thead>
 					<tr>
@@ -16,18 +16,18 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="company_admins">
 					<% @cAdmins.each do |u| %>
-					<tr>
+					<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>">
 						<td class="img"><%= image_tag u.avatar.url %></td>
 						<td><%= u.fname %> <%= u.lname %></td>
 						<td><%= u.email %></td>
-						<td class="edit"> <i class="far fa-edit"></i></td>
-						<td class="remove"> <i class="far fa-trash-alt"></i></td>
+						<td class="remove" onclick="makeUser(<%= u.id %>)"> <i class="far fa-trash-alt"></i></td>
 					</tr>
 					<% end %>
 				</tbody>
 			</table>
+			<div class="comment">Nutzer hier hinziehen, um sie zum Unternehmens Admin zu machen!</div>
 		</div>
 	</div>
 </div>

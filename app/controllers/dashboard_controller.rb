@@ -46,13 +46,13 @@ class DashboardController < ApplicationController
 	@game = Game.find(params[:game_id])
 	@team = @game.team
 	@uCL = @admin.catchword_lists.order('name')
-	@cCL = @company.catchword_lists.order('name')
+	@cCL = @company.catchword_lists.where.not(user: @admin).order('name')
 	@pCL = CatchwordList.where(company_id: nil, user_id: nil, game_id: nil).order('name')
 	@uOL = @admin.objection_lists.order('name')
-	@cOL = @company.objection_lists.order('name')
+	@cOL = @company.objection_lists.where.not(user: @admin).order('name')
 	@pOL = ObjectionList.where(company_id: nil, user_id: nil, game_id: nil).order('name')
 	@uRL = @admin.rating_lists.order('name')
-	@cRL = @company.rating_lists.order('name')
+	@cRL = @company.rating_lists.where.not(user: @admin).order('name')
 	@pRL = RatingList.where(company_id: nil, user_id: nil).order('name')
   end
 	
@@ -166,7 +166,8 @@ class DashboardController < ApplicationController
 		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
 		  seconds = t.pitch_video.duration % 60
 		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t.catchword, user: t.user, rating: t.ges_rating / 10.0}
+		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
+		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t.catchword, user: t.user, rating: rating}
 	  	end
 	  end
 	end
@@ -179,7 +180,7 @@ class DashboardController < ApplicationController
 	@ratings = @turn.game_turn_ratings
 	@own_ratings = @turn.ratings.where(user: @admin).all
 	@video = @turn.pitch_video
-	@comments = @turn.comments.order(:time)
+	@comments = @turn.comments.where.not(time: nil).order(:time)
   end
 	
   private

@@ -41,6 +41,14 @@ jQuery(document).ready(function() {
 				  $('#content').prepend(userDiv);
 				  startObjectionTimer();
 			  }
+			  if (data['comment'] == true) {
+				  var userDiv = '<div class="comment"><img src="'+data['comment_user_avatar']+'"><div class="text-bg">'+data['comment_text']+'</div><div class="text">'+data['comment_text']+'</div></div>';
+				  $('#game_comments').append(userDiv);
+			  }
+			  if (data["emoji"] == true) {
+				  var userDiv = '<div class="comment"><img src="'+data['user_avatar']+'"><div class="emoji">'+data["emoji_icon"]+'</div>'
+				  $('#game_comments').append(userDiv);
+			  }
 		  }
 		});
 		$(window).bind('beforeunload', function(){
