@@ -34,11 +34,12 @@ class UsersController < ApplicationController
     authorize! :destroy, @user
 	@company = @user.company
 	if @user == @company.users.first
-	  flash[:alert] = 'Du kannst diesen User nicht löschen, lösche das Unternehmen!'
+	  flash[:alert] = 'Du kannst diesen User nicht löschen!'
 	else
 	  flash[:alert] = 'Konnte User nicht löschen!' if !@user.destroy
 	end
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
+	redirect_to dashboard_teams_path if params[:site] == 'dashboard'
   end
 	
   def company_admin
@@ -47,7 +48,7 @@ class UsersController < ApplicationController
   end
 	
   def user
-	@user.update(role: "company_admin")
+	@user.update(role: "user")
 	render json: {user: @user}
   end
   private

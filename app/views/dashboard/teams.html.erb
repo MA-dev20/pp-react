@@ -7,6 +7,7 @@
 	<% if params[:edit] == 'true' %>
 	<div class="card" id="editTeam">
 		<h3><%= link_to '', dashboard_team_path(@team), class: 'fas fa-arrow-left back' %>Team bearbeiten!</h3>
+		<%= link_to '', destroy_team_path(@team, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
 		<%= form_for(:team, url: edit_team_path(@team)) do |f| %>
 			<div class="form-group">
 				<label for="">Teamname</label>
@@ -106,6 +107,7 @@
 	<% if @user %>
 	<div class="card" id="editUser">
 		<h3><%= link_to '', dashboard_teams_path, class: 'fas fa-arrow-left back' %>Edit User</h3>
+		<%= link_to '', destroy_user_path(@user, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
 		<%= form_for(:user, url: edit_user_path(@user, site: 'dashboard_teams')) do |f| %>
 			<div class="form-group avatar">
 				<label for="user_avatar">

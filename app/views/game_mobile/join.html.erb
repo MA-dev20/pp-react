@@ -1,10 +1,10 @@
 <div class="head">
 	<% if @admin.avatar? %>
 	<h1>Wow!</h1>
-	<h3>Drücke auf "weiter" oder auf das <br> Bild für einen neuen Versuch!</h3>
+	<h3>Drücke auf "Pitch beitreten" oder auf das <br> Bild für einen neuen Versuch!</h3>
 	<% else %>
 	<h1>Bild auswählen!</h1>
-	<h3>Drücke auf den Wolf um ein Bild von dir hinzuzufügen!</h3>
+	<h3>Drücke auf den Wolf, um ein Bild von dir hinzuzufügen!</h3>
 	<% end %>
 </div>
 <div class="middle">
@@ -23,7 +23,7 @@
 	</div>
 </div>
 <div class="bottom">
-	<%= f.submit 'beitreten', class: 'btn custom-btn' %>
+	<%= f.submit 'Pitch beitreten', class: 'btn custom-btn' %>
 </div>
 <% end %>
 <% if flash[:alert] %>

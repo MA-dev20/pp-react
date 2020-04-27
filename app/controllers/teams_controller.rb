@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :check_user
-  before_action :set_team, only: [:edit, :add_user, :delete_user]
+  before_action :set_team, only: [:edit, :add_user, :delete_user, :destroy]
   def create
 	authorize! :create, Team
 	@team = @company.teams.new(team_params)
@@ -21,6 +21,11 @@ class TeamsController < ApplicationController
 	redirect_to dashboard_team_path(@team)
   end
 	
+  def destroy
+	authorize! :destroy, @team
+	flash[:alert] = 'Konnte Team nicht löschen!' if !@team.destroy
+	redirect_to dashboard_teams_path if params[:site] == "dashboard"
+  end
 	
   def add_user
 	authorize! :edit, @team
@@ -34,6 +39,7 @@ class TeamsController < ApplicationController
 	@team.users.delete(@user)
 	redirect_to dashboard_team_path(@team, edit: 'true') if params[:site] = "dashboard_team_edit"
   end
+	
 	
   private
 	def team_params

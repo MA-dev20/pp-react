@@ -99,6 +99,19 @@ class CustomizeController < ApplicationController
 	redirect_to dashboard_customize_path('', words: 'dont') if params[:word][:dont]
   end
 	
+  def deleteDoAndDont
+	@words = @admin.do_and_dont
+	if params[:do] == "do"
+	  @words.does = @words.does.without(params[:word])
+	  @words.save
+	  redirect_to dashboard_customize_path
+	elsif params[:do] = "dont"
+	  @words.donts = @words.donts.without(params[:word])
+	  @words.save
+	  redirect_to dashboard_customize_path('', words: 'dont')
+	end
+  end
+	
   def recordWord
 	@word = Catchword.find(params[:id])
     @word.update(sound: params[:file]) if params[:file].present? &&  @word.present?

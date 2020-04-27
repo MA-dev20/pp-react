@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   #TEAM
   post 'teams/create', to: 'teams#create', as: 'new_team'
   post 'teams/:team_id/edit', to: 'teams#edit', as: 'edit_team'
+  get 'teams/:team_id/destroy', to: 'teams#destroy', as: 'destroy_team'
   put 'teams/:team_id/add/user/:user_id', to: 'teams#add_user'
   get 'teams/:team_id/delete/user/:user_id',to: 'teams#delete_user', as: 'delete_user_from_team'
 	
@@ -101,6 +102,7 @@ Rails.application.routes.draw do
   put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
   get 'delete/:type/:list/:id', to: 'customize#deleteEntry', as: 'delete_entry'
   get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
+  get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
 	
   #Comments
   post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'

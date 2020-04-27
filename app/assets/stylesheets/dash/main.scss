@@ -482,6 +482,14 @@ body {
 			h3 {
 				text-align: left;
 			}
+			.deleteEdit {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 2vh;
+				color: rgba(0,0,0,.2);
+				font-size: 3vh;
+			}
 			position: relative;
 			margin-top: 1.5vh;
 			width: 55.95vh;

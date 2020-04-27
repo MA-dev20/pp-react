@@ -451,7 +451,7 @@
 					<% @admin.do_and_dont.does.each do |dw| %>
 					<tr>
 						<td><%= dw %></td>
-						<td><i class="far fa-trash-alt delete"></i></td>
+						<td><%= link_to "", delete_doAndDont_path(word: dw, do: "do"), class: 'far fa-trash-alt delete' %></td>
 					</tr>
 					<% end end %>
 				</tbody>
@@ -464,7 +464,7 @@
 					<% @admin.do_and_dont.donts.each do |dw| %>
 					<tr>
 						<td><%= dw %></td>
-						<td><i class="far fa-trash-alt delete"></i></td>
+						<td><%= link_to "", delete_doAndDont_path(word: dw, do: "dont"), class: 'far fa-trash-alt delete' %></td>
 					</tr>
 					<% end end %>
 				</tbody>
