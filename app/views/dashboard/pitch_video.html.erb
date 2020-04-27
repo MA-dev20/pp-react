@@ -55,10 +55,12 @@
 					<div class="bar"><div class="fill" style="width: <%= r.rating %>%"></div></div>
 				</div>
 			<% end %>
+			<% if @own_ratings.count != 0 %>
 			<div class="switch" onclick="toggleRatings()">
 				<div class="dot"></div>
 			</div>
 			<div class="switch-text">&#216;	Bewertung</div>
+			<% end %>
 			<div class="ges-rating">
 				<div class="rate">
 					<%= @turn.ges_rating / 10.0 %>

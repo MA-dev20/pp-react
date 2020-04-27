@@ -103,7 +103,8 @@ class GamesController < ApplicationController
 	end
 	@turn.team = @game.team
 	if @turn.save
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
+	  @count = @game.game_turns.where(play: true).count
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @count, avatar: @user.avatar.url, state: @game.state
 	  redirect_to gm_game_path
 	else
 	  flash[:alert] = 'Konnte nicht beitreten!'
@@ -151,7 +152,7 @@ class GamesController < ApplicationController
 	
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections)
+	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)

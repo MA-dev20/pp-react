@@ -7,13 +7,22 @@
 	</h3>
 	<%= form_for(:game, url: customize_game_path(@game)) do |f| %>
 		<div id="scroll">
-		<div class="form-group">
-			<label for="">Deine Zeit</label>
+		<div class="form-group half-left-time">
+			<label for="">Zeit pro Pitch</label>
 			<div class="time-field">
 				<%= f.hidden_field :game_seconds, value: 80 %>
 				<div class="time" id="settime">1:20</div>
 				<i class="fa fa-angle-up up" onclick="timeUp()"></i>
 				<i class="fa fa-angle-down down" onclick="timeDown()"></i>
+			</div>
+		</div>
+		<div class="form-group half-right-time">
+			<label for="">Max. Anzahl Pitches</label>
+			<div class="time-field">
+				<%= f.hidden_field :max_users, value: 0 %>
+				<div class="time" id="setusers">&infin;</div>
+				<i class="fa fa-angle-up up" onclick="userUp()"></i>
+				<i class="fa fa-angle-down down" onclick="userDown()"></i>
 			</div>
 		</div>
 		<div class="form-group" id="catchwords">
@@ -131,6 +140,28 @@
 			if (sec == '5') {sec = '05'}
 			$('#settime').text(min + ':' + sec);
 			$('#game_game_seconds').val(value);
+		}
+	}
+	function userUp() {
+		var value = $('#game_max_users').val();
+		value = parseInt(value);
+		value++;
+		$('#game_max_users').val(value);
+		$('#setusers').text(value);
+	}
+	function userDown() {
+		var value = $('#game_max_users').val();
+		var infinite = "&infin;";
+		value = parseInt(value);
+		if (value == 0) {
+			$('#setusers').html(infinite);
+		} else if (value == 1) {
+			$('#setusers').html(infinite);
+			$('#game_max_users').val(0);
+		} else {
+			value--;
+			$('#game_max_users').val(value);
+			$('#setusers').text(value);
 		}
 	}
 	function showCL() {

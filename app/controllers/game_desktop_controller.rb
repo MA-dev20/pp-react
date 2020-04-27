@@ -29,12 +29,10 @@ class GameDesktopController < ApplicationController
 	
   def set_state
 	if params[:state] == "choose" && @game.state != "choose"
-	  if @game.game_turns.playable.count >= 2
-        @turns = @game.game_turns.playable.sample(2)
-	  	@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
-	  elsif @game.game_turns.playable.count == 1
-		@game.update(state: 'turn', current_turn: @game.game_turns.playable.first.id, active: false)
-	  else
+	  if @game.game_turns.playable.count == 0 || (@game.game_turns.where(played: true).count == @game.max_users && @game.max_users != 0)
+		@game.game_turns.playable.each do |gt|
+		  gt.update(ges_rating: nil)
+		end
 		@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
 	    place = 1
 	    @turns.each do |t|
@@ -42,6 +40,17 @@ class GameDesktopController < ApplicationController
 		  place += 1
 	    end
 		@game.update(state: 'bestlist')
+	  elsif (@game.game_turns.where(played: true).count == (@game.max_users - 1) && @game.max_users != 0) || @game.game_turns.playable.count == 1
+		@game.update(state: 'turn', current_turn: @game.game_turns.playable.first.id, active: false)
+	  else
+        @turns = @game.game_turns.playable.sample(2)
+	  	@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
+	    place = 1
+	    @turns.each do |t|
+		  t.update(place: place)
+		  place += 1
+	    end
 	  end
 	elsif params[:state] == 'turn' && @game.state != "turn"
 	  @turn1 = GameTurn.find(@game.turn1) if @game.turn1
@@ -110,7 +119,7 @@ class GameDesktopController < ApplicationController
 	  @game.update(state: 'repeat')
 	  ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
 	  temp = Game.where(password: @game.password, state: 'wait', active: true).first
-	  temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list) if temp.nil?
+	  temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list, skip_elections: @game.skip_elections, max_users: @game.max_users) if temp.nil?
 	  build_objections(temp, [@game.objection_list.id]) if temp.objection_list.nil?
 	  build_catchwords(temp, [@game.catchword_list.id]) if temp.catchword_list.nil?
 	  game_login temp
