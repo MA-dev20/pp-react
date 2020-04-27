@@ -20,36 +20,52 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	line-height: 7vh;
+	line-height: 40px;
 	width: 100vw;
-	font-size: 2.5vh;
+	font-size: 20px;
 	text-align: center;
 	color: rgb(var(--custcolor));
 	box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.15);
 	background-color: white;
 	z-index: 1200;
-	.logo, .company, .objection-btn {
+	.nav-i {
 		position: absolute;
-		margin: 1.5vh;
-		height: 4vh;
+		box-sizing: border-box;
+		right: 35px;
+		margin: 5px;
+		line-height: 30px;
+		width: 30px; height: 30px;
+		font-size: 15px;
+		color: rgb(var(--custcolor));
+		border-radius: 50%;
+		border: 1px solid rgb(var(--custcolor));
+		text-decoration: none;
+	}
+	.logo, .company {
+		position: absolute;
+		margin: 10px;
+		height: 20px;
 	}
 	.logo {left: 0;}
 	.company {right: 0;}
 	.objection-btn {
-		top: 0;
-		right: 0;
-		height: 2.5vh;
+		position: absolute;
+		display: block;
+		box-sizing: border-box;
+		top: 0; right: 0;
+		height: 30px; width: 30px;
+		margin: 5px;
 		border-radius: 50%;
 		border: 1px solid rgb(var(--custcolor));
-		padding: .6vh 0;
+		padding: 7px 0;
 		cursor: pointer;
 		span {
 			display: block;
 			background-color: rgb(var(--custcolor));
-			width: 2.5vh;
-			height: .4vh;
-			margin: .4vh .75vh;
-			border-radius: .5vh;
+			width: 18px;
+			height: 2px;
+			margin: 2px 5px;
+			border-radius: 1px;
 		}
 	}
 }
@@ -108,15 +124,16 @@ body {
 	z-index: 1000;
 	.head {
 		position: absolute;
-		margin-top: 10vh;
+		margin-top: 60px;
 		width: 100%;
 		text-align: center;
 		h1 {
-			margin-bottom: 0;
-			font-size: 4vh;
+			margin: 0;
+			font-size: 25px;
 		}
 		h3 {
 			margin-top: 1vh;
+			font-size: 15px;
 			font-weight: normal;
 		}
 	}
@@ -129,19 +146,23 @@ body {
 		line-height: 10vh;
 		.emojis {
 			position: absolute;
-			top: calc(11.25vh - 15vw);
+			top: calc(50% - 15vw);
 			left: 5vw;
 			height: 15vw;
 			width: 90vw;
 			.emoji {
 				float: left;
 				border-radius: 50%;
-				line-height: 10vw;
-				font-size: 6vw;
+				line-height: 12vw;
+				font-size: 10vw;
 				text-align: center;
 				background-color: white;
-				height: 10vw; width: 10vw;
-				margin: 2.5vw;
+				height: 12vw; width: 12vw;
+				margin: 1.5vw;
+				box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
+			}
+			.emoji_send {
+				animation: emoji .15s 1 forwards;
 			}
 		}
 		.text span {
@@ -358,6 +379,7 @@ body {
 		}
 	}
 	.dots {
+		margin-top: 5vh;
 		height: 12vh;
 		width: 100%;
 		position: absolute;
@@ -380,6 +402,69 @@ body {
 		bottom: 10vh;
 		width: 100%;
 		text-align: center;
+		.form-group {
+			position: absolute;
+			bottom: -10vh;
+			text-align: center;
+			width: 100%;
+			line-height: 5vh;
+			i.far {
+				position: absolute;
+				right: 0; bottom: 0;
+				height: 50px; width: 50px;
+				line-height: 50px;
+				font-size: 20px;
+				background-color: transparent;
+				color: rgb(var(--custcolor));
+				opacity: .4;
+				border-left: 1px solid rgba(0,0,0,.1);
+			}
+			.form-field {
+				font-family: 'Nunito', sans-serif !important;
+				display: inline-block;
+				position: relative;
+				top: 0;
+				line-height: 5vh;
+				height: 50px;
+				font-size: 15px;
+				color: #212529;
+				background-color: white;
+				width: 100%;
+				margin: 0;
+				border: none;
+				padding: 0 1vh 0 1vh;
+				box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
+			}
+			.form-field::placeholder {
+				font-family: 'Nunito', sans-serif  !important;
+				color: #212529;
+				opacity: .4;
+			}
+			.form-field.red {
+				border: 1px solid red;
+			}
+			.form-field.red::placeholder {
+				color: red;
+				opacity: 1;
+			}
+			.radio-label {
+				display: inline-block;
+				line-height: 5vh;
+				padding: 1vh;
+				border-radius: 5vh;
+				font-size: 2vh;
+				cursor: pointer;
+				border: 6px solid white;
+			}
+			.radio-label {
+				margin: 5vh 0;
+			}
+			input[type=radio] {display: none}
+			input[type=radio]:checked ~ .radio-label {
+				border-color: #1ddaaf;
+    			box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+			}
+		}
 	}
 }
 .btn {
@@ -453,6 +538,17 @@ body {
 @keyframes opacity {
 	to {
 		opacity: 1;
+	}
+}
+@keyframes emoji {
+	0% {transform: scale(1, 1)}
+	70% {
+		box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+		transform: scale(1.1, 1.1);
+	}
+	100% {
+		box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+		transform: scale(1, 1);
 	}
 }
 *:focus {outline: none;}

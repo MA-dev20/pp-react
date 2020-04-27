@@ -7,6 +7,10 @@
 </div>
 <div class="bottom">
 	<% if @admin.role != 'user' %>
-	<%= link_to 'zum nächsten Pitch', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>
+		<% if @game.game_turns.playable.count == 0 || (@game.game_turns.where(played: true).count == @game.max_users && @game.max_users != 0) %>
+			<%= link_to 'zur Bestenliste', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>
+		<% else %>
+		<%= link_to 'zum nächsten Pitch', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>
+		<% end %>
 	<% end %>
 </div>

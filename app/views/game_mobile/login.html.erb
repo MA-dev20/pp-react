@@ -1,10 +1,10 @@
 <div class="head">
 	<h1>Wie ist deine E-Mail?</h1>
 </div>
-<%= form_for(:user, url: email_game_path(@game), html: {autocomplete: 'off'}) do |f| %>
+<%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
 <div class="middle">
 	<div class="form-group single-line">
-		<%= f.email_field :email, placeholder: 'E-Mail', class: 'form-field' %>
+		<%= f.email_field :email, placeholder: 'E-Mail', oninput: "inputEmail()", class: 'form-field', onclick: "openKeyboard()" %>
 	</div>
 </div>
 <div class="dots">
@@ -17,3 +17,24 @@
 	<%= f.submit 'weiter', class: 'btn' %>
 </div>
 <% end %>
+<script>
+	function openKeyboard() {
+		if ($('.bottom .form-group').length == 0) {
+		var userDiv = '<div class="form-group"><i class="far fa-paper-plane" id="email_submit" onclick="submitEmail()"></i></div>'
+		$('.bottom .btn').hide();
+		$('.bottom').append(userDiv);
+		$('.bottom .form-group').prepend($('#user_email'))
+		$('#user_email').focus();
+		}
+	}
+	function inputEmail() {
+		if ($('#user_email').val() == '') {
+		  $("#email_submit").css({ opacity: .4 });
+		} else {
+		  $("#email_submit").css({ opacity: 1 });
+		}
+	}
+	function submitEmail() {
+		$('#email_form').submit();
+	}
+</script>

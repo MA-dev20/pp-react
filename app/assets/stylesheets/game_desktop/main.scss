@@ -512,17 +512,18 @@ body {
 					top: 50vh;
 					line-height: 4vh;
 					font-weight: bold;
-					font-size: 2.5vh;
-					width: 100%;
+					font-size: 2vh;
+					margin: 0 .25vw;
+					width: 12vw;
 					overflow: hidden;
-					text-overflow: clip;
-					white-space: nowrap;
+					text-overflow: ellipsis;
+					white-space: nowrap ;
 				}
 			}
 		}
 		.ges-rating {
 			position: absolute;
-			top: 0;
+			top: 5vh;
 			left: 50vw;
 			width: 18vw;
 			height: 80vh;
@@ -533,8 +534,9 @@ body {
 				width: 100%;
 				color: rgb(var(--custcolor));
 				text-align: center;
-				font-size: 10vh;
+				font-size: 12vh;
 				line-height: 10vh;
+				height: 10vh;
 			}
 			img {
 				position: absolute;
@@ -558,7 +560,7 @@ body {
 		}
 		.ratings_comments {
 			position: absolute;
-			top: 0;
+			top: 5vh;
 			left: 70vw;
 			width: 30vw;
 			.comment {
@@ -566,7 +568,7 @@ body {
 				width: 20vw;
 				min-height: 3vh;
 				display: flex;
-				margin: 2vh 2vw;
+				margin: 0 2vw 4vh;
 				bottom: 0;
 				opacity: 1;
 				animation: moveInBottom 1s 1 forwards;

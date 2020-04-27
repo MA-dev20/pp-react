@@ -138,7 +138,7 @@ class GamesController < ApplicationController
 	flash[:alert] = 'Konnte Entscheidung nicht speichern!' if !@turn.update(turn_params)
 	@turn.game.update(state: "play")
 	ActionCable.server.broadcast "game_#{@turn.game.id}_channel", game_state: 'changed'
-	redirect_to gm_game_path
+	redirect_to gm_game_path('', pitch: 'record')
   end
 	
   def upload_pitch

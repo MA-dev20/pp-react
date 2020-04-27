@@ -1,13 +1,13 @@
 <div class="head">
 	<h1>Wie heißt du?</h1>
 </div>
-<%= form_for(:user, url: name_game_path(@game, @admin)) do |f| %>
+<%= form_for(:user, url: name_game_path(@game, @admin), html: {id: 'name_form'}) do |f| %>
 <div class="middle">
-	<div class="form-group two-line">
-		<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field' %>
+	<div class="form-group two-line" id="group_fname">
+		<%= f.text_field :fname, placeholder: 'Vorname', oninput: "inputName('fname')", class: 'form-field', onclick: "openKeyboard('fname')" %>
 	</div>
-	<div class="form-group two-line">
-		<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field' %>
+	<div class="form-group two-line" id="group_lname">
+		<%= f.text_field :lname, placeholder: 'Nachname', oninput: "inputName('lname')", class: 'form-field', onclick: "openKeyboard('lname')" %>
 	</div>
 </div>
 <div class="dots">
@@ -19,3 +19,64 @@
 	<%= f.submit 'speichern', class: 'btn' %>
 </div>
 <% end %>
+
+<script>
+	function openKeyboard(type) {
+		if( type == 'fname' ) {
+			if ($('.bottom .form-group').length == 0) {
+				var formDiv = '<div class="form-group"></div>';
+				$('.bottom').append(formDiv);
+				var userDiv = '<i class="far fa-paper-plane" id="fname_submit" onclick="submitName()"></i>';
+				$('.bottom .form-group').append(userDiv);
+				$('.bottom .btn').hide();
+				$('.bottom .form-group').prepend($('#user_fname'));
+				$('#user_fname').focus();
+			} else if( $('.bottom .form-group #user_lname').length != 0 ) {
+				$('.bottom .form-group i').remove();
+				$('.middle #group_lname').append($('#user_lname'))
+				var userDiv = '<i class="far fa-paper-plane" id="fname_submit" onclick="submitName()"></i>';
+				$('.bottom .form-group').append(userDiv);
+				$('.bottom .btn').hide();
+				$('.bottom .form-group').prepend($('#user_fname'));
+				$('#user_fname').focus();
+			}
+		} else if( type == 'lname' ) {
+			if ($('.bottom .form-group').length == 0) {
+				var formDiv = '<div class="form-group"></div>';
+				$('.bottom').append(formDiv);
+				var userDiv = '<i class="far fa-paper-plane" id="lname_submit" onclick="submitName()"></i>';
+				$('.bottom .btn').hide();
+				$('.bottom .form-group').append(userDiv);
+				$('.bottom .form-group').prepend($('#user_lname'));
+				$('#user_lname').focus();
+			} else if( $('.bottom .form-group #user_fname').length != 0 ){
+				$('.bottom .form-group i').remove();
+				$('.middle #group_fname').append($('#user_fname'))
+				var userDiv = '<i class="far fa-paper-plane" id="lname_submit" onclick="submitName()"></i>';
+				$('.bottom .btn').hide();
+				$('.bottom .form-group').append(userDiv);
+				$('.bottom .form-group').prepend($('#user_lname'));
+				$('#user_lname').focus();
+			}
+		}
+	}
+	function inputName(type) {
+		if($('#user_' + type).val() == '') {
+		  $("#"+type+"_submit").css({ opacity: .4 });
+		} else {
+		  $("#"+type+"_submit").css({ opacity: 1 });
+		}
+	}
+	function submitName() {
+		$('#name_form').submit();
+	}
+	$('#name_form').submit(function(e) {
+		if ($('#user_fname').val() == '') {
+			e.preventDefault();
+			openKeyboard('fname');
+		} else if ($('#user_lname').val() == '') {
+			e.preventDefault();
+			openKeyboard('lname');
+		}
+	})
+</script>

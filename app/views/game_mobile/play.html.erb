@@ -1,34 +1,35 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <% @omenu = true %>
+<div class="navbar-links">
+	<% if @turn.record_pitch && @admin.role != 'user' %>
+		<% if params[:process] && @game.state != 'play' %>
+			<% redirect_to gm_game_path %>
+		<% else %>
+			<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
+		<% end %>
+	<% elsif @admin.role != 'user' %>
+		<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
+	<% end %>
+</div>
 <div class="head">
 	<h1><%= @turn.user.fname %> pitcht!</h1>
 	<h3><% if params[:process] %>Das Pitch-Video wird in einem Hintergrund Tab hochgeladen. Du kannst hier einfach weiterspielen.<% end %></h3>
 </div>
 <div class="middle">
 	<div class="emojis">
-		<div class="emoji" onclick="sendEmoji('&#x1f680;')">&#x1f680;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f4aa;')">&#x1f4aa;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f60e;')">&#x1f60e;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f43a;')">&#x1f43a;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1F910;')">&#x1F910;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f393;')">&#x1f393;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f44c;')">&#x1f44c;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f634;')">&#x1f634;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f929;')">&#x1f929;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f37e;')">&#x1f37e;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f9e0;')">&#x1f9e0;</div>
-		<div class="emoji" onclick="sendEmoji('&#x1f4b8;')">&#x1f4b8;</div>
+		<div class="emoji" id='emoji_1' onanimationend="emojiEnd('emoji_1')" onclick="sendEmoji('&#x1f680;', 'emoji_1')">&#x1f680;</div>
+		<div class="emoji" id='emoji_2' onanimationend="emojiEnd('emoji_2')" onclick="sendEmoji('&#x1f4aa;', 'emoji_2')">&#x1f4aa;</div>
+		<div class="emoji" id='emoji_3' onanimationend="emojiEnd('emoji_3')" onclick="sendEmoji('&#x1f60e;', 'emoji_3')">&#x1f60e;</div>
+		<div class="emoji" id='emoji_4' onanimationend="emojiEnd('emoji_4')" onclick="sendEmoji('&#x1f43a;', 'emoji_4')">&#x1f43a;</div>
+		<div class="emoji" id='emoji_5' onanimationend="emojiEnd('emoji_5')" onclick="sendEmoji('&#x1F910;', 'emoji_5')">&#x1F910;</div>
+		<div class="emoji" id='emoji_6' onanimationend="emojiEnd('emoji_6')" onclick="sendEmoji('&#x1f393;', 'emoji_6')">&#x1f393;</div>
+		<div class="emoji" id='emoji_7' onanimationend="emojiEnd('emoji_7')" onclick="sendEmoji('&#x1f44c;', 'emoji_7')">&#x1f44c;</div>
+		<div class="emoji" id='emoji_8' onanimationend="emojiEnd('emoji_8')" onclick="sendEmoji('&#x1f634;', 'emoji_8')">&#x1f634;</div>
+		<div class="emoji" id='emoji_9' onanimationend="emojiEnd('emoji_9')" onclick="sendEmoji('&#x1f929;', 'emoji_9')">&#x1f929;</div>
+		<div class="emoji" id='emoji_10' onanimationend="emojiEnd('emoji_10')" onclick="sendEmoji('&#x1f37e;', 'emoji_10')">&#x1f37e;</div>
+		<div class="emoji" id='emoji_11' onanimationend="emojiEnd('emoji_11')" onclick="sendEmoji('&#x1f9e0;', 'emoji_11')">&#x1f9e0;</div>
+		<div class="emoji" id='emoji_12' onanimationend="emojiEnd('emoji_12')" onclick="sendEmoji('&#x1f4b8;', 'emoji_12')">&#x1f4b8;</div>
 	</div>
-	<%= form_for(:comment, url: new_comment_path(@turn), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
-	<%= f.hidden_field :time, value: nil %>
-	<%= f.hidden_field :user_id, value: @admin.id %>
-	<%= f.hidden_field :positive, value: 'neutral' %>
-	<div class="form-group single-line">
-		<%= f.text_field :text, placeholder: 'Feedback senden!', class: 'form-field', maxlength: "30"%>
-		<i class="far fa-paper-plane" onclick='submitComment()'></i>
-		<div class="info30">Max 30 Zeichen</div>
-	</div>
-	<% end %>
 </div>
 <div class="dots">
 	<div class="dot"></div>
@@ -36,20 +37,30 @@
 	<div class="dot"></div>
 </div>
 <div class="bottom">
-	<% if @turn.record_pitch && @admin.role != 'user'%>
-		<% if params[:process] && @game.state != 'play' %>
-			<% redirect_to gm_game_path %>
-		<% elsif params[:process] %>
-			<%= link_to 'Pitch beenden!', gm_set_state_path('', state: 'rate'), class: 'btn custom-btn', id: 'pitch-btn' %>
-		<% else %>
-			<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
-			<button class="btn custom-btn" id="video-btn">Kamera öffnen</button>
-		<% end %>
-	<% elsif @admin.role != 'user' %>
-		<%= link_to 'Pitch beenden!', gm_set_state_path('', state: 'rate'), class: 'btn custom-btn' %>
+	 <% if @turn.record_pitch && @admin.role != 'user' && params[:pitch] == 'record' %>
+	 	<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
+		<button class="btn custom-btn" id="video-btn">Kamera öffnen</button>
+	 <% else %>
+	<%= form_for(:comment, url: new_comment_path(@turn), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
+	<%= f.hidden_field :time, value: nil %>
+	<%= f.hidden_field :user_id, value: @admin.id %>
+	<%= f.hidden_field :positive, value: 'neutral' %>
+	<div class="form-group">
+		<%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", class: 'form-field', maxlength: "30"%>
+		<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
+	</div>
+	<% end %>
 	<% end %>
 </div>
 <script>
+	$('#navbar').append( $('.navbar-links a'));
+	function inputSend() {
+		if ($('#comment_text').val() == '') {
+		  $("#comment_submit").css({ opacity: .4 });
+		} else {
+		  $("#comment_submit").css({ opacity: 1 });
+		}
+	}
 	function sendEmoji(emoji, id) {
 		$('#'+id).addClass('emoji_send');
 		$.ajax({
@@ -61,9 +72,9 @@
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 		});
 	}
-	$('.emoji_send').on('animationend', function() {
-		this.removeClass()
-	})
+	function emojiEnd(id) {
+		$('#'+id).removeClass('emoji_send');
+	}
 	function submitComment() {
 		$('#comment_form').submit();	
 	}
