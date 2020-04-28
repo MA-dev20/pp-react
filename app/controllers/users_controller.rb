@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   def edit
 	authorize! :update, @user
 	flash[:alert] = 'Konnte User nicht updaten!' if !@user.update(user_params)
-	bypass_sign_in(@user)
+	bypass_sign_in(@user) if params[:site] == 'account'
 	redirect_to backoffice_company_path(@user.company_id) if params[:site] == 'backoffice_company'
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
 	redirect_to account_path if params[:site] == 'account'
