@@ -10,7 +10,10 @@
 <div class="middle">
 	<input type="file" id="avatar" style="display: none">
 	<label for="avatar">
-	<%= image_tag @admin.avatar.url, class: 'custom-border', id: 'avatar-img' %>
+	<svg id="avatar-svg" viewBox="0 0 100 100">
+		<circle cx="50" cy="50" r="45" stroke-width="10" stroke="rgb(var(--custcolor))" stroke-dasharray="0" fill="none"></circle>
+	</svg>
+	<%= image_tag @admin.avatar.url, id: 'avatar-img' %>
 	</label>
 <%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
 	<div class="switch reverse">
@@ -41,10 +44,13 @@
 <script>
 	$("#avatar").change(function(e) {
 		var date = new Date().getTime();
+		var filename = "avatar_" + date + '.jpg';
+		date = new Date().getTime();
 		var file = e.target.files[0]
 		var formData = new FormData();
-		formData.append('file', file, 'avatar_'+date+'.' + file.type);
+		formData.append('file', file, filename);
 		var url = '<%= update_avatar_user_path(@admin) %>';
+		$('#avatar-svg').addClass('loading');
 		$.ajax({
 			url: url,
 			type: 'put',

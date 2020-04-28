@@ -25,3 +25,95 @@
 	<%= f.submit 'speichern!', class: 'btn btn-green' %>
 	<% end %>
 </div>
+<div class="popup" id="popup">
+  	<div class="img-container">
+		<%= image_tag '', id: 'company_image' %>
+	</div>
+   	<div class="center">
+    	<div class="btn btn-green" id="crop">speichern</div>
+   	</div>
+   	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+</div>
+
+<script>
+	function showPopup() {$('#popup').show();}
+	function hidePopup() {$('#popup').hide();}
+	(function ($) {
+	  $.each(['show', 'hide'], function (i, ev) {
+	    var el = $.fn[ev];
+	    $.fn[ev] = function () {
+	      this.trigger(ev);
+	      return el.apply(this, arguments);
+	    };
+	  });
+	})(jQuery);
+	var inputLogo = document.getElementById('company_logo');
+	var image = document.getElementById('company_image');
+	
+	inputLogo.addEventListener("change", function(e) {
+		var files = e.target.files;
+		var done = function(url) {
+			inputLogo.value = '';
+			image.src = url;
+			$('#popup').show();
+		};
+		var reader, file, url;
+		if(files && files.length > 0) {
+			file = files[0];
+			if(URL) {
+				done(URL.createObjectURL(file));
+			} else if(FileReader) {
+				reader = new FileReader();
+				reader.onload = function(e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+	})
+	$('#popup').on('show', function() {
+		cropper = new Cropper(image, {});
+	})
+	$('#popup').on('hide', function() {
+		cropper.destroy();
+		cropper = null;
+	})
+	$('#crop').on('click', function() {
+		var initialURL, canvas;
+		if(cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			initalURL = logo.src;
+			logo.src = canvas.toDataURL();
+			canvas.toBlob(function(blob) {
+				var date = new Date().getTime();
+				var file = new window.File([blob], 'logo_'+date+'.jpg', {type: 'image/jpg'});
+				var formData = new FormData();
+				formData.append('file', file);
+				uploadImage('logo', formData);
+			});
+		};
+	})
+	function uploadImage(img, formData) {
+		var url = '<%= edit_logo_company_path(@company) %>';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				formData = new FormData();
+				$('#logo').data('url', res.file);
+				$('#popup').hide();
+			}
+		})
+		
+	}
+</script>

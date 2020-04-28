@@ -6,11 +6,11 @@ class DashboardController < ApplicationController
 	@team = Team.find(params[:team]) if params[:team]
 	
 	if @admin.ratings.count != 0 && @admin.role == 'user'
-	@user_ratings = []
+	@admin_ratings = []
 	@admin.user_ratings.each do |r|
-	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
+	  @admin_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
 	end
-	@user_ratings = @user_ratings.sort_by{|e| -e[:name]}
+	@admin_ratings = @admin_ratings.sort_by{|e| -e[:name]}
 	@days = 1
 	@turns = @admin.game_turns.order('created_at')
 	date = @turns.first.created_at.beginning_of_day

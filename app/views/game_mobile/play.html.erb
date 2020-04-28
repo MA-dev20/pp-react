@@ -46,7 +46,7 @@
 	<%= f.hidden_field :user_id, value: @admin.id %>
 	<%= f.hidden_field :positive, value: 'neutral' %>
 	<div class="form-group">
-		<%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", class: 'form-field', maxlength: "30"%>
+		<%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', maxlength: "30"%>
 		<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
 	</div>
 	<% end %>
@@ -95,6 +95,8 @@
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function(data) {
 				$("#comment_text").val('');
+				inputSend();
+				
 			}
 		})
 		}

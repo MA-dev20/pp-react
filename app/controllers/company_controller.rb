@@ -1,6 +1,6 @@
 class CompanyController < ApplicationController
   before_action :check_user, except: [:register]
-  before_action :set_company, only: [:accept, :edit, :destroy]
+  before_action :set_company, only: [:accept, :edit, :destroy, :edit_logo]
   def register
 	if Company.find_by(name: company_params[:name]).nil?
 	  @company = Company.new(company_params)
@@ -58,6 +58,12 @@ class CompanyController < ApplicationController
 	end
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
 	redirect_to company_dash_edit_path if params[:site] == 'company_dash'
+  end
+	
+  def edit_logo
+	authorize! :update, @company
+	@company.update(logo: params[:file]) if params[:file].present? && @company.present?
+	render json: {file: @company.logo.url}
   end
 
   def destroy

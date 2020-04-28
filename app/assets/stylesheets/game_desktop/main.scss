@@ -232,7 +232,7 @@ body {
 			}
 			.qr-code-wrapper {
 				position: absolute;
-				left: 26.5vh;
+				left: 26.8vh;
 				bottom: 30vh;
 				z-index: 1000;
 				border: 2px solid rgb(var(--custcolor));
@@ -241,9 +241,9 @@ body {
 					border-collapse: collapse;
 					td {
 						padding: 0;
-						width: .53vh;
+						width: .5vh;
 						background-color: white;
-						height: .53vh;
+						height: .5vh;
 					}
 					td.black {
 						background-color: #00232a;

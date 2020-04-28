@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   get 'companies/:company_id/accept', to: 'company#accept', as: "accept_company"
   post 'companies/:company_id/edit', to: 'company#edit', as: 'edit_company'
   get 'companies/:company_id/destroy', to: 'company#destroy', as: 'destroy_company'
+  put 'companies/:company_id/edit_logo', to: 'company#edit_logo', as: 'edit_logo_company'
 	
   #GAME DESKTOP
   get 'games/:game_id/join', to: 'game_desktop#join', as: 'gd_join'

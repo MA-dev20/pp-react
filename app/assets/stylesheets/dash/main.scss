@@ -540,10 +540,10 @@ body {
 								position: absolute;
 								top: 0;
 								left: 0;
-								margin: .1vh;
-								height: 5vh;
-								width: 5vh;
-								border-radius: 2.5vh;
+								margin: .6vh;
+								height: 4vh;
+								width: 4vh;
+								border-radius: 2vh;
 							}
 						}
 						td.img {
@@ -793,7 +793,7 @@ body {
 			-webkit-appearance: none;
 			-moz-appearance: none;
 			cursor: pointer;
-			font-family: "Nunito";
+			font-family: 'Nunito', sans-serif !important;
 			font-size: 1.8vh;
 			color: #495057 !important;
 			outline: none !important;
@@ -1021,6 +1021,7 @@ body {
 		background-color: rgb(var(--btncolor));
 		color: white;
 		cursor: pointer;
+		font-family: 'Nunito', sans-serif !important;
 	}
 	.btn:hover {
 		color: rgb(var(--btncolor));
