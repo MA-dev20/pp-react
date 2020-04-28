@@ -90,7 +90,7 @@ class GameMobileController < ApplicationController
 	    end
 		@game.update(state: 'bestlist')
 	  elsif (@game.game_turns.where(played: true).count == (@game.max_users - 1) && @game.max_users != 0) || @game.game_turns.playable.count == 1
-		@game.update(state: 'turn', current_turn: @game.game_turns.playable.first.id, active: false)
+		@game.update(state: 'turn', turn1: nil, turn2: nil, current_turn: @game.game_turns.playable.first.id, active: false)
 	  else
         @turns = @game.game_turns.playable.sample(2)
 	  	if @game.skip_elections

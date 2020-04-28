@@ -21,8 +21,10 @@ class UsersController < ApplicationController
   def edit
 	authorize! :update, @user
 	flash[:alert] = 'Konnte User nicht updaten!' if !@user.update(user_params)
+	bypass_sign_in(@user)
 	redirect_to backoffice_company_path(@user.company_id) if params[:site] == 'backoffice_company'
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
+	redirect_to account_path if params[:site] == 'account'
   end
 	
   def edit_avatar
@@ -53,7 +55,7 @@ class UsersController < ApplicationController
   end
   private
 	def user_params
-	  params.require(:user).permit(:fname, :lname, :email, :avatar)
+	  params.require(:user).permit(:fname, :lname, :email, :avatar, :password)
 	end
 	def set_user
 	  @user = User.find(params[:user_id])
