@@ -93,7 +93,11 @@ class GameMobileController < ApplicationController
 		@game.update(state: 'turn', current_turn: @game.game_turns.playable.first.id, active: false)
 	  else
         @turns = @game.game_turns.playable.sample(2)
-	  	@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+	  	if @game.skip_elections
+			@game.update(state: 'turn', turn1: nil, turn2: nil, current_turn: @turns.first.id, active: false)		
+		else  
+			@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		end
 		@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
 	    place = 1
 	    @turns.each do |t|
