@@ -189,6 +189,8 @@
 		$('.middle .controls .play').hide();
 		$('.middle .controls .pause').show();
 		startTime = setInterval(function() {
+			sec = Math.round(pitch.currentTime % 60);
+			min = Math.round(pitch.currentTime / 60);
 			timer = min+':'+(sec < 10 ? '0' + sec : sec);
 			$(".progress .time").text(timer + "/" + playtime);
 			$('.comment-form .time').text(timer);
@@ -196,12 +198,6 @@
 			console.log("timer:" + timer);
 			document.getElementById('progress').style.width = (((min * 60) + sec) / duration) * 100 + "%";
 			console.log("width:" + ((((min * 60) + sec) / duration) * 100));
-			if(sec < 60) {
-				sec++;	
-			} else {
-				min++;
-				sec = 0;
-			}
 		}, 1000)
 	}
 	function jumpTo(seconds) {
