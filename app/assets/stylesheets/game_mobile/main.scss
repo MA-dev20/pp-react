@@ -171,6 +171,7 @@ body {
 			font-size: 5vh;
 		}
 		img {
+			position: relative;
 			top: calc(50% - 25vw);
 			width: 45vw;
 			height: 45vw;
@@ -206,9 +207,16 @@ body {
 		.circle-right {
 			float: left;
 			width: 50%;
+			height: 100%;
+			a {
+				display: block;
+				position: relative;
+				left: 0; top: 0;
+				height: 100%; width: 100%;
+			}
 			img {
-				display: inline-block;
-				margin-top: calc(25% - 20vw);
+				position: relative;
+				top: calc(50% - 20vw);
 				width: 37vw;
 				height: 37vw;
 				border-radius: 50%;
@@ -216,6 +224,9 @@ body {
 			}
 		}
 		.switch {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
 			opacity: 0;
 			animation-name: opacity;
 			animation-duration: 1s;
@@ -231,17 +242,16 @@ body {
 			}
 			input {display: none}
 			label {
-				position: fixed;
 				display: block;
-				top: 70vh;
-				left: 10vw;
-				width: 80vw;
+				width: 60%;
 				margin: 0 auto;
 				height: 5vh;
+				text-align: center;
 				.checkbox {
-					position: absolute;
-					left: 0;
-					top: 1vh;
+					position: relative;
+					display: inline-block;
+					float: left;
+					margin: 1.5vh 1vw;
 					height: 2vh;
 					width: 4vh;
 					border-radius: 2vh;
@@ -259,10 +269,9 @@ body {
 					}
 				}
 				.text {
-					margin-left: 7vh;
-					width: calc(100% - 7vh);
+					margin: 0;
 					line-height: 2.5vh !important;
-					font-size: 2vh;
+					font-size: 1.5vh;
 				}
 			}
 		}
@@ -401,7 +410,7 @@ body {
 		height: 12vh;
 		width: 100%;
 		position: absolute;
-		top: 65vh;
+		top: calc(75% - 6vh);
 		text-align: center;
 		.dot {
 			position: relative;
