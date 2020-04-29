@@ -412,11 +412,11 @@ body {
 		.dot:last-child {opacity: .65};
 	}
 	.bottom {
-		position: absolute;
-		bottom: 0;
+		position: fixed;
+		top: calc(90vh - 17.5px);
+		height: calc(10vh + 17.5px);
 		width: 100%;
 		text-align: center;
-		padding-bottom: 10vh;
 		.form-group {
 			position: absolute;
 			bottom: 0;
@@ -497,6 +497,8 @@ body {
 	text-decoration: none;
 	font-family: 'BarackPro-Solid' !important;
 	background-color: rgb(var(--custcolor));	
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
 }
 .btn.inverted {
 	color: rgb(var(--custcolor));
