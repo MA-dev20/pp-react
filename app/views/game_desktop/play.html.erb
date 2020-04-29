@@ -176,8 +176,28 @@
 		document.getElementById('o_start').play();
 		document.getElementById('o_theme').play();
 		$('.objection').on('animationend', function() {
-			document.getElementById('objection_sound').play();
-			$('#objection_sound').on('ended', function() {
+			if ($('#objection_sound').length > 0) {
+				document.getElementById('objection_sound').play();
+				$('#objection_sound').on('ended', function() {
+					var seconds = parseInt(15 % 60, 10), secs;
+					var objectionTimer = setInterval(function() {
+						seconds--;
+						secs = seconds < 10 ? '0' + seconds : seconds;
+						$('.otimer').text('00:' + secs);
+						if (seconds == 3) {
+							document.getElementById('o_end').play();
+						}
+						if (seconds == 0) {
+							document.getElementById('o_theme').pause();
+							$('.objection').fadeOut();
+							clearInterval(objectionTimer);
+							document.getElementById('theme').play();
+							MyApp.timer.resume();
+						}
+					}, 1000);
+				});
+			} else {
+				setTimeout(function() {
 				var seconds = parseInt(15 % 60, 10), secs;
 				var objectionTimer = setInterval(function() {
 					seconds--;
@@ -194,7 +214,8 @@
 						MyApp.timer.resume();
 					}
 				}, 1000);
-			});
+				}, 2000);
+			}
 		})
 	}
 	function redirect() {
