@@ -414,9 +414,7 @@ body {
 	.bottom {
 		position: fixed;
 		top: calc(90vh - 17.5px);
-		top: calc(var(--vh, 1vh) * 90 - 17.5px);
 		height: calc(10vh + 17.5px);
-		height: calc(var(--vh, 1vh) * 10 + 17.5px);
 		width: 100%;
 		text-align: center;
 		.form-group {
