@@ -55,7 +55,7 @@
    		
    	</section>
    	<section id="sidebar">
-   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar' %>
+   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar', id: 'sidebarAvatar' %>
    		
    		<div class="links">
    			<% if @admin.role == 'user' %>

@@ -146,6 +146,7 @@
 		
 		var pause = function() { clearInterval(setTimer) };
 		var resume = function() {
+			clearInterval(setTimer);
 			setTimer = setInterval(function() {
 				minutes = parseInt(timer / 60, 10);
 				seconds = parseInt(timer % 60, 10);
@@ -177,15 +178,15 @@
 		$('.objection').on('animationend', function() {
 			document.getElementById('objection_sound').play();
 			$('#objection_sound').on('ended', function() {
-				var secs = parseInt(15 % 60, 10);
+				var seconds = parseInt(15 % 60, 10), secs;
 				var objectionTimer = setInterval(function() {
-					secs--;
-					secs = secs < 10 ? '0' + secs : secs;
+					seconds--;
+					secs = seconds < 10 ? '0' + seconds : seconds;
 					$('.otimer').text('00:' + secs);
-					if (secs == 3) {
+					if (seconds == 3) {
 						document.getElementById('o_end').play();
 					}
-					if (secs == 0) {
+					if (seconds == 0) {
 						document.getElementById('o_theme').pause();
 						$('.objection').fadeOut();
 						clearInterval(objectionTimer);

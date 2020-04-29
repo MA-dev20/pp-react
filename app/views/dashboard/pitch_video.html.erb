@@ -110,7 +110,7 @@
 							<%= c.user.fname %> <%= c.user.lname %> - <%= cTime %>
 							<%= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
 						</div>
-						<div class="comment">
+						<div class="comment" onclick="jumpTo(<%= c.time %>)">
 							<div class="dot <%= c.positive %>"></div><%= c.text %>
 						</div>
 					</div>
@@ -165,7 +165,7 @@
 	var min = 0, sec = 0;
 	var playtime = "<%= @video.duration / 60 %>:<%= @video.duration % 60 < 10 ? '0' + (@video.duration % 60).to_s : (@video.duration % 60).to_s %>"
 	var duration = <%= @video.duration %>;
-	var time;
+	var startTime;
 	function setProgressMove(event) {
 		if(mouseDown) {
 		setProgress(event)
@@ -188,7 +188,7 @@
 		pitch.play();
 		$('.middle .controls .play').hide();
 		$('.middle .controls .pause').show();
-		time = setInterval(function() {
+		startTime = setInterval(function() {
 			timer = min+':'+(sec < 10 ? '0' + sec : sec);
 			$(".progress .time").text(timer + "/" + playtime);
 			$('.comment-form .time').text(timer);
@@ -204,17 +204,29 @@
 			}
 		}, 1000)
 	}
+	function jumpTo(seconds) {
+		clearInterval(startTime);
+		pitch.currentTime = seconds;
+		min = Math.round(seconds / 60);
+		sec = Math.round(seconds % 60);
+		timer = min+':'+(sec < 10 ? '0' + sec : sec);
+		$(".progress .time").text(timer + "/" + playtime);
+		$('.comment-form .time').text(timer);
+		$('#comment_time').val(pitch.currentTime);
+		document.getElementById('progress').style.width = (seconds / duration) * 100 + "%";
+		playVideo();
+	}
 	function pauseVideo() {
 		pitch.pause();
 		$('.middle .controls .pause').hide();
 		$('.middle .controls .play').show();
-		clearInterval(time);
+		clearInterval(startTime);
 	}
 	function stopVideo() {
 		pitch.load();
 		$('.middle .controls .pause').hide();
 		$('.middle .controls .play').show();
-		clearInterval(time);
+		clearInterval(startTime);
 		$(".progress .time").text("0:00/" + playtime);
 		$('.comment-form .time').text("0:00");
 		$('#comment_time').val(Math.round(pitch.currentTime));

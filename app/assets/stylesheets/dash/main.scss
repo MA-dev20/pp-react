@@ -78,6 +78,7 @@ body {
 		position: relative;
 		top: 0;
 		left: 0;
+		left: 0;
 		margin: 4.05vh;
 		height: 17.5vh;
 		width: 17.5vh;
@@ -167,12 +168,8 @@ body {
 		padding-right: 2.3vh;
 	}
 	#editTeam {
-		.comment {
-			position: absolute;
-			bottom: 0;
-			color: rgba(0,0,0,.5);
-			text-align: center;
-			width: 100%;
+		.table {
+			margin: 0;
 		}
 	}
 	#teams-table,
@@ -500,11 +497,11 @@ body {
 				padding-right: 2.5vh;
 			}
 			.table#company_admin-table {
-				height: 35vh;
-				.comment {
-					position: absolute;
-					bottom: 0;
-				}
+				margin: 0;
+				
+			}
+			.placehere {
+				padding: 1vh 0;
 			}
 			.table#adduser {
 				height: 25vh;
@@ -514,6 +511,7 @@ body {
 				table thead th:nth-child(2) {
 					text-align: left;
 				}
+				.fa-trash-alt {display: none}
 			}
 			table {
 				border-collapse: collapse;
@@ -1292,6 +1290,7 @@ body {
 						.comment {
 							border-bottom: none;
 							margin-bottom: 1vh;
+							cursor: pointer;
 							.dot {
 								float: left;
 								height: 2vh; width: 2vh;
