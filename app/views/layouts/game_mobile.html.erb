@@ -60,14 +60,8 @@
 	posBottom();
 	window.onresize = function(){posBottom()};
 	function posBottom() {
-		if ($('.bottom').length > 0) {
-			var pos = window.innerHeight * 0.9;
-			pos = pos - 17.5;
-			var height = (pos + 35) + 'px';
-			pos = pos + 'px';
-			$('.bottom').css("top", pos)
-			$('.bottom').css("height", height)
-		}
+		var height = window.innerHeight
+		$('body').css("height", height)
 	}
 	new PerfectScrollbar('#objection-list')
 	function toggleObjections() {
