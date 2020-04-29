@@ -6,6 +6,7 @@
 			<% if @company.logo? %>
 			<%= image_tag @company.logo.url, id: 'logo' %>
 			<% else %>
+			<%= image_tag "", id: 'logo', style: 'display: none' %>
 			Logo hinzufügen
 			<% end %>
 			<div class="hover"><i class="fas fa-plus"></i></div>			
@@ -110,7 +111,10 @@
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function(res) {
 				formData = new FormData();
-				$('#logo').data('url', res.file);
+				var logoDiv = '<img src='+res.file+' id="logo">'
+				var logoLabel = $('#logo').parent()
+				logoLabel.text('');
+				logoLabel.append(logoDiv);
 				$('#popup').hide();
 			}
 		})
