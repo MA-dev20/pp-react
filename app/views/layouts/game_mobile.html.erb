@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <title>Peter Pitch</title>
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1dacf1"/>
     <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
     <%= csrf_meta_tags %>
@@ -61,7 +61,9 @@
 	window.onresize = function(){posBottom()};
 	function posBottom() {
 		var height = window.innerHeight
+		var width = window.innerWidth
 		$('body').css("height", height)
+		$('body').css("width", width)
 	}
 	new PerfectScrollbar('#objection-list')
 	function toggleObjections() {
