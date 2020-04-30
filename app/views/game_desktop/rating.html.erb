@@ -43,7 +43,7 @@
 					<path d="M93.9 0L95.7 303.2L84.6 324.3L80 16.1L93.9 0Z" fill="rgb(var(--custcolor)" filter="grayscale(20%)"/>
 				</svg>
 			</div>
-			<div class="text"><%= "Verhandlungsgeschick" %></div>
+			<div class="text"><%= @rating3.rating_criterium.name %></div>
 			</div>
 		<% end %>
 		<% if @turn.game_turn_ratings.count >= 4 %>
