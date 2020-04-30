@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :check_user, except: [:edit_avatar]
-  before_action :set_user, only: [:edit, :edit_avatar, :destroy, :company_admin, :user]
+  before_action :set_user, only: [:edit, :edit_avatar, :destroy, :company_admin, :department_admin, :admin, :user]
   def create
 	authorize! :create, User
 	@teamAll = @admin.teams.find_by(name: 'all')
@@ -49,6 +49,16 @@ class UsersController < ApplicationController
 	
   def company_admin
 	@user.update(role: "company_admin")
+	render json: {user: @user}
+  end
+	
+  def department_admin
+	@user.update(role: 'department_admin')
+	render json: {user: @user}
+  end
+	
+  def admin
+	@user.update(role: 'admin')
 	render json: {user: @user}
   end
 	

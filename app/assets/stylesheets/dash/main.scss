@@ -167,6 +167,7 @@ body {
 		margin: 10vh 4vh 1vh 5vh;
 		padding-right: 2.3vh;
 	}
+	#editDepartment,
 	#editTeam {
 		.table {
 			margin: 0;
@@ -383,6 +384,33 @@ body {
 		border-radius: 1vh;
 		box-shadow: 0 0 10px 0 rgba(172,172,172,.1);
 		padding: 0 4.3vh;
+		.add-circle {
+			position: relative;
+			top: 0; margin: 0 auto;
+			width: 20vh; height: 20vh;
+			line-height: 20vh;
+			text-align: center;
+			font-size: 10vh;
+			color: rgb(var(--custcolor));
+			cursor: pointer;
+			svg {
+				position: absolute;
+				top: 0; left: 0;
+				height: 100%; width: 100%;
+			}
+			input {display: none};
+		}
+		.add-circle.processing svg {
+			animation: rotate 2s infinite;
+			circle {
+				stroke-dasharray: 50;
+			}
+		}
+		@keyframes rotate {
+			to {
+				transform: rotate(360deg);
+			}
+		}
 		.btn {
 			position: absolute;
 			display: block;
@@ -1071,6 +1099,14 @@ body {
 			height: 60vh;
 			box-shadow: 0px 0.2vh 1vh 0 rgba(94,94,94,0.15);
 			margin-bottom: 1vh;
+			.deleteList {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 2vh;
+				color: rgba(0,0,0,.2);
+				font-size: 3vh;
+			}
 		}
 		.videos {
 			position: relative;
@@ -1193,6 +1229,13 @@ body {
 	.own-videos {
 		left: calc(60% + 3vh);
 		width: 30%;
+		.videos {
+			position: relative;
+			height: 45vh;
+			.card:nth-child(2n +1) {
+				margin-left: 0;
+			}
+		}
 	}
 	.pitch-video {
 		position: fixed;
@@ -1206,6 +1249,14 @@ body {
 			h3 {
 				line-height: 2.5vh; font-size: 2vh; font-weight: bold; text-align: left;
 				margin: 0 0 .5vh 0;
+			}
+			.deleteList {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 2vh;
+				color: rgba(0,0,0,.2);
+				font-size: 3vh;
 			}
 			.user {
 				line-height: 3vh;

@@ -1,0 +1,332 @@
+<% content_for :title, "Peter Pitch - Datenschutz" %>
+<% content_for :description, 'Hier kannst du, die Datenschutzrichtlinien für Peter Pitch, das erste digitale Trainingstool für Kommunikation und Vertrieb, einsehen!'%>
+<section id="navbar">
+    <%= link_to image_tag('landing/logo.png', alt: 'Peter Pitch Logo'), root_path, class: 'logo'%>
+    <div class="navbar-links" id="navLinks">
+       	<div class="link">
+       		<%= link_to 'Produkt', product_path %>
+       		<div class="line"></div>
+       	</div>
+        <div class="link">
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Kontakt', contact_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Blog', blog_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+          	<i class="login-link" onclick="showLoginModal()">Login</i>
+        </div>
+        <div class="link">
+            <%= link_to 'Demo vereinbaren', contact_path("", subject: "demo"), class: 'btn btn-white' %>
+        </div>
+    </div>
+    <div class="login">
+       	<i class="login-link" onclick="showLoginModal()">Login</i>
+    </div>
+    <div class="navbar-mobile" onclick="showNavLinks()">
+        <i class="fas fa-bars"></i>
+    </div>
+</section>
+<section id="datenschutz">
+	<div class="head">
+		<h5>Webseiten-Datenschutzerklärung und zugleich Information der Betroffenen gemäß Artikel 13 und Artikel 14 EU-Datenschutzgrundverordnung</h5>
+		<h1>Eins ist sicher. Deine Daten.</h1>
+	</div>
+	<div class="links">
+		<div class="link"><%= link_to '1. Einleitung', '#intro' %></div>
+		<div class="link"><%= link_to '2. Kontaktdaten des Verantwortlichen', '#contactinfo' %></div>
+		<div class="link"><%= link_to '3. Zwecke der Datenverarbeitung', '#purpose' %></div>
+		<div class="link"><%= link_to '4. Empfänger außerhalb der EU', '#nonEU' %></div>
+		<div class="link"><%= link_to '5. Anpassung und Aktualisierung', '#actual' %></div>
+		<div class="link"><%= link_to '6. Fragen zu deine Daten?', '#question' %></div>
+	</div>
+	<section id="intro">
+		<h2>1. Einleitung</h2>
+		<div class="text">
+			Uns von der Peter Pitch GmbH (nachfolgend „Peter Pitch“ oder „wir“) liegt deine Privatsphäre am Herzen. Daher erfassen wir deine personenbezogenen Daten immer verantwortungsbewusst. Personenbezogene Daten sind Informationen, mit deren Hilfe eine Person bestimmbar ist, also Angaben, die zurück zu einer Person verfolgt werden können. Dazu gehören typischerweise der Name, die E-Mail-Adresse oder die Telefonnummer. Zudem sind aber auch rein technische Daten, die einer Person zugeordnet werden können, als personenbezogene Daten anzusehen. Bei jedem Zugriff auf Inhalte unseres Internetangebots werden automatisch allgemeine Informationen gespeichert (z.B. Anzahl und Dauer der Nutzer einzelner Seiten u.Ä.). Diese Daten sind nicht personenbezogen, da sie sich nicht auf eine identifizierte oder identifizierbare natürliche Person beziehen. Diese werden daher in anonymisierter Form verarbeitet. Informationen dieser Art dienen ausschließlich statistischen Zwecken und werden von uns zur Optimierung unseres Services genutzt. <br>
+			Die Datenverarbeitung über die Webseite von Peter Pitch kann im Wesentlichen in zwei Kategorien unterteilt werden:
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Zum Zwecke der Bereitstellung unseres Angebots werden alle hierfür erforderlichen Daten von Peter Pitch verarbeitet. So können wir gewährleisten, unseren Kunden und potentiellen Kunden den bestmöglichen Service zu bieten. 
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Mit Aufruf der Webseite peterpitch.com werden verschiedene Informationen zwischen deinem Endgerät und unserem Server ausgetauscht. Hierbei kann es sich auch um personenbezogene Daten handeln. Die so erhobenen Informationen werden u.a. dazu genutzt, unsere Webseite zu optimieren oder um Werbung im Browser deines Endgerätes anzuzeigen.
+			</div>
+		</div>
+		<div class="text">
+			Den Vorgaben der DSGVO entsprechend hast du unterschiedliche Rechte, die du uns gegenüber geltend machen kannst. Hierzu zählt u.a. das Recht, Widerspruch gegen ausgewählte Datenverarbeitungen, insbesondere Datenverarbeitungen zu Werbezwecken, einlegen zu können. Solltest du Fragen zu unseren Datenschutzhinweisen haben, kannst du dich jederzeit gern an unseren Datenschutzbeauftragten wenden. Die Kontaktdaten findest Du nachfolgend.
+		</div>
+	</section>
+	<section id="contactinfo">
+		<h2>2. Kontaktdaten des Verantwortlichen</h2>
+		<div class="text">
+			Peter Pitch GmbH (haftungsbeschränkt) <br>
+			Sonnenstr. 130 <br>
+			44139 Dortmund <br>
+			<%= mail_to "info@peterpitch.com", "info@peterpitch.com" %>
+		</div>
+	</section>
+	<section id="purpose">
+		<h2>3. Zwecke der Datenverarbeitung, Rechtsgrundlagen und berechtigte Interessen, die von Peter Pitch oder einem Dritten verfolgt werden sowie Kategorien von Empfängern</h2>
+		<h3>3.1 Aufrufen unserer Webseite</h3>
+		<div class="text">
+			Beim Aufrufen unserer Webseite werden durch den auf deinem Endgerät zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Webseite gesendet und temporär in einem sogenannten Log-File gespeichert. Hierauf haben wir keinen Einfluss. <br>
+			Folgende Informationen werden dabei auch ohne dein Zutun erfasst und bis zur automatisierten Löschung gespeichert:
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				die IP-Adresse des anfragenden internetfähigen Gerätes
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				das Datum und die Uhrzeit des Zugriffs
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				die Webseite, von der aus der Zugriff erfolgte (Referrer-URL)
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				eigene Kampagnen-ID
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				der von dir verwendete Browser und ggfs. das Betriebssystem deines internetfähigen Rechners sowie der Name deines Access-Providers
+			</div>
+		</div>
+		<div class="text">
+			Die Rechtsgrundlage für die Verarbeitung der IP-Adresse ist Art. 6 Abs. 1 lit. f) DSGVO. Unser berechtigtes Interesse folgt aus den nachfolgend aufgelisteten Zwecken der Datenerhebung. In keinem Fall verwenden wir die erhobenen Daten zu dem Zweck, Rückschlüsse auf Ihre Person zu ziehen. <br>
+			Die IP-Adresse deines Endgerätes sowie die weiteren oben aufgelisteten Daten werden durch uns für folgende Zwecke genutzt:
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Gewährleistung eines reibungslosen Verbindungsaufbaus
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Gewährleistung einer komfortablen Nutzung unserer Webseite
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Auswertung der Systemsicherheit und -stabilität sowie
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				weitere administrative Zwecke.
+			</div>
+		</div>
+		<div class="text">
+			Die Daten werden für die Dauer der jeweiligen Sitzung gespeichert und beim Schließen des Browsers automatisch gelöscht. Des Weiteren verwenden wir für unsere Webseite sogenannte Cookies und Tracking-Tools. Um welche Verfahren es sich dabei genau handelt und wie ihre Daten dafür verwendet werden, wird nachfolgend unter Ziffer 3.4. genauer erläutert.
+		</div>
+		<h3>3.2 Nutzung des Kontaktformulars</h3>
+		<div class="text">
+			Unsere Webseite hat den Zweck, den Besuchern Dienste zur Verfügung zu stellen und Leistungen für dich durchzuführen. Für die Inanspruchnahme unserer Leistungen ist eine Registrierung über das Kontaktformular erforderlich. Wir erstellen mit diesen Daten dann einen Account für Dich, über den Du Anfragen stellen und Verträge mit uns schließen kannst. Bei der Registrierung musst du Deinen Namen und E-Mail-Adresse angeben. Die bei der Registrierung abgefragten Pflichtangaben müssen vollständig angegeben werden. Anderenfalls werden wir die Registrierung ablehnen.
+		</div>
+		<h3>Rechtsgrundlage</h3>
+		<div class="text">
+			Die Verarbeitung der bei der Registrierung eingegebenen Daten erfolgt auf Grundlage Deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst eine von Dir erteilte Einwilligung jederzeit widerrufen. Dazu reicht eine formlose Mitteilung per E-Mail an uns. Die Rechtmäßigkeit der bereits erfolgten Datenverarbeitung bleibt vom Widerruf unberührt. 
+		</div>
+		<h3>Dauer der Datenspeicherung</h3>
+		<div class="text">
+			Grundsätzlich werden deine Daten gelöscht, wenn Du Deinen Account löschst, es sei denn, dass wir deine Daten auf Grund von handels- und steuerrechtlichen Aufbewahrungspflichten gemäß § 147 AO und § 257 HGB speichern müssen.
+		</div>
+		<h3>3.3 Nutzung des Trainingstools</h3>
+		<div class="text">
+			Bei Nutzung des Trainingstool Peter Pitch erheben und speichern wir Daten zum Nutzerverhalten, die zur Weiterentwicklung unseres Services verwendet werden:
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Die Anzahl und Ergebnisse der Pitch-Trainings
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Performance-Statistiken
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Daten der Kategorie „Customize“, d.h. Daten, mit Hilfe derer unsere Kunden Peter Pitch auf ihr Unternehmen anpassen, um es zielgerichtet nutzen zu können
+			</div>
+		</div>
+		<div class="text">
+			Die Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse die Daten zu verarbeiten besteht darin, dass wir für Dich ein optimiertes Nutzererlebnis schaffen möchten und den Mehrwert von Peter Pitch für dich messbar zu machen.
+		</div>
+		<h3>3.4 Datenverarbeitung zum Kundensupport, Kundenpflege, Feedback oder Webseitenoptimierung.</h3>
+		<div class="text">
+			Einwilligung/Freiwilligkeit: Ohne dein ausdrückliches Einverständnis werden keine personenbezogenen Daten automatisiert gesammelt, gespeichert, verarbeitet oder genutzt. <br><br>
+			Du kannst frei entscheiden, ob du Peter Pitch Cookies zulassen möchtest. Die Cookies werden automatisch gelöscht, wenn du unsere Seite verlässt. Wir nutzen auch permanente Cookies, die nach spätestens fünf Jahren verfallen, um zum Beispiel anonym zu erfassen, wie sich unsere Nutzer auf unserer Seite bewegen. Wenn du das nicht möchtest, kannst du das außerdem durch eine entsprechende Einstellung des Browsers verhindern.
+		</div>
+		<h3>Google Analytics</h3>
+		<div class="text">
+			Zum Zweck der bedarfsgerechten Gestaltung und fortlaufenden Optimierung unserer Webseiten nutzen wir auf Grundlage des Art. 6 Abs. 1 lit. f) DSGVO den Analysedienst Google Analytics der Google Inc., 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA (nachfolgend: "Google”). In diesem Zusammenhang werden pseudonymisierte Nutzungsprofile erstellt und Cookies verwendet. Die durch das Cookie erzeugten Informationen über deine Benutzung dieser Webseite wie
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Browser-Typ/-Version
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Device Name
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				verwendetes Betriebssystem
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Referrer-URL (die zuvor besuchte Seite)
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Keywords/spezifische Suchanfrage
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Service Provider
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Hostname des zugreifenden Rechners (IP-Adresse)
+			</div>
+		</div>
+		<div class="point">
+			<div class="point"></div>
+			<div class="text">
+				Uhrzeit der Serveranfrage
+			</div>
+		</div>
+		<div class="text">
+			werden an einen Server von Google in den USA übertragen und dort gespeichert. Die Informationen werden verwendet, um die Nutzung der Webseite auszuwerten, um Reports über die Aktivitäten zusammenzustellen und um weitere mit der Webseitennutzung und der Internetnutzung verbundene Dienstleistungen zu Zwecken der Marktforschung und bedarfsgerechten Gestaltung dieser Internetseiten zu erbringen. Auch werden diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben ist oder soweit Dritte diese Daten im Auftrag verarbeiten. Es wird in keinem Fall deine IP-Adresse mit anderen Daten von Google zusammengeführt. Die IP-Adressen werden anonymisiert, so dass eine Zuordnung nicht möglich ist (sogenanntes IP-Masking). Die kannst dieser Datenverarbeitung jederzeit widersprechen, indem du die Installation der Cookies durch eine entsprechende Einstellung der Browser-Software verhinderst; wir weisen jedoch darauf hin, dass in diesem Fall gegebenenfalls nicht sämtliche Funktionen unserer Webseite vollumfänglich genutzt werden können. Du kannst darüber hinaus die Erfassung der durch das Cookie erzeugten und auf deine Nutzung der Webseite bezogenen Daten (inkl. Ihrer IP-Adresse) sowie die Verarbeitung dieser Daten durch Google verhindern, indem du dieses <a href="https://tools.google.com/dlpage/gaoptout?hl=de">Browser-Add-on</a> herunterlädst und installierst. Alternativ zum Browser-Add-on, insbesondere bei Browsern auf mobilen Endgeräten, kannst du die Erfassung durch Google Analytics zudem verhindern, indem Du auf diesen <a href="https://www.tourlane.de/datenschutz">Link</a> klickst. Es wird ein Opt-Out-Cookie gesetzt, das die zukünftige Erfassung deiner Daten beim Besuch dieser Webseite verhindert. Bitte beachte, dass das Opt-Out-Cookie nur in dem jeweils verwendeten Browser und nur für unsere Webseite gilt und auf deinem Gerät abgelegt wird. Löschst du die Cookies in diesem Browser, musst du das Opt-Out-Cookie erneut setzen. Weitere Informationen zum Datenschutz im Zusammenhang mit Google Analytics findest du auf der <a href="https://support.google.com/analytics/answer/6004245?hl=de">Webseite von Google Analytics</a>
+		</div>
+		<h3>Google Tag Manager</h3>
+		<div class="text">
+			Mit dem Google Tag Manager verwalten wir Website-Tags (Website-Code). Diese erleichtern uns die Verwaltung und Weiterentwicklung unseres Angebots und verkürzen Deine Ladezeit. Der Google Tag Manager implementiert lediglich Website-Code. Der Google Tag Manager setzt also selbst keine Cookies und erfasst keine personenbezogenen Daten. Das Tool integriert lediglich an anderer Stelle von uns abgelegten Website-Code, über den ggf. Daten erfasst werden. Das Tool dient damit nur der erleichterten Aussteuerung des jeweiligen Codes, greift aber selbst nicht auf die durch den Code verarbeiteten Daten zu. Über alle so integrierten Tags informieren wir Sie in dieser Datenschutzbestimmung. Weitere Informationen zum Google Tag Manager sowie die Nutzungsrichtlinien findest Du auf den Seiten von Google.
+		</div>
+	</section>
+	<section id="nonEU">
+		<h2>4. Empfänger außerhalb der EU</h2>
+		<div class="text">
+			Mit Ausnahme der unter 3.4. dargestellten Verarbeitungen geben wir Deine Daten nicht an Empfänger mit Sitz außerhalb der Europäischen Union oder des Europäischen Wirtschaftsraumes weiter. Die unter 3.4. genannten Verarbeitungen bewirken eine Datenübermittlung an die Server des durch uns beauftragten Anbieters von Webanalysetechnologie (s.o.). Diese Server befinden sich in den USA. Die Datenübermittlung erfolgt nach den Grundsätzen des sogenannten <a href="https://www.privacyshield.gov/welcome">Privacy Shield</a> sowie auf Grundlage sogenannter <a href="https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:039:0005:0018:DE:PDF">Standardvertragsklauseln</a> der EU-Kommission.
+		</div>
+	</section>
+	<section id="actual">
+		<h2>5. Anpassung und Aktualisierung der Datenschutzprinzipien</h2>
+		<div class="text">
+			Wenn Peter Pitch neue Produkte oder Services einführt oder wenn sich die Technologien für Datenschutz und Informationssicherheit weiterentwickeln, kann sich das auf die Datenschutzprinzipien auswirken. Wir behalten uns deshalb vor, die Prinzipien nach Bedarf zu ändern oder zu ergänzen. Wir werden jede Änderung an dieser Stelle veröffentlichen, damit du jederzeit verfolgen kannst, welche Daten wir erheben, wie wir diese verwenden und unter welchen Umständen wir diese gegebenenfalls offenlegen. Falls wir in Zukunft personenbezogene Daten in anderer Weise als zum Zeitpunkt der Erhebung verwenden, werden wir dies an dieser Stelle veröffentlichen.
+		</div>
+	</section>
+	<section id="question">
+		<h2>6. Fragen zu deinen Daten?</h2>
+		<div class="text">
+			Du kannst du dich jederzeit an unseren Datenschutzbeauftragten wenden, wenn du Fragen, Anregungen oder Beschwerden zu Datenschutzthemen hast, wenn du Widerspruch einlegen oder widerrufen willst.
+		</div>
+		<h3>Auskunfts- und Korrekturrechte gespeicherter personenbezogener Daten</h3>
+		<div class="text">
+			Nach der Datenschutz-Grundverordnung (DS-GVO) hast du das Recht auf kostenfreie Auskunft über deine durch uns gespeicherten Daten und deren Verwendung. Darüber hinaus kannst du jederzeit deine Ansprüche auf Berichtigung oder Löschung oder auf Einschränkung der Verarbeitung oder der Wahrnehmung deines Widerspruchsrechts gegen die Verarbeitung sowie das Recht auf Datenübertragbarkeit geltend machen. <%= link_to 'Hier', impressum_path() %> findest du die Möglichkeit, uns per E-Mail oder Brief zu kontaktieren. Du hast ferner das Recht, sich bei Beschwerden an die Datenschutz-Aufsichtsbehörde zu wenden.
+		</div>
+	</section>
+</section>
+<section id="footer" class="wow fadeIn">
+    <div class="logo">
+        <%= image_tag 'landing/logo.png', alt: 'Peter Pitch Logo' %>
+    </div>
+    <div class="company">
+        <div class="heading">Unternehmen</div>
+        <div class="links">
+            <%= link_to 'Registrieren', contact_path %>
+            <%= link_to 'Preise', contact_path %>
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <%= link_to 'Login', '#login', onclick: 'showLoginModal()' %>
+        </div>
+    </div>
+    <div class="legal">
+        <div class="heading">Rechtliches</div>
+        <div class="links">
+            <%= link_to 'Impressum', impressum_path %>
+            <%= link_to 'Datenschutz', datenschutz_path %>
+        </div>
+    </div>
+    <div class="social">
+        <%= link_to '', 'https://www.instagram.com/peterpitchcom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-instagram" %>
+        <%= link_to '', 'https://www.youtube.com/channel/UCN7MeKNNdXK28uIiJjJ4Fdg', target: "_blank", rel: "noopener noreferrer", class: "fab fa-youtube" %>
+        <%= link_to '', 'https://www.facebook.com/PeterPitchCom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-facebook-f" %>
+    </div>
+</section>
+<div class="fullscreen-modal" id="loginModal">
+    
+    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+    <div class="card">
+    <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
+        <h2>Login</h2>
+        <div class="form-group ">
+            <label for="">Email</label>
+            <%= f.email_field :email, class: 'form-field', id: 'loginEmail', required: true  %>
+        </div>
+        <div class="form-group">
+            <label for="">Passwort</label>
+            <div class="right"><%= link_to "Passwort vergessen?", forget_password_path %></div>
+            <%= f.password_field :password, class: 'form-field',id: 'loginPassword', required: true  %>
+            <br>
+        </div>
+        <div class="form-group center">
+            <%= f.submit 'Login', class: 'btn btn-green', id: "loginButton" %>
+        </div>
+    <% end %>
+    </div>
+</div>
+<script>
+	function showLoginModal() {
+        $('#loginModal').toggle();
+    }
+	function showNavLinks() {
+        if($('#navLinks').is(":hidden")) {
+            $('#navLinks').show();   
+        } else {
+            $('#navLinks').hide();
+        }
+    }
+</script>

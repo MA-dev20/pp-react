@@ -149,6 +149,12 @@ class GamesController < ApplicationController
 	flash[:alert] = 'Konnte Video nicht uploaden!' if !@video.save
 	render json: {file: @video.video.url}
   end
+
+  def destroy_pitch
+	@video = PitchVideo.find(params[:pitch_id])
+	flash[:alert] = 'Konnte Video nicht löschen!' if !@video.destroy
+	redirect_to dashboard_video_path
+  end
 	
   private
 	def game_params
