@@ -33,7 +33,14 @@
 				<div class="thumb">
 					<%= image_tag v.video.thumb.url %>
 					<div class="overlay">
-						<div class="time"><%= v.duration %></div>
+						<% if v.duration.nil? %>
+						<% min = 0 %>
+						<% sec = 0 %>
+						<% else %>
+						<% min = v.duration / 60 %>
+						<% sec = v.duration % 60 %>
+						<% end %>
+						<div class="time"><%= min.round.to_s + (sec < 10 ? ':0' : ':') + sec.round.to_s %></div>
 						<div class="play"><i class="fas fa-play"></i></div>
 					</div>
 				</div>
