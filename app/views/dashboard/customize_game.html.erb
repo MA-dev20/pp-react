@@ -94,7 +94,25 @@
 				<label for="">Nutzerauswahl vor Pitch</label>
 				<div class="skip-election-group">
 					<label for="">Skip Election</label>
-					<i class="far fa-square"></i>
+					<i class="far fa-square" onclick="changeElection()" id="skip_election"></i>
+				</div>
+			</div>
+		</div>
+		<div class="checkbox-container">
+			<%= f.hidden_field(:show_ratings) %>
+			<div class="form-group" id="show_ratings">
+				<label for="">Bewertungsausgabe (nach jedem Pitch)</label>
+				<div class="skip-election-group">
+					<label for="">Gesamtbewertung anzeigen</label>
+					<i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
+				</div>
+				<div class="skip-election-group">
+					<label for="">Keine Bewertung anzeigen</label>
+					<i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
+				</div>
+				<div class="skip-election-group">
+					<label for="">Bewertung von einer bestimmten Person anzeigen</label>
+					<i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
 				</div>
 			</div>
 		</div>
@@ -105,16 +123,42 @@
 
 <script>
 
-	$('.far').on('click', function() {
-		if ($(this).hasClass('fa-square')) {
-			$(this).removeClass('fa-square').addClass('fa-check-square')
+	function changeShowRating(type) {
+		if( $('#ratings_all').hasClass('fa-check-square') ) {
+			$('#ratings_all').removeClass('fa-check-square');
+			$('#ratings_all').addClass('fa-square');
+		}
+		if( $('#ratings_one').hasClass('fa-check-square') ) {
+			$('#ratings_one').removeClass('fa-check-square');
+			$('#ratings_one').addClass('fa-square');
+		}
+		if( $('#ratings_none').hasClass('fa-check-square') ) {
+			$('#ratings_none').removeClass('fa-check-square');
+			$('#ratings_none').addClass('fa-square');
+		}
+		if( type == 'all' ) {
+			$('#ratings_all').addClass('fa-check-square');
+			$('#ratings_all').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'all')
+		} else if( type == 'none' ) {
+			$('#ratings_none').addClass('fa-check-square');
+			$('#ratings_none').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'none')
+		} else if( type == 'one' ) {
+			$('#ratings_one').addClass('fa-check-square');
+			$('#ratings_one').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'one')
+		}
+	}
+	function changeElection() {
+		if ($("#skip_election").hasClass('fa-square')) {
+			$("#skip_election").removeClass('fa-square').addClass('fa-check-square')
             $('#game_skip_elections').attr('value', 'true')
 		} else {
-			$(this).removeClass('fa-check-square').addClass('fa-square')
+			$("#skip_election").removeClass('fa-check-square').addClass('fa-square')
             $('#game_skip_elections').attr('value', 'false')
 		}
-	})
-
+	}
 	new PerfectScrollbar("#scroll");
 	function timeUp() {
 		var value = $('#game_game_seconds').val();

@@ -14,8 +14,19 @@ class GameDesktopController < ApplicationController
 	@turn1 = GameTurn.find(@game.turn1) if @game.turn1
 	@turn2 = GameTurn.find(@game.turn2) if @game.turn2
 	@turn = GameTurn.find(@game.current_turn) if @game.current_turn
-	@turn_ratings = @turn.game_turn_ratings if @turn
+	if @turn && @game.show_ratings == 'all'
+	  @turn_ratings = @turn.game_turn_ratings.all
+	  @ges_rating = @turn.ges_rating
+	elsif @turn && @game.show_ratings == 'one'
+	  @rat_user = @game.rating_user
+	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
+	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
+	end
 	@turns = @game.game_turns.where.not(ges_rating: nil).all.order(ges_rating: :desc)
+	if @game.show_ratings == 'one'
+	  @rat_user = @game.rating_user
+	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
+	end
 	render @state
   end
 	
@@ -41,7 +52,7 @@ class GameDesktopController < ApplicationController
 		return
 	  else
 		@turns = @turns.sample(2)
-		game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
 	  end
 	end
 	if params[:state] == "turn" && @game.state != 'turn'
@@ -80,9 +91,15 @@ class GameDesktopController < ApplicationController
 		@game.update(active: false)
 	  end
 	  @turn = GameTurn.find(@game.current_turn)
+	  @turn_ratings = @turn.game_turn_ratings.all if @turn && @game.show_ratings == 'all'
+	  @turn_ratings = @turn.ratings.where(user: @game.rating_user).all if @turn && @game.show_ratings == 'one'
 	  if @turn.game_turn_ratings.count == 0
 	    @turn.update(ges_rating: nil, played: true)
 	    redirect_to gd_set_state_path(state: 'choose')
+		return
+	  elsif @turn_ratings.count == 0
+		@turn.update(played: true)
+		redirect_to gd_set_state_path(state: 'choose')
 		return
 	  else
 		@user = @turn.user

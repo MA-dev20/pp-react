@@ -90,7 +90,7 @@ class GameMobileController < ApplicationController
 		return
 	  else
 		@turns = @turns.sample(2)
-		game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
+		@game.update(state: 'choose', turn1: @turns.first.id, turn2: @turns.last.id)
 	  end
 	end
 	if params[:state] == "turn" && @game.state != 'turn'
@@ -129,9 +129,15 @@ class GameMobileController < ApplicationController
 		@game.update(active: false)
 	  end
 	  @turn = GameTurn.find(@game.current_turn)
+	  @turn_ratings = @turn.game_turn_ratings.all if @turn && @game.show_ratings == 'all'
+	  @turn_ratings = @turn.ratings.where(user: @game.rating_user).all if @turn && @game.show_ratings == 'one'
 	  if @turn.game_turn_ratings.count == 0
 	    @turn.update(ges_rating: nil, played: true)
 	    redirect_to gm_set_state_path(state: 'choose')
+		return
+	  elsif @turn_ratings.count == 0
+		@turn.update(played: true)
+		redirect_to gm_set_state_path(state: 'choose')
 		return
 	  else
 		@user = @turn.user

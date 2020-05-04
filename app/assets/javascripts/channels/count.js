@@ -14,11 +14,15 @@ jQuery(document).ready(function() {
 		  },
           received: function(data) {
 			  if (data['state'] == 'wait') {
-				  $('#count').text(data['count']);
-				  document.getElementById('ping').play();
-				  var left1 = Math.random() * 80;
-				  var userDIV = '<img src="'+data['avatar']+'" style="left:' + left1 +'%;">';
-				  $('#user-rain').append(userDIV);
+				  if( $('#count-reload').length > 0 ) {
+				  	window.location.reload();
+			  	  } else {
+					  $('#count').text(data['count']);
+					  document.getElementById('ping').play();
+					  var left1 = Math.random() * 80;
+					  var userDIV = '<img src="'+data['avatar']+'" style="left:' + left1 +'%;">';
+					  $('#user-rain').append(userDIV);
+				  }
 			  }
 			  if (data['choose'] == true) {
 				  if(data['site'] == 'left') {

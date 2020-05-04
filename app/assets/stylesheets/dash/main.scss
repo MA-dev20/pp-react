@@ -1662,7 +1662,8 @@ select:-moz-focusring {
 	.skip-election-group {
 		display: flex;
 		label {
-			font-size: 1.6vh;
+			font-size: 1.6vh !important;
+			font-weight: 100;
 		}
 	}
 }
