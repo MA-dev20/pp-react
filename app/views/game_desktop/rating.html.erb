@@ -4,10 +4,10 @@
 </section>
 <section id="middle">
 	<div class="ratings" style="<%= @turn.comments.count == 0 ? "left: 5vw" : '0'%>">
-		<% if @turn.game_turn_ratings.count >= 1 %>
-			<% @rating1 = @turn.game_turn_ratings.first %>
+		<% if @turn_ratings.count >= 1 %>
+			<% @rating1 = @turn_ratings.first %>
 			<div class="rating-cat">
-				<div class="rating" id="rating1">?</div>
+				<div class="rating" id="rating1"><%= @rating1.rating / 10.0 %></div>
 				<div class="bar" id="bar1">
 					<svg height="<%= @rating1.rating %>%" viewBox="0 0 96 328" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M0 20.4L80 16.1L93.9 0L26.4 5.7L0 20.4Z" fill="rgb(var(--custcolor)" filter="grayscale(10%)"/>
@@ -18,10 +18,10 @@
 				<div class="text"><%= @rating1.rating_criterium.name %></div>
 			</div>
 		<% end %>
-		<% if @turn.game_turn_ratings.count >= 2 %>
-			<% @rating2 = @turn.game_turn_ratings.second %>
+		<% if @turn_ratings.count >= 2 %>
+			<% @rating2 = @turn_ratings.second %>
 			<div class="rating-cat">
-				<div class="rating" id="rating2">?</div>
+				<div class="rating" id="rating2"><%= @rating2.rating / 10.0 %></div>
 				<div class="bar" id="bar2">
 					<svg height="<%= @rating2.rating %>%" viewBox="0 0 93 365" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M92.9998 20.2415H13.0811L0.817383 0.39304L67.8592 0L92.9998 20.2415Z" fill="rgb(var(--custcolor))" filter="grayscale(10%)"/>
@@ -32,10 +32,10 @@
 				<div class="text"><%= @rating2.rating_criterium.name %></div>
 			</div>
 		<% end %>
-		<% if @turn.game_turn_ratings.count >= 3 %>
-			<% @rating3 = @turn.game_turn_ratings.third %>
+		<% if @turn_ratings.count >= 3 %>
+			<% @rating3 = @turn_ratings.third %>
 			<div class="rating-cat">
-			<div class="rating" id="rating3">?</div>
+			<div class="rating" id="rating3"><%= @rating3.rating / 10.0 %></div>
 			<div class="bar" id="bar3">
 				<svg height="<%= @rating3.rating %>%" viewBox="0 0 96 328" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M0 20.4L80 16.1L93.9 0L26.4 5.7L0 20.4Z" fill="rgb(var(--custcolor)" filter="grayscale(10%)"/>
@@ -46,10 +46,10 @@
 			<div class="text"><%= @rating3.rating_criterium.name %></div>
 			</div>
 		<% end %>
-		<% if @turn.game_turn_ratings.count >= 4 %>
-			<% @rating4 = @turn.game_turn_ratings.fourth %>
+		<% if @turn_ratings.count >= 4 %>
+			<% @rating4 = @turn_ratings.fourth %>
 			<div class="rating-cat">
-			<div class="rating" id="rating4">?</div>
+			<div class="rating" id="rating4"><%= @rating4.rating / 10.0 %></div>
 			<div class="bar" id="bar4">
 				<svg height="<%= @rating4.rating %>%" viewBox="0 0 93 365" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M92.9998 20.2415H13.0811L0.817383 0.39304L67.8592 0L92.9998 20.2415Z" fill="rgb(var(--custcolor))" filter="grayscale(10%)"/>
@@ -62,7 +62,7 @@
 		<% end %>
 	</div>
 	<div class="ges-rating" style="<%= @turn.comments.count == 0 ? "left: 66.5vw" : '0'%>">
-		<div class="rating" id="ges_rating">?</div>
+		<div class="rating" id="ges_rating"><%= @ges_rating ? @ges_rating / 10.0 : '' %></div>
 		<%= image_tag @turn.user.avatar.url %>
 		<svg viewBox="0 0 100 100" id="ges_rating_svg">
 			<circle cx="50" cy="50" r="48" stroke-width="4" stroke="rgb(var(--custcolor))" fill="none" stroke-dasharray="0 1000"></circle>
@@ -95,7 +95,7 @@
 	},1000);
 	document.getElementById('ratingBarSound').addEventListener("ended", function() {
 		playCount++;
-		if (playCount < <%= @turn.game_turn_ratings.count %>) {
+		if (playCount < <%= @turn_ratings.count %>) {
 			document.getElementById('ratingBarSound').play();
 		} else {
 			document.getElementById('swoosh').play();
@@ -116,20 +116,22 @@
 			}, 13000);
 			var i = 0.05;
 			MyApp.bar = setInterval(function() {
-				$('#ges_rating').text(Number(<%= @turn.ges_rating.nil? ? 0 : @turn.ges_rating / 10.0 %> * i).toFixed(1));
-				var stroke_arr = Number(<%= 301.59 * (@turn.ges_rating.nil? ? 0 : @turn.ges_rating / 100.0) %> * i).toFixed(0);
+				$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %> * i).toFixed(1));
+				var stroke_arr = Number(<%= 301.59 * (@ges_rating.nil? ? 0 : @ges_rating / 100.0) %> * i).toFixed(0);
 				$('#ges_rating_svg circle').attr("stroke-dasharray", "" + stroke_arr + " 1000");
 				i = i + 0.025;
 			}, 100)
 			setTimeout(function() {
 				clearInterval(MyApp.bar);
-				$('#ges_rating').text(Number(<%= @turn.ges_rating.nil? ? 0 : @turn.ges_rating / 10.0 %>).toFixed(1));
-				var stroke_arr = Number(<%= 301.59 * (@turn.ges_rating.nil? ? 0 : @turn.ges_rating / 100.0) %>).toFixed(0);
+				$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %>).toFixed(1));
+				var stroke_arr = Number(<%= 301.59 * (@ges_rating.nil? ? 0 : @ges_rating / 100.0) %>).toFixed(0);
 				$('#ges_rating_svg circle').attr("stroke-dasharray", "" + stroke_arr +" 1000");
 			}, 4000)												   
 		}
 	});
-	<% if @turn.game_turn_ratings.count == 1 %>
+	<% if @turn_ratings.count == 1 %>
+	$('#rating1').text('?');
+	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
 		document.getElementById('ratingBarSound').play();
 		var i = 0.1;
@@ -142,7 +144,10 @@
 		clearInterval(MyApp.bar1);
 		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
 	});
-	<% elsif @turn.game_turn_ratings.count == 2 %>
+	<% elsif @turn_ratings.count == 2 %>
+	$('#rating1').text('?');
+	$('#rating2').text('?');
+	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
 		document.getElementById('ratingBarSound').play();
 		var i = 0.1;
@@ -165,7 +170,11 @@
 		clearInterval(MyApp.bar2);
 		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
 	});
-	<% elsif @turn.game_turn_ratings.count == 3 %>
+	<% elsif @turn_ratings.count == 3 %>
+	$('#rating1').text('?');
+	$('#rating2').text('?');
+	$('#rating3').text('?');
+	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
 		document.getElementById('ratingBarSound').play();
 		var i = 0.1;
@@ -199,7 +208,12 @@
 		clearInterval(MyApp.bar3);
 		$('#rating3').text(Number(<%= @rating3.rating / 10.0 %>).toFixed(1));
 	});
-	<% elsif @turn.game_turn_ratings.count == 4 %>
+	<% elsif @turn_ratings.count == 4 %>
+	$('#rating1').text('?');
+	$('#rating2').text('?');
+	$('#rating3').text('?');
+	$('#rating4').text('?');
+	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
 		document.getElementById('ratingBarSound').play();
 		var i = 0.1;

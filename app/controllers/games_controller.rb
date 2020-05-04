@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
-  before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch]
-  before_action :set_game, only: [:customize, :email, :create_turn, :name]
+  before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch, :rating_user]
+  before_action :set_game, only: [:customize, :email, :create_turn, :name, :rating_user]
   def create
 	@game = @company.games.where(password: game_params[:password], state: 'wait', active: true).first
 	@game.update(game_params) if @game
@@ -11,6 +11,11 @@ class GamesController < ApplicationController
 	else
 	  redirect_to dashboard_path('', team: game_params[:team_id])
 	end
+  end
+	
+  def rating_user
+	@game.update(game_params)
+	redirect_to gm_game_path
   end
 	
   def customize
@@ -149,10 +154,16 @@ class GamesController < ApplicationController
 	flash[:alert] = 'Konnte Video nicht uploaden!' if !@video.save
 	render json: {file: @video.video.url}
   end
+
+  def destroy_pitch
+	@video = PitchVideo.find(params[:pitch_id])
+	flash[:alert] = 'Konnte Video nicht löschen!' if !@video.destroy
+	redirect_to dashboard_video_path
+  end
 	
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users)
+	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)
