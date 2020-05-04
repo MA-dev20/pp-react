@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   post 'games/turns/:turn_id/record_pitch', to: 'games#record_pitch', as: 'turn_record'
   post 'games/turns/:turn_id/upload_pitch', to: 'games#upload_pitch', as: 'upload_pitch'
   get 'games/pitches/:pitch_id/destroy_pitch', to: 'games#destroy_pitch', as: 'delete_pitch'
+  post 'games/:game_id/set_rating_user', to: 'games#rating_user', as: 'set_rating_user'
 	
   #TEAM
   post 'teams/create', to: 'teams#create', as: 'new_team'
