@@ -129,33 +129,38 @@ class GameMobileController < ApplicationController
 		@game.update(active: false)
 	  end
 	  @turn = GameTurn.find(@game.current_turn)
-	  @turn_ratings = @turn.game_turn_ratings.all if @turn && @game.show_ratings == 'all'
-	  @turn_ratings = @turn.ratings.where(user: @game.rating_user).all if @turn && @game.show_ratings == 'one'
-	  if @turn.game_turn_ratings.count == 0
-	    @turn.update(ges_rating: nil, played: true)
-	    redirect_to gm_set_state_path(state: 'choose')
-		return
-	  elsif @turn_ratings.count == 0
-		@turn.update(played: true)
-		redirect_to gm_set_state_path(state: 'choose')
-		return
-	  else
-		@user = @turn.user
-	    @turn.game_turn_ratings.each do |tr|
-		  @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
-		  new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating).round
-		  if @rating
-		    old_rating = @rating.rating
-		    @rating.update(rating: new_rating, change: new_rating - old_rating)
-		  else
-		    @user.user_ratings.create(rating_criterium: tr.rating_criterium, rating: new_rating, change: new_rating)
+	  if @turn
+	    @turn_ratings = @turn.ratings.where(user: @game.rating_user) if @game.rating_user
+	    if @turn.game_turn_ratings.count == 0
+		  @turn.update(ges_rating: nil, played: true)
+		  redirect_to gm_set_state_path(state: 'choose')
+		  return
+		elsif @turn && @game.show_ratings == 'none'
+		  @turn.update(played: true)
+		  redirect_to gm_set_state_path(state: 'choose')
+		  return
+		elsif @turn && (@game.show_ratings == 'one' && @turn_ratings.count == 0)
+		  @turn.update(played: true)
+		  redirect_to gm_set_state_path(state: 'choose')
+		  return
+		else
+		  @user = @turn.user
+		  @turn.game_turn_ratings.each do |tr|
+		    @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
+		    new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating).round
+		    if @rating
+			  old_rating = @rating.rating
+			  @rating.update(rating: new_rating, change: new_rating - old_rating)
+		    else
+			  @user.user_ratings.create(rating_criterium: tr.rating_criterium, rating: new_rating, change: new_rating)
+		    end
 		  end
+		  new_rating = @user.user_ratings.average(:rating).round
+		  old_rating = @user.ges_rating
+		  @user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
+		  @turn.update(played: true)
+		  @game.update(state: 'rating')
 		end
-		new_rating = @user.user_ratings.average(:rating).round
-		old_rating = @user.ges_rating
-		@user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
-		@turn.update(played: true)
-		@game.update(state: 'rating')
 	  end
 	end
 	if params[:state] == 'bestlist' && @game.state != 'bestlist'
@@ -174,7 +179,7 @@ class GameMobileController < ApplicationController
 	  @game.update(state: 'repeat')
 	  @game_old = @game
 	  temp = Game.where(password: @game.password, state: 'wait', active: true).first
-	  temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list, skip_elections: @game.skip_elections, max_users: @game.max_users) if temp.nil?
+	  temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', password: @game.password, game_seconds: @game.game_seconds, video_id: @game.video_id, youtube_url: @game.youtube_url, video_is_pitch: @game.video_is_pitch, rating_list: @game.rating_list, skip_elections: @game.skip_elections, max_users: @game.max_users, show_ratings: @game.show_ratings, rating_user: @game.rating_user) if temp.nil?
 	  build_catchwords(temp, [@game_old.catchword_list.id])
 	  build_objections(temp, [@game_old.objection_list.id])
 	  game_login temp
