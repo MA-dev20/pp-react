@@ -1,20 +1,15 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
-<% if @game.show_ratings == "one" %>
+<% if @game.show_ratings == "one" && @admin.role != 'user' && !@game.rating_user %>
 <div id="count_channel" data-game-id='<%= @game.id %>'></div>
 <div id="count-reload"></div>
-<% end %>
 <div class="head">
-	<% if @admin.role == 'user' %>
-	<h1>PITCH BEIGETRETEN</h1>
-	<% else %>
-	<h1>Alle beigetreten?</h1>
-	<% end %>
+	<h1>PITCH BEIGETRETEN!</h1>
+	<h3>Wähle hier aus, wessen Bewertung <br>nach dem Pitch angezeigt werden soll!</h3>
 </div>
-<% if @game.show_ratings == "one" && @admin.role != 'user' && !@game.rating_user %>
 <%= form_for(:game, url: set_rating_user_path(@game)) do |f| %>
 <div class="middle">
 		<div class="form-group">
-			<label for="">Bewertung anzeigen von:</label>
+			<label for=""></label>
 			<select name="game[rating_user]" id="game_rating_user" class="custom-select">
 				<% @game.game_turns.each do |t| %>
 					<option value="<%= t.user_id %>"><%= t.user.fname %> <%= t.user.lname %></option>
@@ -27,6 +22,13 @@
 </div>
 <% end %>
 <% else %>
+<div class="head">
+	<% if @admin.role == 'user' %>
+	<h1>PITCH BEIGETRETEN!</h1>
+	<% else %>
+	<h1>Alle beigetreten?</h1>
+	<% end %>
+</div>
 <div class="middle">
 	<%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
 </div>
