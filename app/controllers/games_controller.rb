@@ -155,6 +155,17 @@ class GamesController < ApplicationController
 	render json: {file: @video.video.url}
   end
 
+  def favorite_pitch
+	@turn = GameTurn.find(params[:pitch_id])
+	@pitch = @turn.pitch_video
+	if @pitch.favorite
+	  @pitch.update(favorite: false)
+	else
+	  @pitch.update(favorite: true)
+	end
+	render json: {favorite: @pitch.favorite}	
+  end
+
   def destroy_pitch
 	@video = PitchVideo.find(params[:pitch_id])
 	flash[:alert] = 'Konnte Video nicht löschen!' if !@video.destroy

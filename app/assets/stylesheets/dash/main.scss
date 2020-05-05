@@ -1197,17 +1197,17 @@ body {
 				padding: 0;
 				margin-left: 1vw;
 				overflow: hidden;
-				cursor: pointer;
 				a {
 					position: absolute;
 					top: 0; left: 0; 
-					height: 100%; width: 100%;
+					height: 20vh; width: 100%;
 				}
 				.thumb {
 					position: absolute;
 					left: 0;
 					widows: 100%;
 					height: 20vh;
+					cursor: pointer;
 					img {
 						height: 100%;
 						width: 100%;
@@ -1283,6 +1283,16 @@ body {
 						margin: .5vh .25vw .5vh 0;
 						border-radius: 50%;
 					}
+				}
+				.heart {
+					position: absolute;
+					top: 24vh;
+					right: 0;
+					margin: 0 .5vw;
+					line-height: 3vh;
+					font-size: 2vh;
+					cursor: pointer;
+					z-index: 1000;
 				}
 			}
 			.card:hover {

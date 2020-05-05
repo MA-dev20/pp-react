@@ -13,6 +13,7 @@
 				</div>
 			</div>
 			<div class="word"><%= p[:word].name %></div>
+			<div class="heart" onclick="favPitch(<%= p[:id] %>)"><i id="fav_<%= p[:id] %>" class="<%= p[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
 			<div class="user">
 				<%= image_tag p[:user].avatar.url %>
 				<%= p[:user].fname %> <%= p[:user].lname %>
@@ -30,6 +31,7 @@
 		<div class="videos" id="uploaded-videos">
 			<% @videos.each do |v| %>
 			<div class="card">
+				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
 				<div class="thumb">
 					<%= image_tag v.video.thumb.url %>
 					<div class="overlay">
@@ -49,7 +51,6 @@
 					<%= image_tag v.user.avatar.url %>
 					<%= v.user.fname %> <%= v.user.lname %>
 				</div>
-				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
 			</div>
 			<% end %>
 		</div>
@@ -129,4 +130,26 @@
 	$('#uploadVideoForm').submit(function(e) {
 		e.preventDefault();
 	})
+	function favPitch(pID) {
+		var favdiv = $('fav_' + pID);
+		var url = '/games/pitches/'+pID+'/favorite';
+		$.ajax({
+			type: "put",
+			url: url,
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				if( res.favorite ) {
+					$('#fav_' + pID).removeClass("far");
+					$('#fav_' + pID).addClass("fas");
+				} else {
+					$('#fav_' + pID).removeClass("fas");
+					$('#fav_' + pID).addClass("far");
+				}
+			}
+		})
+	}
 </script>

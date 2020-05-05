@@ -134,7 +134,7 @@
 	<h3><i class="fas fa-arrow-left back" onclick="togglePitchVideos()"></i>Video aussuchen</h3>
 	<div class="videos">
 		<% @pitches.each do |v| %>
-			<div class="card" onclick="setVideo(<%= v[:id] %>, <%= v[:word].name %>, 'pitch')">
+			<div class="card" onclick="setVideo(<%= v[:id] %>, '<%= v[:word].name %>', 'pitch')">
 				<div class="thumb">
 					<%= image_tag v[:video].video.thumb.url %>
 					<div class="overlay">
