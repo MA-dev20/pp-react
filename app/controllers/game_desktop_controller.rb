@@ -47,10 +47,10 @@ class GameDesktopController < ApplicationController
 	if params[:state] == 'choose' && @game.state != 'choose'
 	  @turns = @game.game_turns.playable
 	  if @turns.count == 0 || (@game.game_turns.where(played: true).count == @game.max_users && @game.max_users != 0)
-		redirect_to gm_set_state_path('', state: 'bestlist')
+		redirect_to gd_set_state_path('', state: 'bestlist')
 		return
 	  elsif @game.skip_elections || @turns.count == 1
-		redirect_to gm_set_state_path('', state: 'turn')
+		redirect_to gd_set_state_path('', state: 'turn')
 		return
 	  else
 		@turns = @turns.sample(2)
