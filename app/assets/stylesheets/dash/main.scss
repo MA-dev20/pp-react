@@ -785,6 +785,19 @@ body {
 			}
 		}
 	}
+	#beforeVideo {
+		display: none;
+		input:last-child {
+			margin-top: 2vh;
+		}
+	}
+	#addVideo {
+		label {
+			text-decoration: underline;
+			color: rgb(var(--btncolor));
+			cursor: pointer;
+		}
+	}
 	.form-group {
 		width: 100%;
 		margin-bottom: 2.5vh;
@@ -1054,6 +1067,7 @@ body {
 		background-color: transparent;
 	}
 	.card#newteam,
+	.card#pitchVideos,
 	.card#letspitch {
 		position: absolute;
 		top: 25%;
@@ -1078,7 +1092,71 @@ body {
 		height: 60vh;
 		width: 50vh;
 	}
-	.card#newteam {display: none}
+	.card#pitchVideos .videos {
+			position: relative;
+			margin-top: 2vh;
+			.card {
+				position: relative;
+				float: left;
+				width: 5vw;
+				height: 12vh;
+				padding: 0;
+				margin-left: 1vw;
+				overflow: hidden;
+				cursor: pointer;
+				a {
+					position: absolute;
+					top: 0; left: 0; 
+					height: 100%; width: 100%;
+				}
+				.thumb {
+					position: absolute;
+					left: 0;
+					width: 100%;
+					height: 8vh;
+					img {
+						height: 100%;
+						width: 100%;
+					}
+					.overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						height: 100%;
+						width: 100%;
+						background-color: rgba(0,0,0,0.2);
+					}
+					.time {
+						position: absolute;
+						top: 0;
+						right: 0;
+						height: 3vh;
+						margin: 1vh;
+						line-height: 3vh;
+						color: white;
+					}
+				}
+				.word {
+					position: absolute;
+					top: 8vh;
+					width: 4.5vw;
+					margin: 0 .25vw;
+					font-size: 1.5vh;
+					line-height: 2vh;
+					font-weight: 600;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
+				}
+			}
+			.card:hover {
+				.play {
+					transform: scale(1.1);
+				}
+			}
+			.card:first-child {margin-left: 0;}
+		}
+	.card#pitchVideos, .card#newteam {display: none}
 	#pitch1, #pitch2 {
 		position: absolute;
 		width: 47vh;
