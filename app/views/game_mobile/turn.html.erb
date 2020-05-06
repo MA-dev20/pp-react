@@ -1,6 +1,6 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="head">
-	<h1><%= @turn.user == @admin ? @turn.user.fname +  ', du bist dran!' : @turn.user.fname + ' ist dran!' %></h1>
+	<h1><%= @turn.user.fname %><%= @turn.user == @admin ? ', du bist dran!' : ' ist dran!' %></h1>
 </div>
 <% if @admin.role != 'user' %>
 <%= form_for(:turn, url: turn_record_path(@turn)) do |f| %>
