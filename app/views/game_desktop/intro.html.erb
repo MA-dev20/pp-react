@@ -9,7 +9,7 @@ document.getElementById('video-blur').play();
 document.getElementById('video').volume = 0.5;
 document.getElementById('video').play();
 </script>
-<% elsif @game.youtube_url %>
+<% elsif @game.youtube_url && @game.youtube_url != '' %>
 <div id="player" class="youtube-player"></div>
 <script src="http://www.youtube.com/player_api"></script>
 <script>
@@ -75,6 +75,7 @@ document.getElementById('video').play();
 <% end %>
 <script>
 	$('#navbar').hide();
+	$('#background-images').hide();
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'choose') %>');
 	}

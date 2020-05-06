@@ -85,7 +85,7 @@
 				$('#timeroverlay').hide();
 				clearInterval(beginTimer);
 				document.getElementById('word_load').play();
-				$('#word').text("<%= @turn.catchword.name %>");
+				$('#word').html("<%= @turn.catchword.name %>");
 				textanim();
 				$(".background-img").removeClass('zoom-bg-img');
 				$(".background-img").addClass('bg-animation');
