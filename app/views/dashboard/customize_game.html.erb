@@ -94,27 +94,140 @@
 				<label for="">Nutzerauswahl vor Pitch</label>
 				<div class="skip-election-group">
 					<label for="">Skip Election</label>
-					<i class="far fa-square"></i>
+					<i class="far fa-square" onclick="changeElection()" id="skip_election"></i>
 				</div>
 			</div>
+		</div>
+		<div class="checkbox-container">
+			<%= f.hidden_field(:show_ratings) %>
+			<div class="form-group" id="show_ratings">
+				<label for="">Bewertungsausgabe (nach jedem Pitch)</label>
+				<div class="skip-election-group">
+					<label for="">Gesamtbewertung anzeigen</label>
+					<i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
+				</div>
+				<div class="skip-election-group">
+					<label for="">Keine Bewertung anzeigen</label>
+					<i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
+				</div>
+				<div class="skip-election-group">
+					<label for="">Bewertung von einer bestimmten Person anzeigen</label>
+					<i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group" id="addVideo">
+			<label for="" onclick="toggleVideo()">Video hinzufügen</label>
+		</div>
+		<div class="form-group" id="beforeVideo">
+			<%= f.hidden_field :video_id %>
+			<%= f.hidden_field :video_is_pitch, value: false %>
+			<%= f.text_field :youtube_url, class: 'form-field', placeholder: 'Youtube-Link einfügen', id: 'youtubeLink'%>
+			<input type="text" class="form-field" placeholder="Video auswählen" id="chooseVideo" onclick="togglePitchVideos()">
 		</div>
 		</div>
 		<%= f.submit 'starten!', class: 'btn btn-green' %>
 	<% end %>
 </div>
 
-<script>
+<div class="card" id="pitchVideos">
+	<h3><i class="fas fa-arrow-left back" onclick="togglePitchVideos()"></i>Video aussuchen</h3>
+	<div class="videos">
+		<% @pitches.each do |v| %>
+			<div class="card" onclick="setVideo(<%= v[:id] %>, '<%= v[:word].name %>', 'pitch')">
+				<div class="thumb">
+					<%= image_tag v[:video].video.thumb.url %>
+					<div class="overlay">
+						<div class="time"><%= v[:duration] %></div>
+					</div>
+					<div class="word"><%= v[:word].name %></div>
+				</div>
+			</div>
+		<% end %>
+		<% @admin.videos.each do |v| %>
+			<div class="card" onclick="setVideo(<%= v.id %>, '<%= v.name %>', 'video')">
+				<div class="thumb">
+					<%= image_tag v.video.thumb.url %>
+					<div class="overlay">
+						<% if v.duration.nil? %>
+						<% min = 0 %>
+						<% sec = 0 %>
+						<% else %>
+						<% min = v.duration / 60 %>
+						<% sec = v.duration % 60 %>
+						<% end %>
+						<div class="time"><%= min.round.to_s + (sec < 10 ? ':0' : ':') + sec.round.to_s %></div>
+					</div>
+					<div class="word"><%= v.name %></div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
 
-	$('.far').on('click', function() {
-		if ($(this).hasClass('fa-square')) {
-			$(this).removeClass('fa-square').addClass('fa-check-square')
+<script>
+	$('#youtubeLink').on('change', function() {
+		$('#game_video_id').val('');
+		$('#game_video_is_pitch').val(false);
+		$('#chooseVideo').val('');
+	})
+	
+	function togglePitchVideos() {
+		$('#pitchVideos').toggle();
+		$('#letspitch').toggle();
+	}
+	function setVideo(vID, vNAME, vTYPE) {
+		if( vTYPE == 'video' ) {
+			$('#game_video_is_pitch').val(false);
+		} else {
+			$('#game_video_is_pitch').val(true);
+		}
+		$('#game_video_id').val(vID);
+		$('#chooseVideo').val(vNAME);
+		$('#youtubeLink').val('');
+		togglePitchVideos();
+	}
+	function toggleVideo() {
+		$('#beforeVideo').toggle();
+		var scrollDiv = document.getElementById('scroll')
+		scrollDiv.scrollTo(0, scrollDiv.scrollHeight);
+	}
+	function changeShowRating(type) {
+		if( $('#ratings_all').hasClass('fa-check-square') ) {
+			$('#ratings_all').removeClass('fa-check-square');
+			$('#ratings_all').addClass('fa-square');
+		}
+		if( $('#ratings_one').hasClass('fa-check-square') ) {
+			$('#ratings_one').removeClass('fa-check-square');
+			$('#ratings_one').addClass('fa-square');
+		}
+		if( $('#ratings_none').hasClass('fa-check-square') ) {
+			$('#ratings_none').removeClass('fa-check-square');
+			$('#ratings_none').addClass('fa-square');
+		}
+		if( type == 'all' ) {
+			$('#ratings_all').addClass('fa-check-square');
+			$('#ratings_all').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'all')
+		} else if( type == 'none' ) {
+			$('#ratings_none').addClass('fa-check-square');
+			$('#ratings_none').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'none')
+		} else if( type == 'one' ) {
+			$('#ratings_one').addClass('fa-check-square');
+			$('#ratings_one').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'one')
+		}
+	}
+	function changeElection() {
+		if ($("#skip_election").hasClass('fa-square')) {
+			$("#skip_election").removeClass('fa-square').addClass('fa-check-square')
             $('#game_skip_elections').attr('value', 'true')
 		} else {
-			$(this).removeClass('fa-check-square').addClass('fa-square')
+			$("#skip_election").removeClass('fa-check-square').addClass('fa-square')
             $('#game_skip_elections').attr('value', 'false')
 		}
-	})
-
+	}
 	new PerfectScrollbar("#scroll");
 	function timeUp() {
 		var value = $('#game_game_seconds').val();

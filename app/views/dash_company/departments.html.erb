@@ -1,0 +1,243 @@
+<div class="left">
+	<% if params[:edit].nil? %>
+	<div class="card" id="departments">
+		<h3>Abteilungen <i class="fas fa-plus-circle add" onclick="toggleDepartment()"></i>
+		
+		</h3>
+		<div class="table" id="departments-table">
+			<table>
+				<thead>
+					<tr>
+						<th>Abteilung</th>
+						<th>Nutzer</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="<%= @department ? '' : 'highlighted' %>" onclick="redirectD('alle')">
+						<td>Alle</td>
+						<td><%= @company.users.count %></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<% @departments.each do |d| %>
+						<tr class="<%= @department == d ? 'highlighted' : '' %>">
+							<td onclick="redirectD('<%= d.id %>')"><%= d.name %></td>
+							<td onclick="redirectD('<%= d.id %>')"><%= d.users.count %></td>
+							<td class="edit"><%= link_to '', company_dash_departments_path(department: d.id, edit: true), class: 'far fa-edit' %></td>
+							<td class="remove"><%= link_to '', destroy_department_path(d.id), class: 'far fa-trash-alt destroy', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %></td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div class="card" id="createDepartment" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleDepartment()"></i>Abteilung anlegen</h3>
+		<%= form_for(:department, url: new_department_path) do |f| %>
+			<div class="form-group">
+				<label for="">Abteilung</label>
+				<%= f.text_field :name, value: '', class: 'form-field' %>
+			</div>
+			<%= f.submit 'speichern!', class: 'btn' %>
+		<% end %>
+	</div>
+	
+	<% else %>
+	<div class="card" id="editDepartment">
+		<h3><%= link_to '', company_dash_departments_path, class: 'fas fa-arrow-left back'%>Abteilung bearbeiten!</h3>
+		<%= link_to '', destroy_department_path(@department), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
+		<%= form_for(:department, url: edit_department_path(@department)) do |f| %>
+			<div class="form-group">
+				<label for="">Abteilung</label>
+				<%= f.text_field :name, class: 'form-field' %>
+			</div>
+			<div class="table" id="adduser" ondrop="dropDepartmentADD(event)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)">
+				<table>
+					<thead>
+						<tr>
+							<th colspan="2">Name</th>
+							<th>Admin?</th>
+							<th>Abteilungsadmin?</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @department.users.order(:lname).each do |u| %>
+						<tr>
+							<td class="img"><%= image_tag u.avatar.url %></td>
+							<td><%= u.fname %> <%= u.lname %></td>
+							<td>
+								<% if u.role == 'admin' %>
+								<i class="far fa-check-square" onclick="makeUser(<%= u.id %>)"></i>
+								<% else %>
+								<i class="far fa-square" onclick="makeAdmin(<%= u.id %>)"></i>
+								<% end %>
+							</td>
+							<td>
+								<% if u.role == 'department_admin' %>
+								<i class="far fa-check-square" onclick="makeUser(<%= u.id %>)"></i>
+								<% else %>
+								<i class="far fa-square" onclick="makeDepartmentAdmin(<%= u.id %>)"></i>
+								<% end %>
+							</td>
+							<td class="remove"><%= link_to '', delete_user_from_department_path(@department, u.id), class: 'far fa-trash-alt' %></td>
+						</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<div class="placehere">Nutzer hier hinziehen, um sie dieser Abteilung hinzuzufügen!</div>
+			<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% end %>
+</div>
+
+<div class="right">
+	
+	<div class="card" id="users">
+		<h3>Nutzer</h3>
+		<div class="table" id="users-table">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Name</th>
+						<th></th>
+					</tr>
+				</thead>
+			<% if @department && params[:edit].nil?%>
+				<tbody>
+					<% @department.users.order(:lname).each do |u| %>
+					<tr>
+						<td class="img"><%= image_tag u.avatar.url %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			<% elsif params[:edit] %>
+				<tbody>
+				<% @company.users.order(:lname).each do |u| %>
+					<% if @department.users.where(id: u.id).count == 0 %>
+					<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>">
+						<td class="img"><%= image_tag u.avatar.url %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+					</tr>
+					<% end %>
+				<% end %>
+				</tbody>
+			<% else %>
+				<tbody>
+					<% @company.users.order(:lname).each do |u| %>
+					<tr >
+						<td class="img"><%= image_tag u.avatar.url %></td>
+						<td><%= u.fname %> <%= u.lname %></td>
+					</tr>
+				<% end %>
+				</tbody>
+			<% end %>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+	new PerfectScrollbar('#users-table');
+	function toggleDepartment() {
+		$('#departments').toggle();
+		$('#createDepartment').toggle();
+	}
+	function redirectD(dID) {
+		var url = '<%= company_dash_departments_path %>' + '?department=' +dID;
+		if (dID == 'alle') {
+			url = '<%= company_dash_departments_path %>';
+		}
+		window.location.replace(url);
+	}
+	<% if params[:edit] %>
+	new PerfectScrollbar('#adduser');
+	function drag(e) {
+		e.dataTransfer.setData("EID", e.target.id);
+		e.dataTransfer.setData('ID', e.target.getAttribute('data-id'));
+	}
+	function allowDrop(ev) {
+		ev.preventDefault();
+		$(ev.target).parent().addClass('highlighted');
+	}
+	function leaveDrop(ev) {
+		$(ev.target).parent().removeClass('highlighted');
+	}
+	function dropDepartmentADD(e) {
+		e.preventDefault();
+		var uID = e.dataTransfer.getData('ID');
+		addUserToDepartment(uID);
+	}
+	function addUserToDepartment(uID) {
+		var url = '/departments/' + <%= @department.id %> + '/add_user/' + uID;
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				var userDiv = '<tr><td class="img">' + $('#user_'+uID+" td:nth-child(1)").html() + '</td>';
+				userDiv += '<td>' + $('#user_'+uID+" td:nth-child(2)").html() + '</td><td><i class="far fa-square" onclick="makeAdmin('+uID+')"></i></td><td><i class="far fa-square" onclick="makeDepartmentAdmin('+uID+')"></i></td><td class="remove"><a class="far fa-trash-alt" href="/departments/<%= @department.id %>/delete_user/'+uID+'"></a></td></tr>';
+				$('#adduser tbody').append(userDiv);
+				$('#user_'+uID).remove();
+			}
+		
+		})
+	}
+	function makeDepartmentAdmin(uID) {
+		var url = '/users/' + uID + '/make_department_admin';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: 'false',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				window.location.reload();
+			}
+		})
+	}
+	function makeAdmin(uID) {
+		var url = '/users/' + uID + '/make_admin';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: 'false',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				window.location.reload();
+			}
+		})
+	}
+	function makeUser(uID) {
+		var url = '/users/' + uID + '/make_user';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: 'false',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				window.location.reload();
+			}
+		})
+	}
+	<% end %>
+
+</script>

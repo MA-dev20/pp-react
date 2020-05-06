@@ -54,6 +54,19 @@ class DashboardController < ApplicationController
 	@uRL = @admin.rating_lists.order('name')
 	@cRL = @company.rating_lists.where.not(user: @admin).order('name')
 	@pRL = RatingList.where(company_id: nil, user_id: nil).order('name')
+	@pitches = []
+	@admin.games.each do |p|
+	  p.game_turns.each do |t|
+	  	if t.pitch_video && t.pitch_video.favorite
+		  minutes = t.pitch_video.duration / 60
+		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+		  seconds = t.pitch_video.duration % 60
+		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
+		  @pitches << {id: t.pitch_video.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t.catchword, user: t.user, rating: rating}
+	  	end
+	  end
+	end
   end
 	
   def teams

@@ -67,6 +67,13 @@ Rails.application.routes.draw do
   get 'mobile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
   get 'mobile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
 	
+	
+  # DEPARTMENT
+  post 'departments/new', to: 'department#new', as: "new_department"
+  post 'department/:department_id/edit', to: 'departments#edit', as: 'edit_department'
+  get 'departments/:department_id/destroy', to: 'department#destroy', as: "destroy_department"
+  put 'departments/:department_id/add_user/:user_id', to: 'department#add_user', as: 'add_user_to_department'
+  get 'departments/:department_id/delete_user/:user_id', to: 'department#delete_user', as: 'delete_user_from_department'
   # GAMES
   post 'games/create', to: 'games#create', as: 'new_game'
   post 'games/:game_id/customize', to: 'games#customize', as: 'customize_game'
@@ -76,6 +83,9 @@ Rails.application.routes.draw do
   post 'games/turns/:turn_id/ratings/new', to: 'games#create_rating', as: 'new_rating'
   post 'games/turns/:turn_id/record_pitch', to: 'games#record_pitch', as: 'turn_record'
   post 'games/turns/:turn_id/upload_pitch', to: 'games#upload_pitch', as: 'upload_pitch'
+  put 'games/pitches/:pitch_id/favorite', to: 'games#favorite_pitch', as: 'favorite_pitch'
+  get 'games/pitches/:pitch_id/destroy_pitch', to: 'games#destroy_pitch', as: 'delete_pitch'
+  post 'games/:game_id/set_rating_user', to: 'games#rating_user', as: 'set_rating_user'
 	
   #TEAM
   post 'teams/create', to: 'teams#create', as: 'new_team'
@@ -90,6 +100,8 @@ Rails.application.routes.draw do
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
   put 'users/:user_id/company_admin', to: 'users#company_admin', as: 'make_company_admin'
+  put 'users/:user_id/make_department_admin', to: 'users#department_admin', as: 'make_department_admin'
+  put 'users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
   put 'users/:user_id/make_user', to: 'users#user', as: 'make_user'
 	
   #Customize
@@ -109,4 +121,9 @@ Rails.application.routes.draw do
   post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'
   post 'turns/:turn_id/comments/:comment_id/update', to: 'comments#update', as: 'update_comment'
   get 'turns/:turn_id/comments/:comment_id/destroy', to: 'comments#destroy', as: 'destroy_comment'
+	
+  #VIDEOS
+  post 'videos/new', to: 'video#new', as: "new_video"
+  post 'videos/:video_id/edit', to: 'video#edit', as: 'edit_video'
+  get 'videos/:video_id/destroy', to: 'video#destroy', as: 'delete_video'
 end

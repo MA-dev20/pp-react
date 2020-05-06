@@ -5,6 +5,7 @@
 			<%= image_tag @turn.user.avatar.url %>
 			<%= @turn.user.fname %> <%= @turn.user.lname %> - <%= @turn.created_at.strftime("%d.%m.%y") %>
 		</div>
+		<%= link_to '', delete_pitch_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
 		<div class="do-and-dont">
 			<h5>Do say &amp; Don't say</h5>
 			<div class="card">

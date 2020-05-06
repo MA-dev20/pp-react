@@ -962,11 +962,34 @@ body {
 		top: 0;
 		left: 0;
 		width: 100%;
+		height: 100vh;
 		object-fit: fill;
 		min-width: 100%;
 		min-height: 100%;
 		background-color: black;
 		z-index: 0;
+	}
+	#video {
+		position: relative;
+		top: 0;
+		left: 50%;
+		height: 100vh;
+		margin: 0 auto;
+		transform: translateX(-50%);
+		z-index: 1000;
+	}
+	#video-blur {
+		position: absolute;
+		bottom: -20px;
+		left: -20px;
+		object-fit: fill;
+		min-height: calc(100% + 40px);
+		min-width: calc(100% + 40px);
+		filter: blur(10px);
+		z-index: 100;
+	}
+	.youtube-player {
+		height: 100vh !important;
 	}
 }
 #confetti {

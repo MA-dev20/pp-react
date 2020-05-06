@@ -1,0 +1,116 @@
+<% content_for :title, "Peter Pitch - Impressum" %>
+<% content_for :description, 'Peter Pitch ist das erste digitale Trainingstool für Kommuikation und Vertrieb - Hier ist unser Impressum!'%>
+<section id="navbar">
+    <%= link_to image_tag('landing/logo.png', alt: 'Peter Pitch Logo'), root_path, class: 'logo'%>
+    <div class="navbar-links" id="navLinks">
+       	<div class="link">
+       		<%= link_to 'Produkt', product_path %>
+       		<div class="line"></div>
+       	</div>
+        <div class="link">
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Kontakt', contact_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+            <%= link_to 'Blog', blog_path %>
+            <div class="line"></div>
+        </div>
+        <div class="link">
+          	<i class="login-link" onclick="showLoginModal()">Login</i>
+        </div>
+        <div class="link">
+            <%= link_to 'Demo vereinbaren', contact_path("", subject: "demo"), class: 'btn btn-white' %>
+        </div>
+    </div>
+    <div class="login">
+       	<i class="login-link" onclick="showLoginModal()">Login</i>
+    </div>
+    <div class="navbar-mobile" onclick="showNavLinks()">
+        <i class="fas fa-bars"></i>
+    </div>
+</section>
+<section id="impressum">
+	<h1>Angaben gemäß §5 TMG:</h1>
+	
+	<h3>Peter Pitch GmbH (I.G.)</h3>
+	<p>Sonnenstraße 130</p>
+	<p>44139 Dortmund</p>
+	<p>Deutschland</p>
+	
+	<h3>Geschäftsführer:</h3>
+	<p>Christian Panne, David Neuendorf</p>
+	
+	<h3>Kontakt:</h3>
+	<p>Email: <%= mail_to 'info@peterpitch.com' %></p>
+	
+	<h3>Streitschlichtung:</h3>
+	<p>Alle Angebote richten sich ausschließlich an Unternehmer im Sinne des §14 BGB.</p>
+	<p>Plattform der EU-Kommission zur Online Streitbeilegung für Verbraucher:</p>
+	<p><a href="https://webgate.ec.europa.eu/odr/">https://webgate.ec.europa.eu/odr/</a></p>
+	<p>Gemäß § 36 VSBG weisen wir darauf hin, dass wir nicht an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilnehmen und hierzu auch nicht verpflichtet sind.</p>
+	
+</section>
+<section id="footer" class="wow fadeIn">
+    <div class="logo">
+        <%= image_tag 'landing/logo.png', alt: 'Peter Pitch Logo' %>
+    </div>
+    <div class="company">
+        <div class="heading">Unternehmen</div>
+        <div class="links">
+            <%= link_to 'Registrieren', contact_path %>
+            <%= link_to 'Preise', contact_path %>
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <%= link_to 'Login', '#login', onclick: 'showLoginModal()' %>
+        </div>
+    </div>
+    <div class="legal">
+        <div class="heading">Rechtliches</div>
+        <div class="links">
+            <%= link_to 'Impressum', impressum_path %>
+            <%= link_to 'Datenschutz', datenschutz_path %>
+        </div>
+    </div>
+    <div class="social">
+        <%= link_to '', 'https://www.instagram.com/peterpitchcom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-instagram" %>
+        <%= link_to '', 'https://www.youtube.com/channel/UCN7MeKNNdXK28uIiJjJ4Fdg', target: "_blank", rel: "noopener noreferrer", class: "fab fa-youtube" %>
+        <%= link_to '', 'https://www.facebook.com/PeterPitchCom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-facebook-f" %>
+    </div>
+</section>
+<div class="fullscreen-modal" id="loginModal">
+    
+    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+    <div class="card">
+    <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
+        <h2>Login</h2>
+        <div class="form-group ">
+            <label for="">Email</label>
+            <%= f.email_field :email, class: 'form-field', id: 'loginEmail', required: true  %>
+        </div>
+        <div class="form-group">
+            <label for="">Passwort</label>
+            <div class="right"><%= link_to "Passwort vergessen?", forget_password_path %></div>
+            <%= f.password_field :password, class: 'form-field',id: 'loginPassword', required: true  %>
+            <br>
+        </div>
+        <div class="form-group center">
+            <%= f.submit 'Login', class: 'btn btn-green', id: "loginButton" %>
+        </div>
+    <% end %>
+    </div>
+</div>
+<script>
+	function showLoginModal() {
+        $('#loginModal').toggle();
+    }
+	function showNavLinks() {
+        if($('#navLinks').is(":hidden")) {
+            $('#navLinks').show();   
+        } else {
+            $('#navLinks').hide();
+        }
+    }
+</script>

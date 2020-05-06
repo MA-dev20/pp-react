@@ -57,6 +57,14 @@
 
 
 <script>
+	posBottom();
+	window.onresize = function(){posBottom()};
+	function posBottom() {
+		var height = window.innerHeight
+		var width = window.innerWidth
+		$('body').css("height", height)
+		$('body').css("width", width)
+	}
 	new PerfectScrollbar('#objection-list')
 	function toggleObjections() {
 		$("#objections-menu").toggle()

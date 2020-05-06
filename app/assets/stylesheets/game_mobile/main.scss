@@ -74,8 +74,8 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 	background-color: rgba(255,255,255,.9);
 	z-index: 2000;
 	.nav {
@@ -83,7 +83,7 @@ body {
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 5vh;
+		height: 5%;
 		.fa-times {
 			position: absolute;
 			right: 1vh;
@@ -95,9 +95,9 @@ body {
 	}
 	.objections {
 		position: absolute;
-		top: 5vh;
+		top: 5%;
 		width: 100%;
-		height: 95vh;
+		height: 95%;
 		overflow: auto;
 		span {
 			display: block;
@@ -115,8 +115,8 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 	color: gray;
 	animation-name: fadeIn;
 	animation-duration: .5s;
@@ -141,8 +141,8 @@ body {
 	}
 	.middle {
 		position: absolute;
-		height: 50vh;
-		margin: 25vh 0;
+		height: 50%;
+		top: 25%;
 		width: 100%;
 		text-align: center;
 		line-height: 10vh;
@@ -171,24 +171,29 @@ body {
 			font-size: 5vh;
 		}
 		img {
-			display: inline-block;
-			margin-top: calc(25vh - 30vw);
+			position: relative;
+			top: calc(50% - 25vw);
 			width: 45vw;
 			height: 45vw;
 			border-radius: 50%;
 			border: 1.5vw solid rgb(var(--custcolor));
 			box-shadow: 0 0 0 0 rgba(var(--custcolor), 1);
 		}
+		label#mid-img {
+			position: absolute;
+			top: 0; left: 0;
+			height: 100%; width: 100%;
+		}
 		#avatar-img {
 			position: absolute;
 			border: none !important;
 			width: 47vw; height: 47vw;
-			top: calc(25vh - 28.5vw); left: 26.5vw;
+			top: calc(50% - 28.5vw); left: 26.5vw;
 			margin-top: 0;
 		}
 		#avatar-svg {
 			position: absolute;
-			top: calc(25vh - 30vw); left: 25vw;
+			top: calc(50% - 30vw); left: 25vw;
 			width: 50vw; height: 50vw;
 			border-radius: 50%;
 		}
@@ -202,9 +207,16 @@ body {
 		.circle-right {
 			float: left;
 			width: 50%;
+			height: 100%;
+			a {
+				display: block;
+				position: relative;
+				left: 0; top: 0;
+				height: 100%; width: 100%;
+			}
 			img {
-				display: inline-block;
-				margin-top: calc(25vh - 20vw);
+				position: relative;
+				top: calc(50% - 20vw);
 				width: 37vw;
 				height: 37vw;
 				border-radius: 50%;
@@ -212,6 +224,9 @@ body {
 			}
 		}
 		.switch {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
 			opacity: 0;
 			animation-name: opacity;
 			animation-duration: 1s;
@@ -227,17 +242,16 @@ body {
 			}
 			input {display: none}
 			label {
-				position: fixed;
 				display: block;
-				top: 70vh;
-				left: 10vw;
-				width: 80vw;
+				width: 60%;
 				margin: 0 auto;
 				height: 5vh;
+				text-align: center;
 				.checkbox {
-					position: absolute;
-					left: 0;
-					top: 1vh;
+					position: relative;
+					display: inline-block;
+					float: left;
+					margin: 1.5vh 1vw;
 					height: 2vh;
 					width: 4vh;
 					border-radius: 2vh;
@@ -255,10 +269,9 @@ body {
 					}
 				}
 				.text {
-					margin-left: 7vh;
-					width: calc(100% - 7vh);
+					margin: 0;
 					line-height: 2.5vh !important;
-					font-size: 2vh;
+					font-size: 1.5vh;
 				}
 			}
 		}
@@ -338,6 +351,26 @@ body {
 				border: .5px solid rgb(var(--custcolor));
 				box-shadow: 0 0 0 rgba(0, 0, 0, 0)
 			}
+			.custom-select {
+				margin: 0 10%;
+				width: 80%;
+				background-color: white;
+				border: .1vh solid #dfe1e5;
+				height: 40px;
+				border-radius: .8vh;
+				padding: 0 5px;
+				background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
+				appearance: none;
+				background-color: white;
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				cursor: pointer;
+				font-family: 'Nunito', sans-serif !important;
+				font-size: 15px;
+				color: #495057 !important;
+				outline: none !important;
+				box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
+			}
 			.form-field {
 				font-family: 'Nunito', sans-serif !important;
 				display: inline-block;
@@ -397,7 +430,7 @@ body {
 		height: 12vh;
 		width: 100%;
 		position: absolute;
-		top: 65vh;
+		top: calc(75% - 6vh);
 		text-align: center;
 		.dot {
 			position: relative;
@@ -412,11 +445,11 @@ body {
 		.dot:last-child {opacity: .65};
 	}
 	.bottom {
-		position: absolute;
+		position: fixed;
 		bottom: 0;
+		height: 90px;
 		width: 100%;
 		text-align: center;
-		padding-bottom: 10vh;
 		.form-group {
 			position: absolute;
 			bottom: 0;
@@ -497,6 +530,8 @@ body {
 	text-decoration: none;
 	font-family: 'BarackPro-Solid' !important;
 	background-color: rgb(var(--custcolor));	
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
 }
 .btn.inverted {
 	color: rgb(var(--custcolor));

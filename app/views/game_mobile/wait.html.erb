@@ -1,7 +1,30 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<% if @game.show_ratings == "one" && @admin.role != 'user' && !@game.rating_user %>
+<div id="count_channel" data-game-id='<%= @game.id %>'></div>
+<div id="count-reload"></div>
+<div class="head">
+	<h1>PITCH BEIGETRETEN!</h1>
+	<h3>Wähle hier aus, wessen Bewertung <br>nach dem Pitch angezeigt werden soll!</h3>
+</div>
+<%= form_for(:game, url: set_rating_user_path(@game)) do |f| %>
+<div class="middle">
+		<div class="form-group">
+			<label for=""></label>
+			<select name="game[rating_user]" id="game_rating_user" class="custom-select">
+				<% @game.game_turns.each do |t| %>
+					<option value="<%= t.user_id %>"><%= t.user.fname %> <%= t.user.lname %></option>
+				<% end %>
+			</select>
+		</div>
+</div>
+<div class="bottom">
+	<%= f.submit 'speichern!', class: 'btn' %>
+</div>
+<% end %>
+<% else %>
 <div class="head">
 	<% if @admin.role == 'user' %>
-	<h1>PITCH BEIGETRETEN</h1>
+	<h1>PITCH BEIGETRETEN!</h1>
 	<% else %>
 	<h1>Alle beigetreten?</h1>
 	<% end %>
@@ -9,7 +32,7 @@
 <div class="middle">
 	<%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
 </div>
-<div class="dots" style="top: 67vh;">
+<div class="dots">
 	<div class="dot"></div>
 	<div class="dot"></div>
 	<div class="dot"></div>
@@ -21,3 +44,4 @@
 	<%= link_to "los geht's!", gm_set_state_path('', state: 'intro'), class: 'btn custom-btn' %>
 	<% end %>
 </div>
+<% end %>

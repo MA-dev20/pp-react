@@ -3,7 +3,7 @@
 	<h1><%= @turn.user.fname %> mache dich bereit!</h1>
 </section>
 <section id="middle">
-	<% if @turn1 %>
+	<% if @turn1 && @turn2 && (@turn1 == @turn || @turn2 == @turn) %>
 	<div class="circle-left">
         <%= image_tag @turn1.user.avatar.url, id: 'left-img' %>
     </div>
@@ -30,7 +30,7 @@
 		$('.circle-right').addClass('fadeOut');
 		$('.circle-left').addClass('moveMiddleLeft');
 		window.setTimeout(function() {$('.circle-left img').addClass('pulse');}, 2000);
-	<% elsif @turn1 && @turn2 == @turn %>
+	<% elsif @turn2 && @turn2 == @turn %>
 		$("#head").addClass("delay2");
 		$('.circle-left').addClass('fadeOut');
 		$('.circle-right').addClass('moveMiddleRight');

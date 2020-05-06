@@ -10,12 +10,13 @@ class DashCompanyController < ApplicationController
   end
 	
   def departments
-	@departements = @company.departments
+	@departments = @company.departments
+	@department = @company.departments.find(params[:department]) if params[:department]
   end
 	
   def department
 	@department = Department.find(params[:department_id])
-	@users = @department.users.where.not(role: 'department_admin').or(@department.users.where.not(role: 'company_admin')).all
+	@users = @department.users.where.not(role: 'department_admin').or(@department.users.where.not(role: 'company_admin')).all.order(:lname)
 	@dAdmins = @department.users.where(role: 'department_admin').or(@department.users.where(role: 'company_admin')).all
   end
 
