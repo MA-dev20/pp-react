@@ -78,10 +78,9 @@ class GameMobileController < ApplicationController
 	
   def repeat_turn
 	@turn = GameTurn.find(@game.current_turn)
-	@turn.ratings.each do |r|
-		r.destroy
-	end
-	@turn.update(played: false)
+	@turn.update(played: false, play: false)
+	@new_turn = GameTurn.create(game: @game, user: @turn.user, team: @turn.team, catchword: @turn.catchword, play: true, played: false)
+	@game.update(current_turn: @new_turn.id)
 	redirect_to gm_set_state_path('', state: 'turn')
   end
 	

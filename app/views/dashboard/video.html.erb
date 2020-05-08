@@ -31,7 +31,6 @@
 		<div class="videos" id="uploaded-videos">
 			<% @videos.each do |v| %>
 			<div class="card">
-				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
 				<div class="thumb">
 					<%= image_tag v.video.thumb.url %>
 					<div class="overlay">
@@ -46,6 +45,7 @@
 						<div class="play"><i class="fas fa-play"></i></div>
 					</div>
 				</div>
+				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
 				<div class="word"><%= v.name %></div>
 				<div class="user">
 					<%= image_tag v.user.avatar.url %>
