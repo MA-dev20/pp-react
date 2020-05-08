@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   get 'mobile/game/choosen', to: 'game_mobile#choosen', as: 'gm_choosen'
   post 'mobile/game/objection', to: 'game_mobile#objection', as: "gm_objection"
   get 'mobile/game/set_state', to: 'game_mobile#set_state', as: "gm_set_state"
+  get 'mobile/game/turn_repeat', to: 'game_mobile#repeat_turn', as: 'gm_repeat_turn'
   get 'mobile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
   get 'mobile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
 	
