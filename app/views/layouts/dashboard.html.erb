@@ -90,7 +90,12 @@
    				<i class="fab fa-youtube"></i>
    				<div class="text">Video Tool</div>
    				<%= link_to '', dashboard_video_path %>
-   			</div>
+			</div>
+			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"d>
+				<i class="fab fa-youtube"></i>
+				<div class="text">Pitches</div>
+				<%= link_to '', dashboard_pitches_path %>
+			</div>
    		</div>
    		<div class="logo">
    			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
