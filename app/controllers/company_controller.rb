@@ -9,7 +9,11 @@ class CompanyController < ApplicationController
 	    @user.role = 'company_admin'
 	    if @user.save!(:validate => false)
 		  UserMailer.after_register(@user).deliver
-		  flash[:notice] = 'Du hast dich erfolgreich registriert! Bitte warte bis sich einer unserer Wölfe bei dir meldet!'
+		  @root = User.where(bo_role: "root").all
+		  @root.each do |r|
+			  UserMailer.new_company(r, @company).deliver
+		  end
+		  flash[:thanks_for_register] = 'Du hast dich erfolgreich registriert! Bitte warte bis sich einer unserer Wölfe bei dir meldet!'
 		  redirect_to root_path
 	    else
 		  flash[:alert] = 'Konnte User nicht erstellen!'

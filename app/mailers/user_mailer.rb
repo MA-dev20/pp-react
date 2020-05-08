@@ -15,4 +15,10 @@ class UserMailer < ApplicationMailer
 	@password = password
 	mail to: @user.email, subject: 'Herzlich Willkommen!'
   end
+	
+  def new_company(root, company)
+	@root = root
+	@company = company
+	mail to: @root.email, subject: 'Neue Anfrage!'
+  end
 end
