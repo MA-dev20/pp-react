@@ -19,6 +19,7 @@
 </style>
 
   <body>
+	<% unless params[:action] == 'new_pitch' %>
    	<section id="navbar">
    		<div class="dropdown" onclick="toggleDropdown()">
    		Hallo, <%= @admin.fname %> <%= @admin.lname %>
@@ -106,7 +107,13 @@
    	</section>
    	<section id="content">
     	<%= yield %>
-   	</section>
+	</section>
+	<% else %>
+		<section>
+			<%= yield %>
+		</section>
+	<% end %>
+	   
    	<% if flash[:alert] %>
    	<div class="modal-blur">
    		<div class="modal card">

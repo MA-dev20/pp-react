@@ -1,24 +1,209 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+<section class="new-pitch-navbar">
+    <div class="nav-left-section">
+        <div class="header-img">
+            <%= image_tag 'dash/peterpitch.png' %>
         </div>
-      </nav>
+        <div class="nav-input-field-div">
+            <input type="text" placeholder="Type pitch name here">
+        </div>
+        <div class="nav-btn">
+            <a href="" class="btn">Regeln</a>
+        </div>
+    </div>
+    <div class="center-section">
+        <h2>Pitch erstellen</h2>
+    </div>
+    <div class="nav-right-section">
+        <div class="nav-btn">
+            <a href="" class="btn btn-exit">Exit</a>
+        </div>
+        <div class="nav-btn">
+            <a href="" class="btn">Done</a>
+        </div>
+    </div>
+</section>
+
+<div class="panel-container">
+    <div class="left-panel">
+        <div class="card-wrapper">
+            <div class="card-heading">
+                <div class="card-heading-left">
+                    <a href=""><i class="fas fa-exclamation-triangle"></i></a>
+                    <div class="task-name p-l-1">Task 1</div>
+                    <div class="category-type p-l-1">. Video</div>
+                </div>
+                <div class="card-heading-right">
+                    <a href="" class="p-r-1"><i class="fas fa-copy"></i></a>
+                    <a href=""><i class="fas fa-trash"></i></a>
+                </div>
+            </div>
+            <div class="card">
+                <%= image_tag 'dash/Image.png' %>
+                <span class="time-circle">120</span>
+                <div class="title p-0">Type your question</div>
+                <div class="sb-title p-0">Rating criteria:</div>
+                <div class="rating-criteria">
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-wrapper">
+            <div class="card-heading">
+                <div class="card-heading-left">
+                    <a href=""><i class="fas fa-exclamation-triangle"></i></a>
+                    <div class="task-name p-l-1">Task 2</div>
+                    <div class="category-type p-l-1">. Catchword</div>
+                </div>
+                <div class="card-heading-right">
+                    <a href="" class="p-r-1"><i class="fas fa-copy"></i></a>
+                    <a href=""><i class="fas fa-trash"></i></a>
+                </div>
+            </div>
+            <div class="card">
+                <%= image_tag 'dash/Image.png' %>
+                <span class="time-circle">120</span>
+                <div class="title p-0">Type your question</div>
+                <div class="sb-title p-0">Rating criteria:</div>
+                <div class="rating-criteria">
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                    <div class="capsule">Criteria</div>
+                </div>
+            </div>
+        </div>
+        <div class="btn-wrapper">
+            <div class="nav-btn">
+                <a href="" class="btn">Add task</a>
+            </div>
+            <div class="nav-btn">
+                <a href="" class="btn">Add from existing pitch</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="top-section">
+            <input type="text" class=""
+                placeholder="Tippen, um Aufgabe hinzuzufugen, bspw. Verkaufe das Catchword an einen Bestandskunden">
+        </div>
+        <div class="other-sections">
+            <div class="left-section">
+                <div class="time-card">
+                    <div class="title">Time limit</div>
+                    <div class="sb-title">Set your time limit. Standard time limit is 120 seconds.</div>
+                    <div class="time-field">
+                        <div class="time" id="settime">120s</div>
+                        <i class="fa fa-angle-up up" onclick="timeUp()"></i>
+                        <i class="fa fa-angle-down down" onclick="timeDown()"></i>
+                    </div>
+                </div>
+                <div class="options-card">
+                    <div class="title">Text, Video oder Bild hinzufügen</div>
+                    <div class="btn-row">
+                        <div class="nav-btn">
+                            <a href="" class="btn">Catchword</a>
+                        </div>
+                        <div class="nav-btn active">
+                            <a href="" class="btn">Bild</a>
+                        </div>
+                        <div class="nav-btn">
+                            <a href="" class="btn">Video</a>
+                        </div>
+                        <div class="nav-btn">
+                            <a href="" class="btn">Audio</a>
+                        </div>
+                    </div>
+                    <!-- <div class="title">Image / Video</div>
+                        <div class="sb-title">Upload an image or video to your pitch.</div> -->
+                    <!-- <div class="video-blk">
+                        <div class="inner-left-section">
+                            <div class="title">Pitch video</div>
+                            <div class="btns">
+                                <div class="nav-btn">
+                                    <a href="" class="btn">Upload</a>
+                                </div>
+                                <div class="nav-btn">
+                                    <a href="" class="btn">Record</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inner-right-section">
+                            <div class="video-detail">
+                                <div class="video-title">Pitch video</div>
+                                <div class="video-time">00:16:45</div>
+                                <div class="remove-btn">
+                                    <a href="">Remove</a>
+                                </div>
+                            </div>
+                            <div class="video-thumbnail">
+                                <%= image_tag 'dash/Image.png' %>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="img-blk">
+                        <div class="inner-left-section">
+                            <div class="title">Pitch image</div>
+                            <div class="btns">
+                                <div class="nav-btn">
+                                    <a href="" class="btn">Upload</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inner-right-section">
+                            <div class="img-detail">
+                                <div class="img-title">Pitch-image</div>
+                                <div class="remove-btn">
+                                    <a href="">Remove</a>
+                                </div>
+                            </div>
+                            <div class="thumbnail">
+                                <%= image_tag 'dash/Image.png' %>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="reactions-card">
+                    <div class="title">Reactions</div>
+                    <div class="sb-title">Type new reaction or choose from the list below</div>
+                    <div class="input-fields">
+                        <div class="nav-input-field-div">
+                            <input type="text" placeholder="Type your reaction">
+                        </div>
+                        <div class="nav-input-field-div">
+                            <div class="custom-select">Reaction
+                                <%= image_tag 'dash/icons/dropdown.svg' %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="capsule-div">
+                        <div class="capsule">Reaction eintippen</div>
+                        <div class="capsule">Reaction eintippen</div>
+                    </div>
+                    <div>If more than one reaction is chosen, we will choose one of them randomly for this task.
+                    </div>
+                </div>
+                <div class="criteria-card">
+                    <div class="title">Rating Criterias</div>
+                    <div class="sb-title">You can add up to 4 rating criterias</div>
+                    <div class="input-fields">
+                        <div class="input-with-icon nav-input-field-div">
+                            <input type="text" placeholder="Type new rating criteria">
+                            <%= image_tag 'dash/icons/star.svg' %>
+                        </div>
+                        <div class="plus-icon">
+                            <%= image_tag 'dash/icons/circle-plus.svg' %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
