@@ -99,8 +99,12 @@ img {
     }
 }
 
-.btn-row {
-    .nav-btn.active .btn{
+input[type="radio"] {
+    display: none;
+}
+
+.btn-row .nav-btn {
+    .active-link.btn {
         background: #69DEA9;
         color: #ffffff;
     }

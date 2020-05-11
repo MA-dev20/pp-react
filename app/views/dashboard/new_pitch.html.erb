@@ -104,17 +104,22 @@
                 <div class="options-card">
                     <div class="title">Text, Video oder Bild hinzufügen</div>
                     <div class="btn-row">
+                        <input type="radio" name="type" class="cw">
+                        <input type="radio" name="type" class="bild">
+                        <input type="radio" name="type" class="video">
+                        <input type="radio" name="type" class="audio">
+
                         <div class="nav-btn">
-                            <a href="" class="btn">Catchword</a>
-                        </div>
-                        <div class="nav-btn active">
-                            <a href="" class="btn">Bild</a>
+                            <a href="javascript:void(0)" class="btn active-link" name="cw">Catchword</a>
                         </div>
                         <div class="nav-btn">
-                            <a href="" class="btn">Video</a>
+                            <a href="javascript:void(0)" class="btn" name="bild">Bild</a>
                         </div>
                         <div class="nav-btn">
-                            <a href="" class="btn">Audio</a>
+                            <a href="javascript:void(0)" class="btn" name="video">Video</a>
+                        </div>
+                        <div class="nav-btn">
+                            <a href="javascript:void(0)" class="btn" name="audio">Audio</a>
                         </div>
                     </div>
                     <!-- <div class="title">Image / Video</div>
@@ -207,3 +212,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('.btn-row .btn').click(function() {
+        $(`.${$(this).attr('name')}`).click();
+        if (!$(this).hasClass('active-link')) {
+            $('.btn-row .btn').removeClass('active-link');
+            $(this).addClass('active-link');
+
+        }
+    })
+</script>
