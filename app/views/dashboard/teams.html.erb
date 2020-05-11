@@ -22,11 +22,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<% @team.users.each do |u| %>
+						<% @team.users.where.not(role: "inactive").each do |u| %>
 						<tr>
 							<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/wolf.png' %></td>
 							<td><%= u.fname %> <%= u.lname %></td>
-							<td class="remove"><%= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %></td>
+							<td class="remove active"><%= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %></td>
 						</tr>
 						<% end %>
 					</tbody>
@@ -251,7 +251,23 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% @users.each do |u| %>
+					<% if @users.where(role: "inactive").count > 0 %>
+						<tr>
+							<th colspan="6">Inactive User</th>
+						</tr>
+						<% @users.where(role: "inactive").each do |u| %>
+							<tr>
+								<td class="img"><%= image_tag u.avatar.url %></td>
+								<td><%= u.fname %> <%= u.lname %></td>
+								<td colspan="3" class="accept"><%= link_to 'akzeptieren', make_user_path(u.id), method: 'put' %></td>
+								<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
+							</tr>
+						<% end %>
+						<tr>
+							<th colspan="6">Active User</th>
+						</tr>
+					<% end %>
+					<% @users.where.not(role: 'inactive').each do |u| %>
 						<% if params[:edit] == "true" && TeamUser.where(team_id: @team.id, user_id: u.id).count == 0 || params[:edit] != 'true' %>
 						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="<%= @user == u ? 'highlighted' : '' %>">
 							<td class="img"><%= image_tag u.avatar.url %></td>

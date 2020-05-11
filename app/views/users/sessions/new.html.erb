@@ -1,0 +1,19 @@
+<section id="devise_form">
+<h2>Log in</h2>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class="form-group">
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.password_field :password, autocomplete: "current-password", class: 'form-field' %>
+  </div>
+
+  <%= link_to 'Passwort vergessen?', forget_password_path %>
+  <div class="form-group">
+    <%= f.submit "Einloggen", class: 'btn btn-green' %>
+  </div>
+<% end %>
+
+</section>

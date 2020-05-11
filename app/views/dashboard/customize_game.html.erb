@@ -114,6 +114,10 @@
 					<label for="">Bewertung von einer bestimmten Person anzeigen</label>
 					<i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
 				</div>
+				<div class="skip-election-group">
+					<label for="">Bewertung überspringen</label>
+					<i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
+				</div>
 			</div>
 		</div>
 		<div class="form-group" id="addVideo">
@@ -205,6 +209,10 @@
 			$('#ratings_none').removeClass('fa-check-square');
 			$('#ratings_none').addClass('fa-square');
 		}
+		if( $('#ratings_skip').hasClass('fa-check-square') ) {
+			$('#ratings_skip').removeClass('fa-check-square');
+			$('#ratings_skip').addClass('fa-square');
+		}
 		if( type == 'all' ) {
 			$('#ratings_all').addClass('fa-check-square');
 			$('#ratings_all').removeClass('fa-square');
@@ -217,6 +225,10 @@
 			$('#ratings_one').addClass('fa-check-square');
 			$('#ratings_one').removeClass('fa-square');
 			$('#game_show_ratings').attr('value', 'one')
+		} else if( type == 'skip' ) {
+			$('#ratings_skip').addClass('fa-check-square');
+			$('#ratings_skip').removeClass('fa-square');
+			$('#game_show_ratings').attr('value', 'skip')
 		}
 	}
 	function changeElection() {

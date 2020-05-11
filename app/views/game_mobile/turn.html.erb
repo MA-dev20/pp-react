@@ -2,7 +2,7 @@
 <div class="head">
 	<h1><%= @turn.user.fname %><%= @turn.user == @admin ? ', du bist dran!' : ' ist dran!' %></h1>
 </div>
-<% if @admin.role != 'user' %>
+<% if @admin.role != 'user' && @admin.role != 'inactive' %>
 <%= form_for(:turn, url: turn_record_path(@turn)) do |f| %>
 <div class="middle">
     <%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>

@@ -1,13 +1,13 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <% @omenu = true %>
 <div class="navbar-links">
-	<% if @turn.record_pitch && @admin.role != 'user' %>
+	<% if @turn.record_pitch && @admin.role != 'user' && @admin.role != 'inactive' %>
 		<% if params[:process] && @game.state != 'play' %>
 			<% redirect_to gm_game_path %>
 		<% else %>
 			<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
 		<% end %>
-	<% elsif @admin.role != 'user' %>
+	<% elsif @admin.role != 'user' && @admin.role != 'inactive' %>
 		<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
 	<% end %>
 </div>
@@ -37,7 +37,7 @@
 	<div class="dot"></div>
 </div>
 <div class="bottom">
-	 <% if @turn.record_pitch && @admin.role != 'user' && params[:pitch] == 'record' %>
+	 <% if @turn.record_pitch && @admin.role != 'user' && @admin.role != 'inactive' && params[:pitch] == 'record' %>
 	 	<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
 		<button class="btn custom-btn" id="video-btn">Kamera öffnen</button>
 	 <% else %>

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+        sessions: 'users/sessions'
+      }
   mount ActionCable.server => '/cable'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 	
@@ -98,6 +100,7 @@ Rails.application.routes.draw do
   #USER
   post 'users/create', to: 'users#create', as: 'new_user'
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
+  post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
   put 'users/:user_id/company_admin', to: 'users#company_admin', as: 'make_company_admin'

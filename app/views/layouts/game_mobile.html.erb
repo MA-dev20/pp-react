@@ -33,6 +33,7 @@
 		<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
 		<% end %>
 	</section>
+	<% if @game.objection_list %>
 	<section id="objections-menu">
 		<div class="nav">
 			<i class="fas fa-times" onclick="toggleObjections()"></i>
@@ -43,6 +44,7 @@
 		<% end %>
 		</div>
 	</section>
+	<% end %>
 	<section id="content">
 		<%= yield %>
 	</section>

@@ -539,7 +539,12 @@ body {
 				table thead th:nth-child(2) {
 					text-align: left;
 				}
-				.fa-trash-alt {display: none}
+				.remove {
+					.fa-trash-alt {display: none}	
+				}
+				.remove.active {
+					.fa-trash-alt {display: inline-block}
+				}
 			}
 			table {
 				border-collapse: collapse;
@@ -1065,6 +1070,18 @@ body {
 	.btn:hover {
 		color: rgb(var(--btncolor));
 		background-color: transparent;
+	}
+	.btn.disabled {
+		background-color: lightgrey;
+		border-color: lightgrey;
+		color: white;
+		cursor: default;
+	}
+	.btn.disabled:hover {
+		background-color: lightgrey;
+		border-color: lightgrey;
+		color: white;
+		cursor: default;
 	}
 	.card#newteam,
 	.card#pitchVideos,

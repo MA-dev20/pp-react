@@ -63,7 +63,7 @@ class GamesController < ApplicationController
 	  flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
 	  redirect_to gm_error_path
 	else
-	  @user = @company.users.new(email: params[:user][:email])
+	  @user = @company.users.new(email: params[:user][:email], role: 'inactive')
 	  @team = @game.team
 	  @teamAll = @game.user.teams.find_by(name: 'all')
 	  if @user.save(validate: false)
@@ -82,7 +82,6 @@ class GamesController < ApplicationController
 	@user = User.find(params[:user_id])
 	password = SecureRandom.urlsafe_base64(8)
 	@user.update(fname: params[:user][:fname], lname: params[:user][:lname], password: password)
-	UserMailer.after_create(@user, password).deliver
 	redirect_to gm_join_path
   end
   def create_turn
@@ -128,10 +127,10 @@ class GamesController < ApplicationController
 	  	@rating.update(rating: r.last) if @rating
 	  else
 	  	@rating = @turn.ratings.create(rating_criterium_id: r.first, user: @user, rating: r.last)
-		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.count - 1).to_s)
+		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.where(repeat: false).count - 1).to_s)
 	  end
 	end
-	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_turns.count - 1)
+	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_turns.where(repeat: false).count - 1)
 	  redirect_to gm_set_state_path('', state: 'rating')
 	else	  
 	  redirect_to gm_game_path
