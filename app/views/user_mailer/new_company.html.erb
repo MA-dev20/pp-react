@@ -1,0 +1,10 @@
+<h1>Hallo <%= @root.fname %>!</h1>
+
+<p>Es gibt eine neue Anfrage im Backoffice!</p>
+<p>Unternehmen: <span class="bold"><%= @company.name %></span></p>
+<p>Nachricht:</p>
+<p><%= @company.message %></p>
+
+<p><%= link_to 'Einloggen!', root_url, class: 'btn btn-green' %></p>
+
+<p>Viel Spaß <br> Dein Peter Pitch Team</p>

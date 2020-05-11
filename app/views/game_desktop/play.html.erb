@@ -85,7 +85,7 @@
 				$('#timeroverlay').hide();
 				clearInterval(beginTimer);
 				document.getElementById('word_load').play();
-				$('#word').text("<%= @turn.catchword.name %>");
+				$('#word').html("<%= @turn.catchword.name %>");
 				textanim();
 				$(".background-img").removeClass('zoom-bg-img');
 				$(".background-img").addClass('bg-animation');
@@ -122,6 +122,7 @@
 		$('.word').css('line-height','8vh');
 	}
 	function startTimer(duration, display) {
+		
 		var timer = duration, minutes, seconds;
 		var setTimer = setInterval(function() {
 			minutes = parseInt(timer / 60, 10);
@@ -171,6 +172,23 @@
 		return {pause: pause , resume: resume }
 	};
 	function startObjectionTimer() {
+		if( $('.objection:first-child .text').text().length < 10 ) {
+			$('.objection .text').css('font-size', '25vh')
+			$('.objection .text').css('line-height', '25vh')
+		}
+		if( $('.objection:first-child .text').text().length > 10 ) {
+			$('.objection .text').css('font-size', '13vh')
+			$('.objection .text').css('line-height', '25vh')
+		} if( $('.objection:first-child .text').text().length > 20 ) {
+			$('.objection .text').css('font-size', '13vh')
+			$('.objection .text').css('line-height', '13vh')
+		} if( $('.objection:first-child .text').text().length > 40 ) {
+			$('.objection .text').css('font-size', '10vh')
+			$('.objection .text').css('line-height', '15vh')
+		} if( $('.objection .text').text().length > 60 ) {
+			$('.objection .text').css('font-size', '10vh')
+			$('.objection .text').css('line-height', '10vh')
+		}
 		document.getElementById('theme').pause();
 		MyApp.timer.pause();
 		document.getElementById('o_start').play();

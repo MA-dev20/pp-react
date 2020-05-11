@@ -79,17 +79,17 @@ body {
 		left: 0;
 		height: 100%;
 		width: 100%;
-		background-color: rgba(255,255,255,.9);
+		background-color: rgba(255,255,255,.995);
 		align-content: center;
 		animation: fadeIn 1s 1 forwards;
 		z-index: 1000;
 		.text {
 			display: inline-block;
 			color: rgb(var(--custcolor));
-			font-size: 10vh;
+			font-size: 25vh;
 			text-align: center;
 			width: 100%;
-			margin-top: 40vh;
+			margin-top: 30vh;
 		}
 		.otimer {
 			position: absolute;
@@ -889,9 +889,9 @@ body {
 				}
 				.logo {
 					position: absolute;
-					margin: 5vh;
+					margin: 6.5vh 5.5vh 5.5vh 4.5vh;
 					max-width: 10vh;
-					max-height: 10vh;
+					max-height: 8vh;
 				}
 			}
 			.play-avatar {

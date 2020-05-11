@@ -76,6 +76,14 @@ class GameMobileController < ApplicationController
 	ActionCable.server.broadcast "count_#{@game.id}_channel", emoji: true, emoji_icon: params[:emoji], user_avatar: @admin.avatar.url
   end
 	
+  def repeat_turn
+	@turn = GameTurn.find(@game.current_turn)
+	@turn.update(played: false, play: false)
+	@new_turn = GameTurn.create(game: @game, user: @turn.user, team: @turn.team, catchword: @turn.catchword, play: true, played: false)
+	@game.update(current_turn: @new_turn.id)
+	redirect_to gm_set_state_path('', state: 'turn')
+  end
+	
   def set_state
 	if params[:state] == 'intro' && @game.state != 'intro'
 	  @game.update(state: "intro")
@@ -95,7 +103,10 @@ class GameMobileController < ApplicationController
 	end
 	if params[:state] == "turn" && @game.state != 'turn'
 	  @turns = @game.game_turns.playable
-	  if @game.skip_elections || @turns.count == 1
+	  @turn = GameTurn.find_by(id: @game.current_turn)
+	  if @turn && @turn.played == false
+		@game.update(state: 'turn', turn1: nil, turn2: nil)  
+	  elsif @game.skip_elections || @turns.count == 1
 		@game.update(state: 'turn', turn1: nil, turn2: nil, current_turn: @turns.first.id)
 	  else
 	    @turn1 = GameTurn.find(@game.turn1)
