@@ -78,7 +78,7 @@ class GameMobileController < ApplicationController
 	
   def repeat_turn
 	@turn = GameTurn.find(@game.current_turn)
-	@turn.update(played: false, play: false)
+	@turn.update(played: false, play: false, repeat: true)
 	@new_turn = GameTurn.create(game: @game, user: @turn.user, team: @turn.team, catchword: @turn.catchword, play: true, played: false)
 	@game.update(current_turn: @new_turn.id)
 	redirect_to gm_set_state_path('', state: 'turn')
@@ -125,11 +125,16 @@ class GameMobileController < ApplicationController
 	if params[:state] == 'play' && @game.state != 'play'
 		@game.update(state: 'play', turn1: nil, turn2: nil)
 	end
-	if params[:state] == 'rate' && @game.state != 'rate'
+	if params[:state] == 'rate' && @game.state == 'play'
 	  if @game.game_turns.count == 1
 		@game.game_turns.first.update(ges_rating: nil, played: true)
 		@game.update(active: false)
 		redirect_to gm_set_state_path('', state: 'ended')
+		return
+	  elsif @game.show_ratings == 'skip'
+		@turn = GameTurn.find(@game.current_turn)
+		@turn.update(ges_rating: nil, played: true)
+		redirect_to gm_set_state_path(state: 'choose')
 		return
 	  else
 		@game.update(state: 'rate')

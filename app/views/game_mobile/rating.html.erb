@@ -6,7 +6,7 @@
 	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
 </div>
 <div class="bottom">
-	<% if @admin.role != 'user' %>
+	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
 		<%= link_to 'Pitch wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
 		<% if @game.game_turns.playable.count == 0 || (@game.game_turns.where(played: true).count == @game.max_users && @game.max_users != 0) %>
 			<%= link_to 'zur Bestenliste', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>

@@ -264,6 +264,15 @@ body {
 		font-weight: 600;
 		margin: 2.5vh 0;
 		font-size: 2.5vh;
+		#inactiveuser {
+			float: right;
+			color: rgb(var(--btncolor));
+			cursor: pointer;
+			font-size: 2vh;
+		}
+		#inactiveuser:hover {
+			text-decoration: underline;
+		}
 	}
 	.rating-details {
 		height: 10vh;
@@ -512,7 +521,7 @@ body {
 				top: 0;
 				right: 0;
 				margin: 2vh;
-				color: rgba(0,0,0,.2);
+				color: grey;
 				font-size: 3vh;
 			}
 			position: relative;
@@ -539,7 +548,12 @@ body {
 				table thead th:nth-child(2) {
 					text-align: left;
 				}
-				.fa-trash-alt {display: none}
+				.remove {
+					.fa-trash-alt {display: none}	
+				}
+				.remove.active {
+					.fa-trash-alt {display: inline-block}
+				}
 			}
 			table {
 				border-collapse: collapse;
@@ -578,7 +592,10 @@ body {
 						td.remove, td.play, td.accept, td.edit, td.stats {text-align: center}
 						td.stats {color: #ffcc00;}
 						td.accept, td.edit, td.play{color: rgb(var(--custcolor));}
-						td.remove {color: #dfe1e5;}
+						td.remove {color: grey;}
+						td.accept {
+							font-size: 3vh;
+						}
 						
 					}
 					tr:last-child td {border-bottom: none;}
@@ -1066,6 +1083,18 @@ body {
 		color: rgb(var(--btncolor));
 		background-color: transparent;
 	}
+	.btn.disabled {
+		background-color: lightgrey;
+		border-color: lightgrey;
+		color: white;
+		cursor: default;
+	}
+	.btn.disabled:hover {
+		background-color: lightgrey;
+		border-color: lightgrey;
+		color: white;
+		cursor: default;
+	}
 	.card#newteam,
 	.card#pitchVideos,
 	.card#letspitch {
@@ -1182,7 +1211,7 @@ body {
 				top: 0;
 				right: 0;
 				margin: 2vh;
-				color: rgba(0,0,0,.2);
+				color: grey;
 				font-size: 3vh;
 			}
 		}
@@ -1343,7 +1372,7 @@ body {
 				top: 0;
 				right: 0;
 				margin: 2vh;
-				color: rgba(0,0,0,.2);
+				color: grey;
 				font-size: 3vh;
 			}
 			.user {
@@ -1420,7 +1449,7 @@ body {
 							}
 							line-height: 5vh;
 							.delete {
-								color: rgba(0,0,0,.3);
+								color: grey;
 								float: right;
 								font-size: 2vh;
 								margin: 1.5vh;

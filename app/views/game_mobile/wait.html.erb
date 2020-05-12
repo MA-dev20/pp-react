@@ -23,7 +23,7 @@
 <% end %>
 <% else %>
 <div class="head">
-	<% if @admin.role == 'user' %>
+	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
 	<h1>PITCH BEIGETRETEN!</h1>
 	<% else %>
 	<h1>Alle beigetreten?</h1>
@@ -38,7 +38,7 @@
 	<div class="dot"></div>
 </div>
 <div class="bottom">
-	<% if @admin.role == 'user' %>
+	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
 	<div class="text">Gleich gehts los...</div>
 	<% else %>
 	<%= link_to "los geht's!", gm_set_state_path('', state: 'intro'), class: 'btn custom-btn' %>

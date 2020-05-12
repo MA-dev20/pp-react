@@ -526,10 +526,14 @@
     
     <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
     <div class="card">
-    <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
+    <%= form_for(:user, as: User, url: user_session_path) do |f| %>
         <h2>Login</h2>
         <div class="form-group ">
-            <label for="">Email</label>
+            <% if flash[:wrong_login] %>
+        		<label><span class="red"><%= flash[:wrong_login] %></span></label>
+           <% else %>
+            	<label for="">Email</label>
+        	<% end %>
             <%= f.email_field :email, class: 'form-field', id: 'loginEmail', required: true  %>
         </div>
         <div class="form-group">

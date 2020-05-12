@@ -10,7 +10,11 @@ class UsersController < ApplicationController
 	@user.password = password
 	if @user.save
 	  @teamAll.users << @user
+	  begin
 	  UserMailer.after_create(@user, password).deliver
+	  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+	    flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
+	  end
 	  redirect_to dashboard_teams_path
 	else
 	  flash[:alert] = 'Konnte User nicht speichern!'
@@ -28,6 +32,10 @@ class UsersController < ApplicationController
 	redirect_to backoffice_company_path(@user.company_id) if params[:site] == 'backoffice_company'
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
 	redirect_to account_path if params[:site] == 'account'
+  end
+	
+  def new_password
+	@user = User.find_by(email: params[:user][:email])
   end
 	
   def edit_avatar
@@ -63,8 +71,19 @@ class UsersController < ApplicationController
   end
 	
   def user
-	@user.update(role: "user")
-	render json: {user: @user}
+	if @user.role == 'inactive'
+	  password = SecureRandom.urlsafe_base64(8)
+	  @user.update(role: 'user', password: password)
+	  begin
+	  UserMailer.after_create(@user, password).deliver
+	  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+	    flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
+	  end
+	  render json: {user: @user}	
+	else
+	  @user.update(role: "user")
+	  render json: {user: @user}
+	end
   end
   private
 	def user_params
