@@ -237,7 +237,10 @@
 	<% else %>
 	
 	<div class="card" id="user" style="<%= @user ? 'display: none' : '' %>">
-		<h3>Nutzer</h3>
+		<h3>Nutzer
+			<span id="inactiveuser" onclick="toggleInUser()">Inactive User</span>
+		</h3>
+		
 		<div class="table" id="users-table">
 			<table>
 				<thead>
@@ -251,22 +254,6 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% if @users.where(role: "inactive").count > 0 %>
-						<tr>
-							<th colspan="6">Inactive User</th>
-						</tr>
-						<% @users.where(role: "inactive").each do |u| %>
-							<tr>
-								<td class="img"><%= image_tag u.avatar.url %></td>
-								<td><%= u.fname %> <%= u.lname %></td>
-								<td colspan="3" class="accept"><%= link_to 'akzeptieren', make_user_path(u.id), method: 'put' %></td>
-								<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
-							</tr>
-						<% end %>
-						<tr>
-							<th colspan="6">Active User</th>
-						</tr>
-					<% end %>
 					<% @users.where.not(role: 'inactive').each do |u| %>
 						<% if params[:edit] == "true" && TeamUser.where(team_id: @team.id, user_id: u.id).count == 0 || params[:edit] != 'true' %>
 						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="<%= @user == u ? 'highlighted' : '' %>">
@@ -283,11 +270,40 @@
 			</table>
 		</div>
 	</div>
+	<div class="card" id="inactive-users" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleInUser()"></i>Inactive Nutzer</h3>
+		<div class="table" id="users-table">
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th>Name</th>
+						<th>akzeptieren</th>
+						<th>löschen</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @users.where(role: 'inactive').each do |u| %>
+						<tr>
+							<td class="img"><%= image_tag u.avatar.url %></td>
+							<td><%= u.fname %> <%= u.lname %></td>
+							<td class="accept"><%= link_to '', make_user_path(u.id), class: 'fas fa-check-circle', method: 'put' %></td>
+							<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
 	<script>
 		new PerfectScrollbar('#users-table');
 		function toggleUser() {
 			$('#user').toggle();
 			$('#createUser').toggle();
+		}
+		function toggleInUser() {
+			$('#user').toggle();
+			$('#inactive-users').toggle();
 		}
 	</script>
 	<% end %>
