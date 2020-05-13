@@ -1,69 +1,29 @@
-<div class="inner-content">
-    <div class="white-bg">
-        <div class="searchfield">
-            <input type="text" name="search" placeholder="Search for pitches" />
-        </div>
-        <div class="p-heading">
-            <div class="pitches-heading">Pitches</div>
-            <div class="pitches-sub-heading">Here is a list of all pitches</div>
-        </div>
-        <div class="list-pitch">
-            <div class="inner-blk">
-                <span>
-                    <%= image_tag 'dash/Image.png' %>
-                </span>
-                <div class="title">Pitch name</div>
-                <div class="sb-title">Video: 5, Image: 3, Text: 3</div>
-                <div class="action-btn">
-                    <a href="" class="pitch-btn">Edit</a>
-                    <a href="" class="pitch-btn">Pitch!</a>
-                </div>
-            </div>
-            <div class="inner-blk">
-                <span>
-                    <%= image_tag 'dash/Image.png' %>
-                </span>
-                <div class="title">Pitch name</div>
-                <div class="sb-title">Video: 5, Image: 3, Text: 3</div>
-                <div class="action-btn">
-                    <a href="#" class="pitch-btn">Edit</a>
-                    <a href="#" class="pitch-btn">Pitch!</a>
-                </div>
-            </div>
-            <div class="inner-blk new-pitch-card">
-                <a href="<%= dashboard_new_pitch_path %>">
-                    <%= image_tag 'dash/icons/circle-plus-green.svg' %>
-                </a>
-                <div class="title">Create new Pitch</div>
-            </div>
-            <div class="inner-blk">
-                <span>
-                    <%= image_tag 'dash/Image.png' %>
-                </span>
-                <div class="title">Pitch name</div>
-                <div class="sb-title">Video: 5, Image: 3, Text: 3</div>
-                <div class="action-btn">
-                    <a href="#" class="pitch-btn">Edit</a>
-                    <a href="#" class="pitch-btn">Pitch!</a>
-                </div>
-            </div>
-            <div class="inner-blk">
-                <span>
-                    <%= image_tag 'dash/Image.png' %>
-                </span>
-                <div class="title">Pitch name</div>
-                <div class="sb-title">Video: 5, Image: 3, Text: 3</div>
-                <div class="action-btn">
-                    <a href="#" class="pitch-btn">Edit</a>
-                    <a href="#" class="pitch-btn">Pitch!</a>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
+<div class="card" id="pitches">
+	<div class="search">
+		<i class="fas fa-search"></i>
+		<input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
+	</div>
+	<h3>Pitches</h3>
+	<h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
+	<div class="pitches" id="pitch-list">
+		<div class="card" id="pitch">
+			<div class="thumb">
+				<%= image_tag 'dash/Image.png' %>
+			</div>
+			<div class="title">Pitchname</div>
+			<div class="subtitle">Video: 5, Image: 3, Text: 3</div>
+			<div class="buttons">
+				<a href="" class="btn reversed">Edit</a>
+				<a href="" class="btn">Pitch!</a>
+			</div>
+		</div>
+		<div class="card" id="newpitch">
+			<%= image_tag 'dash/icons/circle-plus-green.svg' %>
+			<div class="title">Create new Pitch</div>
+			<%= link_to '', dashboard_new_pitch_path %>
+		</div>
+	</div>
 </div>
-
 <script>
-    new PerfectScrollbar('.list-pitch');
+    new PerfectScrollbar('#pitch-list');
 </script>

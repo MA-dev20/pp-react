@@ -1064,9 +1064,14 @@ body {
 		cursor: pointer;
 		font-family: 'Nunito', sans-serif !important;
 	}
+	.btn.reversed,
 	.btn:hover {
 		color: rgb(var(--btncolor));
 		background-color: transparent;
+	}
+	.btn.reversed:hover {
+		color: white;
+		background-color: rgb(var(--btncolor));
 	}
 	.card#newteam,
 	.card#pitchVideos,

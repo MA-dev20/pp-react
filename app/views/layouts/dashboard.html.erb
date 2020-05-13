@@ -19,7 +19,6 @@
 </style>
 
   <body>
-	<% unless params[:action] == 'new_pitch' %>
    	<section id="navbar">
    		<div class="dropdown" onclick="toggleDropdown()">
    		Hallo, <%= @admin.fname %> <%= @admin.lname %>
@@ -56,7 +55,7 @@
    		
    	</section>
    	<section id="sidebar">
-   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar', id: 'sidebarAvatar' %>
+   		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
    		
    		<div class="links">
    			<% if @admin.role == 'user' %>
@@ -92,7 +91,7 @@
    				<div class="text">Video Tool</div>
    				<%= link_to '', dashboard_video_path %>
 			</div>
-			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"d>
+			<div class="link <%= current_page?(dashboard_new_pitch_path) || current_page?(dashboard_pitches_path) ? 'active' : '' %>"d>
 				<i class="fab fa-youtube"></i>
 				<div class="text">Pitches</div>
 				<%= link_to '', dashboard_pitches_path %>
@@ -108,11 +107,6 @@
    	<section id="content">
     	<%= yield %>
 	</section>
-	<% else %>
-		<section>
-			<%= yield %>
-		</section>
-	<% end %>
 	   
    	<% if flash[:alert] %>
    	<div class="modal-blur">
