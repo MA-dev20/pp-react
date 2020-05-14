@@ -68,9 +68,9 @@
 			</div>
 		</div>
 		<div class="form-group" id="scores">
-			<label for="">Deine Scores</label>
+			<label for="">Deine Bewertungskriterien</label>
 			<div class="form-list">
-				<div class="text">Original Peter's Scores</div>
+				<div class="text">Original Peter's Bewertungskriterien</div>
 				<i class="fas fa-plus-circle" onclick="showRL()"></i>
 			</div>
 			<div class="unselected-list">
@@ -93,7 +93,7 @@
 			<div class="form-group">
 				<label for="">Nutzerauswahl vor Pitch</label>
 				<div class="skip-election-group">
-					<label for="">Skip Election</label>
+					<label for="">Nutzerauswahl überspringen</label>
 					<i class="far fa-square" onclick="changeElection()" id="skip_election"></i>
 				</div>
 			</div>
@@ -120,6 +120,37 @@
 				</div>
 			</div>
 		</div>
+		<div class="checkbox-container">
+			<%= f.hidden_field(:skip_rating_timer) %>
+			<div class="form-group" id="skip_rating_timer">
+				<label for="">Beenden der Bewertungsabgabe</label>
+				<div class="skip-election-group">
+					<label for="">automatisch nach 15s</label>
+					<i class="far fa-check-square" id="skip_rating_timer_timer" onclick="changeRatingTimer('timer')"></i>
+				</div>
+				<div class="skip-election-group">
+					<label for="">manuell durch Admin</label>
+					<i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
+				</div>
+			</div>
+		</div>
+		<script>
+			function changeRatingTimer(type)	{
+				if( type == 'timer' ) {
+					$('#skip_rating_timer_admin').removeClass('fa-check-square');
+					$('#skip_rating_timer_admin').addClass('fa-square');
+					$('#skip_rating_timer_timer').removeClass('fa-square');
+					$('#skip_rating_timer_timer').addClass('fa-check-square');
+					$('#game_skip_rating_timer').attr('value', 'false');
+				} else {
+					$('#skip_rating_timer_timer').removeClass('fa-check-square');
+					$('#skip_rating_timer_timer').addClass('fa-square');
+					$('#skip_rating_timer_admin').removeClass('fa-square');
+					$('#skip_rating_timer_admin').addClass('fa-check-square');
+					$('#game_skip_rating_timer').attr('value', 'true');
+				}
+			}
+		</script>
 		<div class="form-group" id="addVideo">
 			<label for="" onclick="toggleVideo()">Video hinzufügen</label>
 		</div>
@@ -243,7 +274,7 @@
 	new PerfectScrollbar("#scroll");
 	function timeUp() {
 		var value = $('#game_game_seconds').val();
-		if (value < 300) {
+		if (value < 1800) {
 			value = parseInt(value);
 			value = value + 5;
 			var min = Math.floor(value / 60).toString();
