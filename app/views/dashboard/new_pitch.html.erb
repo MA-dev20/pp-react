@@ -1,0 +1,183 @@
+<section id="new-pitch-navbar">
+   	<h1>Pitch erstellen</h1>
+   	<div class="form-group">
+   		<input type="text" placeholder="Type pitch name here" class="form-field">
+   		<button class="btn">Regeln</button>
+   	</div>
+   	<div class="btn-group">
+   		<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+   		<%= link_to 'Done', dashboard_pitches_path, class: 'btn' %>
+   	</div>
+</section>
+
+<div id="new-pitch-content">
+
+	<div class="card left">
+	
+		<div class="tasks">
+			<div class="card selected">
+				<div class="task-title">
+					<i class="fas fa-exclamation-triangle"></i>
+					<div class="name">Task 1</div>
+					<i class="fas fa-circle"></i>
+					<div class="category">Video</div>
+					<i class="fas fa-trash remove"></i>
+					<i class="fas fa-copy copy"></i>
+				</div>
+				<div class="thumb">
+					<%= image_tag 'dash/Image.png' %>
+					<div class="length">120</div>
+				</div>
+				<div class="title">Type your question</div>
+				<div class="sub-title">Rating Criteria</div>
+				<div class="rating-criteria">
+					<div class="criterium">Rhethorik</div>
+					<div class="criterium">Spontanität</div>
+					<div class="criterium">Diversität</div>
+					<div class="criterium">Körpersprachenkasper</div>
+				</div>
+			</div>
+			
+			<div class="card">
+				<div class="task-title">
+					<i class="fas fa-exclamation-triangle"></i>
+					<div class="name">Task 1</div>
+					<i class="fas fa-circle"></i>
+					<div class="category">Video</div>
+					<i class="fas fa-trash remove"></i>
+					<i class="fas fa-copy copy"></i>
+				</div>
+				<div class="thumb">
+					<%= image_tag 'dash/Image.png' %>
+					<div class="length">120</div>
+				</div>
+				<div class="title">Type your question</div>
+				<div class="sub-title">Rating Criteria</div>
+				<div class="rating-criteria">
+					<div class="criterium">Rhethorik</div>
+					<div class="criterium">Spontanität</div>
+					<div class="criterium">Diversität</div>
+					<div class="criterium">Körpersprache</div>
+				</div>
+			</div>
+		</div>
+		<div class="add-task">
+			<%= image_tag 'dash/icons/circle-plus-green.svg' %>
+		</div>
+		
+	</div>
+	
+	<div class="card right">
+		<div class="form-group title">
+			<input type="text" class="form-field" placeholder='Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"'>
+			
+			<div class="card time-limit">
+				<div class="title">Time limit</div>
+				<div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
+				<div class="form-group">
+					<div class="time-field">
+						<div class="time" id="settime">120s</div>
+						<div class="fa fa-angle-up up"></div>
+						<div class="fa fa-angle-down down"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card add-catchword">
+				<div class="title">Text, Video oder Bild hinzufügen</div>
+				<div class="btn-line">
+					<div class="btn selected" id="btn_catchword" onclick="chooseCatchword('catchword')">Catchword</div>
+					<div class="btn" id="btn_picture" onclick="chooseCatchword('picture')">Bild</div>
+					<div class="btn" id="btn_video" onclick="chooseCatchword('video')">Video</div>
+					<div class="btn" id="btn_audio" onclick="chooseCatchword('audio')">Audio</div>
+				</div>
+				<div class="catchword">
+					<div class="title">Catchwords</div>
+					<div class="subline">Type your catchword or choose from list below</div>
+					<div class="form-group">
+						<input type="text" placeholder="Type your catchword" class="form-field">
+						<select name="" id="" class="custom-select">
+							<option value="">Catchword</option>
+						</select>
+					</div>
+					<div class="list">
+						<div class="word">Catchword</div>
+						<div class="word">Catchword auswählen</div>
+						<div class="last"></div>
+					</div>
+					<div class="info">If more than one catchword is chosen, we will choose one of them randomly for this task.</div>
+				</div>
+				<div class="picture">
+					<div class="title">Bild</div>
+					<div class="subline">Upload an image to your pitch</div>
+					<div class="btn upload">Upload</div>
+					<div class="preview">
+						<div class="remove">remove</div>
+						<%= image_tag 'dash/Image.png' %>
+					</div>
+				</div>
+				<div class="video">
+					<div class="title">Video</div>
+					<div class="subline">Upload a video to your pitch</div>
+					<div class="btn upload">Upload</div>
+					<div class="preview">
+						<div class="time">00:16:45</div>
+						<div class="remove">remove</div>
+						<%= image_tag 'dash/Image.png' %>
+					</div>
+				</div>
+				<div class="audio">
+					<div class="title">Audio</div>
+					<div class="subline">Upload an audio file to your pitch</div>
+					<div class="btn upload">Upload</div>
+					<div class="preview">
+						<audio src=""></audio>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card add-reaction">
+				<div class="title">Reactions</div>
+				<div class="subline">Type new reactions or choose from list below</div>
+				<div class="form-group">
+					<input type="text" placeholder="Type your reaction" class="form-field">
+					<select name="" id="" class="custom-select">
+						<option value="">Reaction</option>
+					</select>
+				</div>
+				<div class="list">
+					<div class="word">Reaction eintippen</div>
+					<div class="word">Reaction auswählem</div>
+					<div class="last"></div>
+				</div>
+			</div>
+			
+			<div class="card add-rating">
+				<div class="title">Rating criterias</div>
+				<div class="subline">You can add up to 4 rating criterias</div>
+				<div class="form-group">
+					<div class="star">
+						<%= image_tag 'dash/icons/star.svg'%>	
+					</div>
+					<input type="text" placeholder="Type new rating criteria" class="form-field">
+					<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<script>
+
+	$('#navbar').hide();
+    function chooseCatchword(type) {
+		$('.add-catchword .btn-line .btn.selected').removeClass('selected');
+		$('.add-catchword .catchword').hide();
+		$('.add-catchword .picture').hide();
+		$('.add-catchword .video').hide();
+		$('.add-catchword .audio').hide();
+		$('#btn_' + type).addClass('selected');
+		$('.add-catchword .' + type).show();
+	}
+</script>

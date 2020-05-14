@@ -1,0 +1,110 @@
+#content .card#pitches {
+	height: 90%;
+	font-size: 1.7vh;
+	.search {
+		position: relative;
+		top: 2vh;
+		left: 0;
+		width: 100%;
+		color: #7a858b;
+		margin-bottom: 4vh;
+		i {
+			position: absolute;
+			line-height: 5.5vh;
+			width: 5vh;
+			text-align: center;
+		}
+		.form-field {
+			width: calc(100% - 6vh);
+			background-color: white;
+			border: 1px solid #CFD3D6;
+			height: 5.5vh;
+			border-radius: .8vh;
+			font-size: 1.8vh;
+			padding: 0 1vh 0 5vh;
+		}
+	}
+	h3, h5 {
+		text-align: left;
+		font-weight: normal;
+		margin: 0;
+	}
+	h3 {
+		margin-top: 2vh;
+		line-height: 5vh;
+		font-weight: bold;
+	}
+	h5 {
+		margin-bottom: 2vh;
+		font-size: 1.7vh;
+		color: #999a9b;
+	}
+	#pitch-list {
+		position: relative;
+		left: -.5vw;
+		width: calc(100% + 1vw);
+	}
+	.card {
+		position: relative;
+		float: left;
+		width: 12vw;
+		height: 25vh;
+		padding: 0;
+		margin: .5vh .5vw 1.5vh .5vw;
+		overflow: hidden;
+		cursor: pointer;
+		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+		.thumb {
+			margin: 1vh .5vw;
+			height: 11vh; width: 11vw;
+			img {
+				height: 100%; width: 100%;
+			}
+		}
+		.title {
+			margin: 0 .5vw;
+			width: calc(100% - 1vw);
+			font-weight: bold;
+			font-size: 1.7vh;
+		}
+		.subtitle {
+			margin: 0 .5vw;
+			font-size: 1.5vh;
+			opacity: .5;
+		}
+		.buttons {
+			position: absolute;
+			left: .5vw; bottom: 1.5vh;
+			width: 14vw; height: 6vh;
+			.btn {
+				left: 0;
+				width: 5vw;
+				height: 4vh;
+				line-height: 4vh;
+				margin: 0;
+			}
+			.btn:last-child {
+				left: 6vw;
+			}
+		}
+	}
+	.card#newpitch {
+		text-align: center;
+		img {
+			height: 10vh; width: 10vh;
+			margin: 7vh auto 0 auto;
+			color: rgb(var(--btncolor));
+		}
+		.title {
+			position: absolute;
+			top: 18vh; left: 0;
+			text-align: center;
+		}
+		a {
+			position: absolute;
+			left: 0; top: 0;
+			height: 100%;
+			width: 100%;
+		}
+	}
+}

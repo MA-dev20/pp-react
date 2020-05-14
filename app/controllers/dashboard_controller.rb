@@ -195,6 +195,10 @@ class DashboardController < ApplicationController
 	@video = @turn.pitch_video
 	@comments = @turn.comments.where.not(time: nil).order(:time)
   end
+
+  def pitches; end
+
+  def new_pitch; end
 	
   private
 	def set_user

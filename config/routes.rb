@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
+
+  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
+  get 'dashboard/pitch/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
+
 	
   get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'
   get 'dashboard/company/edit', to: 'dash_company#company', as: 'company_dash_edit'

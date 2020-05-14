@@ -55,7 +55,7 @@
    		
    	</section>
    	<section id="sidebar">
-   		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar', id: 'sidebarAvatar' %>
+   		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
    		
    		<div class="links">
    			<% if @admin.role == 'user' %>
@@ -90,7 +90,12 @@
    				<i class="fab fa-youtube"></i>
    				<div class="text">Video Tool</div>
    				<%= link_to '', dashboard_video_path %>
-   			</div>
+			</div>
+			<div class="link <%= current_page?(dashboard_new_pitch_path) || current_page?(dashboard_pitches_path) ? 'active' : '' %>"d>
+				<i class="fab fa-youtube"></i>
+				<div class="text">Pitches</div>
+				<%= link_to '', dashboard_pitches_path %>
+			</div>
    		</div>
    		<div class="logo">
    			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,7 +106,8 @@
    	</section>
    	<section id="content">
     	<%= yield %>
-   	</section>
+	</section>
+	   
    	<% if flash[:alert] %>
    	<div class="modal-blur">
    		<div class="modal card">

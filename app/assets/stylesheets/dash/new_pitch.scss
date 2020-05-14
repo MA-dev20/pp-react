@@ -1,0 +1,339 @@
+#content #new-pitch-navbar {
+	position: fixed;
+	display: flex;
+	top: 0; left: calc(25.6vh - 1px);
+	height: 8vh; width: calc(100vw - (25.6vh - 1px));
+	background-color: white;
+	.form-group {
+		z-index: 10;
+		margin: 1vh 2vw; height: 6vh;
+		width: 20vw;
+		.form-field {
+			margin: .25vh .25vw .25vh 0;
+			width: 10vw;
+		}
+		.btn {
+			width: 8vw;
+			font-weight: bold;
+		}
+	}
+	.btn-group {
+		z-index: 10;
+		position: absolute;
+		right: 0;
+		height: 8vh;
+		.btn {
+			float: left;
+			display: inline-block;
+			margin: 1vh .25vw;
+			text-decoration: none;
+			width: 3vw;
+			text-align: center;
+			font-weight: bold;
+		}
+	}
+	h1 {
+		position: absolute;
+		left: 30%;
+		width: 40%;
+		text-align: center;
+		font-size: 4vh;
+		line-height: 8vh;
+		margin: 0;
+		z-index: 0;
+	}
+}
+#new-pitch-content {
+	position: fixed;
+	top: 8vh;  left: calc(25.6vh - 1px);
+	height: 92vh; width: calc(100vw - (25.6vh - 1px));
+	font-size: 1.7vh;
+	.card.left {
+		left: 2vw; top: 5vh;
+		height: 82vh; width: 15vw;
+		
+		padding: 0;
+		.tasks {
+			width: 15vw; height: 70vh;
+			.card {
+				left: .5vw; width: 14vw; height: 30.5vh;
+				padding: 0;
+				box-sizing: border-box;
+				box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+				.task-title {
+					width: 13vw;
+					margin: 0 .5vw;
+					height: 4vh;
+					line-height: 4vh;
+					.fa-exclamation-triangle {
+						color: red;
+						font-size: 2vh;
+					}
+					.name {
+						float: left;
+					}
+					i {
+						float: left;
+						font-size: 1vh;
+						line-height: 4vh;
+						margin: 0 .2vw;
+					}
+					.category {
+						float: left;
+					}
+					.remove {
+						float: right;
+						color: #CFD3D6;
+						font-size: 2vh;
+						cursor: pointer;
+					}
+					.copy {
+						float: right;
+						color: #CFD3D6;
+						font-size: 2vh;
+						cursor: pointer;
+					}
+				}
+				.thumb {
+					position: relative;
+					width: 13vw; margin: 0 .5vw;
+					img {width: 13vw; height: 13vh;}
+					.length {
+						position: absolute;
+						top: .5vh;
+						left: .5vw;
+						height: 5vh;
+						width: 5vh;
+						border-radius: 50%;
+						background-color: #667093;
+						color: white;
+						line-height: 5vh;
+						font-size: 2vh;
+						text-align: center;
+					}
+				}
+				.title {
+					margin: 0 .5vw;
+					font-size: 2vh;
+					font-weight: bold;
+				}
+				.sub-title {
+					margin: .5vh .5vw;
+					font-size: 1.5vh;
+					font-weight: bold;
+				}
+				.rating-criteria {
+					margin: 0 .5vw;
+					width: 13vw;
+					.criterium {
+						border-radius: 2vh;
+						line-height: 2.5vh; font-size: 1.5vh;
+						border: .3vh solid #d81538;
+						width: 4.65vw;
+						margin: .2vh 0;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						white-space: nowrap;
+						padding: 0 .75vw;
+						float: left;
+					}
+					.criterium:nth-child(2) {
+						border-color: #2c69d1;
+						float: right;
+					}
+					.criterium:nth-child(3) {
+						border-color: #d39d00;
+					}
+					.criterium:nth-child(4) {
+						border-color: #378900;
+						float: right;
+					}
+				}
+			}
+			.card.selected {
+				border: 2px solid red;
+			}
+		}
+		.add-task {
+			position: absolute;
+			bottom: 2vh;
+			right: 2vh;
+			height: 5vh; width: 5vh;
+			cursor: pointer;
+			border-radius: 50%;
+			box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.18);
+			img {
+				height: 100%;
+				width: 100%;
+			}
+		}
+	}
+	.card.right {
+		position: absolute;
+		top: 5vh; left: 18vw;
+		height: 82vh; width: 65vw;
+		padding: 0;
+		.form-group.title {
+			margin: 1vh 1vw;
+			width: 63vw;
+		}
+		.card {
+			padding: 0 1vw;
+			width: 28vw;
+			box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+			.title {
+				line-height: 5vh;
+				font-size: 2vh;
+				font-weight: bold;
+			}
+			.subline {
+				color: rgba(0,0,0,.5);
+			}
+		}
+		.card.time-limit {
+			position: absolute;
+			left: 1vw; top: 6.5vh;
+			height: 16vh;
+			.form-group {
+				margin: 1vh 0;
+				.time-field {
+					width: 5vw;
+				}
+			}
+		}
+		.card.add-catchword {
+			position: absolute;
+			top: 25vh; left: 1vw;
+			height: 37vh;
+			.btn-line {
+				position: relative;
+				width: 100%;
+				.btn {
+					position: relative;
+					float: left;
+					width: 20%;
+					border-color: rgb(var(--custcolor));
+					background-color: white;
+					color: black;
+					margin: 0 .4vw 0 0;
+					height: 4vh; line-height: 4vh;
+					font-weight: bold;
+				}
+				.btn.selected, .btn:hover {
+					background-color: rgb(var(--custcolor));
+					color: white;
+				}
+			}
+			.picture, .video, .audio {
+				display: none;
+				.upload {
+					position: relative;
+					float: left;
+					width: 20%;
+					margin: 1vh 0;
+				}
+				.preview {
+					float: right;
+					position: relative;
+					img {
+						width: 10vw;
+						height: 10vh;
+						border-radius: 1vh;
+					}
+					.time {
+						position: absolute;
+						right: 10.5vw;
+						top: 3vh;
+						line-height: 2vh;
+						font-size: 1.8vh;
+					}
+					.remove {
+						position: absolute;
+						right: 10.5vw;
+						top: 5vh;
+						color: red;
+						cursor: pointer;
+						font-size: 2vh;
+					}
+				}
+			}
+		}
+		.add-reaction, .catchword {
+			.form-group {
+				margin: 1vh 0;
+				.form-field {
+					width: 45%;
+				}
+				.custom-select {
+					position: absolute;
+					right: 1vw;
+					width: 45%;
+				}
+			}
+			.list {
+				position: relative;
+				width: 26vw;
+				background-color: #fafafa;
+				padding: 1vh 1vw;
+				.word {
+					float: left;
+					position: relative;
+					top: 0; left: 0;
+					line-height: 3vh;
+					margin: .5vh .2vw;
+					border: 1px solid #667093;
+					border-radius: 1.5vh;
+					min-width: 5vw;
+					width: auto;
+					text-align: center;
+					background-color: white;
+					padding: 0 .5vw;
+				}
+				.last {
+					clear: left;
+				}
+			}
+			.info {
+				margin: 1vh 0;
+				font-size: 1.5vh;
+				font-weight: 500;
+			}
+		}
+		.card.add-reaction {
+			position: absolute;
+			top: 6.5vh; right: 1vw;
+			height: 26vh;
+		}
+		.card.add-rating {
+			position: absolute;
+			top: 35vh; right: 1vw;
+			height: 20vh;
+			.form-group {
+				margin: 1vh 0;
+				position: relative;
+				.form-field {
+					width: calc(100% - 12.5vh);
+					padding-left: 3.5vh;
+				}
+				.star {
+					position: absolute;
+					top: 1px; left: 1px;
+					width: 3vh; height: 5.5vh;
+					background-color: #F2C94C;
+					border-top-left-radius: .8vh;
+					border-bottom-left-radius: .8vh;
+					img {
+						position: absolute;
+						top: 1.5vh; left: .25vh;
+						height: 2.5vh; width: 2.5vh;
+					}
+				}
+				.add {
+					position: absolute;
+					right: 0; top: 0;
+					height: 5.5vh;
+				}
+			}
+		}
+	}
+}
