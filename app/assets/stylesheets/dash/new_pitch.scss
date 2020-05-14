@@ -368,16 +368,17 @@
         margin: 0;
     }
 
-    .btn {
-        display: inline-block;
-        margin: 1vh .25vw;
-        text-decoration: none;
-        width: 3vw;
-        text-align: center;
-        font-weight: bold;
-    }
-
     .modal-content {
+
+        .btn {
+            display: inline-block;
+            margin: 1vh .25vw;
+            text-decoration: none;
+            width: 3vw;
+            text-align: center;
+            font-weight: bold;
+        }
+        
         .inner-content {
             display: flex;
             width: 100%;
@@ -504,17 +505,17 @@
     }
 
     .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 6vh;
-    font-weight: bold;
+        color: #aaaaaa;
+        float: right;
+        font-size: 6vh;
+        font-weight: bold;
     }
 
     .close:hover,
     .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
     }
 
 
