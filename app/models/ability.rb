@@ -4,9 +4,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user.bo_role == 'sales'
-	end
-	if user.coach
+    if user.coach
 	  can :create, Coach, :user_id => user.id
 	  can :manage, Company, :id => user.coach.company_id
 	end
@@ -38,9 +36,8 @@ class Ability
 	  can :manage, ObjectionList, :user_id => user.id
 	  can :manage, RatingList, :user_id => user.id
 	  can :manage, Game, :user_id => user.id
-	elsif user.role == 'user'
-	  can [:read, :update, :destroy], User, :id => user.id
 	end
 	can :create, Rating
+	can :manage, User, :id => user.id
   end
 end
