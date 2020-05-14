@@ -337,3 +337,244 @@
 		}
 	}
 }
+
+#content {
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 10vh;
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(244, 250, 255, 0.8);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        background-color: white;
+        border-radius: 1vh;
+        box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
+        width: 50%;
+        padding: 2vh 2.5vh;
+    }
+
+    .heading h1 {
+        font-size: 4vh;
+        line-height: 8vh;
+        margin: 0;
+    }
+
+    .btn {
+        display: inline-block;
+        margin: 1vh .25vw;
+        text-decoration: none;
+        width: 3vw;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .modal-content {
+        .inner-content {
+            display: flex;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            line-height: 5vh;
+            font-size: 2vh;
+            font-weight: bold;
+        }
+
+        .hr-line {
+            border-top: 1px solid #CFD3D6;
+            padding: 1.5vh;
+        }
+
+        .left-section {
+            width: 50%;
+            border-right: 1px solid #CFD3D6;
+            padding-right: 3vh;
+
+            .pitch-description textarea {
+                padding: 1vh;
+                height: 6.5vh;
+            }
+
+            .checkbox-container .skip-election-group label {
+                font-size: 1.8vh;
+            }
+
+            .checkbox-container .form-group > label {
+                font-size: 2vh;
+                font-weight: bold;
+            }
+
+            .far {
+                font-size: 2vh;
+            }
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5vh;
+        }
+
+        .right-section {
+            position: relative;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding-left: 3vh;
+
+            .picture, .video, .audio {
+                margin-bottom: 2vh;
+
+                label {
+                    position: absolute;
+                    line-height: 2.5vh;
+                    float: left;
+                }
+                .upload {
+                    position: relative;
+                    float: left;
+                    margin: 1vh 0;
+                    margin-top: 4vh;
+                }
+                .preview {
+                    float: right;
+                    position: relative;
+                    img {
+                        width: 10vw;
+                        height: 10vh;
+                        border-radius: 1vh;
+                    }
+                    .time {
+                        position: absolute;
+                        right: 10.5vw;
+                        top: 3vh;
+                        line-height: 2vh;
+                        font-size: 1.8vh;
+                    }
+                    .remove {
+                        position: absolute;
+                        right: 10.5vw;
+                        top: 5vh;
+                        color: red;
+                        cursor: pointer;
+                        font-size: 2vh;
+                    }
+                }
+            }
+
+            .video-form {
+                label {
+                    font-size: 1.8vh;
+                }
+
+                .form-group {
+                    position: relative;
+                    text-align: left;
+                    .form-field {
+                        width: calc(100% - 9vh);
+                    }
+                }
+
+                .add {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    height: 5.5vh;
+                }
+            }
+
+            .btn-wrapper {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+            }
+        }
+
+    }
+
+    .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 6vh;
+    font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    }
+
+
+
+
+
+    .toggle-my-ratings {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3.4vh;
+        line-height: 24px;
+        border-top: 0.1vh solid #dfe1e5;
+    }
+    .toggle-my-ratings .left-side {
+        background-color: white;
+    }
+
+    .toggle-my-ratings .right-side {
+        background-color: #16E2a5;
+    }
+
+    .toggle-my-ratings .right-side .dot {
+        background-color: white !important;
+    }
+
+    .toggle-my-ratings .toggle {
+        position: relative;
+        float: left;
+        width: 3vh;
+        height: 2vh;
+        border-radius: 1.2vh;
+        border: 0.1vh solid #dfe1e5;
+        cursor: pointer;
+        top: 0.1vh;
+    }
+    .toggle-my-ratings .toggle .dot {
+        margin: 0.24vh 0.24vh;
+        height: 1.4vh;
+        width: 1.4vh;
+        border-radius: 1vh;
+        background-color: #adb5bd;
+    }
+
+    .toggle-my-ratings .toggle.left-side .dot {
+        float: left;
+    }
+    .toggle-my-ratings .toggle.right-side .dot {
+        float: right;
+    }
+    .toggle-my-ratings .text {
+        font-size: 1.6vh;
+        line-height: 2.2vh;
+    }
+    .toggle-my-ratings-1 {
+        position: inherit;
+        border-top: 0;
+        // margin-top: 2vh;
+    }
+}
+
+
+
