@@ -30,7 +30,11 @@
 			width: 3vw;
 			text-align: center;
 			font-weight: bold;
-		}
+        }
+        
+        .done-btn {
+            width: 6vw;
+        }
 	}
 	h1 {
 		position: absolute;
@@ -47,15 +51,38 @@
 	position: fixed;
 	top: 8vh;  left: calc(25.6vh - 1px);
 	height: 92vh; width: calc(100vw - (25.6vh - 1px));
-	font-size: 1.7vh;
-	.card.left {
+    font-size: 1.7vh;
+    
+    .menu-box {
+        display: none;
+        font-size: 2vh;
+        font-weight: bold;
+        position: absolute;
+        padding: 1vh;
+        bottom: 8vh;
+        background: #FFFFFF;
+        box-shadow: 0 0 2.4vh rgba(0, 0, 0, 0.1), 0 0 3.4vh rgba(0, 0, 0, 0.08), 0 0 1.5vh rgba(0, 0, 0, 0.18);
+        border-radius: 1.5vh;
+
+        .menu {
+            cursor: pointer;
+            padding: 1vh;
+            text-align: right;
+            border-bottom: 0.1vh solid #CFD3D6;
+        }
+
+        .menu:last-child {
+            border: none;
+        }
+    }
+	.card.left, .right-side-card {
 		left: 2vw; top: 5vh;
 		height: 82vh; width: 15vw;
 		
 		padding: 0;
-		.tasks {
+		.tasks, .right-tasks {
 			width: 15vw; height: 70vh;
-			.card {
+			.card, .task-card {
 				left: .5vw; width: 14vw; height: 30.5vh;
 				padding: 0;
 				box-sizing: border-box;
@@ -167,7 +194,42 @@
 				width: 100%;
 			}
 		}
-	}
+    }
+    
+    .right-side-card {
+        height: 61vh;
+        width: 100%;
+        .right-tasks {
+            height: 61vh;
+            width: 100%;
+
+            .task-card {
+                position: relative;
+                float: left;
+                border-radius: 1vh;
+                margin: .5vh .5vw 1.5vh .5vw;
+                height: 34vh;
+
+                .buttons {
+                    .btn {
+                        height: 4.5vh;
+                        line-height: 4.5vh;
+                        width: 27.2vh;
+                        margin: 1vh 1.1vh;
+                    }
+                }
+
+                .thumb {
+                    padding-top: 0.5vw;
+
+                    .length {
+                        top: 1.8vh;
+                    }
+                }
+            }
+        }
+    }
+
 	.card.right {
 		position: absolute;
 		top: 5vh; left: 18vw;
@@ -225,6 +287,7 @@
 				}
 			}
 			.picture, .video, .audio {
+                margin-top: 5vh;
 				display: none;
 				.upload {
 					position: relative;
@@ -255,8 +318,30 @@
 						cursor: pointer;
 						font-size: 2vh;
 					}
-				}
-			}
+                }
+                
+                .audio-preview {
+                    img {
+                        width: 3vh;
+                        position: absolute;
+                        bottom: -5vh;
+                        left: -4vh;
+                    }
+                    .audio-title {
+                        position: relative;
+                        top: 1vh;
+                    }
+
+                    .remove {
+                        right: 1vh;
+                        top: 4vh;
+                    }
+                }
+            }
+            
+            .audio .btn, .video .btn {
+                margin-right: 1vh;
+            }
 		}
 		.add-reaction, .catchword {
 			.form-group {
@@ -334,7 +419,26 @@
 					height: 5.5vh;
 				}
 			}
-		}
+        }
+        
+        #pitches {
+            padding: 1vw;
+
+            .search {
+                top: 0;
+                margin-bottom: 1vh;
+            }
+
+            .card .title {
+                line-height: 3vh;
+            }
+
+            .card .buttons .btn,
+            .card .buttons .btn:last-child {
+                left: 0;
+                width: 22.8vh;
+            }
+        }
 	}
 }
 
@@ -353,6 +457,8 @@
     }
 
     .modal-content {
+        position: relative;
+        left: 12vh;
         background-color: #fefefe;
         margin: auto;
         background-color: white;
@@ -392,13 +498,13 @@
         }
 
         .hr-line {
-            border-top: 1px solid #CFD3D6;
+            border-top: 0.2vh solid #CFD3D6;
             padding: 1.5vh;
         }
 
         .left-section {
             width: 50%;
-            border-right: 1px solid #CFD3D6;
+            border-right: 0.2vh solid #CFD3D6;
             padding-right: 3vh;
 
             .pitch-description textarea {
@@ -505,6 +611,8 @@
     }
 
     .close {
+        position: relative;
+        top: -2vh;
         color: #aaaaaa;
         float: right;
         font-size: 6vh;
@@ -518,6 +626,42 @@
         cursor: pointer;
     }
 
+    #videoModal .modal-content {
+        width: 72vh;
+        height: 62vh;
+
+        img {
+            width: 72vh;
+        }
+
+        .buttons {
+            position: absolute;
+            bottom: 1vh;
+            width: 94%;
+        }
+
+        .btn {
+            width: 14vh;
+            height: 7vh;
+            line-height: 7vh;
+            font-weight: bold;
+            font-size: 2.2vh;
+        }
+
+        .reversed {
+            border-color: #FF0000;
+            color: #000;
+        }
+
+        .reversed:hover {
+            background: #FF0000;
+            color: white;
+        }
+
+        .btn:last-child {
+            float: right;
+        }
+    }
 
 
 
