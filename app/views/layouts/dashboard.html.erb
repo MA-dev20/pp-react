@@ -72,7 +72,7 @@
    				<%= link_to '', dashboard_path %>
    			</div>
    			<% end %>
-   			<% if can? :create, User %>
+   			<% if @admin.role != 'user' %>
    			<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
    				<i class="fas fa-user-friends"></i>
    				<div class="text">Nutzer</div>

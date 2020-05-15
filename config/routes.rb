@@ -77,7 +77,7 @@ Rails.application.routes.draw do
 	
   # DEPARTMENT
   post 'departments/new', to: 'department#new', as: "new_department"
-  post 'department/:department_id/edit', to: 'departments#edit', as: 'edit_department'
+  post 'department/:department_id/edit', to: 'department#edit', as: 'edit_department'
   get 'departments/:department_id/destroy', to: 'department#destroy', as: "destroy_department"
   put 'departments/:department_id/add_user/:user_id', to: 'department#add_user', as: 'add_user_to_department'
   get 'departments/:department_id/delete_user/:user_id', to: 'department#delete_user', as: 'delete_user_from_department'

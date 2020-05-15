@@ -173,7 +173,7 @@ class GamesController < ApplicationController
 	
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url)
+	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)

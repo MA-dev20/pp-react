@@ -36,9 +36,13 @@
 </section>
 <%= audio_tag(rate_sound, autoplay: true, id: "theme") %>
 <script>
+	<% if @game.skip_rating_timer %>
+		$('#rate_timer').hide();
+	<% else %>
 	setTimeout(function() {
 		beginTimer();
 	},1000);
+	
 	function beginTimer() {
 		var seconds = 15;
 		var beginTimer = setInterval(function() {
@@ -49,6 +53,7 @@
 			seconds--;
 		},1000)
 	}
+	<% end %>
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'rating') %>');
 	}
