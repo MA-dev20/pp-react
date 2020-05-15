@@ -37,7 +37,6 @@ class DashboardController < ApplicationController
 	@team = TeamUser.find_by(user: @admin).team
 	@team_users = @team.users.sort_by{|e| - e[:ges_rating]}
 	elsif @admin.role == 'user'
-		flash.now[:alert] = 'Der Spieler hat noch nicht gepitcht!'
 	    render 'index'
     end
   end
