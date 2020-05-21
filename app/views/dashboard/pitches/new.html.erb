@@ -1,0 +1,497 @@
+<section id="new-pitch-navbar">
+    <h1>Pitch erstellen</h1>
+    <div class="form-group">
+        <input type="text" placeholder="Type pitch name here" class="form-field">
+        <button class="btn">Regeln</button>
+    </div>
+    <div class="btn-group">
+        <%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+        <%#= link_to 'Done', dashboard_pitches_path, class: 'btn' %>
+        <button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
+    </div>
+</section>
+
+<div id="new-pitch-content">
+
+    <div class="card left">
+        <div class="tasks">
+            <!-- <div class="card selected">
+                <div class="task-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="name">Task 1</div>
+                    <i class="fas fa-circle"></i>
+                    <div class="category">Video</div>
+                    <i class="fas fa-trash remove"></i>
+                    <i class="fas fa-copy copy"></i>
+                </div>
+                <div class="thumb">
+                    <%= image_tag 'dash/Image.png' %>
+                    <div class="length">120</div>
+                </div>
+                <div class="title">Type your question</div>
+                <div class="sub-title">Rating Criteria</div>
+                <div class="rating-criteria">
+                    <div class="criterium">Rhethorik</div>
+                    <div class="criterium">Spontanität</div>
+                    <div class="criterium">Diversität</div>
+                    <div class="criterium">Körpersprachenkasper</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="task-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="name">Task 1</div>
+                    <i class="fas fa-circle"></i>
+                    <div class="category">Video</div>
+                    <i class="fas fa-trash remove"></i>
+                    <i class="fas fa-copy copy"></i>
+                </div>
+                <div class="thumb">
+                    <%= image_tag 'dash/Image.png' %>
+                    <div class="length">120</div>
+                </div>
+                <div class="title">Type your question</div>
+                <div class="sub-title">Rating Criteria</div>
+                <div class="rating-criteria">
+                    <div class="criterium">Rhethorik</div>
+                    <div class="criterium">Spontanität</div>
+                    <div class="criterium">Diversität</div>
+                    <div class="criterium">Körpersprache</div>
+                </div>
+            </div> -->
+        </div>
+        <div class="menu-box">
+            <div class="menu menu-1">Add task</div>
+            <div class="menu task-pitch">Add task from existing pitch</div>
+            <div class="menu menu-1">Import PDF</div>
+        </div>
+        <div class="add-task">
+            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img' %>
+        </div>
+
+    </div>
+
+    <div class="card right">
+        <%#= render partial: 'new_pitch_content', locals: { pitch: @pitch } %>
+        <%= form_for @pitch, url: dashboard_pitches_path, html: {id: 'new_pitch_form', method: :post} do |f| %>
+        <%= f.fields_for :tasks do |task| %>
+        <%= render 'task_fields', f: task %>
+        <% end %>
+
+        <%= link_to_add_association 'Add task', f, :tasks, class: 'add-link hide', partial: 'task_fields' %>
+        <%= f.submit 'Save', class: 'save' %>
+        <% end %>
+        <%= render 'browse_tasks' %>
+    </div>
+
+    <!-- The Modal -->
+    <div id="pitchModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="heading">
+                <h1>Headline</h1>
+            </div>
+            <div class="inner-content">
+                <div class="left-section">
+                    <div class="pitch-title">
+                        <label for="">Pitch</label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Pitch title" class="form-field">
+                        </div>
+                    </div>
+                    <div class="pitch-description">
+                        <label for="">Description</label>
+                        <div class="form-group">
+                            <textarea class="form-field" placeholder="Pitch description"></textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line"></div>
+                    <div class="checkbox-container">
+                        <%#= f.hidden_field(:show_ratings) %>
+                        <div class="form-group" id="show_ratings">
+                            <label for="">Bewertungsausgabe (nach jedem Pitch)</label>
+                            <div class="skip-election-group">
+                                <label for="">Gesamtbewertung anzeigen</label>
+                                <i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
+                            </div>
+                            <div class="skip-election-group">
+                                <label for="">Keine Bewertung anzeigen</label>
+                                <i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
+                            </div>
+                            <div class="skip-election-group">
+                                <label for="">Bewertung von einer bestimmten Person anzeigen</label>
+                                <i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
+                            </div>
+                            <div class="skip-election-group">
+                                <label for="">Bewertung überspringen</label>
+                                <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line"></div>
+                    <div class="toggle-wrapper toggle-sound">
+                        <label for="">Pitch sound</label>
+                        <div class="toggle-my-ratings toggle-my-ratings-1">
+                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line"></div>
+                    <div class="toggle-wrapper toggle-sound">
+                        <label for="">Election of next pitch user</label>
+                        <div class="toggle-my-ratings toggle-my-ratings-1">
+                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-section">
+                    <div class="picture">
+                        <label for="">Pitch image</label>
+                        <div class="btn upload">Upload</div>
+                        <div class="preview">
+                            <div class="remove">remove</div>
+                            <%= image_tag 'dash/Image.png' %>
+                        </div>
+                    </div>
+                    <div class="hr-line"></div>
+                    <div class="video">
+                        <label for="">Pitch video</label>
+                        <div class="btn upload">Upload</div>
+                        <div class="preview">
+                            <div class="time">00:16:45</div>
+                            <div class="remove">remove</div>
+                            <%= image_tag 'dash/Image.png' %>
+                        </div>
+                    </div>
+                    <div class="hr-line"></div>
+                    <div class="video-form">
+                        <label for="">You can also past a link to your video on Youtube or Vimeo</label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Youtube/Vimeo link" class="form-field">
+                            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
+                        </div>
+                    </div>
+                    <div class="btn-wrapper">
+                        <%= link_to 'Save', dashboard_pitches_path, class: 'btn' %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="heading">
+                <h1>Record your video</h1>
+            </div>
+            <div class="inner-content">
+                <div class="video-img">
+                    <%= image_tag 'dash/Video.png' %>
+                </div>
+                <div class="buttons">
+                    <a href="" class="btn reversed">Cancel</a>
+                    <a href="" class="btn">Upload</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- TODO: -->
+<!-- Glitch while reloading the page -->
+<!-- Uniqueness of capsule names -->
+<!-- Partial for code better readness -->
+
+<script>
+
+    // new PerfectScrollbar('#scrollList');
+    // new PerfectScrollbar('#scrollNameList');
+
+    function chooseCatchword(type) {
+        $('.add-catchword .btn-line .btn.selected').removeClass('selected');
+        $('.add-catchword .catchword').hide();
+        $('.add-catchword .picture').hide();
+        $('.add-catchword .video').hide();
+        $('.add-catchword .audio').hide();
+        $('#btn_' + type).addClass('selected');
+        $('.add-catchword .' + type).show();
+    }
+
+    function timeUp() {
+        var value = $('#task_time').val();
+        if (value < 1800) {
+            value = parseInt(value);
+            value = value + 5;
+            var min = Math.floor(value / 60).toString();
+            var sec = Math.floor(value % 60).toString();
+            if (sec == '0') { sec = '00' }
+            if (sec == '5') { sec = '05' }
+            $('#settime').text(min + ':' + sec);
+            $('#task_time').val(value);
+        }
+    }
+    function timeDown() {
+        var value = $('#task_time').val();
+        if (value > 10) {
+            value = parseInt(value);
+            value = value - 5;
+            var min = Math.floor(value / 60).toString();
+            var sec = Math.floor(value % 60).toString();
+            if (sec == '0') { sec = '00' }
+            if (sec == '5') { sec = '05' }
+            $('#settime').text(min + ':' + sec);
+            $('#task_time').val(value);
+        }
+    }
+
+    function showList(e) {
+        $(e).children().show();
+    }
+
+    function hideList(e) {
+        $(e).find('.list').hide();
+    }
+
+    function createCapsuleName(target_field, value, e) {
+        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
+        $(capsule_list).addClass('list-with-words');
+        let word = $(`<div class="word">${value}</div>`);
+        if ($(target_field).val() != "" && word != '') {
+            if ($(target_field).val().split(',').length < 4) {
+                $(target_field).val($(target_field).val() + "," + value)
+                $(capsule_list).append(word)
+            } else {
+                $(e.target).addClass('danger')
+            }
+        } else {
+            $(target_field).val(value)
+            $(capsule_list).append(word)
+        }
+    }
+
+    // function addCapsule(e) {
+    //     if (e.which == 13) {
+    //         let sibling_field = $(e.target).siblings('.capsule-field')
+    //         let value = $(e.target).val()
+    //         createCapsuleName(sibling_field, value, e)
+    //         $(e.target).val("")
+    //         e.preventDefault();
+    //         return false;
+    //     }
+    // }
+
+    function createCard(taskId) {
+        let rating_values = $(`.task-${taskId} .add-rating .capsule-field`).val()
+        let class_name = `task-${taskId}`
+        let title = `.task-${taskId} .title-field`
+        let time = `.task-${taskId} #task_time`
+        let card = `<div class="card left-card" id="${taskId}" data-class="${class_name}" onclick="handleCardClick(this)">`;
+        card += '<div class="task-title">';
+        card += '<i class="fas fa-exclamation-triangle"></i>';
+        card += `<div class="name">${$(title).val()}</div>`;
+        card += '<i class="fas fa-circle"></i>';
+        card += '<div class="category">Catchword</div>';
+        card += '<i class="fas fa-trash remove"></i>';
+        card += '<i class="fas fa-copy copy"></i>';
+        card += '</div>';
+        card += '<div class="thumb">';
+        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        card += `<div class="length">${$(time).val()}</div>`;
+        card += '</div>';
+        card += '<div class="title">Type your question</div>';
+        card += '<div class="sub-title">Rating Criteria</div>';
+        card += '<div class="rating-criteria">';
+        if (rating_values.length) {
+            ratings = rating_values.split(',')
+            if (ratings.length > 0)
+                card += `<div class="criterium">${ratings[0]}</div>`;
+            if (ratings.length > 1)
+                card += `<div class="criterium">${ratings[1]}</div>`;
+            if (ratings.length > 2)
+                card += `<div class="criterium">${ratings[2]}</div>`;
+            if (ratings.length > 3)
+                card += `<div class="criterium">${ratings[3]}</div>`;
+        }
+        card += '</div>';
+        card += '</div>';
+
+        $('.left .tasks').prepend(card);
+    }
+
+    let handleCardClick = (e) => {
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            $(selected_card).removeClass('selected')
+            $(`.${$(selected_card).attr('data-class')}`).hide()
+        }
+        $(`.${$(e).attr('data-class')}`).show()
+        $(e).addClass('selected')
+    }
+
+    let hideDropdown = (parent = '') => {
+        if (parent != '') {
+            $('.sub-cs').hide()
+            $('.list').hide()
+        } else {
+            $(`${parent} .sub-cs`).hide()
+            $(`${parent} .list`).hide()
+            $('.menu-box').hide()
+        }
+    }
+
+    // let checkFormValidation = () => {
+    //     let ids = ['#cwHiddenField', '#reactionHiddenField', '#ratingHiddenField', '#titleField']
+    //     let status = true
+    //     for (let id of ids) {
+    //         if (!$(id).val().length) {
+    //             if (id == '#titleField')
+    //                 $(id).addClass('danger')
+    //             else
+    //                 $(id).siblings('.form-field').addClass('danger')
+    //             status = false;
+    //         }
+    //     }
+    //     return status
+    // }
+
+    let handleKeyEvent = (e) => {
+        if ($(e).hasClass('danger')) {
+            $(e).removeClass('danger')
+        }
+
+        // let selected_card = $('.left-card.selected')
+        // let id = $(selected_card).attr('id')
+
+        // if ($(selected_card).length) {
+        //     $(`#${id} .task-title .name`).val(`${$(e).val()}`)
+        // }
+
+    }
+
+
+    var task_ids = [0]
+
+    $(() => {
+
+        hideDropdown()
+        $('.modal').hide();
+
+        $('.task-pitch').click(function () {
+            $('#new-pitch-content .card.right #pitches').show()
+            $('#newPitch').hide();
+            $('.menu-box').hide()
+        })
+
+        $('.video-record').click(function () {
+            $('#videoModal').show()
+        })
+
+        $('.submit').click(function () {
+            $('form').submit();
+        })
+
+
+        $(document).click(function (e) {
+            if ($(e.target).hasClass('cw')) {
+                if ($('.obj .sub-cs').is(":visible")) {
+                    hideDropdown(".obj");
+                }
+                $('.cw .sub-cs').toggle()
+                $('.menu-box').hide()
+
+            } else if ($(e.target).hasClass('obj')) {
+                if ($('.cw .sub-cs').is(":visible")) {
+                    hideDropdown(".cw");
+                }
+                $('.obj .sub-cs').toggle()
+                $('.menu-box').hide()
+
+            } else if ($(e.target).hasClass('add-task-img')) {
+                $('.menu-box').toggle()
+                $('.cw .sub-cs').hide()
+                $('.obj .sub-cs').hide()
+            } else {
+                // $('.menu-box').hide()
+                hideDropdown()
+            }
+        })
+
+
+        // $('.input-field').keypress(function (e) {
+        //     if (e.which == 13) {
+        //         let sibling_field = $(e.target).siblings('.capsule-field')
+        //         let value = $(e.target).val()
+        //         let word = $(`<div class="word">${value}</div>`);
+        //         let css_class = $(e.target).attr('class').split(" ")[0];
+        //         $(`.${css_class} .list`).addClass('list-with-words');
+        //         if ($(sibling_field).val() != "") {
+        //             let field_array = JSON.parse($(sibling_field).val())
+        //             if (field_array.length < 4) {
+        //                 field_array.push(value)
+        //                 $(sibling_field).val(JSON.stringify(field_array))
+        //                 $(`.${css_class} .list`).append(word)
+        //             } else {
+        //                 $(e.target).addClass('danger')
+        //             }
+        //         } else {
+        //             $(sibling_field).val(JSON.stringify(Array(value)))
+        //             $(`.${css_class} .list`).append(word)
+        //         }
+
+        //         $(e.target).val("")
+        //         e.preventDefault();
+        //         return false;
+
+        //     }
+        // });
+
+
+        // Nested Attributes
+        $('.task-fields').addClass('task-0')
+
+        $('form').on('cocoon:after-insert', function (e, insertedItem) {
+            let taskId = task_ids[task_ids.length - 1]
+            $(`.task-${taskId}`).hide()
+            let text_array = $(insertedItem).children('input:first').attr('id').split('_')
+            let id = parseInt(text_array[3])
+            task_ids.push(id)
+            $('.task-fields:first').addClass(`task-${id}`)
+            $('#new_pitch').prepend($(insertedItem))
+            createCard(taskId);
+        });
+
+        $('.menu-box .menu-1').on('click', function () {
+            // if (checkFormValidation() {
+            if (true) {
+                let selected_card = $('.left-card.selected')
+                if ($(selected_card).length) {
+                    $(selected_card).removeClass('selected')
+                    $(`.${$(selected_card).attr('data-class')}`).hide()
+                    $('.task-fields:first').show()
+                } else {
+                    $('.add-link').click()
+                }
+                $('.menu-box').toggle()
+            }
+        })
+
+        $('.open-modal').click(function (e) {
+            e.stopPropagation();
+            let modalId = $(this).data("modal");
+            let $modal = $("#" + modalId);
+            $modal.show();
+        })
+
+        $('.close').click(function () {
+            $('.modal').hide()
+        })
+
+    })
+
+</script>

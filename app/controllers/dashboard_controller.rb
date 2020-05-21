@@ -197,7 +197,12 @@ class DashboardController < ApplicationController
 
   def pitches; end
 
-  def new_pitch; end
+  def new_pitch
+	@pitch = Pitch.new
+  end
+
+  def create_pitch
+  end
 	
   private
 	def set_user

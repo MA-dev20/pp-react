@@ -74,7 +74,7 @@
     </div>
 
     <div class="card right">
-        <%= render 'new_pitch_content' %>
+        <%= render partial: 'new_pitch_content', locals: { pitch: @pitch } %>
         <%= render 'browse_tasks' %>
     </div>
 
@@ -143,7 +143,6 @@
                 </div>
                 <div class="right-section">
                     <div class="picture">
-                        <!-- <div class="title">Pitch image</div> -->
                         <label for="">Pitch image</label>
                         <div class="btn upload">Upload</div>
                         <div class="preview">
@@ -153,7 +152,6 @@
                     </div>
                     <div class="hr-line"></div>
                     <div class="video">
-                        <!-- <div class="title">Pitch video</div> -->
                         <label for="">Pitch video</label>
                         <div class="btn upload">Upload</div>
                         <div class="preview">

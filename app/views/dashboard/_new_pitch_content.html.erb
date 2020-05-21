@@ -1,3 +1,4 @@
+<%= form_for @pitch, url: dashboard_create_pitch_path(@pitch), html: {method: :post} do |f| %>
 <div class="form-group title" id="newPitch">
     <input type="text" class="form-field"
         placeholder='Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"'>
@@ -100,3 +101,4 @@
         </div>
     </div>
 </div>
+<% end %>

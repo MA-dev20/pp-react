@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  thumbnail: MyString
+  time: 1
+  type: 
+  catchwords: MyString
+  image: MyString
+  video: MyString
+  audio: MyString
+  reactions: MyString
+  ratings: MyString
+  user: one
+  pitch: one
+
+two:
+  title: MyString
+  thumbnail: MyString
+  time: 1
+  type: 
+  catchwords: MyString
+  image: MyString
+  video: MyString
+  audio: MyString
+  reactions: MyString
+  ratings: MyString
+  user: two
+  pitch: two

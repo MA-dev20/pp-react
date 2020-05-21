@@ -11,4 +11,4 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules' 'videos'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
-Rails.application.config.assets.precompile += %w( landing/main.scss landing/main.js dash/main.scss dash/main.js game_desktop/main.scss game_desktop/main.js game_mobile/main.scss game_mobile/main.js )
+Rails.application.config.assets.precompile += %w( landing/main.scss landing/main.js dashboard/pitches.scss dash/main.scss dash/main.js game_desktop/main.scss game_desktop/main.js game_mobile/main.scss game_mobile/main.js )

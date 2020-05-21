@@ -1,0 +1,174 @@
+<div class="form-group title task-fields" id="newPitch">
+    <%= f.hidden_field :user_id, value: User.first.id %>
+    <%= f.text_field :title, class: 'title-field form-field', id: 'titleField', required: true, onkeydown: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+    <div class="card time-limit">
+        <div class="title">Time limit</div>
+        <div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
+        <div class="form-group">
+            <div class="time-field">
+                <%= f.hidden_field :time, id: 'task_time', value: 80 %>
+                <div class="time" id="settime">1:20</div>
+                <i class="fa fa-angle-up up" onclick="timeUp()"></i>
+                <i class="fa fa-angle-down down" onclick="timeDown()"></i>
+            </div>
+        </div>
+    </div>
+    <div class="card add-catchword">
+        <div class="title">Text, Video oder Bild hinzufügen</div>
+        <div class="btn-line">
+            <div class="btn selected" id="btn_catchword" onclick="chooseCatchword('catchword')">Catchword</div>
+            <div class="btn" id="btn_picture" onclick="chooseCatchword('picture')">Bild</div>
+            <div class="btn" id="btn_video" onclick="chooseCatchword('video')">Video</div>
+            <div class="btn" id="btn_audio" onclick="chooseCatchword('audio')">Audio</div>
+        </div>
+        <div class="catchword">
+            <div class="title">Catchwords</div>
+            <div class="subline">Type your catchword or choose from list below</div>
+            <div class="form-group">
+                <%= f.hidden_field :catchwords, class: 'capsule-field', id: 'cwHiddenField' %>
+                <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
+                    onkeydown="handleKeyEvent(this)" onkeypress="addCapsule(this)">
+                <div id="" class="cw custom-select">Catchword
+                    <div class="sub-cs">
+                        <% @cw_lists.each do |list| %>
+                        <% if list.catchwords.present? %>
+                        <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
+                            <i class="fas fa-caret-left"></i>
+                            <span><%= list.name %></span>
+                            <div class="list" id="scrollNameList">
+                                <% list.catchwords.each do |cw| %>
+                                <% if cw.name.present? %>
+                                <div class="catchword name" data-name="<%= cw.name %>">
+                                    <span><%= cw.name %></span>
+                                </div>
+                                <% end %>
+                                <% end %>
+                            </div>
+                        </div>
+                        <% end %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            <div class="capsule-list <%= f.object.catchwords.present? ? 'list-with-words' : '' %>">
+            </div>
+            <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
+                task.</div>
+        </div>
+        <div class="picture">
+            <div class="title">Bild</div>
+            <div class="subline">Upload an image to your pitch</div>
+            <div class="btn upload">Upload</div>
+            <div class="preview">
+                <div class="remove">remove</div>
+                <%= image_tag 'dash/Image.png' %>
+            </div>
+        </div>
+        <div class="video">
+            <div class="title">Video</div>
+            <div class="subline">Upload a video to your pitch</div>
+            <div class="btn upload">Upload</div>
+            <div class="btn upload open-modal" data-modal="videoModal">Record</div>
+            <div class="preview">
+                <div class="time">00:16:45</div>
+                <div class="remove">remove</div>
+                <%= image_tag 'dash/Image.png' %>
+            </div>
+        </div>
+        <div class="audio">
+            <div class="title">Audio</div>
+            <div class="subline">Upload an audio file to your pitch</div>
+            <div class="btn upload">Upload</div>
+            <div class="btn upload">Record</div>
+            <div class="preview audio-preview">
+                <%= image_tag 'dash/icons/audio-icon.svg' %>
+                <div class="audio-title">Pitch-audio.mp3</div>
+                <div class="remove">remove</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card add-reaction">
+        <div class="title">Reactions</div>
+        <div class="subline">Type new reactions or choose from list below</div>
+        <div class="form-group">
+            <%= f.hidden_field :reactions, class: 'capsule-field', id: 'reactionHiddenField' %>
+            <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field"
+                onkeydown="handleKeyEvent(this)">
+            <div id="" class="obj custom-select">Reaction
+                <div class="sub-cs">
+                    <% @obj_lists.each do |list| %>
+                    <% if list.objections.present? %>
+                    <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
+                        <i class="fas fa-caret-left"></i>
+                        <span><%= list.name %></span>
+                        <div class="list" id="scrollNameList">
+                            <% list.objections.each do |obj| %>
+                            <% if obj.name.present? %>
+                            <div class="add-reaction name" data-name="<%= obj.name %>">
+                                <span><%= obj.name %></span>
+                            </div>
+                            <% end %>
+                            <% end %>
+                        </div>
+                    </div>
+                    <% end %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+        <div class="capsule-list <%= f.object.reactions.present? ? 'list-with-words' : '' %>">
+        </div>
+    </div>
+
+    <div class="card add-rating">
+        <div class="title">Rating criterias</div>
+        <div class="subline">You can add up to 4 rating criterias</div>
+        <div class="form-group">
+            <div class="star">
+                <%= image_tag 'dash/icons/star.svg'%>
+            </div>
+            <%= f.hidden_field :ratings, class: 'capsule-field', id: 'ratingHiddenField' %>
+            <input type="text" placeholder="Type new rating criteria" class="form-field rating-field"
+                onkeydown="handleKeyEvent(this)">
+            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+        </div>
+        <div class="capsule-list">
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    $(() => {
+        $('.input-field').keypress((e) => {
+            if (e.which == 13) {
+                let sibling_field = $(e.target).siblings('.capsule-field')
+                let value = $(e.target).val()
+                createCapsuleName(sibling_field, value, e)
+                $(e.target).val("")
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // $('.sub-cs .list .name').click(function (e) {
+        //     let target_field = $(this).closest('.form-group').children('.capsule-field')
+        //     createCapsuleName(target_field, $(this).attr('data-name'), e)
+        //     hideDropdown();
+        // })
+
+        // $('.add-rating-btn').on('click', (e) => {
+        //     let target_field = $(e.target).siblings('.capsule-field')
+        //     let form_field = $(e.target).siblings('.form-field')
+        //     if (form_field.val().length) {
+        //         $(e.target).closest('.card.add-rating').css('height', '28vh');
+        //         createCapsuleName(target_field, form_field.val(), e)
+        //         $(form_field).val("")
+        //         e.preventDefault()
+        //         return false;
+        //     }
+        // })
+    })
+</script>

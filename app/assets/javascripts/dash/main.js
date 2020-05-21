@@ -8,6 +8,7 @@
  *= require slick.min
  *= require Chart.min
  *= require progressbar.min
+ *= require cocoon
  */
 
 function ratingColor(rating) {

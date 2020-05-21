@@ -15,7 +15,7 @@
 		.btn {
 			width: 8vw;
 			font-weight: bold;
-		}
+        }
 	}
 	.btn-group {
 		z-index: 10;
@@ -53,6 +53,12 @@
 	height: 92vh; width: calc(100vw - (25.6vh - 1px));
     font-size: 1.7vh;
     
+    .form-group {
+        .title-field {
+            position: absolute;
+            width: 95.5% !important;
+        }
+    }
     .menu-box {
         display: none;
         font-size: 2vh;
@@ -81,8 +87,10 @@
 		
 		padding: 0;
 		.tasks, .right-tasks {
-			width: 15vw; height: 70vh;
+            width: 15vw; height: 70vh;
+            overflow-y: scroll;
 			.card, .task-card {
+                cursor: pointer;
 				left: .5vw; width: 14vw; height: 30.5vh;
 				padding: 0;
 				box-sizing: border-box;
@@ -195,6 +203,7 @@
 			}
 		}
     }
+
     
     .right-side-card {
         height: 61vh;
@@ -266,7 +275,7 @@
 		.card.add-catchword {
 			position: absolute;
 			top: 25vh; left: 1vw;
-			height: 37vh;
+            height: 39vh;
 			.btn-line {
 				position: relative;
 				width: 100%;
@@ -350,36 +359,81 @@
 					width: 45%;
 				}
 				.custom-select {
-					position: absolute;
-					right: 1vw;
-					width: 45%;
-				}
-			}
-			.list {
-				position: relative;
-				width: 26vw;
-				background-color: #fafafa;
-				padding: 1vh 1vw;
-				.word {
-					float: left;
-					position: relative;
-					top: 0; left: 0;
-					line-height: 3vh;
-					margin: .5vh .2vw;
-					border: 1px solid #667093;
-					border-radius: 1.5vh;
-					min-width: 5vw;
-					width: auto;
-					text-align: center;
-					background-color: white;
-					padding: 0 .5vw;
-				}
-				.last {
-					clear: left;
-				}
+					// position: absolute;
+					// right: 1vw;
+                    // width: 45%;
+                    
+                    width: 40%;
+                    position: relative;
+                    right: 0;
+                    float: right;
+                    line-height: 5.5vh;
+                }
+                .sub-cs {
+                    display: none;
+                    position: relative;
+                    top: 0.2vh;
+                    left: 1.8vh;
+                    width: 24.8vh;
+                    background-color: white;
+                    border: .1vh solid #dfe1e5;
+                    height: max-content;
+                    // height: 18.3vh;
+                    // max-height: 42.3vh;
+                    // overflow-y: scroll;
+                    z-index: 10;
+                    box-shadow: 0px 0.6vh 2.2vh 0 rgba(172,172,172,0.1);
+                    border-radius: 5px;
+                }
+
+                .option {
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 3.9vh;
+                    line-height: 3.9vh;
+                    font-size: 1.8vh;
+                    cursor: pointer;
+
+                    .fa-caret-left {
+                        padding: 1.2vh 0.4vh 0;
+                    }
+    
+                    span {
+                        float: right;
+                        padding-right: 0.6vh;
+                    }
+
+                    .list {
+                        position: absolute;
+                        top: 0;
+                        left: -22.4vh;
+                        max-height: 17vh;
+                        width: 22vh;
+                        background-color: white;
+                        box-shadow: 0px 0.6vh 2.2vh 0 rgba(172, 172, 172, 0.1);
+                        border: .1vh solid #dfe1e5;
+                        border-radius: 0.5vh;
+                        overflow-y: auto;
+                        z-index: 10;
+                    }
+
+                    .name {
+                        position: relative;
+                        width: 100%;
+                        cursor: pointer;
+                        line-height: 3.4vh;
+                        height: 3.4vh;
+                        text-align: right;
+                        z-index: 10;
+                    }
+
+                }
+
 			}
 			.info {
-				margin: 1vh 0;
+				margin: 2vh 0;
 				font-size: 1.5vh;
 				font-weight: 500;
 			}
@@ -420,8 +474,38 @@
 				}
 			}
         }
+
+        .add-reaction, .catchword, .add-rating {
+            .capsule-list {
+				position: relative;
+				width: 26vw;                
+                padding: 1vh 1vw;
+				.word {
+					float: left;
+					position: relative;
+					top: 0; left: 0;
+					line-height: 3vh;
+					margin: .5vh .2vw;
+					border: 1px solid #667093;
+					border-radius: 1.5vh;
+					min-width: 5vw;
+					width: auto;
+					text-align: center;
+					background-color: white;
+					padding: 0 .5vw;
+				}
+				.last {
+					clear: left;
+				}
+            }
+            .list-with-words {
+                background-color: #fafafa;
+                min-height: 4vh; 
+            }
+        }
         
         #pitches {
+            display: none;
             padding: 1vw;
 
             .search {
@@ -719,7 +803,29 @@
         border-top: 0;
         // margin-top: 2vh;
     }
+
+    .form-group .form-field.danger {
+        border: 0.1vh solid red; 
+    }
+
+    .form-group .form-field.valid {
+        border: .1vh solid #dfe1e5; 
+    }
+
+    .save {
+        position: absolute;
+        top:5vh;
+        z-index: 44444;
+    }
 }
 
+.danger {
+    border: 0.1vh solid red; 
+}
+.hide {
+    display: none;
+}
 
-
+#navbar {
+    display: none;
+}

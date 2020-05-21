@@ -1,137 +1,145 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= yield(:title) %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1dacf1"/>
-    <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
-  </head>
-  <style>
+
+<head>
+	<title><%= yield(:title) %></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#1dacf1" />
+	<%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
+	<%= csrf_meta_tags %>
+	<%= csp_meta_tag %>
+	<%= stylesheet_link_tag    'dash/main', media: 'all', 'data-turbolinks-track': 'reload' %>
+	<%= javascript_include_tag 'dash/main', 'data-turbolinks-track': 'reload' %>
+</head>
+<style>
 	:root {
-	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
-	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
+		--custcolor: <%=@company.color1[0] %>, <%=@company.color1[1] %>, <%=@company.color1[2] %>;
+		--btncolor: <%=@company.color2[0] %>, <%=@company.color2[1] %>, <%=@company.color2[2] %>;
 	}
-	
 </style>
 
-  <body>
-   	<section id="navbar">
-   		<div class="dropdown" onclick="toggleDropdown()">
-   		Hallo, <%= @admin.fname %> <%= @admin.lname %>
-   		<i class="fas fa-caret-down dropdown-img"></i>
-   		</div>
-   		<div class="dropdown-content">
-   		<% if can? :manage, @company %>
-   			<div class="link">
+<body>
+	<section id="navbar">
+		<div class="dropdown" onclick="toggleDropdown()">
+			Hallo, <%= @admin.fname %> <%= @admin.lname %>
+			<i class="fas fa-caret-down dropdown-img"></i>
+		</div>
+		<div class="dropdown-content">
+			<% if can? :manage, @company %>
+			<div class="link">
 				Unternehmen
 				<%= link_to '', company_dash_path %>
-   			</div>
-   		<% end %>
-   		<% if @departement && (can? :manage, @department) %>
-   			<div class="link">
+			</div>
+			<% end %>
+			<% if @departement && (can? :manage, @department) %>
+			<div class="link">
 				Abteilung
 				<%= link_to '', department_dash_path %>
-   			</div>
-   		<% end %>
-   		<% if can? :manage, :all %>
-   			<div class="link">
+			</div>
+			<% end %>
+			<% if can? :manage, :all %>
+			<div class="link">
 				Backoffice
 				<%= link_to '', backoffice_path %>
-   			</div>
-   		<% end %>
-   		<div class="link">
-			Account
-			<%= link_to '', account_path %>
-   		</div>
-		<div class="link red">
-			Logout
-			<%= link_to '', destroy_user_session_path, method: 'delete' %>
-  		</div>
-   		</div>
-   		
-   	</section>
-   	<section id="sidebar">
-   		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
-   		
-   		<div class="links">
-   			<% if @admin.role == 'user' %>
-   				<div class="link <%= current_page?(dashboard_path) ? 'active' : '' %>)">
-   			    <i class="fas fa-user-friends"></i>
-   				<div class="text">Statistik</div>
-   					<%= link_to '', dashboard_path(@admin) %>
-   				</div>
-   			<% end %>
-   			<% if can? :create, Game %>
-   			<div class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dash_pitch_path(@pitch)) || @game && current_page?(dashboard_customize_game_path(@game)) ? 'active' : '' %>">
-   				<i class="fas fa-gamepad"></i>
-  				<div class="text">Let's Pitch</div>
-   				<%= link_to '', dashboard_path %>
-   			</div>
-   			<% end %>
-   			<% if @admin.role != 'user' %>
-   			<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
-   				<i class="fas fa-user-friends"></i>
-   				<div class="text">Nutzer</div>
-   				<%= link_to '', dashboard_teams_path %>
 			</div>
-   			<% end %>
-   			<% if can? :create, CatchwordList %>
-   			<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
-   				<i class="far fa-list-alt"></i>
-   				<div class="text">Customize</div>
-   				<%= link_to '', dashboard_customize_path %>
-   			</div>
-   			<% end %>
-   			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"d>
-   				<i class="fab fa-youtube"></i>
-   				<div class="text">Video Tool</div>
-   				<%= link_to '', dashboard_video_path %>
+			<% end %>
+			<div class="link">
+				Account
+				<%= link_to '', account_path %>
 			</div>
-			<div class="link <%= current_page?(dashboard_new_pitch_path) || current_page?(dashboard_pitches_path) ? 'active' : '' %>"d>
+			<div class="link red">
+				Logout
+				<%= link_to '', destroy_user_session_path, method: 'delete' %>
+			</div>
+		</div>
+
+	</section>
+	<section id="sidebar">
+		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
+
+		<div class="links">
+			<% if @admin.role == 'user' %>
+			<div class="link <%= current_page?(dashboard_path) ? 'active' : '' %>)">
+				<i class="fas fa-user-friends"></i>
+				<div class="text">Statistik</div>
+				<%= link_to '', dashboard_path(@admin) %>
+			</div>
+			<% end %>
+			<% if can? :create, Game %>
+			<div
+				class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dashboard_pitches_path) || @game && current_page?(dashboard_customize_game_path(@game)) ? 'active' : '' %>">
+				<i class="fas fa-gamepad"></i>
+				<div class="text">Let's Pitch</div>
+				<%= link_to '', dashboard_path %>
+			</div>
+			<% end %>
+			<% if @admin.role != 'user' %>
+			<div
+				class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
+				<i class="fas fa-user-friends"></i>
+				<div class="text">Nutzer</div>
+				<%= link_to '', dashboard_teams_path %>
+			</div>
+			<% end %>
+			<% if can? :create, CatchwordList %>
+			<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
+				<i class="far fa-list-alt"></i>
+				<div class="text">Customize</div>
+				<%= link_to '', dashboard_customize_path %>
+			</div>
+			<% end %>
+			<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"
+				d>
+				<i class="fab fa-youtube"></i>
+				<div class="text">Video Tool</div>
+				<%= link_to '', dashboard_video_path %>
+			</div>
+			<div class="link <%= current_page?(new_dashboard_pitch_path) || current_page?(dashboard_pitches_path) ? 'active' : '' %>"
+				d>
 				<i class="fab fa-youtube"></i>
 				<div class="text">Pitches</div>
 				<%= link_to '', dashboard_pitches_path %>
 			</div>
-   		</div>
-   		<div class="logo">
-   			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M59.1978 34.1955L95.7266 20.2435L120.385 50.5907L120.39 50.5959L144.947 81.0254L123.705 113.855L123.701 113.861L102.35 146.619L64.5626 136.562L64.5562 136.56L26.803 126.377L24.6912 87.3311L24.6908 87.3244L22.7097 48.2721L59.1916 34.1979L59.1978 34.1955Z" fill="white" stroke="#FFFFFF" stroke-width="4"/>
+		</div>
+		<div class="logo">
+			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path
+					d="M59.1978 34.1955L95.7266 20.2435L120.385 50.5907L120.39 50.5959L144.947 81.0254L123.705 113.855L123.701 113.861L102.35 146.619L64.5626 136.562L64.5562 136.56L26.803 126.377L24.6912 87.3311L24.6908 87.3244L22.7097 48.2721L59.1916 34.1979L59.1978 34.1955Z"
+					fill="white" stroke="#FFFFFF" stroke-width="4" />
 			</svg>
-   			<%= image_tag @company.logo? ? @company.logo.url : 'logo-m.png' %>
-   		</div>
-   	</section>
-   	<section id="content">
-    	<%= yield %>
+			<%= image_tag @company.logo? ? @company.logo.url : 'logo-m.png' %>
+		</div>
 	</section>
-	   
-   	<% if flash[:alert] %>
-   	<div class="modal-blur">
-   		<div class="modal card">
-   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
-   			<h3>Ups, da gabe es einen Fehler!</h3>
-   			<%= flash[:alert] %>
-   		</div>
-   	</div>
-   	<% end %>
-  </body>
-  <script>
-	  function toggleDropdown() {
-		  $(".dropdown-content").toggle();
-		  if ($(".dropdown .fas").hasClass('fa-caret-down')) {
-		  	$(".dropdown .fas").addClass('fa-caret-up');
-		  	$(".dropdown .fas").removeClass('fa-caret-down');
-		  } else {
+	<section id="content">
+		<%= yield %>
+	</section>
+
+	<% if flash[:alert] %>
+	<div class="modal-blur">
+		<div class="modal card">
+			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+			<h3>Ups, da gabe es einen Fehler!</h3>
+			<%= flash[:alert] %>
+		</div>
+	</div>
+	<% end %>
+</body>
+<script>
+	function toggleDropdown() {
+		$(".dropdown-content").toggle();
+		if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+			$(".dropdown .fas").addClass('fa-caret-up');
+			$(".dropdown .fas").removeClass('fa-caret-down');
+		} else {
 			$(".dropdown .fas").addClass('fa-caret-down');
-		  	$(".dropdown .fas").removeClass('fa-caret-up');
-		  }
-	  }
-	  function toggleModal() {
-		  $('.modal-blur').toggle();
-	  }
-	  new PerfectScrollbar('#content');
-  </script>
+			$(".dropdown .fas").removeClass('fa-caret-up');
+		}
+	}
+	function toggleModal() {
+		$('.modal-blur').toggle();
+	}
+	new PerfectScrollbar('#content');
+
+</script>
+
 </html>

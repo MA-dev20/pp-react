@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_08_124611) do
+ActiveRecord::Schema.define(version: 2020_05_18_102127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "positive"
     t.index ["game_turn_id"], name: "index_comments_on_game_turn_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -140,6 +141,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.integer "ges_rating", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "repeat", default: false
     t.index ["catchword_id"], name: "index_game_turns_on_catchword_id"
     t.index ["game_id"], name: "index_game_turns_on_game_id"
     t.index ["team_id"], name: "index_game_turns_on_team_id"
@@ -169,6 +171,11 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "rating_list_id"
+    t.boolean "skip_elections", default: false
+    t.integer "max_users", default: 0
+    t.string "show_ratings", default: "all"
+    t.integer "rating_user"
+    t.boolean "skip_rating_timer", default: false
     t.index ["company_id"], name: "index_games_on_company_id"
     t.index ["rating_list_id"], name: "index_games_on_rating_list_id"
     t.index ["team_id"], name: "index_games_on_team_id"
@@ -236,6 +243,12 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.index ["user_id"], name: "index_pitch_videos_on_user_id"
   end
 
+  create_table "pitches", force: :cascade do |t|
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "rating_criteria", force: :cascade do |t|
     t.string "name"
     t.string "icon", default: "fa-star"
@@ -273,6 +286,25 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.index ["game_turn_id"], name: "index_ratings_on_game_turn_id"
     t.index ["rating_criterium_id"], name: "index_ratings_on_rating_criterium_id"
     t.index ["user_id"], name: "index_ratings_on_user_id"
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.string "title"
+    t.string "thumbnail"
+    t.integer "time"
+    t.string "type"
+    t.string "catchwords"
+    t.string "image"
+    t.string "video"
+    t.string "audio"
+    t.string "reactions"
+    t.string "ratings"
+    t.bigint "user_id"
+    t.bigint "pitch_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pitch_id"], name: "index_tasks_on_pitch_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
   create_table "team_ratings", force: :cascade do |t|
@@ -350,6 +382,20 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "videos", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "company_id"
+    t.bigint "department_id"
+    t.string "video"
+    t.integer "duration"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_videos_on_company_id"
+    t.index ["department_id"], name: "index_videos_on_department_id"
+    t.index ["user_id"], name: "index_videos_on_user_id"
+  end
+
   add_foreign_key "catchword_list_catchwords", "catchword_lists"
   add_foreign_key "catchword_list_catchwords", "catchwords"
   add_foreign_key "catchword_lists", "companies"
@@ -396,6 +442,8 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
   add_foreign_key "ratings", "game_turns"
   add_foreign_key "ratings", "rating_criteria"
   add_foreign_key "ratings", "users"
+  add_foreign_key "tasks", "pitches"
+  add_foreign_key "tasks", "users"
   add_foreign_key "team_ratings", "rating_criteria"
   add_foreign_key "team_ratings", "teams"
   add_foreign_key "team_users", "teams"
@@ -407,4 +455,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_124611) do
   add_foreign_key "user_ratings", "users"
   add_foreign_key "users", "companies"
   add_foreign_key "users", "departments"
+  add_foreign_key "videos", "companies"
+  add_foreign_key "videos", "departments"
+  add_foreign_key "videos", "users"
 end

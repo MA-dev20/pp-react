@@ -26,8 +26,14 @@ Rails.application.routes.draw do
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
 
-  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
-  get 'dashboard/pitch/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
+  #Pitches-Tasks
+  # get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
+  # get 'dashboard/pitch/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
+  # get 'dashboard/pitch/save', to: 'dashboard#create_pitch', as: 'dashboard_create_pitch'
+
+  namespace :dashboard do
+    resources :pitches
+  end
 
 	
   get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'
