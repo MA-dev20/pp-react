@@ -1,6 +1,6 @@
-<div class="form-group title task-fields" id="newPitch">
+<div class="form-group title task-fields">
     <%= f.hidden_field :user_id, value: User.first.id %>
-    <%= f.text_field :title, class: 'title-field form-field', id: 'titleField', required: true, onkeydown: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+    <%= f.text_field :title, class: 'title-field form-field', id: 'titleField', required: true, onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
         <div class="title">Time limit</div>
         <div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
@@ -27,7 +27,7 @@
             <div class="form-group">
                 <%= f.hidden_field :catchwords, class: 'capsule-field', id: 'cwHiddenField' %>
                 <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
-                    onkeydown="handleKeyEvent(this)" onkeypress="addCapsule(this)">
+                    onkeydown="handleKeyEvent(this)">
                 <div id="" class="cw custom-select">Catchword
                     <div class="sub-cs">
                         <% @cw_lists.each do |list| %>
@@ -142,7 +142,7 @@
 
 
     $(() => {
-        $('.input-field').keypress((e) => {
+        $('.input-field').unbind().keypress((e) => {
             if (e.which == 13) {
                 let sibling_field = $(e.target).siblings('.capsule-field')
                 let value = $(e.target).val()
@@ -153,22 +153,28 @@
             }
         });
 
-        // $('.sub-cs .list .name').click(function (e) {
-        //     let target_field = $(this).closest('.form-group').children('.capsule-field')
-        //     createCapsuleName(target_field, $(this).attr('data-name'), e)
-        //     hideDropdown();
-        // })
+        $('.sub-cs .list .name').unbind().click(function (e) {
+            let target_field = $(this).closest('.form-group').children('.capsule-field')
+            createCapsuleName(target_field, $(this).attr('data-name'), e)
+            hideDropdown();
+        })
 
-        // $('.add-rating-btn').on('click', (e) => {
-        //     let target_field = $(e.target).siblings('.capsule-field')
-        //     let form_field = $(e.target).siblings('.form-field')
-        //     if (form_field.val().length) {
-        //         $(e.target).closest('.card.add-rating').css('height', '28vh');
-        //         createCapsuleName(target_field, form_field.val(), e)
-        //         $(form_field).val("")
-        //         e.preventDefault()
-        //         return false;
-        //     }
-        // })
+        $('.add-rating-btn').on('click', (e) => {
+            let target_field = $(e.target).siblings('.capsule-field')
+            let form_field = $(e.target).siblings('.form-field')
+            if (form_field.val().length) {
+                $(e.target).closest('.card.add-rating').css('height', '28vh');
+                createCapsuleName(target_field, form_field.val(), e)
+
+                let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
+                let selected_card = $('.left-card.selected')
+                if ($(selected_card).length) {
+                    $(selected_card).find('.rating-criteria').append(criterium)
+                }
+                $(form_field).val("")
+                e.preventDefault();
+                return false;
+            }
+        })
     })
 </script>

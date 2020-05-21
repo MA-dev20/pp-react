@@ -262,7 +262,7 @@
         let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
         $(capsule_list).addClass('list-with-words');
         let word = $(`<div class="word">${value}</div>`);
-        if ($(target_field).val() != "" && word != '') {
+        if ($(target_field).val() != "") {
             if ($(target_field).val().split(',').length < 4) {
                 $(target_field).val($(target_field).val() + "," + value)
                 $(capsule_list).append(word)
@@ -275,17 +275,6 @@
         }
     }
 
-    // function addCapsule(e) {
-    //     if (e.which == 13) {
-    //         let sibling_field = $(e.target).siblings('.capsule-field')
-    //         let value = $(e.target).val()
-    //         createCapsuleName(sibling_field, value, e)
-    //         $(e.target).val("")
-    //         e.preventDefault();
-    //         return false;
-    //     }
-    // }
-
     function createCard(taskId) {
         let rating_values = $(`.task-${taskId} .add-rating .capsule-field`).val()
         let class_name = `task-${taskId}`
@@ -294,7 +283,7 @@
         let card = `<div class="card left-card" id="${taskId}" data-class="${class_name}" onclick="handleCardClick(this)">`;
         card += '<div class="task-title">';
         card += '<i class="fas fa-exclamation-triangle"></i>';
-        card += `<div class="name">${$(title).val()}</div>`;
+        card += `<div class="name name-div">${$(title).val()}</div>`;
         card += '<i class="fas fa-circle"></i>';
         card += '<div class="category">Catchword</div>';
         card += '<i class="fas fa-trash remove"></i>';
@@ -345,33 +334,33 @@
         }
     }
 
-    // let checkFormValidation = () => {
-    //     let ids = ['#cwHiddenField', '#reactionHiddenField', '#ratingHiddenField', '#titleField']
-    //     let status = true
-    //     for (let id of ids) {
-    //         if (!$(id).val().length) {
-    //             if (id == '#titleField')
-    //                 $(id).addClass('danger')
-    //             else
-    //                 $(id).siblings('.form-field').addClass('danger')
-    //             status = false;
-    //         }
-    //     }
-    //     return status
-    // }
+    let checkFormValidation = () => {
+        let ids = ['#cwHiddenField', '#reactionHiddenField', '#ratingHiddenField', '#titleField']
+        debugger
+
+        let status = true
+        for (let id of ids) {
+            if (!$(id).val().length) {
+                if (id == '#titleField')
+                    $(id).addClass('danger')
+                else
+                    $(id).siblings('.form-field').addClass('danger')
+                status = false;
+            }
+        }
+        return status
+    }
 
     let handleKeyEvent = (e) => {
         if ($(e).hasClass('danger')) {
             $(e).removeClass('danger')
         }
 
-        // let selected_card = $('.left-card.selected')
-        // let id = $(selected_card).attr('id')
-
-        // if ($(selected_card).length) {
-        //     $(`#${id} .task-title .name`).val(`${$(e).val()}`)
-        // }
-
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            if ($(e).attr('class').includes('title-field'))
+                $(selected_card).find('.task-title .name').text($(e).val())
+        }
     }
 
 
@@ -384,7 +373,7 @@
 
         $('.task-pitch').click(function () {
             $('#new-pitch-content .card.right #pitches').show()
-            $('#newPitch').hide();
+            // $('#newPitch').hide();
             $('.menu-box').hide()
         })
 
@@ -417,40 +406,9 @@
                 $('.cw .sub-cs').hide()
                 $('.obj .sub-cs').hide()
             } else {
-                // $('.menu-box').hide()
                 hideDropdown()
             }
         })
-
-
-        // $('.input-field').keypress(function (e) {
-        //     if (e.which == 13) {
-        //         let sibling_field = $(e.target).siblings('.capsule-field')
-        //         let value = $(e.target).val()
-        //         let word = $(`<div class="word">${value}</div>`);
-        //         let css_class = $(e.target).attr('class').split(" ")[0];
-        //         $(`.${css_class} .list`).addClass('list-with-words');
-        //         if ($(sibling_field).val() != "") {
-        //             let field_array = JSON.parse($(sibling_field).val())
-        //             if (field_array.length < 4) {
-        //                 field_array.push(value)
-        //                 $(sibling_field).val(JSON.stringify(field_array))
-        //                 $(`.${css_class} .list`).append(word)
-        //             } else {
-        //                 $(e.target).addClass('danger')
-        //             }
-        //         } else {
-        //             $(sibling_field).val(JSON.stringify(Array(value)))
-        //             $(`.${css_class} .list`).append(word)
-        //         }
-
-        //         $(e.target).val("")
-        //         e.preventDefault();
-        //         return false;
-
-        //     }
-        // });
-
 
         // Nested Attributes
         $('.task-fields').addClass('task-0')
@@ -462,13 +420,12 @@
             let id = parseInt(text_array[3])
             task_ids.push(id)
             $('.task-fields:first').addClass(`task-${id}`)
-            $('#new_pitch').prepend($(insertedItem))
+            $('#new_pitch_form').prepend($(insertedItem))
             createCard(taskId);
         });
 
         $('.menu-box .menu-1').on('click', function () {
-            // if (checkFormValidation() {
-            if (true) {
+            if (checkFormValidation()) {
                 let selected_card = $('.left-card.selected')
                 if ($(selected_card).length) {
                     $(selected_card).removeClass('selected')

@@ -106,7 +106,12 @@
 					}
 					.name {
 						float: left;
-					}
+                    }
+                    .name-div {
+                        width: 6vh;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
 					i {
 						float: left;
 						font-size: 1vh;
