@@ -22,7 +22,7 @@
    	<% else %>
     <h1>Jetzt kostenlosen Zugang zu <br> Peter Pitch erhalten!</h1>
     <% end %>
-    <form>
+    <form id="contactForm">
         <div class="form-group l1">
             <label for="">Vorname <span class="red">*</span></label>
             <input type="text" name="company[fname]" class="form-field" required>
@@ -63,7 +63,7 @@
         	</div>
     	</div>
         <div class="form-group center" id="registerBTN" style="display: none">
-          <div class="btn btn-green" onclick="submitForm()">Kostenlos testen!</div>
+         <input type="submit" name="commit" value="Kostenlos testen!" class="btn btn-green">
         </div>
         <div class="form-group center" id="registerBTNFake">
            <div class="btn btn-green" onclick="errorDS()">Kostenlos testen!</div>
@@ -72,7 +72,8 @@
 </section>
 
 <script>
-	function submitForm() {
+	$("#contactForm").on('submit', function( event ) {
+		event.preventDefault();
 		var url = "<%= register_company_path %>";
 		var formData = new FormData(document.querySelector('form'))
 		$.ajax({
@@ -88,7 +89,7 @@
 				window.location.replace('/')
 			}
 		})
-	}
+	});
 	function errorDS() {
 		$('#DS-label').css('color', 'red');
 		$('#DS-label a').css('color', 'red');
