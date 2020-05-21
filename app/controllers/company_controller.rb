@@ -7,6 +7,7 @@ class CompanyController < ApplicationController
 	  if @company.save
 	    @user = @company.users.new(user_params)
 	    @user.role = 'company_admin'
+		begin
 	    if @user.save!(:validate => false)
 		  UserMailer.after_register(@user).deliver
 		  @root = User.where(bo_role: "root").all
@@ -16,14 +17,21 @@ class CompanyController < ApplicationController
 		  flash[:thanks_for_register] = 'Du hast dich erfolgreich registriert! Bitte warte bis sich einer unserer Wölfe bei dir meldet!'
 		  redirect_to root_path
 	    else
+		  @company.destroy
 		  flash[:alert] = 'Konnte User nicht erstellen!'
+		  redirect_to root_path
 	    end
+		rescue ActiveRecord::RecordNotUnique
+		  @company.destroy
+		  flash[:alert] = 'User existiert schon!'
+		   redirect_to root_path
+		end
 	  else
 	    flash[:alert] = 'Konnte Unternehmen nicht erstellen!'
 	    redirect_to root_path
 	  end
 	else
-	  flash[:notice] = 'Du hast dich bereits registriert oder der Firmenname ist schon vergeben!'
+	  flash[:alert] = 'Du hast dich bereits registriert oder der Firmenname ist schon vergeben!'
 	  redirect_to root_path
     end
   end
