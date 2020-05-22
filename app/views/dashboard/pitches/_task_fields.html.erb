@@ -1,6 +1,6 @@
-<div class="form-group title task-fields">
-    <%= f.hidden_field :user_id, value: User.first.id %>
-    <%= f.text_field :title, class: 'title-field form-field', id: 'titleField', required: true, onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+<div class="form-group title task-fields" id="form_0">
+    <%= f.hidden_field :user_id, value: @admin.id %>
+    <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
         <div class="title">Time limit</div>
         <div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
@@ -8,8 +8,8 @@
             <div class="time-field">
                 <%= f.hidden_field :time, id: 'task_time', value: 80 %>
                 <div class="time" id="settime">1:20</div>
-                <i class="fa fa-angle-up up" onclick="timeUp()"></i>
-                <i class="fa fa-angle-down down" onclick="timeDown()"></i>
+                <i class="fa fa-angle-up up" onclick="timeUp(this)"></i>
+                <i class="fa fa-angle-down down" onclick="timeDown(this)"></i>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
             <div class="title">Catchwords</div>
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
-                <%= f.hidden_field :catchwords, class: 'capsule-field', id: 'cwHiddenField' %>
+                <%= f.hidden_field :catchwords, class: 'capsule-field cw-hidden-field' %>
                 <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
                     onkeydown="handleKeyEvent(this)">
                 <div id="" class="cw custom-select">Catchword
@@ -92,7 +92,7 @@
         <div class="title">Reactions</div>
         <div class="subline">Type new reactions or choose from list below</div>
         <div class="form-group">
-            <%= f.hidden_field :reactions, class: 'capsule-field', id: 'reactionHiddenField' %>
+            <%= f.hidden_field :reactions, class: 'capsule-field reaction-hidden-field' %>
             <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field"
                 onkeydown="handleKeyEvent(this)">
             <div id="" class="obj custom-select">Reaction
@@ -128,7 +128,7 @@
             <div class="star">
                 <%= image_tag 'dash/icons/star.svg'%>
             </div>
-            <%= f.hidden_field :ratings, class: 'capsule-field', id: 'ratingHiddenField' %>
+            <%= f.hidden_field :ratings, class: 'capsule-field rating-hidden-field' %>
             <input type="text" placeholder="Type new rating criteria" class="form-field rating-field"
                 onkeydown="handleKeyEvent(this)">
             <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
@@ -160,20 +160,27 @@
         })
 
         $('.add-rating-btn').on('click', (e) => {
-            let target_field = $(e.target).siblings('.capsule-field')
-            let form_field = $(e.target).siblings('.form-field')
-            if (form_field.val().length) {
-                $(e.target).closest('.card.add-rating').css('height', '28vh');
-                createCapsuleName(target_field, form_field.val(), e)
+            addRatingValue(e)
+            // let target_field = $(e.target).siblings('.capsule-field')
+            // let form_field = $(e.target).siblings('.form-field')
+            // if (form_field.val().length) {
+            //     $(e.target).closest('.card.add-rating').css('height', '28vh');
+            //     createCapsuleName(target_field, form_field.val(), e)
 
-                let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
-                let selected_card = $('.left-card.selected')
-                if ($(selected_card).length) {
-                    $(selected_card).find('.rating-criteria').append(criterium)
-                }
-                $(form_field).val("")
-                e.preventDefault();
-                return false;
+            //     let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
+            //     let selected_card = $('.left-card.selected')
+            //     if ($(selected_card).length) {
+            //         $(selected_card).find('.rating-criteria').append(criterium)
+            //     }
+            //     $(form_field).val("")
+            //     e.preventDefault();
+            //     return false;
+            // }
+        })
+
+        $('.rating-field').unbind().on('keypress', (e) => {
+            if (e.keyCode == 13) {
+                addRatingValue(e, $(e.currentTarget))
             }
         })
     })

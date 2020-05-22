@@ -14,51 +14,7 @@
 <div id="new-pitch-content">
 
     <div class="card left">
-        <div class="tasks">
-            <!-- <div class="card selected">
-                <div class="task-title">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div class="name">Task 1</div>
-                    <i class="fas fa-circle"></i>
-                    <div class="category">Video</div>
-                    <i class="fas fa-trash remove"></i>
-                    <i class="fas fa-copy copy"></i>
-                </div>
-                <div class="thumb">
-                    <%= image_tag 'dash/Image.png' %>
-                    <div class="length">120</div>
-                </div>
-                <div class="title">Type your question</div>
-                <div class="sub-title">Rating Criteria</div>
-                <div class="rating-criteria">
-                    <div class="criterium">Rhethorik</div>
-                    <div class="criterium">Spontanität</div>
-                    <div class="criterium">Diversität</div>
-                    <div class="criterium">Körpersprachenkasper</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="task-title">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div class="name">Task 1</div>
-                    <i class="fas fa-circle"></i>
-                    <div class="category">Video</div>
-                    <i class="fas fa-trash remove"></i>
-                    <i class="fas fa-copy copy"></i>
-                </div>
-                <div class="thumb">
-                    <%= image_tag 'dash/Image.png' %>
-                    <div class="length">120</div>
-                </div>
-                <div class="title">Type your question</div>
-                <div class="sub-title">Rating Criteria</div>
-                <div class="rating-criteria">
-                    <div class="criterium">Rhethorik</div>
-                    <div class="criterium">Spontanität</div>
-                    <div class="criterium">Diversität</div>
-                    <div class="criterium">Körpersprache</div>
-                </div>
-            </div> -->
+        <div class="tasks" id="tasksScrollBar">
         </div>
         <div class="menu-box">
             <div class="menu menu-1">Add task</div>
@@ -72,20 +28,23 @@
     </div>
 
     <div class="card right">
-        <%#= render partial: 'new_pitch_content', locals: { pitch: @pitch } %>
-        <%= form_for @pitch, url: dashboard_pitches_path, html: {id: 'new_pitch_form', method: :post} do |f| %>
+        <%#= render partial: 'new_pitch_content', locals: { pitch: @pitches } %>
+        <%= form_for @pitches, url: dashboard_pitches_path, html: {id: 'new_pitch_form', method: :post} do |f| %>
+        <%= f.hidden_field :user_id, value: @admin.id %>
+
         <%= f.fields_for :tasks do |task| %>
         <%= render 'task_fields', f: task %>
         <% end %>
 
         <%= link_to_add_association 'Add task', f, :tasks, class: 'add-link hide', partial: 'task_fields' %>
-        <%= f.submit 'Save', class: 'save' %>
+
+        <%= render partial: 'pitch_modal', locals: { pitch: f }%>
         <% end %>
         <%= render 'browse_tasks' %>
     </div>
 
     <!-- The Modal -->
-    <div id="pitchModal" class="modal">
+    <!-- <div id="pitchModal" class="modal hide">
         <div class="modal-content">
             <span class="close">&times;</span>
             <div class="heading">
@@ -180,10 +139,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
-    <div id="videoModal" class="modal">
+    <div id="videoModal" class="modal hide">
         <div class="modal-content">
             <span class="close">&times;</span>
             <div class="heading">
@@ -204,176 +163,30 @@
 
 
 <!-- TODO: -->
-<!-- Glitch while reloading the page -->
-<!-- Uniqueness of capsule names -->
-<!-- Partial for code better readness -->
+<!-- Name of task card -->
+<!-- Remove deleted task id from array task_ids -->
 
 <script>
 
     // new PerfectScrollbar('#scrollList');
-    // new PerfectScrollbar('#scrollNameList');
-
-    function chooseCatchword(type) {
-        $('.add-catchword .btn-line .btn.selected').removeClass('selected');
-        $('.add-catchword .catchword').hide();
-        $('.add-catchword .picture').hide();
-        $('.add-catchword .video').hide();
-        $('.add-catchword .audio').hide();
-        $('#btn_' + type).addClass('selected');
-        $('.add-catchword .' + type).show();
-    }
-
-    function timeUp() {
-        var value = $('#task_time').val();
-        if (value < 1800) {
-            value = parseInt(value);
-            value = value + 5;
-            var min = Math.floor(value / 60).toString();
-            var sec = Math.floor(value % 60).toString();
-            if (sec == '0') { sec = '00' }
-            if (sec == '5') { sec = '05' }
-            $('#settime').text(min + ':' + sec);
-            $('#task_time').val(value);
-        }
-    }
-    function timeDown() {
-        var value = $('#task_time').val();
-        if (value > 10) {
-            value = parseInt(value);
-            value = value - 5;
-            var min = Math.floor(value / 60).toString();
-            var sec = Math.floor(value % 60).toString();
-            if (sec == '0') { sec = '00' }
-            if (sec == '5') { sec = '05' }
-            $('#settime').text(min + ':' + sec);
-            $('#task_time').val(value);
-        }
-    }
-
-    function showList(e) {
-        $(e).children().show();
-    }
-
-    function hideList(e) {
-        $(e).find('.list').hide();
-    }
-
-    function createCapsuleName(target_field, value, e) {
-        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
-        $(capsule_list).addClass('list-with-words');
-        let word = $(`<div class="word">${value}</div>`);
-        if ($(target_field).val() != "") {
-            if ($(target_field).val().split(',').length < 4) {
-                $(target_field).val($(target_field).val() + "," + value)
-                $(capsule_list).append(word)
-            } else {
-                $(e.target).addClass('danger')
-            }
-        } else {
-            $(target_field).val(value)
-            $(capsule_list).append(word)
-        }
-    }
-
-    function createCard(taskId) {
-        let rating_values = $(`.task-${taskId} .add-rating .capsule-field`).val()
-        let class_name = `task-${taskId}`
-        let title = `.task-${taskId} .title-field`
-        let time = `.task-${taskId} #task_time`
-        let card = `<div class="card left-card" id="${taskId}" data-class="${class_name}" onclick="handleCardClick(this)">`;
-        card += '<div class="task-title">';
-        card += '<i class="fas fa-exclamation-triangle"></i>';
-        card += `<div class="name name-div">${$(title).val()}</div>`;
-        card += '<i class="fas fa-circle"></i>';
-        card += '<div class="category">Catchword</div>';
-        card += '<i class="fas fa-trash remove"></i>';
-        card += '<i class="fas fa-copy copy"></i>';
-        card += '</div>';
-        card += '<div class="thumb">';
-        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
-        card += `<div class="length">${$(time).val()}</div>`;
-        card += '</div>';
-        card += '<div class="title">Type your question</div>';
-        card += '<div class="sub-title">Rating Criteria</div>';
-        card += '<div class="rating-criteria">';
-        if (rating_values.length) {
-            ratings = rating_values.split(',')
-            if (ratings.length > 0)
-                card += `<div class="criterium">${ratings[0]}</div>`;
-            if (ratings.length > 1)
-                card += `<div class="criterium">${ratings[1]}</div>`;
-            if (ratings.length > 2)
-                card += `<div class="criterium">${ratings[2]}</div>`;
-            if (ratings.length > 3)
-                card += `<div class="criterium">${ratings[3]}</div>`;
-        }
-        card += '</div>';
-        card += '</div>';
-
-        $('.left .tasks').prepend(card);
-    }
-
-    let handleCardClick = (e) => {
-        let selected_card = $('.left-card.selected')
-        if ($(selected_card).length) {
-            $(selected_card).removeClass('selected')
-            $(`.${$(selected_card).attr('data-class')}`).hide()
-        }
-        $(`.${$(e).attr('data-class')}`).show()
-        $(e).addClass('selected')
-    }
-
-    let hideDropdown = (parent = '') => {
-        if (parent != '') {
-            $('.sub-cs').hide()
-            $('.list').hide()
-        } else {
-            $(`${parent} .sub-cs`).hide()
-            $(`${parent} .list`).hide()
-            $('.menu-box').hide()
-        }
-    }
-
-    let checkFormValidation = () => {
-        let ids = ['#cwHiddenField', '#reactionHiddenField', '#ratingHiddenField', '#titleField']
-        debugger
-
-        let status = true
-        for (let id of ids) {
-            if (!$(id).val().length) {
-                if (id == '#titleField')
-                    $(id).addClass('danger')
-                else
-                    $(id).siblings('.form-field').addClass('danger')
-                status = false;
-            }
-        }
-        return status
-    }
-
-    let handleKeyEvent = (e) => {
-        if ($(e).hasClass('danger')) {
-            $(e).removeClass('danger')
-        }
-
-        let selected_card = $('.left-card.selected')
-        if ($(selected_card).length) {
-            if ($(e).attr('class').includes('title-field'))
-                $(selected_card).find('.task-title .name').text($(e).val())
-        }
-    }
-
+    new PerfectScrollbar('#tasksScrollBar');
 
     var task_ids = [0]
+    var make_copy = false
 
-    $(() => {
+    $(document).on('ready turbolinks:load', () => {
+
+        $('form').on('keypress', e => {
+            if (e.keyCode == 13) {
+                return false;
+            }
+        });
 
         hideDropdown()
-        $('.modal').hide();
 
         $('.task-pitch').click(function () {
             $('#new-pitch-content .card.right #pitches').show()
-            // $('#newPitch').hide();
+            $('#new_pitch_form').hide();
             $('.menu-box').hide()
         })
 
@@ -381,7 +194,7 @@
             $('#videoModal').show()
         })
 
-        $('.submit').click(function () {
+        $('.submit').click(function (e) {
             $('form').submit();
         })
 
@@ -411,26 +224,33 @@
         })
 
         // Nested Attributes
-        $('.task-fields').addClass('task-0')
 
         $('form').on('cocoon:after-insert', function (e, insertedItem) {
-            let taskId = task_ids[task_ids.length - 1]
-            $(`.task-${taskId}`).hide()
+            console.log('cocoon')
+            let taskId = getLastId()
             let text_array = $(insertedItem).children('input:first').attr('id').split('_')
             let id = parseInt(text_array[3])
             task_ids.push(id)
-            $('.task-fields:first').addClass(`task-${id}`)
-            $('#new_pitch_form').prepend($(insertedItem))
-            createCard(taskId);
+            $('.task-fields:first').attr('id', `form_${id}`)
+            if (make_copy) {
+                $('#new_pitch_form .task-fields:first').after($(insertedItem))
+            } else {
+                $('#new_pitch_form').prepend($(insertedItem))
+                createCard(taskId)
+                $(`#content #form_${taskId}`).hide()
+                $(`#content #form_${id}`).show()
+            }
         });
 
         $('.menu-box .menu-1').on('click', function () {
             if (checkFormValidation()) {
+                // if (true) {
                 let selected_card = $('.left-card.selected')
                 if ($(selected_card).length) {
                     $(selected_card).removeClass('selected')
-                    $(`.${$(selected_card).attr('data-class')}`).hide()
-                    $('.task-fields:first').show()
+                    let id = $(selected_card).attr('id')
+                    $(`#content #form_${id}`).hide()
+                    $('#content .task-fields:first').show()
                 } else {
                     $('.add-link').click()
                 }
@@ -438,7 +258,13 @@
             }
         })
 
+
         $('.open-modal').click(function (e) {
+            if ($(e.currentTarget).attr('data-modal') == 'pitchModal') {
+                if (!checkFormValidation()) {
+                    return false;
+                }
+            }
             e.stopPropagation();
             let modalId = $(this).data("modal");
             let $modal = $("#" + modalId);
@@ -450,5 +276,289 @@
         })
 
     })
+
+
+    var getLastId = () => {
+        return task_ids[task_ids.length - 1]
+    }
+
+    function chooseCatchword(type) {
+        $('.add-catchword .btn-line .btn.selected').removeClass('selected');
+        $('.add-catchword .catchword').hide();
+        $('.add-catchword .picture').hide();
+        $('.add-catchword .video').hide();
+        $('.add-catchword .audio').hide();
+        $('#btn_' + type).addClass('selected');
+        $('.add-catchword .' + type).show();
+    }
+
+    var timeUp = (e) => {
+        let id = $(e).closest('.task-fields').attr('id')
+        let time_field = $(`#${id}`).find('#task_time')
+        let display_time = $(`#${id}`).find('#settime')
+        let value = $(time_field).val();
+        if (value < 1800) {
+            value = parseInt(value);
+            value = value + 5;
+            let min = Math.floor(value / 60).toString();
+            let sec = Math.floor(value % 60).toString();
+            if (sec == '0') { sec = '00' }
+            if (sec == '5') { sec = '05' }
+            $(display_time).text(min + ':' + sec);
+            $(time_field).val(value);
+        }
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            let id = $(selected_card).attr('id')
+            $(`#${id} .length`).text(value)
+        }
+    }
+
+    var timeDown = (e) => {
+        let id = $(e).closest('.task-fields').attr('id')
+        let time_field = $(`#${id}`).find('#task_time')
+        let display_time = $(`#${id}`).find('#settime')
+        let value = $(time_field).val();
+        if (value > 10) {
+            value = parseInt(value);
+            value = value - 5;
+            let min = Math.floor(value / 60).toString();
+            let sec = Math.floor(value % 60).toString();
+            if (sec == '0') { sec = '00' }
+            if (sec == '5') { sec = '05' }
+            $(display_time).text(min + ':' + sec);
+            $(time_field).val(value);
+        }
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            let id = $(selected_card).attr('id')
+            $(`#${id} .length`).text(value)
+        }
+    }
+
+    function showList(e) {
+        $(e).children().show();
+    }
+
+    function hideList(e) {
+        $(e).find('.list').hide();
+    }
+
+    function createCapsuleName(target_field, value, e) {
+        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
+        $(capsule_list).addClass('list-with-words');
+        let word = $(`<div class="word">${value}</div>`);
+        if ($(target_field).val() != "") {
+            if ($(target_field).val().split(',').length < 4) {
+                $(target_field).val($(target_field).val() + "," + value)
+                $(capsule_list).append(word)
+            } else {
+                $(e.target).addClass('danger')
+            }
+        } else {
+            $(target_field).val(value)
+            $(capsule_list).append(word)
+        }
+    }
+
+    var addRatingValue = (e, form_field = '') => {
+        let target_field = $(e.target).siblings('.capsule-field')
+        if (form_field == '') {
+            form_field = $(e.target).siblings('.form-field')
+        }
+        if (form_field.val().length && ($(target_field).val().split(',').length < 4)) {
+            $(e.target).closest('.card.add-rating').css('height', '28vh');
+            createCapsuleName(target_field, form_field.val(), e)
+
+            let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
+            let selected_card = $('.left-card.selected')
+            if ($(selected_card).length) {
+                $(selected_card).find('.rating-criteria').append(criterium)
+            }
+            $(form_field).val("")
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    function createCard(taskId) {
+        let rating_values = $(`#form_${taskId} .add-rating .capsule-field`).val()
+        let title = `#form_${taskId} .title-field`
+        let time = `#form_${taskId} #task_time`
+        let card = `<div class="card left-card" id="${taskId}" onclick="handleCardClick(this)">`;
+        card += '<div class="task-title">';
+        card += '<i class="fas fa-exclamation-triangle"></i>';
+        card += `<div class="name name-div">Task</div>`;
+        card += '<i class="fas fa-circle"></i>';
+        card += '<div class="category">Catchword</div>';
+        card += '<i class="fas fa-trash remove" onclick="removeTask(this)"></i>';
+        card += '<i class="fas fa-copy copy" onclick="makeFormCardCopy(this)"></i>';
+        card += '</div>';
+        card += '<div class="thumb">';
+        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        card += `<div class="length">${$(time).val()}</div>`;
+        card += '</div>';
+        card += `<div class="title title-field">${$(title).val()}</div>`;
+        card += '<div class="sub-title">Rating Criteria</div>';
+        card += '<div class="rating-criteria">';
+        if (rating_values.length) {
+            ratings = rating_values.split(',')
+            if (ratings.length > 0)
+                card += `<div class="criterium">${ratings[0]}</div>`;
+            if (ratings.length > 1)
+                card += `<div class="criterium">${ratings[1]}</div>`;
+            if (ratings.length > 2)
+                card += `<div class="criterium">${ratings[2]}</div>`;
+            if (ratings.length > 3)
+                card += `<div class="criterium">${ratings[3]}</div>`;
+        }
+        card += '</div>';
+        card += '</div>';
+
+        $('.left .tasks').prepend(card);
+    }
+
+    var handleCardClick = (e) => {
+        // if (make_copy) {
+        // }
+        console.log('handleClick')
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            $(selected_card).removeClass('selected')
+            let id = $(selected_card).attr('id')
+            $(`#content #form_${id}`).hide()
+        }
+        $(`#content #form_${$(e).attr('id')}`).show()
+        $(e).addClass('selected')
+        make_copy = false;
+        return false;
+    }
+
+    var removeTask = (e) => {
+        let id = $(e).closest('.left-card').attr('id')
+        $(`#form_${id}`).remove()
+        $(`#${id}`).remove()
+        let index = task_ids.indexOf(parseInt(id));
+        task_ids = [...task_ids.slice(0, index), ...task_ids.slice(index + 1, task_ids.length)]
+        let last_id = getLastId()
+        $(`#content #form_${last_id}`).show()
+    }
+
+    var makeFormCardCopy = (e) => {
+        console.log('makeformcardcopy')
+        let selected_card = $('.left-card.selected')
+        make_copy = true
+        if ($(selected_card).length && checkFormValidation()) {
+            $(selected_card).removeClass('selected')
+            let id = $(selected_card).attr('id')
+            $(`#content #form_${id}`).hide()
+            $('#content .task-fields:first').show()
+            $('.add-link').click()
+            createFormCard(e)
+            swap_array_values()
+            let last_id = getLastId()
+            $(`#content #form_${last_id}`).show()
+        } else {
+            if (!$(selected_card).length) {
+                $('.add-link').click()
+                createFormCard(e)
+                swap_array_values()
+                let last_id = getLastId()
+                $(`#content #form_${last_id}`).show()
+            }
+        }
+        return false;
+    }
+
+    var createFormCard = (e) => {
+        console.log('createformCard')
+        let sourceTaskId = $(e).closest('.left-card').attr('id')
+        let targetTaskId = getLastId()
+        createFormCopy(targetTaskId, sourceTaskId)
+        createCard(targetTaskId)
+        $(`#content #form_${targetTaskId}`).hide()
+        // $(`#content #form_${id}`).show()
+    }
+
+    var swap_array_values = () => {
+        let last_index = task_ids.length - 1;
+        let second_last_index = last_index - 1;
+        [task_ids[second_last_index], task_ids[last_index]] = [task_ids[last_index], task_ids[second_last_index]]
+    }
+
+    var createFormCopy = (targetTaskId, sourceTaskId) => {
+        console.log('createformcopy')
+        let $sourceTaskId = $(`#form_${sourceTaskId}`)
+        $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val())
+        $(`#form_${targetTaskId} #task_time`).val($sourceTaskId.find('#task_time').val())
+        $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text())
+        let fields = ['.catchword', '.add-reaction', '.add-rating']
+        let hidden_fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field']
+        for (let i = 0; i < fields.length; i++) {
+            let field_values = $sourceTaskId.find(hidden_fields[i]).val()
+            $(`#form_${targetTaskId} ${hidden_fields[i]}`).val(field_values)
+            words = field_values.split(',')
+            let words_div = ''
+            for (let word of words) {
+                words_div += `<div class="word">${word}</div>`
+            }
+            if (words_div != '') {
+                if (fields[i] == '.add-rating')
+                    $(`#form_${targetTaskId} .card${fields[i]}`).css('height', '28vh');
+                $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).append(words_div)
+                $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).addClass('list-with-words')
+            }
+        }
+    }
+
+    var hideDropdown = (parent = '') => {
+        if (parent != '') {
+            $('.sub-cs').hide()
+            $('.list').hide()
+        } else {
+            $(`${parent} .sub-cs`).hide()
+            $(`${parent} .list`).hide()
+            $('.menu-box').hide()
+        }
+    }
+
+    var checkFormValidation = () => {
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            let id = $('.left-card.selected').attr('id')
+            return checkInputFields(id)
+        } else {
+            let id = getLastId()
+            return checkInputFields(id)
+        }
+    }
+
+    var checkInputFields = (id) => {
+        let status = true
+        let fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field', '.title-form-field']
+        let task_form = `#form_${id}`
+        for (let field of fields) {
+            if (!$(`${task_form} ${field}`).val().length) {
+                if (field == '.title-form-field')
+                    $(`${task_form} ${field}`).addClass('danger')
+                else
+                    $(`${task_form} ${field}`).siblings('.form-field').addClass('danger')
+                status = false;
+            }
+        }
+        return status
+    }
+
+    var handleKeyEvent = (e) => {
+        if ($(e).hasClass('danger')) {
+            $(e).removeClass('danger')
+        }
+
+        let selected_card = $('.left-card.selected')
+        if ($(selected_card).length) {
+            if ($(e).attr('class').includes('title-field'))
+                $(selected_card).find('.title').text($(e).val())
+        }
+    }
 
 </script>

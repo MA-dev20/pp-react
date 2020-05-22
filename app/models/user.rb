@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :videos, dependent: :destroy
 
+  has_many :pitches
   has_many :tasks
 	
   ROLES = %w[company_admin department_admin admin user].freeze

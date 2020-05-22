@@ -88,7 +88,7 @@
 		padding: 0;
 		.tasks, .right-tasks {
             width: 15vw; height: 70vh;
-            overflow-y: scroll;
+            // overflow-y: scroll;
 			.card, .task-card {
                 cursor: pointer;
 				left: .5vw; width: 14vw; height: 30.5vh;
@@ -189,11 +189,40 @@
 						float: right;
 					}
 				}
-			}
+            }
+            
+            .card {
+                margin-bottom: 1vh;
+            }
+
+            .fa-trash {
+                cursor: pointer;
+            }
+
+            .title-field {
+                width: 85%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
 			.card.selected {
 				border: 2px solid red;
 			}
-		}
+        }
+        
+        #tasksScrollBar {
+            .ps__thumb-y {
+                height: 17vh !important;
+                bottom: 10vh;
+                display: none;
+            }
+            .ps__rails-y {
+                top: 1vh !important;
+                display: none;
+            }
+        }
+
 		.add-task {
 			position: absolute;
 			bottom: 2vh;
@@ -543,6 +572,23 @@
         height: 100%; 
         overflow: auto; 
         background-color: rgba(244, 250, 255, 0.8);
+
+        .heading h1 {
+            font-size: 4vh;
+            line-height: 8vh;
+            margin: 0;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .modal-content .btn {
+            width: 3vw;
+            padding: 0 3vh;
+        }
+
+        .right-section .btn-wrapper {
+            right: 17vh;
+        }
     }
 
     .modal-content {
@@ -692,8 +738,12 @@
 
             .btn-wrapper {
                 position: absolute;
-                right: 0;
+                // right: 0;
                 bottom: 0;
+                
+                .submit-btn {
+                    width: 6vw;
+                }
             }
         }
 

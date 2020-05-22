@@ -4,27 +4,30 @@ module Dashboard
         layout "dashboard"
 
         def new
-            @pitch = Pitch.new
-            @pitch.tasks.build
-            # debugger
+            @pitches = @admin.pitches.new
+            @pitches.tasks.build
         end
 
         def edit
         end
 
         def create
-            # JSON.parse(Pitch.last.tasks.first.catchwords.join())
-            debugger
-            # Pitch.create(pitch_params)
+            if Pitch.create(pitch_params)
+                redirect_to dashboard_pitches_path, status: :moved_permanently
+            else
+                flash[:alert] = 'Error while creating pitch'
+		        redirect_to root_path
+            end
         end
 
         def index
+            @pitches = @admin.pitches.includes(:tasks)
         end
 
         private
 
         def pitch_params
-            params.require(:pitch).permit(:user_id, tasks_attributes: [:id, :title, :time, :user_id, :catchwords, :reactions])
+            params.require(:pitch).permit(:title, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :catchwords, :reactions, :ratings])
         end
 
         def set_user
