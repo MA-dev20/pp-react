@@ -161,21 +161,6 @@
 
         $('.add-rating-btn').on('click', (e) => {
             addRatingValue(e)
-            // let target_field = $(e.target).siblings('.capsule-field')
-            // let form_field = $(e.target).siblings('.form-field')
-            // if (form_field.val().length) {
-            //     $(e.target).closest('.card.add-rating').css('height', '28vh');
-            //     createCapsuleName(target_field, form_field.val(), e)
-
-            //     let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
-            //     let selected_card = $('.left-card.selected')
-            //     if ($(selected_card).length) {
-            //         $(selected_card).find('.rating-criteria').append(criterium)
-            //     }
-            //     $(form_field).val("")
-            //     e.preventDefault();
-            //     return false;
-            // }
         })
 
         $('.rating-field').unbind().on('keypress', (e) => {

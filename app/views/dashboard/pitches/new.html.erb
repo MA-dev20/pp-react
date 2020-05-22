@@ -172,7 +172,7 @@
     new PerfectScrollbar('#tasksScrollBar');
 
     var task_ids = [0]
-    var make_copy = false
+    var clonning = false
 
     $(document).on('ready turbolinks:load', () => {
 
@@ -232,7 +232,7 @@
             let id = parseInt(text_array[3])
             task_ids.push(id)
             $('.task-fields:first').attr('id', `form_${id}`)
-            if (make_copy) {
+            if (clonning) {
                 $('#new_pitch_form .task-fields:first').after($(insertedItem))
             } else {
                 $('#new_pitch_form').prepend($(insertedItem))
@@ -396,7 +396,7 @@
         card += '<i class="fas fa-circle"></i>';
         card += '<div class="category">Catchword</div>';
         card += '<i class="fas fa-trash remove" onclick="removeTask(this)"></i>';
-        card += '<i class="fas fa-copy copy" onclick="makeFormCardCopy(this)"></i>';
+        card += '<i class="fas fa-copy copy" onclick="cloneTask(this)"></i>';
         card += '</div>';
         card += '<div class="thumb">';
         card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
@@ -423,18 +423,18 @@
     }
 
     var handleCardClick = (e) => {
-        // if (make_copy) {
-        // }
-        console.log('handleClick')
-        let selected_card = $('.left-card.selected')
-        if ($(selected_card).length) {
-            $(selected_card).removeClass('selected')
-            let id = $(selected_card).attr('id')
-            $(`#content #form_${id}`).hide()
+        if (!clonning) {
+            console.log('handleClick')
+            let selected_card = $('.left-card.selected')
+            if ($(selected_card).length) {
+                $(selected_card).removeClass('selected')
+                let id = $(selected_card).attr('id')
+                $(`#content #form_${id}`).hide()
+            }
+            $(`#content #form_${$(e).attr('id')}`).show()
+            $(e).addClass('selected')
         }
-        $(`#content #form_${$(e).attr('id')}`).show()
-        $(e).addClass('selected')
-        make_copy = false;
+        clonning = false;
         return false;
     }
 
@@ -448,25 +448,25 @@
         $(`#content #form_${last_id}`).show()
     }
 
-    var makeFormCardCopy = (e) => {
-        console.log('makeformcardcopy')
+    var cloneTask = (e) => {
+        console.log('cloneTask')
         let selected_card = $('.left-card.selected')
-        make_copy = true
+        // $('#content .task-fields:first').show()
+        clonning = true
         if ($(selected_card).length && checkFormValidation()) {
-            $(selected_card).removeClass('selected')
+            // $(selected_card).removeClass('selected')
             let id = $(selected_card).attr('id')
-            $(`#content #form_${id}`).hide()
-            $('#content .task-fields:first').show()
+            // $(`#content #form_${id}`).hide()
+            // $('#content .task-fields:first').show()
             $('.add-link').click()
-            createFormCard(e)
-            swap_array_values()
+            createTaskCopy(e)
+            $(`#content #form_${id}`).show()
             let last_id = getLastId()
-            $(`#content #form_${last_id}`).show()
+            $(`#content #form_${last_id}`).hide()
         } else {
             if (!$(selected_card).length) {
                 $('.add-link').click()
-                createFormCard(e)
-                swap_array_values()
+                createTaskCopy(e)
                 let last_id = getLastId()
                 $(`#content #form_${last_id}`).show()
             }
@@ -474,14 +474,14 @@
         return false;
     }
 
-    var createFormCard = (e) => {
-        console.log('createformCard')
+    var createTaskCopy = (e) => {
+        console.log('createTaskCopy')
         let sourceTaskId = $(e).closest('.left-card').attr('id')
         let targetTaskId = getLastId()
-        createFormCopy(targetTaskId, sourceTaskId)
+        copyFormData(targetTaskId, sourceTaskId)
         createCard(targetTaskId)
+        swap_array_values()
         $(`#content #form_${targetTaskId}`).hide()
-        // $(`#content #form_${id}`).show()
     }
 
     var swap_array_values = () => {
@@ -490,8 +490,8 @@
         [task_ids[second_last_index], task_ids[last_index]] = [task_ids[last_index], task_ids[second_last_index]]
     }
 
-    var createFormCopy = (targetTaskId, sourceTaskId) => {
-        console.log('createformcopy')
+    var copyFormData = (targetTaskId, sourceTaskId) => {
+        console.log('copyFormData')
         let $sourceTaskId = $(`#form_${sourceTaskId}`)
         $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val())
         $(`#form_${targetTaskId} #task_time`).val($sourceTaskId.find('#task_time').val())
