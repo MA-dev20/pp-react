@@ -353,7 +353,11 @@
                 $(target_field).val($(target_field).val() + "," + value)
                 $(capsule_list).append(word)
             } else {
-                $(e.target).addClass('danger')
+                if (e.keyCode == undefined) {
+                    $(e.target).closest('.form-group').find('.form-field').addClass('danger')
+                } else {
+                    $(e.target).addClass('danger')
+                }
             }
         } else {
             $(target_field).val(value)
