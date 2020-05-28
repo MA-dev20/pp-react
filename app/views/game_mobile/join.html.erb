@@ -4,7 +4,7 @@
 	<h3>Drücke auf "Pitch beitreten" oder auf das <br> Bild für einen neuen Versuch!</h3>
 	<% else %>
 	<h1>Bild auswählen!</h1>
-	<h3>Drücke auf den Wolf, um ein Bild von dir hinzuzufügen!</h3>
+	<h3>Drücke auf das Plus, um ein Bild von dir hinzuzufügen!</h3>
 	<% end %>
 </div>
 <div class="middle">
@@ -13,7 +13,11 @@
 	<svg id="avatar-svg" viewBox="0 0 100 100">
 		<circle cx="50" cy="50" r="45" stroke-width="10" stroke="rgb(var(--custcolor))" stroke-dasharray="0" fill="none"></circle>
 	</svg>
+	<% if @admin.avatar? %>
 	<%= image_tag @admin.avatar.url, id: 'avatar-img' %>
+	<% else %>
+	<span class="circle-add" id="avatar-img">+</span>
+	<% end %>
 	</label>
 <%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
 	<div class="switch reverse">
@@ -42,6 +46,12 @@
 </script>
 <% end %>
 <script>
+	$(document).ready(function() {
+        function disableBack() { window.history.forward() }
+
+        window.onload = disableBack();
+        window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
 	$("#avatar").change(function(e) {
 		var date = new Date().getTime();
 		var filename = "avatar_" + date + '.jpg';

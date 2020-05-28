@@ -5,7 +5,11 @@
 <% if @admin.role != 'user' && @admin.role != 'inactive' %>
 <%= form_for(:turn, url: turn_record_path(@turn)) do |f| %>
 <div class="middle">
-    <%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+    <% if @turn.user.avatar? %>
+    	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+    <% else %>
+    	<div class="circle custom-border pulse"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+    <% end %>
     <div class="switch">
     	<%= f.check_box :record_pitch, checked: false %>
     	<label for="turn_record_pitch">
@@ -20,6 +24,10 @@
 <% end %>
 <% else %>
 <div class="middle">
-	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+	<% if @turn.user.avatar? %>
+    	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+    <% else %>
+    	<div class="circle custom-border pulse"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+    <% end %>
 </div>
 <% end %>

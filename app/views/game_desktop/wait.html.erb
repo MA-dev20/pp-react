@@ -44,7 +44,11 @@
 	})
 	<% @game.game_turns.each do |t| %>
 	var left1 = Math.random() * 80;
+	<% if t.user.avatar? %>
 	var userDIV = '<img src="<%= t.user.avatar %>" style="left:' + left1 +'%;">';
+	<% else %>
+	var userDIV = '<div class="circle" style="left:' + left1 + '%;"><%= t.user.fname[0].capitalize %><%= t.user.lname[0].capitalize %></div>';
+	<% end %>
 	$('#user-rain').append(userDIV);
 	<% end %>
 </script>

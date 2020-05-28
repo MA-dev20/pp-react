@@ -17,7 +17,11 @@
 		<%= image_tag @company.logo.url , class: 'logo' %>
 	</div>
 	<% end %>
-	<%= image_tag @turn.user.avatar.url, class: 'play-avatar' %>
+	<% if @turn.user.avatar? %>
+		<%= image_tag @turn.user.avatar.url, class: 'play-avatar' %>
+	<% else %>
+		<div class="circle play-avatar"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+	<% end %>
 </div>
 <div class="word" id="word" data-target-resolver></div>
 <div class="timer" id="game_timer">
