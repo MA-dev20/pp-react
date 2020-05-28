@@ -1,0 +1,14 @@
+<div class="head">
+	<h1>Ups,Da gab es einen Fehler!</h1>
+</div>
+
+<div class="middle">
+	<% if flash[:alert] %>
+		<%= flash[:alert] %>
+	<% else %>
+		<%= image_tag 'fallback/avatar.png'%>
+	<% end %>
+</div>
+<div class="bottom">
+	<%= link_to 'zurück', root_path, class: 'btn' %>
+</div>
