@@ -26,7 +26,11 @@
 	</div>
 	<% else %>
 		<div class="middle">
+			<% if @turn.user.avatar? %>
 			<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+			<% else %>
+			<div class="circle custom-border pulse"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+			<% end %>
 		</div>
 	<% end %>
 <% else %>

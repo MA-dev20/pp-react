@@ -11,7 +11,11 @@
 			<% elsif @game.show_ratings == 'one' && @turns.first.ratings.where(user: @rat_user).count != 0 %>
 			<div class="rating"><%= @turns.first.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
 			<% end %>
-			<%= image_tag @turns.first.user.avatar.url, class: 'avatar' %>
+			<% if @turns.first.user.avatar? %>
+				<%= image_tag @turns.first.user.avatar.url, class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @turns.first.user.fname[0].capitalize %><%= @turns.first.user.lname[0].capitalize %></div>
+			<% end %>
 		<% end %>
 		<svg viewBox="0 0 255 205" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M0.474609 56.401L254.573 48.7368L209.339 0L52.3957 9.03988L0.474609 56.401Z" fill="#DF9A32"/>
@@ -26,7 +30,11 @@
 			<% elsif @game.show_ratings == 'one' && @turns.second.ratings.where(user: @rat_user).count != 0 %>
 			<div class="rating"><%= @turns.second.ratings.where(user: @rat_user).average(:rating).round  / 10.0 %></div>
 			<% end %>
-			<%= image_tag @turns.second.user.avatar.url, class: 'avatar' %>
+			<% if @turns.second.user.avatar? %>
+				<%= image_tag @turns.second.user.avatar.url, class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @turns.second.user.fname[0].capitalize %><%= @turns.second.user.lname[0].capitalize %></div>
+			<% end %>
 		<% end %>
 		<svg viewBox="0 0 189 133" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M0 40.3168L157.337 31.8665L184.674 0.226929L51.9211 11.4285L0 40.3168Z" fill="#979797"/>
@@ -42,7 +50,11 @@
 			<% elsif @game.show_ratings == 'one' && @turns.third.ratings.where(user: @rat_user).count != 0 %>
 			<div class="rating"><%= @turns.third.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
 			<% end %>
-			<%= image_tag @turns.third.user.avatar.url, class: 'avatar' %>
+			<% if @turns.third.user.avatar? %>
+				<%= image_tag @turns.third.user.avatar.url, class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @turns.third.user.fname[0].capitalize %><%= @turns.third.user.lname[0].capitalize %></div>
+			<% end %>
 		<% end %>
 		<svg viewBox="0 0 179 81" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M179 20.715H25.203L1.60254 0.866551L130.619 0.473511L179 20.715Z" fill="#D2731B"/>

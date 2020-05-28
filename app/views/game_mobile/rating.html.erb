@@ -3,7 +3,11 @@
 	<h1>Hier ist <%= @admin == @turn.user ? 'deine' : @turn.user.fname + "'s" %> Bewertung!</h1>
 </div>
 <div class="middle">
-	<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+	<% if @turn.user.avatar? %>
+		<%= image_tag @turn.user.avatar.url, class: 'custom-border pulse' %>
+	<% else %>
+		<div class="circle custom-border pulse"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+	<% end %>
 </div>
 <div class="bottom">
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
