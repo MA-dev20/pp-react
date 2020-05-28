@@ -245,8 +245,11 @@ ActiveRecord::Schema.define(version: 2020_05_18_102127) do
 
   create_table "pitches", force: :cascade do |t|
     t.string "title"
+    t.text "description"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pitches_on_user_id"
   end
 
   create_table "rating_criteria", force: :cascade do |t|
@@ -294,10 +297,12 @@ ActiveRecord::Schema.define(version: 2020_05_18_102127) do
     t.integer "time"
     t.string "type"
     t.string "catchwords"
+    t.string "catchword_ids"
     t.string "image"
     t.string "video"
     t.string "audio"
     t.string "reactions"
+    t.string "reaction_ids"
     t.string "ratings"
     t.bigint "user_id"
     t.bigint "pitch_id"
@@ -435,6 +440,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_102127) do
   add_foreign_key "objections", "companies"
   add_foreign_key "pitch_videos", "game_turns"
   add_foreign_key "pitch_videos", "users"
+  add_foreign_key "pitches", "users"
   add_foreign_key "rating_list_rating_criteria", "rating_criteria"
   add_foreign_key "rating_list_rating_criteria", "rating_lists"
   add_foreign_key "rating_lists", "companies"
