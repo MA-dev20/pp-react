@@ -164,10 +164,8 @@
     </div>
 </div>
 
-
-<!-- TODO: -->
-<!-- Name of task card -->
-<!-- Remove deleted task id from array task_ids -->
+<!-- FIXME: -->
+<!-- capsules cards height -->
 
 <script>
 
@@ -386,65 +384,6 @@
         $(e).find('.list').hide();
     }
 
-    function createCapsuleName(target_field, value, e) {
-        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
-        $(capsule_list).addClass('list-with-words');
-        let word = $(`<div class="word">${value}</div>`);
-        if ($(target_field).val() != "") {
-            if ($(target_field).val().split(',').length < 4) {
-                $(target_field).val($(target_field).val() + "," + value)
-                $(capsule_list).append(word)
-            } else {
-                // if (e.keyCode == undefined) {
-                //     $(e.target).closest('.form-group').find('.form-field').addClass('danger')
-                // } else {
-                //     $(e.target).addClass('danger')
-                // }
-            }
-        } else {
-            $(target_field).val(value)
-            $(capsule_list).append(word)
-        }
-    }
-
-    function createCapsule(target_field, value, e) {
-        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
-        $(capsule_list).addClass('list-with-words');
-        let word = $(`<div class="word">${value}</div>`);
-        debugger
-        if ($(target_field).val() != "") {
-            let field_array = JSON.parse($(target_field).val())
-            if (!field_array.includes(value)) {
-                field_array.push(value)
-                $(target_field).val(JSON.stringify(field_array))
-                $(capsule_list).append(word)
-            }
-        } else {
-            $(target_field).val(JSON.stringify(Array(value)))
-            $(capsule_list).append(word)
-        }
-    }
-
-    var addRatingValue = (e, form_field = '') => {
-        let target_field = $(e.target).siblings('.capsule-field')
-        if (form_field == '') {
-            form_field = $(e.target).siblings('.form-field')
-        }
-        if (form_field.val().length && ($(target_field).val().split(',').length < 4)) {
-            $(e.target).closest('.card.add-rating').css('height', '28vh');
-            createCapsuleName(target_field, form_field.val(), e)
-
-            let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
-            let selected_card = $('.left-card.selected')
-            if ($(selected_card).length) {
-                $(selected_card).find('.rating-criteria').append(criterium)
-            }
-            $(form_field).val("")
-            e.preventDefault();
-            return false;
-        }
-    }
-
     var handleCardClick = (e) => {
         if (!clonning && !isTaskRemoved) {
             console.log('handleClick')
@@ -616,6 +555,75 @@
         if ($(selected_card).length) {
             if ($(e).attr('class').includes('title-field'))
                 $(selected_card).find('.title').text($(e).val())
+        }
+    }
+
+    function createCapsule(target_field, value, e) {
+        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
+        $(capsule_list).addClass('list-with-words');
+        let word = $(`<div class="word">${value}</div>`);
+        let field_vlaues = $(target_field).val()
+        if (field_vlaues != "") {
+            let field_array = JSON.parse(field_vlaues)
+            let matched_array = field_array.filter(word => { return word.toLowerCase() === value.toLowerCase() })
+            if (!matched_array.length) {
+                field_array.push(value)
+                $(target_field).val(JSON.stringify(field_array))
+                $(capsule_list).append(word)
+            }
+        } else {
+            $(target_field).val(JSON.stringify(Array(value)))
+            $(capsule_list).append(word)
+        }
+    }
+
+    var addRatingValue = (e, form_field = '') => {
+        let target_field = $(e.target).siblings('.capsule-field');
+        if (form_field == '') {
+            form_field = $(e.target).siblings('.form-field');
+        }
+        let value = form_field.val();
+        let words_array = $(target_field).val().split(',');
+        let matched_array = words_array.filter(word => { return word.toLowerCase() === value.toLowerCase() })
+        if (value.length && (words_array.length < 4) && (!matched_array.length)) {
+            $(e.target).closest('.card.add-rating').css('height', '28vh');
+            createCapsuleName(target_field, value, e)
+
+            let criterium = $(`<div class="criterium">${form_field.val()}</div>`);
+            let selected_card = $('.left-card.selected')
+            if ($(selected_card).length) {
+                $(selected_card).find('.rating-criteria').append(criterium)
+            }
+            $(form_field).val("")
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    function createCapsuleName(target_field, value, e) {
+        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
+        $(capsule_list).addClass('list-with-words');
+        let word = $(`<div class="word">${value}</div>`);
+        if ($(target_field).val() != "") {
+            $(target_field).val($(target_field).val() + "," + value)
+            $(capsule_list).append(word)
+            // let words_array = $(target_field).val().split(',')
+            // if (words_array.length < 4) {
+            //     let matched_array = words_array.filter(word => { return word.toLowerCase() === value.toLowerCase() })
+            //     if (!matched_array.length) {
+            //         $(target_field).val($(target_field).val() + "," + value)
+            //         $(capsule_list).append(word)
+            //     }
+            // } else {
+            //     if (e.keyCode == undefined) {
+            //         $(e.target).closest('.form-group').find('.form-field').addClass('danger')
+            //     } else {
+            //         $(e.target).addClass('danger')
+            //     }
+            // }
+        } else {
+            $(target_field).val(value)
+            $(capsule_list).append(word)
         }
     }
 
