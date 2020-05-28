@@ -15,6 +15,9 @@
 
     <div class="card left">
         <div class="tasks" id="tasksScrollBar">
+            <div class="form-group add-first-task">
+                <button class="btn">Add first task</button>
+            </div>
         </div>
         <div class="menu-box">
             <div class="menu menu-1">Add task</div>
@@ -171,8 +174,10 @@
     // new PerfectScrollbar('#scrollList');
     new PerfectScrollbar('#tasksScrollBar');
 
-    var task_ids = [0]
+    var task_ids = [1]
     var clonning = false
+    var isTaskRemoved = false
+
 
     $(document).on('ready turbolinks:load', () => {
 
@@ -181,6 +186,16 @@
                 return false;
             }
         });
+
+        $('.add-first-task .btn').on('click', (e) => {
+            $(e.target).closest('.add-first-task').hide()
+            if (task_ids.length) {
+                $('#form_1').show();
+                createCard(1);
+            } else {
+                $('.add-link').click()
+            }
+        })
 
         hideDropdown()
 
@@ -227,7 +242,6 @@
 
         $('form').on('cocoon:after-insert', function (e, insertedItem) {
             console.log('cocoon')
-            let taskId = getLastId()
             let text_array = $(insertedItem).children('input:first').attr('id').split('_')
             let id = parseInt(text_array[3])
             task_ids.push(id)
@@ -236,33 +250,44 @@
                 $('#new_pitch_form .task-fields:first').after($(insertedItem))
             } else {
                 $('#new_pitch_form').prepend($(insertedItem))
-                createCard(taskId)
-                $(`#content #form_${taskId}`).hide()
-                $(`#content #form_${id}`).show()
+                createCard(id);
+                hideAllTasks();
+                showTask(id);
+                scrollToTask(id);
             }
         });
 
         $('.menu-box .menu-1').on('click', function () {
-            if (checkFormValidation()) {
-                // if (true) {
-                let selected_card = $('.left-card.selected')
-                if ($(selected_card).length) {
-                    $(selected_card).removeClass('selected')
-                    let id = $(selected_card).attr('id')
-                    $(`#content #form_${id}`).hide()
-                    $('#content .task-fields:first').show()
+            if (task_ids.length) {
+                if ($('.add-first-task').is(':visible')) {
+                    $('#form_1').show();
+                    $('.add-first-task').hide()
+                    createCard(1);
                 } else {
-                    $('.add-link').click()
+                    let selected_card = $('.left-card.selected')
+                    let id = $(selected_card).attr('id')
+                    if (checkTaskValidation(id) && checkFormValidation()) {
+                        $(selected_card).removeClass('selected')
+                        $('.add-link').click()
+                    }
                 }
-                $('.menu-box').toggle()
+            } else {
+                $('.add-first-task').hide()
+                $('.add-link').click()
             }
+            $('.menu-box').toggle()
+
         })
 
 
         $('.open-modal').click(function (e) {
             if ($(e.currentTarget).attr('data-modal') == 'pitchModal') {
-                if (!checkFormValidation()) {
+                if ($('.add-first-task').is(':visible')) {
                     return false;
+                } else {
+                    if (!checkFormValidation()) {
+                        return false;
+                    }
                 }
             }
             e.stopPropagation();
@@ -277,6 +302,23 @@
 
     })
 
+    function hideAllTasks() {
+        $('.left-card').removeClass('selected');
+        $('#new_pitch_form .task-fields').hide();
+    }
+
+    function showTask(id) {
+        $(`#content #form_${id}`).show();
+        $(`#${id}`).addClass('selected');
+    }
+
+    function scrollToTask(id) {
+        let $container = $('#tasksScrollBar');
+        let $scrollTo = $(`#${id}`);
+        $container.scrollTop(
+            $scrollTo.offset().top - $container.offset().top + $container.scrollTop()
+        );
+    }
 
     var getLastId = () => {
         return task_ids[task_ids.length - 1]
@@ -353,14 +395,32 @@
                 $(target_field).val($(target_field).val() + "," + value)
                 $(capsule_list).append(word)
             } else {
-                if (e.keyCode == undefined) {
-                    $(e.target).closest('.form-group').find('.form-field').addClass('danger')
-                } else {
-                    $(e.target).addClass('danger')
-                }
+                // if (e.keyCode == undefined) {
+                //     $(e.target).closest('.form-group').find('.form-field').addClass('danger')
+                // } else {
+                //     $(e.target).addClass('danger')
+                // }
             }
         } else {
             $(target_field).val(value)
+            $(capsule_list).append(word)
+        }
+    }
+
+    function createCapsule(target_field, value, e) {
+        let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
+        $(capsule_list).addClass('list-with-words');
+        let word = $(`<div class="word">${value}</div>`);
+        debugger
+        if ($(target_field).val() != "") {
+            let field_array = JSON.parse($(target_field).val())
+            if (!field_array.includes(value)) {
+                field_array.push(value)
+                $(target_field).val(JSON.stringify(field_array))
+                $(capsule_list).append(word)
+            }
+        } else {
+            $(target_field).val(JSON.stringify(Array(value)))
             $(capsule_list).append(word)
         }
     }
@@ -385,57 +445,14 @@
         }
     }
 
-    function createCard(taskId) {
-        let rating_values = $(`#form_${taskId} .add-rating .capsule-field`).val()
-        let title = `#form_${taskId} .title-field`
-        let time = `#form_${taskId} #task_time`
-        let card = `<div class="card left-card" id="${taskId}" onclick="handleCardClick(this)">`;
-        card += '<div class="task-title">';
-        card += '<i class="fas fa-exclamation-triangle"></i>';
-        card += `<div class="name name-div">Task</div>`;
-        card += '<i class="fas fa-circle"></i>';
-        card += '<div class="category">Catchword</div>';
-        card += '<i class="fas fa-trash remove" onclick="removeTask(this)"></i>';
-        card += '<i class="fas fa-copy copy" onclick="cloneTask(this)"></i>';
-        card += '</div>';
-        card += '<div class="thumb">';
-        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
-        card += `<div class="length">${$(time).val()}</div>`;
-        card += '</div>';
-        card += `<div class="title title-field">${$(title).val()}</div>`;
-        card += '<div class="sub-title">Rating Criteria</div>';
-        card += '<div class="rating-criteria">';
-        if (rating_values.length) {
-            ratings = rating_values.split(',')
-            if (ratings.length > 0)
-                card += `<div class="criterium">${ratings[0]}</div>`;
-            if (ratings.length > 1)
-                card += `<div class="criterium">${ratings[1]}</div>`;
-            if (ratings.length > 2)
-                card += `<div class="criterium">${ratings[2]}</div>`;
-            if (ratings.length > 3)
-                card += `<div class="criterium">${ratings[3]}</div>`;
-        }
-        card += '</div>';
-        card += '</div>';
-
-        $('.left .tasks').prepend(card);
-    }
-
     var handleCardClick = (e) => {
-        if (!clonning) {
+        if (!clonning && !isTaskRemoved) {
             console.log('handleClick')
-            let selected_card = $('.left-card.selected')
-            if ($(selected_card).length) {
-                $(selected_card).removeClass('selected')
-                let id = $(selected_card).attr('id')
-                $(`#content #form_${id}`).hide()
-            }
-            $(`#content #form_${$(e).attr('id')}`).show()
-            $(e).addClass('selected')
+            hideAllTasks()
+            showTask($(e).attr('id'))
         }
         clonning = false;
-        return false;
+        isTaskRemoved = false;
     }
 
     var removeTask = (e) => {
@@ -444,44 +461,36 @@
         $(`#${id}`).remove()
         let index = task_ids.indexOf(parseInt(id));
         task_ids = [...task_ids.slice(0, index), ...task_ids.slice(index + 1, task_ids.length)]
-        let last_id = getLastId()
-        $(`#content #form_${last_id}`).show()
+        if (task_ids.length) {
+            let id = $('.left-card:first').attr('id')
+            showTask(id)
+            scrollToTask(id)
+        } else {
+            $('.add-first-task').show();
+        }
+        isTaskRemoved = true
     }
 
     var cloneTask = (e) => {
         console.log('cloneTask')
-        let selected_card = $('.left-card.selected')
-        // $('#content .task-fields:first').show()
         clonning = true
-        if ($(selected_card).length && checkFormValidation()) {
-            // $(selected_card).removeClass('selected')
-            let id = $(selected_card).attr('id')
-            // $(`#content #form_${id}`).hide()
-            // $('#content .task-fields:first').show()
+        let id = $(e).closest('.left-card').attr('id');
+        if (checkTaskValidation(id)) {
             $('.add-link').click()
             createTaskCopy(e)
-            $(`#content #form_${id}`).show()
-            let last_id = getLastId()
-            $(`#content #form_${last_id}`).hide()
-        } else {
-            if (!$(selected_card).length) {
-                $('.add-link').click()
-                createTaskCopy(e)
-                let last_id = getLastId()
-                $(`#content #form_${last_id}`).show()
-            }
+            hideAllTasks();
+            showTask(id);
         }
-        return false;
     }
 
     var createTaskCopy = (e) => {
         console.log('createTaskCopy')
         let sourceTaskId = $(e).closest('.left-card').attr('id')
         let targetTaskId = getLastId()
-        copyFormData(targetTaskId, sourceTaskId)
+        copyTaskFormData(targetTaskId, sourceTaskId)
         createCard(targetTaskId)
-        swap_array_values()
-        $(`#content #form_${targetTaskId}`).hide()
+        // swap_array_values()
+        // $(`#content #form_${targetTaskId}`).hide()
     }
 
     var swap_array_values = () => {
@@ -490,7 +499,9 @@
         [task_ids[second_last_index], task_ids[last_index]] = [task_ids[last_index], task_ids[second_last_index]]
     }
 
-    var copyFormData = (targetTaskId, sourceTaskId) => {
+    FIXME:
+    // task_time, #set_time id duplication 
+    function copyTaskFormData(targetTaskId, sourceTaskId) {
         console.log('copyFormData')
         let $sourceTaskId = $(`#form_${sourceTaskId}`)
         $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val())
@@ -527,21 +538,25 @@
     }
 
     var checkFormValidation = () => {
-        let selected_card = $('.left-card.selected')
-        if ($(selected_card).length) {
-            let id = $('.left-card.selected').attr('id')
-            return checkInputFields(id)
-        } else {
-            let id = getLastId()
-            return checkInputFields(id)
+        let invalidFormId = ''
+        task_ids.forEach(id => {
+            if (!checkTaskValidation(id)) {
+                invalidFormId = id;
+            }
+        })
+        if (invalidFormId) {
+            hideAllTasks();
+            showTask(invalidFormId);
+            return false;
         }
+        return true;
     }
 
-    var checkInputFields = (id) => {
+    var checkTaskValidation = (id) => {
         let status = true
         let fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field', '.title-form-field']
         let task_form = `#form_${id}`
-        for (let field of fields) {
+        fields.forEach(field => {
             if (!$(`${task_form} ${field}`).val().length) {
                 if (field == '.title-form-field')
                     $(`${task_form} ${field}`).addClass('danger')
@@ -549,9 +564,48 @@
                     $(`${task_form} ${field}`).siblings('.form-field').addClass('danger')
                 status = false;
             }
-        }
+        })
         return status
     }
+
+    function createCard(taskId) {
+        let rating_values = $(`#form_${taskId} .add-rating .capsule-field`).val()
+        let title = `#form_${taskId} .title-field`
+        let time = `#form_${taskId} #task_time`
+        let card = `<div class="card left-card selected" id="${taskId}" onclick="handleCardClick(this)">`;
+        card += '<div class="task-title">';
+        card += '<i class="fas fa-exclamation-triangle"></i>';
+        card += `<div class="name name-div">Task</div>`;
+        card += '<i class="fas fa-circle"></i>';
+        card += '<div class="category">Catchword</div>';
+        card += '<i class="fas fa-trash remove" onclick="removeTask(this)"></i>';
+        card += '<i class="fas fa-copy copy" onclick="cloneTask(this)"></i>';
+        card += '</div>';
+        card += '<div class="thumb">';
+        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        card += `<div class="length">${$(time).val()}</div>`;
+        card += '</div>';
+        card += `<div class="title title-field">${$(title).val()}</div>`;
+        card += '<div class="sub-title">Rating Criteria</div>';
+        card += '<div class="rating-criteria">';
+        if (rating_values.length) {
+            ratings = rating_values.split(',')
+            if (ratings.length > 0)
+                card += `<div class="criterium">${ratings[0]}</div>`;
+            if (ratings.length > 1)
+                card += `<div class="criterium">${ratings[1]}</div>`;
+            if (ratings.length > 2)
+                card += `<div class="criterium">${ratings[2]}</div>`;
+            if (ratings.length > 3)
+                card += `<div class="criterium">${ratings[3]}</div>`;
+        }
+        card += '</div>';
+        card += '</div>';
+
+        $('.left .tasks').append(card);
+
+    }
+
 
     var handleKeyEvent = (e) => {
         if ($(e).hasClass('danger')) {

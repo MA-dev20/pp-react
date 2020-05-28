@@ -2,5 +2,9 @@ class Task < ApplicationRecord
   belongs_to :user
   belongs_to :pitch
 
-  # serialize :catchwords, Array
+  private
+
+  def format_json_values value
+    JSON(value)
+  end
 end

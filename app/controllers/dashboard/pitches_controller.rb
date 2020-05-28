@@ -27,7 +27,7 @@ module Dashboard
         private
 
         def pitch_params
-            params.require(:pitch).permit(:title, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :catchwords, :reactions, :ratings])
+            params.require(:pitch).permit(:title, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :ratings, :reactions, :catchwords])
         end
 
         def set_user

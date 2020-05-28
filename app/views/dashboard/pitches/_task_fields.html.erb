@@ -1,4 +1,4 @@
-<div class="form-group title task-fields" id="form_0">
+<div class="form-group title task-fields hide" id="form_1">
     <%= f.hidden_field :user_id, value: @admin.id %>
     <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
@@ -26,6 +26,7 @@
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
                 <%= f.hidden_field :catchwords, class: 'capsule-field cw-hidden-field' %>
+                <%= f.hidden_field :catchword_ids, class: 'capsule-field-id cw-hidden-id-field' %>
                 <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
                     onkeydown="handleKeyEvent(this)">
                 <div id="" class="cw custom-select">Catchword
@@ -34,7 +35,8 @@
                         <% if list.catchwords.present? %>
                         <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
                             <i class="fas fa-caret-left"></i>
-                            <span><%= list.name %></span>
+                            <span class="basket-name" data-name="<%= list.name %>"
+                                data-id="<%= list.id %>"><%= list.name %></span>
                             <div class="list" id="scrollNameList">
                                 <% list.catchwords.each do |cw| %>
                                 <% if cw.name.present? %>
@@ -93,6 +95,7 @@
         <div class="subline">Type new reactions or choose from list below</div>
         <div class="form-group">
             <%= f.hidden_field :reactions, class: 'capsule-field reaction-hidden-field' %>
+            <%= f.hidden_field :reaction_ids, class: 'capsule-field-id cw-hidden-id-field' %>
             <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field"
                 onkeydown="handleKeyEvent(this)">
             <div id="" class="obj custom-select">Reaction
@@ -101,7 +104,8 @@
                     <% if list.objections.present? %>
                     <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
                         <i class="fas fa-caret-left"></i>
-                        <span><%= list.name %></span>
+                        <span class="basket-name" data-name="<%= list.name %>"
+                            data-id="<%= list.id %>"><%= list.name %></span>
                         <div class="list" id="scrollNameList">
                             <% list.objections.each do |obj| %>
                             <% if obj.name.present? %>
@@ -144,19 +148,44 @@
     $(() => {
         $('.input-field').unbind().keypress((e) => {
             if (e.which == 13) {
-                let sibling_field = $(e.target).siblings('.capsule-field')
+                let target_field = $(e.target).siblings('.capsule-field')
                 let value = $(e.target).val()
-                createCapsuleName(sibling_field, value, e)
+                createCapsule(target_field, value, e)
                 $(e.target).val("")
                 e.preventDefault();
                 return false;
             }
         });
 
+        $('.sub-cs .option').unbind().on('click', (e) => {
+            let $that = $(e.target)
+            let target_field = $that.closest('.form-group').children('.capsule-field-id')
+            let id = $that.closest('.option').find('.basket-name').attr('data-id')
+            let value = $that.closest('.option').find('.basket-name').attr('data-name')
+            let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
+            $(capsule_list).addClass('list-with-words');
+            let word = $(`<div class="word">${value}</div>`);
+            if ($(target_field).val() != "") {
+                let field_array = JSON.parse($(target_field).val())
+                if (!field_array.includes(id)) {
+                    field_array.push(id)
+                    $(target_field).val(JSON.stringify(field_array))
+                    $(capsule_list).append(word)
+                }
+            } else {
+                $(target_field).val(JSON.stringify(Array(id)))
+                $(capsule_list).append(word)
+            }
+            hideDropdown();
+            e.preventDefault();
+            return false;
+        })
+
         $('.sub-cs .list .name').unbind().click(function (e) {
             let target_field = $(this).closest('.form-group').children('.capsule-field')
-            createCapsuleName(target_field, $(this).attr('data-name'), e)
+            createCapsule(target_field, $(this).attr('data-name'), e)
             hideDropdown();
+            return false;
         })
 
         $('.add-rating-btn').on('click', (e) => {
