@@ -465,6 +465,9 @@
                         height: 3.4vh;
                         text-align: right;
                         z-index: 10;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: normal;
                     }
 
                 }
