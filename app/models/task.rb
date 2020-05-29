@@ -1,10 +1,10 @@
 class Task < ApplicationRecord
-  belongs_to :user
-  belongs_to :pitch
+    belongs_to :user
+    belongs_to :pitch
 
-  private
+    private
 
-  def format_json_values value
-    JSON(value)
-  end
+    def format_json_values value
+        JSON(value)
+    end
 end
