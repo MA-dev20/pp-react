@@ -4,10 +4,10 @@
 <%= form_for(:user, url: name_game_path(@game, @admin), html: {id: 'name_form'}) do |f| %>
 <div class="middle">
 	<div class="form-group two-line" id="group_fname">
-		<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()" %>
+		<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
 	</div>
 	<div class="form-group two-line" id="group_lname">
-		<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()" %>
+		<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
 	</div>
 </div>
 <div class="dots">
@@ -21,6 +21,12 @@
 <% end %>
 
 <script>
+	$(document).ready(function() {
+        function disableBack() { window.history.forward() }
+
+        window.onload = disableBack();
+        window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
 	function hideDots() {
 		$('.dots').hide();
 	}

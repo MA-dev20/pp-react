@@ -63,7 +63,11 @@
 	</div>
 	<div class="ges-rating" style="<%= @turn.comments.count == 0 ? "left: 66.5vw" : '0'%>">
 		<div class="rating" id="ges_rating"><%= @ges_rating ? @ges_rating / 10.0 : '' %></div>
+		<% if @turn.user.avatar? %>
 		<%= image_tag @turn.user.avatar.url %>
+		<% else %>
+		<div class="circle"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+		<% end %>
 		<svg viewBox="0 0 100 100" id="ges_rating_svg">
 			<circle cx="50" cy="50" r="48" stroke-width="4" stroke="rgb(var(--custcolor))" fill="none" stroke-dasharray="0 1000"></circle>
 		</svg>
@@ -71,7 +75,11 @@
 	<div class="ratings_comments">
 		<% @turn.comments.last(5).each do |c| %>
 		<div class="comment">
-			<%= image_tag c.user.avatar.url %>
+			<% if c.user.avatar? %>
+				<%= image_tag c.user.avatar.url %>
+			<% else %>
+				<div class="circle"><%= c.user.fname[0].capitalize %><%= c.user.lname[0].capitalize %></div>
+			<% end %>
 			<div class="text"><%= c.text %></div>
 		</div>
 		<% end %>

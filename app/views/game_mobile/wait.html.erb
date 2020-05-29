@@ -25,12 +25,17 @@
 <div class="head">
 	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
 	<h1>PITCH BEIGETRETEN!</h1>
+	<h3>Bitte warten, bis alle beigetreten sind!</h3>
 	<% else %>
 	<h1>Alle beigetreten?</h1>
 	<% end %>
 </div>
 <div class="middle">
-	<%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
+	<% if @admin.avatar? %>
+	  <%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
+	<% else %>
+	  <div class="circle custom-border pulse"><%= @admin.fname[0].capitalize %><%= @admin.lname[0].capitalize %></div>
+	<% end %>
 </div>
 <div class="dots">
 	<div class="dot"></div>

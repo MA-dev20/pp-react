@@ -2,7 +2,12 @@ class GamesController < ApplicationController
   before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch, :rating_user]
   before_action :set_game, only: [:customize, :email, :create_turn, :name, :rating_user]
   def create
-	@game = @company.games.where(password: game_params[:password], state: 'wait', active: true).first
+	@game = Game.where(password: game_params[:password], state: 'wait', active: true).first
+	if @game && @game.company != @company
+	  flash[:alert] = 'Das Passwort ist schon vergeben!'
+	  redirect_to dashboard_path('', team: game_params[:team_id])
+	  return
+	end
 	@game.update(game_params) if @game
 	@game = @company.games.new(game_params) if !@game
 	@game.user = @user
@@ -88,7 +93,11 @@ class GamesController < ApplicationController
 	@user = current_game_user
 	@turn = @game.game_turns.find_by(user: @user)
 	if @turn && @turn.update(turn_params)
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
+	  if @user.avatar?
+	    ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
+	  else
+		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
+	  end
 	  redirect_to gm_game_path
 	elsif @game.catchword_list.nil?
 	  flash[:alert] = 'Bitte warte bis das Spiel gestartet wurde!'
@@ -108,7 +117,11 @@ class GamesController < ApplicationController
 	@turn.team = @game.team
 	if @turn.save
 	  @count = @game.game_turns.where(play: true).count
+	  if @user.avatar?
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @count, avatar: @user.avatar.url, state: @game.state
+	  else
+		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
+	  end
 	  redirect_to gm_game_path
 	else
 	  flash[:alert] = 'Konnte nicht beitreten!'

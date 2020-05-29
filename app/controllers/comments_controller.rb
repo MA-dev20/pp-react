@@ -5,7 +5,11 @@ class CommentsController < ApplicationController
 	@comment = @turn.comments.create(comment_params)
 	if params[:site] == 'game'
 	  @game = @turn.game
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, comment_user_avatar: @comment.user.avatar.url
+	  if @comment.user.avatar?
+	  	ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, comment_user_avatar: @comment.user.avatar.url
+	  else
+		ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, name: @comment.user.fname[0].capitalize + @comment.user.lname[0].capitalize
+	  end
 	  render json: {comment: @comment.text}
 	else
 	  redirect_to dashboard_pitch_video_path(@turn)

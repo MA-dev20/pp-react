@@ -2,9 +2,19 @@
 	<h1>Tolle Runde</h1>
 	<h3>Willst du nochmal pitchen?</h3>
 </div>
-<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>
 <div class="middle">
-	<%= image_tag @admin.avatar.url, class: 'custom-border' %>
+	<input type="file" id="avatar" style="display: none">
+	<label for="avatar" id="mid-img">
+	<svg id="avatar-svg" viewBox="0 0 100 100">
+		<circle cx="50" cy="50" r="45" stroke-width="10" stroke="rgb(var(--custcolor))" stroke-dasharray="0" fill="none"></circle>
+	</svg>
+	<% if @admin.avatar? %>
+	<%= image_tag @admin.avatar.url, id: 'avatar-img' %>
+	<% else %>
+	<span class="circle-add" id="avatar-img">+</span>
+	<% end %>
+	</label>
+<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>	
 	<div class="switch reverse">
 		<%= f.check_box :play, checked: true, id: 'turn_play' %>
 		<label for="turn_play">
@@ -29,5 +39,28 @@
 	function toggleModal() {
 		$('.popup').hide();
 	}
+	$("#avatar").change(function(e) {
+		var date = new Date().getTime();
+		var filename = "avatar_" + date + '.jpg';
+		date = new Date().getTime();
+		var file = e.target.files[0]
+		var formData = new FormData();
+		formData.append('file', file, filename);
+		var url = '<%= update_avatar_user_path(@admin) %>';
+		$('#avatar-svg').addClass('loading');
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				window.location.reload();
+			}
+		})
+	})
 </script>
 <% end %>

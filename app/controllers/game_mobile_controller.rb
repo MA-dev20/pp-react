@@ -1,7 +1,10 @@
 class GameMobileController < ApplicationController
-  before_action :check_game, except: [:welcome, :ended]
+  before_action :check_game, except: [:welcome, :ended, :error]
   before_action :check_user, only: [:game, :join, :choosen, :new_name, :repeat, :send_emoji]
   before_action :check_state, only: [:game]
+ 
+  def error
+  end
 	
   def welcome
 	@game = Game.where(password: params[:password], active: true, state: 'wait').first
@@ -35,9 +38,17 @@ class GameMobileController < ApplicationController
 	@turn = GameTurn.find(params[:turn])
 	@turn.update(counter: @turn.counter + 1)
 	if @turn.id == @game.turn1
+	  if @admin.avatar?
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'left'
+	  else
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'left'
+	  end
 	else
+	  if @admin.avatar?
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'right'
+	  else
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'right'
+	  end
 	end
   end
 	
@@ -73,7 +84,11 @@ class GameMobileController < ApplicationController
   end
 	
   def send_emoji
-	ActionCable.server.broadcast "count_#{@game.id}_channel", emoji: true, emoji_icon: params[:emoji], user_avatar: @admin.avatar.url
+	if @admin.avatar?
+		ActionCable.server.broadcast "count_#{@game.id}_channel", emoji: true, emoji_icon: params[:emoji], user_avatar: @admin.avatar.url
+	else
+		ActionCable.server.broadcast "count_#{@game.id}_channel", emoji: true, emoji_icon: params[:emoji], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize
+	end
   end
 	
   def repeat_turn
@@ -223,6 +238,17 @@ class GameMobileController < ApplicationController
 	  else
 		flash[:alert] = "Bitte trete dem Spiel zuerst bei!"
 		redirect_to root_path
+	  end
+	end
+	def check_entered
+	  if game_logged_in?
+		@game = current_game
+		if game_user_logged_in?
+		  @admin = current_game_user
+		  if @game.game_turns.find_by(user: @admin)
+			redirect_to gm_game_path
+		  end
+		end
 	  end
 	end
 	def check_user

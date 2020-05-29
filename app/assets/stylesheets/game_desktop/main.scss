@@ -271,6 +271,21 @@ body {
 					animation: userRain 8s;
 					animation-iteration-count: 1;
 				}
+				.circle {
+					position: absolute;
+					bottom: 0;
+					border: .5vh solid rgb(var(--custcolor));
+					height: 15vh;
+					width: 15vh;
+					border-radius: 50%;
+					animation: userRain 8s;
+					animation-iteration-count: 1;
+					text-align: center;
+					background-color: #00232a;
+					color: white;
+					line-height: 15vh;
+					font-size: 8vh;
+				}
 			}
 		}
 		.mid-img {
@@ -283,6 +298,13 @@ body {
 			border: 1vh solid rgb(var(--custcolor));
 			animation: fadeInMiddle 2s 1;
 		}
+		.circle.mid-img {
+			background-color: #00232a;
+			color: white;
+			line-height: 38vh;
+			font-size: 25vh;
+			text-align: center;
+		}
 		.circle-left,
 		.circle-right {
 			position: fixed;
@@ -290,6 +312,14 @@ body {
 			width: 27vh;
 			top: 36.5vh;
 			z-index: 10;
+			.circle {
+				text-align: center;
+				background-color: #00232a;
+				color: white;
+				line-height: 26vh;
+				font-size: 15vh;
+			}
+			.circle,
 			img {
 				position: absolute;
 				border: .5vh solid rgb(var(--custcolor));
@@ -307,9 +337,12 @@ body {
 				animation-name: rain;
 				animation-duration: 2s;
 				animation-iteration-count: 1;
+				.circle,
 				img {
 					height: 10vh;
 					width: 10vh;
+					line-height: 10vh;
+					font-size: 5vh;
 				}
 			}
 		}
@@ -538,6 +571,7 @@ body {
 				line-height: 10vh;
 				height: 10vh;
 			}
+			.circle,
 			img {
 				position: absolute;
 				top: 12vh;
@@ -547,6 +581,13 @@ body {
 				width: 17vw;
 				border-radius: 50%;
 				z-index: 10;
+			}
+			.circle {
+				text-align: center;
+				line-height: 17vw;
+				font-size: 10vw;
+				background-color: #00232a;
+				color: white;
 			}
 			svg {
 				position: absolute;
@@ -572,11 +613,19 @@ body {
 				bottom: 0;
 				opacity: 1;
 				animation: moveInBottom 1s 1 forwards;
+				.circle,
 				img {
 					height: 5vh;
 					width: 5vh;
 					border-radius: 50%;	
 					margin: 0 .5vh 0 0;
+				}
+				.circle {
+					text-align: center;
+					line-height: 5vh;
+					font-size: 3vh;
+					background-color: #00232a;
+					color: white;
 				}
 				.text {
 					border-radius: 1vh;
@@ -618,6 +667,13 @@ body {
 				border: .25vw solid rgb(var(--custcolor));
 				animation: fadeIn .05s 1 forwards;
 				opacity: 0;
+			}
+			.circle.avatar {
+				font-size: 6vw;
+				line-height: 10vw;
+				text-align: center;
+				color: white;
+				background-color: #00232a;
 			}
 			.first, .second, .third {
 				position: absolute;
@@ -746,6 +802,7 @@ body {
 				opacity: 1;
 				overflow: hidden;
 				animation: moveHeight 1s 1;
+				.circle,
 				img {
 					height: 6vh;
 					width: 6vh;
@@ -753,6 +810,13 @@ body {
 					margin: 0 2vh 0 0;
 					opacity: 0;
 					animation: fadeIn 1s 1 forwards;
+				}
+				.circle {
+					background-color: #00232a;
+					color: white;
+					font-size: 3vh;
+					text-align: center;
+					line-height: 6vh;
 				}
 				.text-bg {
 					position: absolute;
@@ -905,7 +969,14 @@ body {
 				z-index: 10;
 				animation: fadeInTop 2s 1 forwards; opacity: 0;
 				animation-delay: 5s;
-			}	
+			}
+			.circle.play-avatar {
+				background-color: #00232a;
+				color: white;
+				line-height: 19vh;
+				font-size: 12vh;
+				text-align: center;
+			}
 		}
 		.word {
 			position: absolute;

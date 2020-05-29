@@ -10,3 +10,12 @@
 <div class="bottom">
 	<%= link_to "Auf geht's!", gm_login_path, class: 'btn' %>
 </div>
+
+<script>
+	$(document).ready(function() {
+        function disableBack() { window.history.forward() }
+
+        window.onload = disableBack();
+        window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
+</script>
