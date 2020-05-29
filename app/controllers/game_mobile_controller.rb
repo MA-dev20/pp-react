@@ -1,8 +1,11 @@
 class GameMobileController < ApplicationController
-  before_action :check_game, except: [:welcome, :ended]
+  before_action :check_game, except: [:welcome, :ended, :error]
   before_action :check_user, only: [:game, :join, :choosen, :new_name, :repeat, :send_emoji]
   before_action :check_state, only: [:game]
  
+  def error
+  end
+	
   def welcome
 	@game = Game.where(password: params[:password], active: true, state: 'wait').first
 	if @game
