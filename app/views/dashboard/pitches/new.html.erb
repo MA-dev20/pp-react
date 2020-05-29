@@ -176,7 +176,6 @@
     var clonning = false
     var isTaskRemoved = false
 
-
     $(document).on('ready turbolinks:load', () => {
 
         $('form').on('keypress', e => {
@@ -185,7 +184,7 @@
             }
         });
 
-        $('.add-first-task .btn').on('click', (e) => {
+        $('.add-first-task .btn').unbind().on('click', (e) => {
             $(e.target).closest('.add-first-task').hide()
             if (task_ids.length) {
                 $('#form_1').show();
@@ -446,22 +445,23 @@
         $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val())
         $(`#form_${targetTaskId} #task_time`).val($sourceTaskId.find('#task_time').val())
         $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text())
+        $(`#form_${targetTaskId} .catchword .capsule-ids-field`).val($sourceTaskId.find('.catchword .capsule-ids-field').val())
+        $(`#form_${targetTaskId} .add-reaction .capsule-ids-field`).val($sourceTaskId.find('.add-reaction .capsule-ids-field').val())
+
         let fields = ['.catchword', '.add-reaction', '.add-rating']
         let hidden_fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field']
         for (let i = 0; i < fields.length; i++) {
             let field_values = $sourceTaskId.find(hidden_fields[i]).val()
             $(`#form_${targetTaskId} ${hidden_fields[i]}`).val(field_values)
-            words = field_values.split(',')
-            let words_div = ''
-            for (let word of words) {
-                words_div += `<div class="word">${word}</div>`
-            }
-            if (words_div != '') {
-                if (fields[i] == '.add-rating')
-                    $(`#form_${targetTaskId} .card${fields[i]}`).css('height', '28vh');
-                $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).append(words_div)
-                $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).addClass('list-with-words')
-            }
+            let word_div_list = ''
+            if (fields[i] === '.add-rating')
+                $(`#form_${targetTaskId} .card${fields[i]}`).css('height', '28vh');
+            $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).addClass('list-with-words')
+            let $capsule_list = $(`#form_${sourceTaskId} ${fields[i]} .capsule-list .word`)
+            $capsule_list.each(index => {
+                word_div_list += $capsule_list[index].outerHTML
+            })
+            $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).append(word_div_list)
         }
     }
 

@@ -26,7 +26,7 @@
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
                 <%= f.hidden_field :catchwords, class: 'capsule-field cw-hidden-field' %>
-                <%= f.hidden_field :catchword_ids, class: 'capsule-field-id cw-hidden-id-field' %>
+                <%= f.hidden_field :catchword_ids, class: 'capsule-ids-field' %>
                 <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
                     onkeydown="handleKeyEvent(this)">
                 <div id="" class="cw custom-select">Catchword
@@ -95,7 +95,7 @@
         <div class="subline">Type new reactions or choose from list below</div>
         <div class="form-group">
             <%= f.hidden_field :reactions, class: 'capsule-field reaction-hidden-field' %>
-            <%= f.hidden_field :reaction_ids, class: 'capsule-field-id cw-hidden-id-field' %>
+            <%= f.hidden_field :reaction_ids, class: 'capsule-ids-field' %>
             <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field"
                 onkeydown="handleKeyEvent(this)">
             <div id="" class="obj custom-select">Reaction
@@ -159,7 +159,7 @@
 
         $('.sub-cs .option').unbind().on('click', (e) => {
             let $that = $(e.target)
-            let target_field = $that.closest('.form-group').children('.capsule-field-id')
+            let target_field = $that.closest('.form-group').children('.capsule-ids-field')
             let id = $that.closest('.option').find('.basket-name').attr('data-id')
             let value = $that.closest('.option').find('.basket-name').attr('data-name')
             let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
