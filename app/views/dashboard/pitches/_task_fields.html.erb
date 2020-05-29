@@ -26,9 +26,8 @@
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
                 <%= f.hidden_field :catchwords, class: 'capsule-field cw-hidden-field' %>
-                <%= f.hidden_field :catchword_ids, class: 'capsule-ids-field' %>
-                <input type="text" placeholder="Type your catchword" class="catchword input-field form-field"
-                    onkeydown="handleKeyEvent(this)">
+                <%= f.hidden_field :catchword_ids, class: 'capsule-ids-field cw-ids-field' %>
+                <input type="text" placeholder="Type your catchword" class="catchword input-field form-field">
                 <div id="" class="cw custom-select">Catchword
                     <div class="sub-cs">
                         <% @cw_lists.each do |list| %>
@@ -52,8 +51,10 @@
                     </div>
                 </div>
             </div>
-            <div class="capsule-list <%= f.object.catchwords.present? ? 'list-with-words' : '' %>">
+            <div class="capsule-list list-with-words">
             </div>
+            <!-- <div class="capsule-list <%= f.object.catchwords.present? ? 'list-with-words' : '' %>">
+            </div> -->
             <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
                 task.</div>
         </div>
@@ -95,9 +96,8 @@
         <div class="subline">Type new reactions or choose from list below</div>
         <div class="form-group">
             <%= f.hidden_field :reactions, class: 'capsule-field reaction-hidden-field' %>
-            <%= f.hidden_field :reaction_ids, class: 'capsule-ids-field' %>
-            <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field"
-                onkeydown="handleKeyEvent(this)">
+            <%= f.hidden_field :reaction_ids, class: 'capsule-ids-field reaction-ids-field' %>
+            <input type="text" placeholder="Type your reaction" class="add-reaction input-field form-field">
             <div id="" class="obj custom-select">Reaction
                 <div class="sub-cs">
                     <% @obj_lists.each do |list| %>
@@ -121,8 +121,10 @@
                 </div>
             </div>
         </div>
-        <div class="capsule-list <%= f.object.reactions.present? ? 'list-with-words' : '' %>">
+        <div class="capsule-list list-with-words">
         </div>
+        <!-- <div class="capsule-list <%= f.object.reactions.present? ? 'list-with-words' : '' %>">
+        </div> -->
     </div>
 
     <div class="card add-rating">
@@ -133,8 +135,7 @@
                 <%= image_tag 'dash/icons/star.svg'%>
             </div>
             <%= f.hidden_field :ratings, class: 'capsule-field rating-hidden-field' %>
-            <input type="text" placeholder="Type new rating criteria" class="form-field rating-field"
-                onkeydown="handleKeyEvent(this)">
+            <input type="text" placeholder="Type new rating criteria" class="form-field rating-field">
             <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
         </div>
         <div class="capsule-list">
@@ -150,7 +151,10 @@
             if (e.which == 13) {
                 let target_field = $(e.target).siblings('.capsule-field')
                 let value = $(e.target).val()
-                createCapsule(target_field, value, e)
+                if (value.length) {
+                    createCapsule(target_field, value, e)
+                    checkTaskData(e)
+                }
                 $(e.target).val("")
                 e.preventDefault();
                 return false;
@@ -163,7 +167,7 @@
             let id = $that.closest('.option').find('.basket-name').attr('data-id')
             let value = $that.closest('.option').find('.basket-name').attr('data-name')
             let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
-            $(capsule_list).addClass('list-with-words');
+            // $(capsule_list).addClass('list-with-words');
             let word = $(`<div class="word">${value}</div>`);
             if ($(target_field).val() != "") {
                 let field_array = JSON.parse($(target_field).val())
@@ -176,6 +180,7 @@
                 $(target_field).val(JSON.stringify(Array(id)))
                 $(capsule_list).append(word)
             }
+            checkTaskData(e);
             hideDropdown();
             e.preventDefault();
             return false;
@@ -183,7 +188,8 @@
 
         $('.sub-cs .list .name').unbind().click(function (e) {
             let target_field = $(this).closest('.form-group').children('.capsule-field')
-            createCapsule(target_field, $(this).attr('data-name'), e)
+            createCapsule(target_field, $(this).attr('data-name'), e);
+            checkTaskData(e);
             hideDropdown();
             return false;
         })
