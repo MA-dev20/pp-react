@@ -89,7 +89,7 @@
             <div class="title">Audio</div>
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
-            <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3' %>
+            <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav' %>
             <%= f.hidden_field :audio_id, value: '', class: 'audio-id' %>
             <!-- <input onchange="loadFile(event, 'audio')" accept=".mp3" type="file" name="pitch[tasks_attributes][0][audio]" id="pitch_tasks_attributes_0_audio"> -->
 
