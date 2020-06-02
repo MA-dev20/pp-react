@@ -203,6 +203,7 @@
 				});
 				document.getElementById('stopVideo').addEventListener('click', function() {
 					mediaRecorder.stop();
+					stream.getTracks().forEach(track => track.stop())
 					console.log('stream stopped');
 				})
 				document.getElementById('videoUpload').addEventListener('click', function(e) {
