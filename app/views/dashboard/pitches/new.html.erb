@@ -46,105 +46,6 @@
         <%= render 'browse_tasks' %>
     </div>
 
-    <!-- The Modal -->
-    <!-- <div id="pitchModal" class="modal hide">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div class="heading">
-                <h1>Headline</h1>
-            </div>
-            <div class="inner-content">
-                <div class="left-section">
-                    <div class="pitch-title">
-                        <label for="">Pitch</label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Pitch title" class="form-field">
-                        </div>
-                    </div>
-                    <div class="pitch-description">
-                        <label for="">Description</label>
-                        <div class="form-group">
-                            <textarea class="form-field" placeholder="Pitch description"></textarea>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="checkbox-container">
-                        <%#= f.hidden_field(:show_ratings) %>
-                        <div class="form-group" id="show_ratings">
-                            <label for="">Bewertungsausgabe (nach jedem Pitch)</label>
-                            <div class="skip-election-group">
-                                <label for="">Gesamtbewertung anzeigen</label>
-                                <i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Keine Bewertung anzeigen</label>
-                                <i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Bewertung von einer bestimmten Person anzeigen</label>
-                                <i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Bewertung überspringen</label>
-                                <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="toggle-wrapper toggle-sound">
-                        <label for="">Pitch sound</label>
-                        <div class="toggle-my-ratings toggle-my-ratings-1">
-                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="toggle-wrapper toggle-sound">
-                        <label for="">Election of next pitch user</label>
-                        <div class="toggle-my-ratings toggle-my-ratings-1">
-                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="right-section">
-                    <div class="picture">
-                        <label for="">Pitch image</label>
-                        <div class="btn upload">Upload</div>
-                        <div class="preview">
-                            <div class="remove">remove</div>
-                            <%= image_tag 'dash/Image.png' %>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="video">
-                        <label for="">Pitch video</label>
-                        <div class="btn upload">Upload</div>
-                        <div class="preview">
-                            <div class="time">00:16:45</div>
-                            <div class="remove">remove</div>
-                            <%= image_tag 'dash/Image.png' %>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="video-form">
-                        <label for="">You can also past a link to your video on Youtube or Vimeo</label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Youtube/Vimeo link" class="form-field">
-                            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
-                        </div>
-                    </div>
-                    <div class="btn-wrapper">
-                        <%= link_to 'Save', dashboard_pitches_path, class: 'btn' %>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-
     <div id="videoModal" class="modal hide">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -172,9 +73,10 @@
     // new PerfectScrollbar('#scrollList');
     new PerfectScrollbar('#tasksScrollBar');
 
-    var task_ids = [1]
-    var clonning = false
-    var isTaskRemoved = false
+    var task_ids = [1];
+    var clonning = false;
+    var isTaskRemoved = false;
+    var taskHeaderImg = "<%= asset_path 'dash/Image.png' %>";
 
     $(document).on('ready turbolinks:load', () => {
 
@@ -638,6 +540,8 @@
             $mediaBox.siblings('.audio-id').val('')
         } else if (type == 'video') {
             $mediaBox.find('video').attr('src', '')
+        } else {
+            $('.left-card.selected img')[0].src = taskHeaderImg;
         }
     }
 
