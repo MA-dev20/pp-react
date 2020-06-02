@@ -150,18 +150,98 @@
             <span class="close">&times;</span>
             <div class="heading">
                 <h1>Record your video</h1>
+                <input type="file" accept="video/*" capture>
             </div>
             <div class="inner-content">
-                <div class="video-img">
-                    <%= image_tag 'dash/Video.png' %>
+                <div class="video">
+                   <video src="" id="recorder" autoplay></video>
+                   <video src="" id="player"></video>
+                   <div class="navigator">
+                  		<div class="stop" id="stopVideo"><i class="far fa-stop-circle"></i></div>
+                  		<div class="videorecord" onclick="startRecordVideo()"><i class="far fa-dot-circle"></i></div>
+                   		<div class="play" onclick="playVideo()"><i class="far fa-play-circle"></i></div>
+                   </div>
                 </div>
                 <div class="buttons">
                     <a href="" class="btn reversed">Cancel</a>
-                    <a href="" class="btn">Upload</a>
+                    <a href="" class="btn" id="videoUpload">Upload</a>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+		function startRecordVideo() {
+			var recorder = document.getElementById('recorder');
+			var player = document.getElementById('player');
+			var file = NaN;
+			var handleSuccess = function(stream) {
+				$('.videorecord').addClass('pulse');
+				const options = {mimeType: 'video/webm'};
+    			const recordedChunks = [];
+    			const mediaRecorder = new MediaRecorder(stream, options);
+				recorder.srcObject = stream;
+				mediaRecorder.start();
+				mediaRecorder.addEventListener('start', function() {
+					console.log('stream started..');
+				})
+				mediaRecorder.addEventListener('dataavailable', function(e) {
+					if (e.data.size > 0) {
+						console.log('streaming ...');
+        				recordedChunks.push(e.data);
+      				}
+				});
+				mediaRecorder.addEventListener('stop', function() {
+					var blob = new Blob(recordedChunks);
+					videoURL = URL.createObjectURL(blob);
+					file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+					player.src = videoURL;
+					$('#player').show();
+					$('#recorder').hide();
+					recorder.load();
+					console.log('stream saved');
+					$('.videorecord').removeClass('pulse');
+				});
+				document.getElementById('stopVideo').addEventListener('click', function() {
+					mediaRecorder.stop();
+					console.log('stream stopped');
+				})
+				document.getElementById('videoUpload').addEventListener('click', function(e) {
+					e.preventDefault();
+					if(file != NaN ) {
+						var globalForm = new FormData();
+						globalForm.append('file', file);
+						sendVideo(globalForm);
+					} else {
+						$('#videoModal').hide()
+					}
+				})
+			}
+			navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess);
+		}
+		function playVideo() {
+			var player = document.getElementById('player');
+			player.play();
+		}
+		function sendVideo(globalForm) {
+			$.ajax({
+				url: "<%= dashboard_create_video_path %>",
+				type: "post",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: globalForm,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function (res) {
+					$('#video_tag').attr('src', res.video_url);
+					$('#videoModal').hide();
+					$('#video_tag').show();
+					$('.video .preview').show();
+					globalForm = new FormData();
+				}
+			})
+    	}
+	</script>
 </div>
 
 <!-- FIXME: -->
