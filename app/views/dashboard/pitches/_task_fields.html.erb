@@ -62,8 +62,7 @@
             <div class="title">Bild</div>
             <div class="subline">Upload an image to your pitch</div>
             <label class="btn upload" onclick="uploadClick(event)">Upload</label>
-            <!-- <label for="pitch_tasks_attributes_0_image" class="btn upload">Upload</label> -->
-            <%= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*' %>
+            <%= f.file_field :image, onchange: "loadFile(event, 'task-img')", accept: 'image/*' %>
             <div class="preview">
                 <div class="remove" onclick="removeMedia(event)">remove</div>
                 <%= image_tag 'dash/Image.png', class: 'media-file' %>

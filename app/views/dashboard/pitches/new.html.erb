@@ -265,10 +265,6 @@
                     let id = $(selected_card).attr('id')
                     $(selected_card).removeClass('selected')
                     $('.add-link').click()
-                    // if (checkTaskValidation(id) && checkFormValidation()) {
-                    //     $(selected_card).removeClass('selected')
-                    //     $('.add-link').click()
-                    // }
                 }
             } else {
                 $('.add-first-task').hide()
@@ -284,11 +280,6 @@
                 if ($('.add-first-task').is(':visible')) {
                     return false;
                 }
-                // else {
-                //     if (!checkFormValidation()) {
-                //         return false;
-                //     }
-                // }
             }
             e.stopPropagation();
             let modalId = $(this).data("modal");
@@ -415,12 +406,10 @@
         console.log('cloneTask')
         clonning = true
         let id = $(e).closest('.left-card').attr('id');
-        // if (checkTaskValidation(id)) {
         $('.add-link').click()
         createTaskCopy(id)
         hideAllTasks();
         showTask(id);
-        // }
 
 
     }
@@ -450,9 +439,6 @@
             let field_values = $sourceTaskId.find(hidden_fields[i]).val()
             $(`#form_${targetTaskId} ${hidden_fields[i]}`).val(field_values)
             let word_div_list = ''
-            // if (fields[i] === '.add-rating')
-            //     $(`#form_${targetTaskId} .card${fields[i]}`).css('height', '28vh');
-            // $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).addClass('list-with-words')
             let $capsule_list = $(`#form_${sourceTaskId} ${fields[i]} .capsule-list .word`)
             $capsule_list.each(index => {
                 word_div_list += $capsule_list[index].outerHTML
@@ -532,37 +518,6 @@
         }
     }
 
-    var checkFormValidation = () => {
-        let invalidFormId = ''
-        task_ids.forEach(id => {
-            if (!checkTaskValidation(id)) {
-                invalidFormId = id;
-            }
-        })
-        if (invalidFormId) {
-            hideAllTasks();
-            showTask(invalidFormId);
-            return false;
-        }
-        return true;
-    }
-
-    var checkTaskValidation = (id) => {
-        let status = true
-        let fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field', '.title-form-field']
-        let task_form = `#form_${id}`
-        fields.forEach(field => {
-            if (!$(`${task_form} ${field}`).val().length) {
-                if (field == '.title-form-field')
-                    $(`${task_form} ${field}`).addClass('danger')
-                else
-                    $(`${task_form} ${field}`).siblings('.form-field').addClass('danger')
-                status = false;
-            }
-        })
-        return status
-    }
-
     function createCard(taskId) {
         let rating_values = $(`#form_${taskId} .add-rating .capsule-field`).val()
         let title = `#form_${taskId} .title-field`
@@ -579,7 +534,12 @@
         card += '<i class="fas fa-copy copy" onclick="cloneTask(this)"></i>';
         card += '</div>';
         card += '<div class="thumb">';
-        card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        let $mediaImg = $(`#form_${taskId} .picture.media-option img`);
+        if ($mediaImg[0].src) {
+            card += `<img src='${$mediaImg[0].src}'>`
+        } else {
+            card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        }
         card += `<div class="length">${$(time).val()}</div>`;
         card += '</div>';
         card += `<div class="title title-field">${$(title).val()}</div>`;
@@ -605,13 +565,8 @@
 
 
     var handleKeyEvent = (e) => {
-        // if ($(e).hasClass('danger')) {
-        //     $(e).removeClass('danger')
-        // }
-
         let selected_card = $('.left-card.selected')
         if ($(selected_card).length) {
-            // if ($(e).attr('class').includes('title-field'))
             $(selected_card).find('.title').text($(e).val())
             checkTaskData(e)
         }
@@ -664,33 +619,15 @@
 
     function createCapsuleName(target_field, value, e) {
         let capsule_list = $(e.target).closest('.form-group').siblings('.capsule-list')
-        // $(capsule_list).addClass('list-with-words');
         let word = $(`<div class="word">${value}</div>`);
         if ($(target_field).val() != "") {
             $(target_field).val($(target_field).val() + "," + value)
             $(capsule_list).append(word)
-            // let words_array = $(target_field).val().split(',')
-            // if (words_array.length < 4) {
-            //     let matched_array = words_array.filter(word => { return word.toLowerCase() === value.toLowerCase() })
-            //     if (!matched_array.length) {
-            //         $(target_field).val($(target_field).val() + "," + value)
-            //         $(capsule_list).append(word)
-            //     }
-            // } else {
-            //     if (e.keyCode == undefined) {
-            //         $(e.target).closest('.form-group').find('.form-field').addClass('danger')
-            //     } else {
-            //         $(e.target).addClass('danger')
-            //     }
-            // }
         } else {
             $(target_field).val(value)
             $(capsule_list).append(word)
         }
     }
-
-
-
 
     function removeMedia(e, type = '') {
         let $mediaBox = $(e.target).closest('.preview')
@@ -715,12 +652,9 @@
         let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
         let file = event.target.files[0];
         if (type === 'video') {
-            // debugger
             let $video_tag = $(e.target).siblings('.preview').find('video');
             $video_tag[0].src = URL.createObjectURL(file);
             $video_tag.show();
-            // $("video")[0].src = URL.createObjectURL(file);
-            // $('#video_tag').show();
         } else if (type === 'audio') {
             let $preview = $(event.target).siblings('.preview');
             $preview.siblings('.audio-id').val('');
@@ -728,7 +662,10 @@
             $preview.find('audio')[0].src = URL.createObjectURL(file);
         } else {
             let $img = $(mediaBox).find('img');
-            $img[0].src = URL.createObjectURL(file);
+            let url_object = URL.createObjectURL(file);
+            $img[0].src = url_object;
+            if (type === 'task-img')
+                $('.left-card.selected img')[0].src = url_object;
         }
         $(mediaBox).show();
     }
