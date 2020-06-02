@@ -332,20 +332,26 @@
 					background-color: rgb(var(--custcolor));
 					color: white;
 				}
-			}
+            }
 			.picture, .video, .audio {
                 margin-top: 5vh;
 				display: none;
 				.upload {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: unset;
 					position: relative;
 					float: left;
 					width: 20%;
 					margin: 1vh 0;
 				}
 				.preview {
+                    display: none;
 					float: right;
 					position: relative;
-					img {
+					img, video {
 						width: 10vw;
 						height: 10vh;
 						border-radius: 1vh;
@@ -696,16 +702,27 @@
                     line-height: 2.5vh;
                     float: left;
                 }
+
+                #pitch_video, #pitch_image {
+                    display: none;
+                }
+
                 .upload {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: unset;
                     position: relative;
                     float: left;
                     margin: 1vh 0;
                     margin-top: 4vh;
                 }
                 .preview {
+                    display: none;
                     float: right;
                     position: relative;
-                    img {
+                    video, img {
                         width: 10vw;
                         height: 10vh;
                         border-radius: 1vh;
@@ -897,3 +914,17 @@
 #navbar {
     display: none;
 }
+
+input[type="file"] {
+    // position: absolute;
+    // left: 0;
+    // top: 0;
+    // right: 0;
+    // bottom: 0;
+    // opacity: 0;
+    display: none;
+}
+
+// .upload {
+//     cursor: pointer;
+// }

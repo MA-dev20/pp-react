@@ -324,14 +324,13 @@
         return task_ids[task_ids.length - 1]
     }
 
-    function chooseCatchword(type) {
-        $('.add-catchword .btn-line .btn.selected').removeClass('selected');
-        $('.add-catchword .catchword').hide();
-        $('.add-catchword .picture').hide();
-        $('.add-catchword .video').hide();
-        $('.add-catchword .audio').hide();
-        $('#btn_' + type).addClass('selected');
-        $('.add-catchword .' + type).show();
+    function chooseOption(type, event) {
+        let $that = $(event.target);
+        $that.closest('.add-catchword').find('.btn-line .btn.selected').removeClass('selected');
+        $that.closest('.add-catchword').find('.media-option').hide();
+        $that.closest('.add-catchword').find(`#btn_${type}`).addClass('selected');
+        $that.closest('.add-catchword').find(`.${type}`).show();
+        $('.left-card.selected .category').text($(event.target).text())
     }
 
     var timeUp = (e) => {
@@ -418,15 +417,17 @@
         let id = $(e).closest('.left-card').attr('id');
         // if (checkTaskValidation(id)) {
         $('.add-link').click()
-        createTaskCopy(e)
+        createTaskCopy(id)
         hideAllTasks();
         showTask(id);
         // }
+
+
     }
 
-    var createTaskCopy = (e) => {
+    var createTaskCopy = (id) => {
         console.log('createTaskCopy')
-        let sourceTaskId = $(e).closest('.left-card').attr('id')
+        let sourceTaskId = id
         let targetTaskId = getLastId()
         copyTaskFormData(targetTaskId, sourceTaskId)
         createCard(targetTaskId)
@@ -458,6 +459,28 @@
             })
             $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).append(word_div_list)
         }
+
+        let media_options = ['picture', 'video', 'audio']
+        let attributes = ['image', 'video', 'audio']
+        let counter = 0
+        media_options.forEach(media => {
+            $cloneData = $(`#form_${sourceTaskId}`).find(`.${media}.media-option`).clone();
+            $(`#form_${targetTaskId}`).find(`.${media}.media-option`).remove();
+            $(`#form_${targetTaskId} .card.add-catchword`).append($cloneData);
+            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('id', `pitch_tasks_attributes_${targetTaskId}_${attributes[counter]}`);
+            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('name', `pitch[tasks_attributes][${targetTaskId}][${attributes[counter]}]`);
+            if (media === 'audio') {
+                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('id', `pitch_tasks_attributes_${targetTaskId}_audio_id`);
+                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('name', `pitch[tasks_attributes][${targetTaskId}][audio_id]`);
+            }
+            if ($(`#form_${sourceTaskId} #btn_${media}`).hasClass('selected')) {
+                $(`#form_${targetTaskId} .btn-line .btn`).removeClass('selected')
+                $(`#form_${targetTaskId} .add-catchword .media-option`).hide()
+                $(`#form_${targetTaskId} #btn_${media}`).addClass('selected')
+                $(`#form_${targetTaskId} .add-catchword .${media}`).show()
+            }
+            counter += 1;
+        })
     }
 
     function checkTaskData(e) {
@@ -550,7 +573,8 @@
         card += `<i class="fas fa-exclamation-triangle" style="display: ${showWarning}"></i>`;
         card += `<div class="name name-div">Task</div>`;
         card += '<i class="fas fa-circle"></i>';
-        card += '<div class="category">Catchword</div>';
+        let $category = $(`#form_${taskId} .btn.selected`).text()
+        card += `<div class="category">${$category}</div>`;
         card += '<i class="fas fa-trash remove" onclick="removeTask(this)"></i>';
         card += '<i class="fas fa-copy copy" onclick="cloneTask(this)"></i>';
         card += '</div>';
@@ -663,6 +687,50 @@
             $(target_field).val(value)
             $(capsule_list).append(word)
         }
+    }
+
+
+
+
+    function removeMedia(e, type = '') {
+        let $mediaBox = $(e.target).closest('.preview')
+        $mediaBox.hide()
+        $mediaBox.siblings('input[type="file"]').val('')
+        if (type == 'audio') {
+            $mediaBox.find('audio').attr('src', '')
+            $mediaBox.siblings('.audio-id').val('')
+        } else if (type == 'video') {
+            $mediaBox.find('video').attr('src', '')
+        }
+    }
+
+    function loadMetaData(e) {
+        const video_duration = new Date($(e.target)[0].duration * 1000).toISOString().substr(11, 8)
+        $(e.target).siblings('.time').text(video_duration);
+    }
+
+
+    function loadFile(e, type = '') {
+        const id = $(e.target).attr('id');
+        let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
+        let file = event.target.files[0];
+        if (type === 'video') {
+            // debugger
+            let $video_tag = $(e.target).siblings('.preview').find('video');
+            $video_tag[0].src = URL.createObjectURL(file);
+            $video_tag.show();
+            // $("video")[0].src = URL.createObjectURL(file);
+            // $('#video_tag').show();
+        } else if (type === 'audio') {
+            let $preview = $(event.target).siblings('.preview');
+            $preview.siblings('.audio-id').val('');
+            $preview.find('.audio-title').text(file.name);
+            $preview.find('audio')[0].src = URL.createObjectURL(file);
+        } else {
+            let $img = $(mediaBox).find('img');
+            $img[0].src = URL.createObjectURL(file);
+        }
+        $(mediaBox).show();
     }
 
 </script>

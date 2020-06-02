@@ -61,22 +61,26 @@
                 </div>
             </div>
             <div class="right-section">
-                <div class="picture">
+                <div class="picture media-option">
                     <label for="">Pitch image</label>
-                    <div class="btn upload">Upload</div>
+                    <label for="pitch_image" class="btn upload">Upload</label>
+                    <%= pitch.file_field :image, onchange: "loadFile(event)", accept: 'image/*' %>
                     <div class="preview">
-                        <div class="remove">remove</div>
-                        <%= image_tag 'dash/Image.png' %>
+                        <div class="remove" onclick="removeMedia(event)">remove</div>
+                        <%= image_tag 'dash/Image.png', class: 'media-file' %>
                     </div>
                 </div>
                 <div class="hr-line"></div>
-                <div class="video">
+                <div class="video media-option">
                     <label for="">Pitch video</label>
-                    <div class="btn upload">Upload</div>
+                    <label for="pitch_video" class="btn upload">Upload</label>
+                    <%= pitch.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*' %>
                     <div class="preview">
-                        <div class="time">00:16:45</div>
-                        <div class="remove">remove</div>
-                        <%= image_tag 'dash/Image.png' %>
+                        <div class="time"></div>
+                        <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
+                        <video id="video_tag" onloadedmetadata="loadMetaData(event)" style="display: none"
+                            type="video/mp4" controls></video>
+                        <%#= image_tag 'dash/Image.png' %>
                     </div>
                 </div>
                 <div class="hr-line"></div>

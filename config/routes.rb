@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   namespace :dashboard do
     resources :pitches
+    post '/pitches/tasks/audio/create', to: 'pitches#createAudio', as: "create_audio"
   end
 
 	

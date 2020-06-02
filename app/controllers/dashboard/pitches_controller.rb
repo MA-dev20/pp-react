@@ -22,6 +22,11 @@ module Dashboard
             end
         end
 
+        def createAudio
+            @task_media = TaskMedium.create(audio: params[:file]) if params[:file].present?
+            render json: {id: @task_media.id}
+        end
+
         def index
             @pitches = @admin.pitches.includes(:tasks)
         end
@@ -29,7 +34,7 @@ module Dashboard
         private
 
         def pitch_params
-            params.require(:pitch).permit(:title, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :ratings, :reactions, :reaction_ids, :catchwords, :catchword_ids])
+            params.require(:pitch).permit(:title, :image, :video, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :reaction_ids, :catchwords, :catchword_ids])
         end
 
         def set_user
