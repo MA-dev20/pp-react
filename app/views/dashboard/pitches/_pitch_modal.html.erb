@@ -9,7 +9,7 @@
                 <div class="pitch-title">
                     <label for="">Pitch</label>
                     <div class="form-group">
-                        <%= pitch.text_field :title, class: 'form-field', placeholder: 'Pitch title', required: true %>
+                        <%= pitch.text_field :title, class: 'form-field', placeholder: 'Pitch title' %>
                     </div>
                 </div>
                 <div class="pitch-description">
@@ -107,12 +107,11 @@
                 <div class="video-form">
                     <label for="">You can also past a link to your video on Youtube or Vimeo</label>
                     <div class="form-group">
-                        <input type="text" placeholder="Youtube/Vimeo link" class="form-field">
+                        <%= pitch.text_field :video_url, class: 'form-field', placeholder: 'Youtube/Vimeo link'%>
                         <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
                     </div>
                 </div>
                 <div class="btn-wrapper">
-                    <%#= link_to 'Save', dashboard_pitches_path, class: 'btn' %>
                     <%= pitch.submit 'Save', class: 'submit-btn btn' %>
                 </div>
             </div>
