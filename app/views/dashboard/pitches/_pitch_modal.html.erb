@@ -150,8 +150,8 @@
     $('.show-ratings-container .checkmark').unbind().on('click', (e) => {
         let $that = $(e.target);
         if (!$(e.target).siblings('input[type="checkbox"]').is(":checked")) {
-            // $('.show-ratings-container input[type="checkbox"]').removeAttr('checked');
-            $that.siblings('input[type="checkbox"]').prop('checked', false);
+            $('.show-ratings-container input[type="checkbox"]').removeAttr('checked');
+            // $that.siblings('input[type="checkbox"]').prop('checked', false);
             let value = $that.attr('data-value')
             $('#show_ratings').attr('value', value);
             $('#show_ratings').siblings('input[type="hidden"]').attr('value', value);
