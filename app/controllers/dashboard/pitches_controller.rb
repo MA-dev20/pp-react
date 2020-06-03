@@ -14,6 +14,7 @@ module Dashboard
         def create
             # TODO:
             # JSON()
+            debugger
             if Pitch.create(pitch_params)
                 redirect_to dashboard_pitches_path, status: :moved_permanently
             else
@@ -34,7 +35,7 @@ module Dashboard
         private
 
         def pitch_params
-            params.require(:pitch).permit(:title, :image, :video, :description, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :reaction_ids, :catchwords, :catchword_ids])
+            params.require(:pitch).permit(:title, :image, :video, :description, :pitch_sound, :show_ratings, :skip_elections, :video_url, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :reaction_ids, :catchwords, :catchword_ids])
         end
 
         def set_user
