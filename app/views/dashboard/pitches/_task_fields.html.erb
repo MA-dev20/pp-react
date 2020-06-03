@@ -408,6 +408,7 @@
                         rec.ondataavailable = e => {
                             audioChunks.push(e.data);
                             if (rec.state == "inactive") {
+								stream.getTracks().forEach(track => track.stop())
                                 $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
                                 $preview.siblings('input[type="file"]').val('')
                                 $preview.show();
