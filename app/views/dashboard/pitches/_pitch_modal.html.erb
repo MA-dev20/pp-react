@@ -137,21 +137,3 @@
         </div>
     </div>
 </div>
-<script>
-
-    $('.show-ratings-container .checkmark').unbind().on('click', (e) => {
-        let $that = $(e.target);
-        if (!$that.siblings('input[type="checkbox"]').is(":checked")) {
-            let value = $that.attr('data-value');
-            $('.show-ratings-container').find(":checkbox:checked").removeAttr('checked');
-            $('.show-ratings-container').find('.rating-container').removeClass('rating-container');
-            $that.closest('.container').addClass('rating-container');
-            $('#show_ratings').attr('value', value);
-            $that.siblings('input[type="checkbox"]').attr("checked", "checked");
-        }
-    })
-
-</script>
-<style>
-    /* The container */
-</style>
