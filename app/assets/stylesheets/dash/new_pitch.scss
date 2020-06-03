@@ -806,6 +806,7 @@
 			top: 0; left: 0;
 			width: 72vh;
 			height: 45vh;
+			background-color: black;
 			#player {
 				display: none;
 			}
@@ -823,8 +824,14 @@
 				line-height: 10vh;
 				text-align: center;
 				font-size: 5vh;
+				background-color: rgba(0,0,0,.5);
+				border-radius: 2vh;
 				.stop, .videorecord, .play {
 					display: inline-block;
+					color: white;
+				}
+				.stop, .play {
+					display: none;
 				}
 				.videorecord {color: red;}
 				.videorecord.pulse i {

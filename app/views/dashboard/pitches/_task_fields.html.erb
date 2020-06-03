@@ -73,6 +73,7 @@
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
+            <%= f.hidden_field :video_id, value: '', class: 'video-id' %>
             <!-- <input onchange="loadFile(event, 'video')" accept="video/*" type="file" name="pitch[tasks_attributes][0][video]" id="pitch_tasks_attributes_0_video"> -->
 
             <div class="btn upload open-modal" data-modal="videoModal">Record</div>
