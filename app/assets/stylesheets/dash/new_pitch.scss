@@ -916,15 +916,102 @@
 }
 
 input[type="file"] {
-    // position: absolute;
-    // left: 0;
-    // top: 0;
-    // right: 0;
-    // bottom: 0;
-    // opacity: 0;
     display: none;
 }
 
-// .upload {
-//     cursor: pointer;
-// }
+#content {
+    
+    #pitchModal {
+        
+        #show_ratings {
+            display: none;
+        }
+    
+        .form-group label.container {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            margin: 0.2vh 0;
+        }
+    
+        .skip-elections label,
+        .pitch-sound label {
+            font-size: 2vh;
+            font-weight: bold;
+        }
+    
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+    
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 1.6vh;
+            width: 1.6vh;
+            border: 0.24vh solid rgb(29, 218, 175);
+            border-radius: 0.3vh;
+            background-color: white;
+        }
+    
+        /* On mouse-over, add a grey background color */
+        .container:hover input~.checkmark {
+            background-color: white;
+        }
+    
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked~.checkmark {
+            background-color: white;
+        }
+    
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .common-checkbox .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+    
+        /* Show the checkmark when checked */
+        .common-checkbox input:checked~.checkmark:after {
+            display: block;
+        }
+    
+    
+    
+        .rating-container .checkmark:after {
+            display: none;
+        }
+    
+        .rating-container input:checked~.checkmark:after {
+            display: block;
+        }
+    
+        .rating-container .checkmark:after {
+            content: "";
+            position: absolute;
+            display: block;
+        }
+    
+    
+    
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: .5vh;
+            top: 0.1vh;
+            width: 0.3vh;
+            height: 0.8vh;
+            border: solid rgb(29, 218, 175);
+            border-width: 0 0.3vh 0.3vh 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    }
+}

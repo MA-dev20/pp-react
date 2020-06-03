@@ -20,10 +20,12 @@
                 </div>
                 <div class="hr-line"></div>
                 <div class="checkbox-container">
-                    <%= pitch.check_box :show_ratings, { checked: true, id: 'show_ratings' }, pitch.object.show_ratings, pitch.object.show_ratings %>
+                    <%= pitch.hidden_field :show_ratings, value: pitch.object.show_ratings, id: 'show_ratings' %>
                     <div class="form-group show-ratings-container">
                         <label for="" class="heading-label">Bewertungsausgabe (nach jedem Pitch)</label>
-                        <label class="container">Gesamtbewertung anzeigen
+                        <label
+                            class="container <%= pitch.object.show_ratings == 'all' ? 'rating-container' : '' %>">Gesamtbewertung
+                            anzeigen
                             <% if pitch.object.show_ratings == 'all' %>
                             <input type="checkbox" checked>
                             <% else %>
@@ -31,7 +33,9 @@
                             <% end %>
                             <span class="checkmark" data-value='all'></span>
                         </label>
-                        <label class="container">Keine Bewertung anzeigen
+                        <label
+                            class="container <%= pitch.object.show_ratings == 'none' ? 'rating-container' : '' %>">Keine
+                            Bewertung anzeigen
                             <% if pitch.object.show_ratings == 'none' %>
                             <input type="checkbox" checked>
                             <% else %>
@@ -39,7 +43,9 @@
                             <% end %>
                             <span class="checkmark" data-value='none'></span>
                         </label>
-                        <label class="container">Bewertung von einer bestimmten Person anzeigen
+                        <label
+                            class="container <%= pitch.object.show_ratings == 'one' ? 'rating-container' : '' %>">Bewertung
+                            von einer bestimmten Person anzeigen
                             <% if pitch.object.show_ratings == 'one' %>
                             <input type="checkbox" checked>
                             <% else %>
@@ -47,7 +53,9 @@
                             <% end %>
                             <span class="checkmark" data-value='one'></span>
                         </label>
-                        <label class="container">Bewertung überspringen
+                        <label
+                            class="container <%= pitch.object.show_ratings == 'skip' ? 'rating-container' : '' %>">Bewertung
+                            überspringen
                             <% if pitch.object.show_ratings == 'skip' %>
                             <input type="checkbox" checked>
                             <% else %>
@@ -55,27 +63,11 @@
                             <% end %>
                             <span class="checkmark" data-value='skip'></span>
                         </label>
-                        <!-- <div class="skip-election-group">
-                            <label for="">Gesamtbewertung anzeigen</label>
-                            <i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
-                        </div>
-                        <div class="skip-election-group">
-                            <label for="">Keine Bewertung anzeigen</label>
-                            <i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
-                        </div>
-                        <div class="skip-election-group">
-                            <label for="">Bewertung von einer bestimmten Person anzeigen</label>
-                            <i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
-                        </div>
-                        <div class="skip-election-group">
-                            <label for="">Bewertung überspringen</label>
-                            <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
-                        </div> -->
                     </div>
                 </div>
                 <div class="hr-line"></div>
                 <div class="form-group pitch-sound" id="pitch_sound">
-                    <label class="container">Pitch sound
+                    <label class="container common-checkbox">Pitch sound
                         <!-- <input type="checkbox"> -->
                         <%= pitch.check_box :pitch_sound %>
                         <span class="checkmark"></span>
@@ -91,7 +83,7 @@
                 </div> -->
                 <div class="hr-line"></div>
                 <div class="form-group skip-elections" id="skip_elections">
-                    <label class="container">Election of next pitch user
+                    <label class="container common-checkbox">Election of next pitch user
                         <!-- <input type="checkbox"> -->
                         <%= pitch.check_box :skip_elections %>
                         <span class="checkmark"></span>
@@ -149,13 +141,12 @@
 
     $('.show-ratings-container .checkmark').unbind().on('click', (e) => {
         let $that = $(e.target);
-        if (!$(e.target).siblings('input[type="checkbox"]').is(":checked")) {
-            $('.show-ratings-container input[type="checkbox"]').removeAttr('checked');
-            // $that.siblings('input[type="checkbox"]').prop('checked', false);
-            let value = $that.attr('data-value')
+        if (!$that.siblings('input[type="checkbox"]').is(":checked")) {
+            let value = $that.attr('data-value');
+            $('.show-ratings-container').find(":checkbox:checked").removeAttr('checked');
+            $('.show-ratings-container').find('.rating-container').removeClass('rating-container');
+            $that.closest('.container').addClass('rating-container');
             $('#show_ratings').attr('value', value);
-            $('#show_ratings').siblings('input[type="hidden"]').attr('value', value);
-            // $that.siblings('input[type="checkbox"]').prop('checked', true);
             $that.siblings('input[type="checkbox"]').attr("checked", "checked");
         }
     })
@@ -163,76 +154,4 @@
 </script>
 <style>
     /* The container */
-    #show_ratings {
-        display: none;
-    }
-
-    #content .form-group label.container {
-        display: block;
-        position: relative;
-        cursor: pointer;
-        margin: 0.2vh 0;
-    }
-
-    #content .skip-elections label,
-    #content .pitch-sound label {
-        font-size: 2vh;
-        font-weight: bold;
-    }
-
-    /* Hide the browser's default checkbox */
-    .container input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-        height: 0;
-        width: 0;
-    }
-
-    /* Create a custom checkbox */
-    .checkmark {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 1.6vh;
-        width: 1.6vh;
-        border: 0.24vh solid rgb(29, 218, 175);
-        border-radius: 0.3vh;
-        background-color: white;
-    }
-
-    /* On mouse-over, add a grey background color */
-    .container:hover input~.checkmark {
-        background-color: white;
-    }
-
-    /* When the checkbox is checked, add a blue background */
-    .container input:checked~.checkmark {
-        background-color: white;
-    }
-
-    /* Create the checkmark/indicator (hidden when not checked) */
-    .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-
-    /* Show the checkmark when checked */
-    .container input:checked~.checkmark:after {
-        display: block;
-    }
-
-    /* Style the checkmark/indicator */
-    .container .checkmark:after {
-        left: .5vh;
-        top: 0.1vh;
-        width: 0.3vh;
-        height: 0.8vh;
-        border: solid rgb(29, 218, 175);
-        border-width: 0 0.3vh 0.3vh 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
-    }
 </style>
