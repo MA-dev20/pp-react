@@ -163,13 +163,17 @@
                    </div>
                 </div>
                 <div class="buttons">
-                    <a href="" class="btn reversed">Cancel</a>
+                    <a href="" class="btn reversed" id="clodeVideoModal">Cancel</a>
                     <a href="" class="btn" id="videoUpload">Upload</a>
                 </div>
             </div>
         </div>
     </div>
     <script>
+		$('#clodeVideoModal').on('click', function(e) {
+			e.preventDefault();
+			$('#videoModal').hide();
+		});
 		var recorder = document.getElementById('recorder');
 		var player = document.getElementById('player');
 		var file = NaN;
