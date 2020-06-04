@@ -15,9 +15,39 @@
 
     <div class="card left">
         <div class="tasks" id="tasksScrollBar">
+            <% if @pitch.persisted? %>
+            <% @pitch.tasks.each_with_index do |task, index| %>
+            <div class="card left-card <%= 'selected' if index == 0 %>" onclick="handleCardClick(this)">
+                <div class="task-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="name">Task</div>
+                    <i class="fas fa-circle"></i>
+                    <div class="category">Video</div>
+                    <i class="fas fa-trash remove"></i>
+                    <i class="fas fa-copy copy"></i>
+                </div>
+                <div class="thumb">
+                    <% if task.image? %>
+                    <%= image_tag task.image.url %>
+                    <% else %>
+                    <%= image_tag 'dash/Image.png' %>
+                    <% end %>
+                    <div class="length"><%= task.time %></div>
+                </div>
+                <div class="title"><%= task.title %></div>
+                <div class="sub-title">Rating Criteria</div>
+                <div class="rating-criteria">
+                    <% task.ratings.split(',').each do |rating| %>
+                    <div class="criterium"><%= rating %></div>
+                    <% end %>
+                </div>
+            </div>
+            <% end %>
+            <% else %>
             <div class="form-group add-first-task">
                 <button class="btn">Add first task</button>
             </div>
+            <% end %>
         </div>
         <div class="menu-box">
             <div class="menu menu-1">Add task</div>
@@ -31,7 +61,9 @@
     </div>
 
     <%
-        form_url = @pitch.persisted? ? dashboard_pitch_path : dashboard_pitches_path
+        editForm = @pitch.persisted?
+        form_url = editForm ? dashboard_pitch_path : dashboard_pitches_path
+
     %>
 
     <div class="card right">
@@ -83,6 +115,19 @@
     var taskHeaderImg = "<%= asset_path 'dash/Image.png' %>";
 
     $(document).on('ready turbolinks:load', () => {
+
+        if ('<%= editForm %>' === 'true') {
+            $('.task-fields:first').removeClass('hide');
+            let counter = 0;
+            let length = $('.task-fields').length;
+            let id = 1;
+            while (counter < length) {
+                $(`.task-fields`)[counter].id = `form_${id}`;
+                $('.card.left .card')[counter].id = id;
+                id += 1;
+                counter += 1;
+            }
+        }
 
         $('form').on('keypress', e => {
             if (e.keyCode == 13) {
@@ -180,7 +225,6 @@
 
         })
 
-
         $('.show-ratings-container .checkmark').on('click', (e) => {
             let $that = $(e.target);
             if (!$that.siblings('input[type="checkbox"]').is(":checked")) {
@@ -192,7 +236,6 @@
                 $that.siblings('input[type="checkbox"]').attr("checked", "checked");
             }
         })
-
 
         $('.open-modal').click(function (e) {
             if ($(e.currentTarget).attr('data-modal') == 'pitchModal') {
@@ -236,6 +279,7 @@
 
     function chooseOption(type, event) {
         let $that = $(event.target);
+        $that.siblings('#media_option').val(type);
         $that.closest('.add-catchword').find('.btn-line .btn.selected').removeClass('selected');
         $that.closest('.add-catchword').find('.media-option').hide();
         $that.closest('.add-catchword').find(`#btn_${type}`).addClass('selected');
@@ -329,8 +373,6 @@
         createTaskCopy(id)
         hideAllTasks();
         showTask(id);
-
-
     }
 
     var createTaskCopy = (id) => {
@@ -351,6 +393,7 @@
         $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text())
         $(`#form_${targetTaskId} .catchword .capsule-ids-field`).val($sourceTaskId.find('.catchword .capsule-ids-field').val())
         $(`#form_${targetTaskId} .add-reaction .capsule-ids-field`).val($sourceTaskId.find('.add-reaction .capsule-ids-field').val())
+        $(`#form_${targetTaskId} #media_option`).val($sourceTaskId.find('#media_option').val())
 
         let fields = ['.catchword', '.add-reaction', '.add-rating']
         let hidden_fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field']
