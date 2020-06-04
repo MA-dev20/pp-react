@@ -19,7 +19,8 @@
             <div class="subtitle">Video: <%= pitch.tasks.where.not(video: nil).count %>, Image:
                 <%= pitch.tasks.where.not(image: nil).count %>, Tasks: <%= pitch.tasks.count %></div>
             <div class="buttons">
-                <a href="" class="btn reversed">Edit</a>
+                <!-- <a href="" class="btn reversed">Edit</a> -->
+                <%= link_to 'Edit', edit_dashboard_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
                 <a href="" class="btn">Pitch!</a>
             </div>
         </div>

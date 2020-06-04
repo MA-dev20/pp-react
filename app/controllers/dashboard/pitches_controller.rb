@@ -4,11 +4,17 @@ module Dashboard
         layout "dashboard"
 
         def new
-            @pitches = @admin.pitches.new
-            @pitches.tasks.build
+            @pitch = @admin.pitches.new
+            @pitch.tasks.build
         end
 
         def edit
+            @pitch = Pitch.find(params[:id])
+            render :new
+        end
+
+        def update
+            debugger
         end
 
         def create

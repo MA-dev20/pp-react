@@ -1,12 +1,12 @@
 <section id="new-pitch-navbar">
     <h1>Pitch erstellen</h1>
     <div class="form-group">
-        <input type="text" placeholder="Type pitch name here" class="form-field">
-        <button class="btn">Regeln</button>
+        <input type="text" placeholder="Type pitch name here" data-modal="pitchModal" class="open-modal form-field"
+            readonly>
+        <button class="btn done-btn open-modal" data-modal="pitchModal">Regeln</button>
     </div>
     <div class="btn-group">
         <%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
-        <%#= link_to 'Done', dashboard_pitches_path, class: 'btn' %>
         <button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
     </div>
 </section>
@@ -30,9 +30,13 @@
 
     </div>
 
+    <%
+        form_url = @pitch.persisted? ? dashboard_pitch_path : dashboard_pitches_path
+    %>
+
     <div class="card right">
         <%#= render partial: 'new_pitch_content', locals: { pitch: @pitches } %>
-        <%= form_for @pitches, url: dashboard_pitches_path, html: {id: 'new_pitch_form', method: :post} do |f| %>
+        <%= form_for @pitch, url: form_url, html: {id: 'new_pitch_form'} do |f| %>
         <%= f.hidden_field :user_id, value: @admin.id %>
 
         <%= f.fields_for :tasks do |task| %>
