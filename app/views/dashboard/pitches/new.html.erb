@@ -16,13 +16,18 @@
     <div class="card left">
         <div class="tasks" id="tasksScrollBar">
             <% if @pitch.persisted? %>
+            <% 
+                persisted_task_ids = @pitch.task_ids
+            %>
             <% @pitch.tasks.each_with_index do |task, index| %>
-            <div class="card left-card <%= 'selected' if index == 0 %>" onclick="handleCardClick(this)">
+            <div class="card left-card <%= 'selected' if index == 0 %>" id="<%= task.id %>"
+                onclick="handleCardClick(this)">
                 <div class="task-title">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="name">Task</div>
                     <i class="fas fa-circle"></i>
-                    <div class="category">Video</div>
+                    <div class="category">
+                        <%= task.media_option.titleize == 'Pitcture' ? 'Bild' : task.media_option.titleize %></div>
                     <i class="fas fa-trash remove"></i>
                     <i class="fas fa-copy copy"></i>
                 </div>
@@ -44,6 +49,7 @@
             </div>
             <% end %>
             <% else %>
+            <% persisted_task_ids = [] %>
             <div class="form-group add-first-task">
                 <button class="btn">Add first task</button>
             </div>
@@ -69,6 +75,7 @@
     <div class="card right">
         <%#= render partial: 'new_pitch_content', locals: { pitch: @pitches } %>
         <%= form_for @pitch, url: form_url, html: {id: 'new_pitch_form'} do |f| %>
+        <%= hidden_field_tag :pitch_id, @pitch.id, id: 'pitch_id' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
 
         <%= f.fields_for :tasks do |task| %>
@@ -113,20 +120,25 @@
     var clonning = false;
     var isTaskRemoved = false;
     var taskHeaderImg = "<%= asset_path 'dash/Image.png' %>";
+    var persisted_task_ids = JSON.parse("<%= persisted_task_ids %>");
 
     $(document).on('ready turbolinks:load', () => {
 
         if ('<%= editForm %>' === 'true') {
             $('.task-fields:first').removeClass('hide');
-            let counter = 0;
-            let length = $('.task-fields').length;
-            let id = 1;
-            while (counter < length) {
-                $(`.task-fields`)[counter].id = `form_${id}`;
-                $('.card.left .card')[counter].id = id;
-                id += 1;
-                counter += 1;
-            }
+            task_ids.pop();
+            persisted_task_ids.forEach(id => {
+                task_ids.push(id);
+            })
+            // let counter = 0;
+            // let length = $('.task-fields').length;
+            // let id = 1;
+            // while (counter < length) {
+            //     $(`.task-fields`)[counter].id = `form_${id}`;
+            //     $('.card.left .card')[counter].id = id;
+            //     id += 1;
+            //     counter += 1;
+            // }
         }
 
         $('form').on('keypress', e => {
@@ -593,6 +605,7 @@
 
     function removeMedia(e, type = '') {
         let $mediaBox = $(e.target).closest('.preview')
+        let task_id = parseInt($(e.target).closest('.task-fields').attr('id').split('_')[1])
         $mediaBox.hide()
         $mediaBox.siblings('input[type="file"]').val('')
         if (type == 'audio') {
@@ -602,6 +615,13 @@
             $mediaBox.find('video').attr('src', '')
         } else {
             $('.left-card.selected img')[0].src = taskHeaderImg;
+        }
+
+        if (persisted_task_ids.includes(task_id)) {
+            deleteServerMedia(parseInt($('#pitch_id').val()), task_id, type || 'image');
+            if (type === '') {
+                $(`#form_${task_id} .picture.media-option .preview`).hide();
+            }
         }
     }
 
@@ -634,4 +654,20 @@
         $(mediaBox).show();
     }
 
+
+    function deleteServerMedia(pitch_id, task_id, media) {
+        $.ajax({
+            url: `/dashboard/pitches/${pitch_id}/tasks/${task_id}/media/delete`,
+            type: "delete",
+            cache: false,
+            async: true,
+            contentType: false,
+            processData: false,
+            data: media,
+            beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+            success: function (res) {
+                console.log('Media deleted');
+            }
+        })
+    }
 </script>

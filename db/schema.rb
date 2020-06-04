@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_04_090012) do
+ActiveRecord::Schema.define(version: 2020_06_04_103636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(version: 2020_06_04_090012) do
     t.datetime "updated_at", null: false
     t.boolean "pitch_sound", default: true
     t.string "show_ratings", default: "all"
-    t.string "video_url"
+    t.text "video_path"
     t.boolean "skip_elections", default: false
     t.string "video"
     t.string "image"

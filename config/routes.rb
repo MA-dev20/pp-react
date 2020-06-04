@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   namespace :dashboard do
     resources :pitches
     post '/pitches/tasks/audio/create', to: 'pitches#createAudio', as: "create_audio"
+    delete '/pitches/:id/tasks/:task_id/media/delete', to: 'pitches#deleteMedia', as: "delete_media"
   end
 
 	

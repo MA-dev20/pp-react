@@ -1,4 +1,4 @@
-<div class="form-group title task-fields hide" id="form_1">
+<div class="form-group title task-fields hide" id="form_<%= f.object.persisted? ? f.object.id : '1' %>">
     <%= f.hidden_field :user_id, value: @admin.id %>
     <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
@@ -6,8 +6,9 @@
         <div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
         <div class="form-group">
             <div class="time-field">
-                <%= f.hidden_field :time, id: 'task_time', value: 80 %>
-                <div class="time" id="settime">1:20</div>
+                <% time = f.object.time || 80 %>
+                <%= f.hidden_field :time, id: 'task_time', value: time %>
+                <div class="time" id="settime"><%= format_time(time) %></div>
                 <i class="fa fa-angle-up up" onclick="timeUp(this)"></i>
                 <i class="fa fa-angle-down down" onclick="timeDown(this)"></i>
             </div>
@@ -16,12 +17,18 @@
     <div class="card add-catchword">
         <div class="title">Text, Video oder Bild hinzufügen</div>
         <div class="btn-line">
-            <div class="btn selected" id="btn_catchword" onclick="chooseOption('catchword', event)">Catchword</div>
-            <div class="btn" id="btn_picture" onclick="chooseOption('picture', event)">Bild</div>
-            <div class="btn" id="btn_video" onclick="chooseOption('video', event)">Video</div>
-            <div class="btn" id="btn_audio" onclick="chooseOption('audio', event)">Audio</div>
+            <%= f.hidden_field :media_option, id: 'media_option' %>
+            <% media_option = f.object.media_option %>
+            <div class="btn <%= 'selected' if media_option == 'catchword' %>" id="btn_catchword"
+                onclick="chooseOption('catchword', event)">Catchword</div>
+            <div class="btn <%= 'selected' if media_option == 'picture' %>" id="btn_picture"
+                onclick="chooseOption('picture', event)">Bild</div>
+            <div class="btn <%= 'selected' if media_option == 'video' %>" id="btn_video"
+                onclick="chooseOption('video', event)">Video</div>
+            <div class="btn <%= 'selected' if media_option == 'audio' %>" id="btn_audio"
+                onclick="chooseOption('audio', event)">Audio</div>
         </div>
-        <div class="catchword media-option">
+        <div class="catchword media-option" style="display: <%= media_option == 'catchword' ? 'block' : 'none' %>">
             <div class="title">Catchwords</div>
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
@@ -52,23 +59,36 @@
                 </div>
             </div>
             <div class="capsule-list list-with-words">
+                <% if f.object.persisted? %>
+                <% cws = f.object.catchwords? ? JSON(f.object.catchwords) : [] %>
+                <% cws.each do |cw| %>
+                <div class="word"><%= cw %></div>
+                <% end %>
+                <% cw_ids = f.object.catchword_ids? ? JSON(f.object.catchword_ids) : [] %>
+                <% cw_ids.each do |cw_id| %>
+                <% cw = @cw_lists.select{ |obj| obj.id == cw_id.to_i }[0] %>
+                <div class="word"><%= cw.name %></div>
+                <% end %>
+                <% end %>
             </div>
-            <!-- <div class="capsule-list <%= f.object.catchwords.present? ? 'list-with-words' : '' %>">
-            </div> -->
             <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
                 task.</div>
         </div>
-        <div class="picture media-option">
+        <div class="picture media-option" style="<%= 'display: block;' if media_option == 'picture' %>">
             <div class="title">Bild</div>
             <div class="subline">Upload an image to your pitch</div>
             <label class="btn upload" onclick="uploadClick(event)">Upload</label>
             <%= f.file_field :image, onchange: "loadFile(event, 'task-img')", accept: 'image/*' %>
-            <div class="preview">
+            <div class="preview" style="<%= 'display: block;'if f.object.image.url.present? %>">
                 <div class="remove" onclick="removeMedia(event)">remove</div>
+                <% if f.object.image.present? %>
+                <%= image_tag f.object.image.url, class: 'media-file' %>
+                <% else %>
                 <%= image_tag 'dash/Image.png', class: 'media-file' %>
+                <% end %>
             </div>
         </div>
-        <div class="video media-option">
+        <div class="video media-option" style="<%= 'display: block;' if media_option == 'video' %>">
             <div class="title">Video</div>
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -85,7 +105,7 @@
                 <!-- <canvas id="canvas" style="overflow:auto"></canvas> -->
             </div>
         </div>
-        <div class="audio media-option">
+        <div class="audio media-option" style="<%= 'display: block;' if media_option == 'audio' %>">
             <div class="title">Audio</div>
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -134,6 +154,17 @@
             </div>
         </div>
         <div class="capsule-list list-with-words">
+            <% if f.object.persisted? %>
+            <% reactions = f.object.reactions? ? JSON(f.object.reactions) : [] %>
+            <% reaction_ids = f.object.reaction_ids? ? JSON(f.object.reaction_ids) : [] %>
+            <% reactions.each do |reaction| %>
+            <div class="word"><%= reaction %></div>
+            <% end %>
+            <% reaction_ids.each do |reaction_id| %>
+            <% reaction = @obj_lists.select{ |obj| obj.id == reaction_id.to_i }[0] %>
+            <div class="word"><%= reaction.name %></div>
+            <% end %>
+            <% end %>
         </div>
         <!-- <div class="capsule-list <%= f.object.reactions.present? ? 'list-with-words' : '' %>">
         </div> -->
@@ -151,6 +182,11 @@
             <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
         </div>
         <div class="capsule-list">
+            <% if f.object.persisted? %>
+            <% f.object.ratings.split(',').each do |rating| %>
+            <div class="word"><%= rating %></div>
+            <% end %>
+            <% end %>
         </div>
     </div>
 </div>
@@ -352,7 +388,7 @@
             let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
             // $(capsule_list).addClass('list-with-words');
             let word = $(`<div class="word">${value}</div>`);
-            if ($(target_field).val() != "") {
+            if ($(target_field).val() !== "") {
                 let field_array = JSON.parse($(target_field).val())
                 if (!field_array.includes(id)) {
                     field_array.push(id)
