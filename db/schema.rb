@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_091052) do
+ActiveRecord::Schema.define(version: 2020_06_04_090012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -249,12 +249,12 @@ ActiveRecord::Schema.define(version: 2020_06_03_091052) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "video"
-    t.string "image"
     t.boolean "pitch_sound", default: true
     t.string "show_ratings", default: "all"
     t.string "video_url"
     t.boolean "skip_elections", default: false
+    t.string "video"
+    t.string "image"
     t.index ["user_id"], name: "index_pitches_on_user_id"
   end
 
@@ -321,8 +321,9 @@ ActiveRecord::Schema.define(version: 2020_06_03_091052) do
     t.bigint "pitch_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "audio_id"
     t.string "video_id"
+    t.string "audio_id"
+    t.string "media_option", default: "catchword"
     t.index ["pitch_id"], name: "index_tasks_on_pitch_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
