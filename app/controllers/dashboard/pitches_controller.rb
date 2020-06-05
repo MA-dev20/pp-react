@@ -28,6 +28,7 @@ module Dashboard
         end
 
         def index
+            @pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
             @pitches = @admin.pitches.includes(:tasks)
         end
 

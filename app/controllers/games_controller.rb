@@ -5,16 +5,17 @@ class GamesController < ApplicationController
 	@game = Game.where(password: game_params[:password], state: 'wait', active: true).first
 	if @game && @game.company != @company
 	  flash[:alert] = 'Das Passwort ist schon vergeben!'
-	  redirect_to dashboard_path('', team: game_params[:team_id])
+	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	  return
 	end
 	@game.update(game_params) if @game
 	@game = @company.games.new(game_params) if !@game
 	@game.user = @user
 	if @game.save
-	  redirect_to dashboard_customize_game_path(@game)
+	  game_login @game
+	  redirect_to gd_join_path(@game)
 	else
-	  redirect_to dashboard_path('', team: game_params[:team_id])
+	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	end
   end
 	
@@ -186,7 +187,7 @@ class GamesController < ApplicationController
 	
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer)
+	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer, :pitch_id)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)
