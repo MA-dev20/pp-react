@@ -135,7 +135,7 @@
 			if($('#record_video').hasClass('pulse')) {
 				mediaRecorder.stop();
 			} else {
-				navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess);
+				navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess).catch(function(err) { alert('Kann Video nicht aufnehmen!') });
 			}
 		})
 		function playVideo() {
