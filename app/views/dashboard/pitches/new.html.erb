@@ -18,8 +18,11 @@
             <% if @pitch.persisted? %>
             <% 
                 persisted_task_ids = @pitch.task_ids
+                persisted_options = [];
+                obj = {}
             %>
             <% @pitch.tasks.each_with_index do |task, index| %>
+            <% obj = {} %>
             <div class="card left-card <%= 'selected' if index == 0 %>" id="<%= task.id %>"
                 onclick="handleCardClick(this)">
                 <div class="task-title">
@@ -27,9 +30,14 @@
                     <div class="name">Task</div>
                     <i class="fas fa-circle"></i>
                     <div class="category">
-                        <%= task.media_option.titleize == 'Pitcture' ? 'Bild' : task.media_option.titleize %></div>
-                    <i class="fas fa-trash remove"></i>
-                    <i class="fas fa-copy copy"></i>
+                        <% task_media =task.media_option.titleize == 'Pitcture' ? 'Bild' : task.media_option.titleize %>
+                        <%= task_media %></div>
+                    <%
+                        obj[task.id] = task_media
+                        persisted_options.push(obj)
+                    %>
+                    <i class="fas fa-trash remove" onclick="removeTask(this)"></i>
+                    <i class="fas fa-copy copy" onclick="cloneTask(this)"></i>
                 </div>
                 <div class="thumb">
                     <% if task.image? %>
@@ -48,6 +56,9 @@
                 </div>
             </div>
             <% end %>
+            <div class="form-group add-first-task hide">
+                <button class="btn">Add first task</button>
+            </div>
             <% else %>
             <% persisted_task_ids = [] %>
             <div class="form-group add-first-task">
@@ -67,8 +78,8 @@
     </div>
 
     <%
-        editForm = @pitch.persisted?
-        form_url = editForm ? dashboard_pitch_path : dashboard_pitches_path
+        isEditForm = @pitch.persisted?
+        form_url = isEditForm ? dashboard_pitch_path : dashboard_pitches_path
 
     %>
 
@@ -77,6 +88,8 @@
         <%= form_for @pitch, url: form_url, html: {id: 'new_pitch_form'} do |f| %>
         <%= hidden_field_tag :pitch_id, @pitch.id, id: 'pitch_id' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
+        <%= f.hidden_field :destroy_image, class: 'destroy-image' %>
+        <%= f.hidden_field :destroy_video, class: 'destroy-video' %>
 
         <%= f.fields_for :tasks do |task| %>
         <%= render 'task_fields', f: task %>
@@ -124,7 +137,7 @@
 
     $(document).on('ready turbolinks:load', () => {
 
-        if ('<%= editForm %>' === 'true') {
+        if ('<%= isEditForm %>' === 'true') {
             $('.task-fields:first').removeClass('hide');
             task_ids.pop();
             persisted_task_ids.forEach(id => {
@@ -295,7 +308,8 @@
         $that.closest('.add-catchword').find('.btn-line .btn.selected').removeClass('selected');
         $that.closest('.add-catchword').find('.media-option').hide();
         $that.closest('.add-catchword').find(`#btn_${type}`).addClass('selected');
-        $that.closest('.add-catchword').find(`.${type}`).show();
+        $that.closest('.add-catchword').find('.media-option').addClass('not-active');
+        $that.closest('.add-catchword').find(`.${type}`).removeClass('not-active').show();
         $('.left-card.selected .category').text($(event.target).text())
     }
 
@@ -362,9 +376,10 @@
     }
 
     var removeTask = (e) => {
-        let id = $(e).closest('.left-card').attr('id')
-        $(`#form_${id}`).remove()
-        $(`#${id}`).remove()
+        let id = $(e).closest('.left-card').attr('id');
+        $(`#form_${id} + .del-link-wrapper a`).click();
+        $(`#form_${id}`).remove();
+        $(`#${id}`).remove();
         let index = task_ids.indexOf(parseInt(id));
         task_ids = [...task_ids.slice(0, index), ...task_ids.slice(index + 1, task_ids.length)]
         if (task_ids.length) {
@@ -608,19 +623,42 @@
         let task_id = parseInt($(e.target).closest('.task-fields').attr('id').split('_')[1])
         $mediaBox.hide()
         $mediaBox.siblings('input[type="file"]').val('')
-        if (type == 'audio') {
+        if (type === 'audio') {
             $mediaBox.find('audio').attr('src', '')
             $mediaBox.siblings('.audio-id').val('')
-        } else if (type == 'video') {
+        } else if (type === 'video') {
             $mediaBox.find('video').attr('src', '')
         } else {
             $('.left-card.selected img')[0].src = taskHeaderImg;
         }
 
         if (persisted_task_ids.includes(task_id)) {
-            deleteServerMedia(parseInt($('#pitch_id').val()), task_id, type || 'image');
-            if (type === '') {
-                $(`#form_${task_id} .picture.media-option .preview`).hide();
+            type = type || 'image'
+            if (type === 'Bild')
+                type = 'Picture'
+            $(`#form_${task_id} .destroy-media`).val(task_id);
+            // persisted_options = JSON.parse(<%= persisted_options %>)
+        }
+        // deleteServerMedia(parseInt($('#pitch_id').val()), task_id, type || 'image');
+        // if (type === '') {
+        //     $(`#form_${task_id} .picture.media-option .preview`).hide();
+        // }
+    }
+
+    function removePitchMedia(e, type = '') {
+        let isEditForm = "<%= isEditForm %>";
+        if (type === 'video') {
+            $('.pitch-video-file').attr('src', '');
+            $('.video-preview').hide();
+            $('#pitch_video').val('');
+            if (isEditForm === 'true') {
+                $('.destroy-video').val(true);
+            }
+        } else {
+            $('.image-preview').hide();
+            $('#pitch_image').val('');
+            if (isEditForm === 'true') {
+                $('.destroy-image').val(true);
             }
         }
     }
@@ -633,8 +671,16 @@
 
     function loadFile(e, type = '') {
         const id = $(e.target).attr('id');
-        let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
+        let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
         let file = event.target.files[0];
+        if (!$(e.target).hasClass('pitch-uploadfile')) {
+            let task_id = $(e.target).closest('.task-fields').attr('id');
+            removeOtherMedia(type, task_id);
+            // let splitted_task_id = parseInt(task_id.split('_')[1])
+            // if (persisted_task_ids.includes(splitted_task_id)) {
+            //     removeOtherMedia(type || 'image', task_id);
+            // }
+        }
         if (type === 'video') {
             let $video_tag = $(e.target).siblings('.preview').find('video');
             $video_tag[0].src = URL.createObjectURL(file);
@@ -645,13 +691,31 @@
             $preview.find('.audio-title').text(file.name);
             $preview.find('audio')[0].src = URL.createObjectURL(file);
         } else {
-            let $img = $(mediaBox).find('img');
+            let $img = $(mediaOption).find('img');
             let url_object = URL.createObjectURL(file);
             $img[0].src = url_object;
             if (type === 'task-img')
                 $('.left-card.selected img')[0].src = url_object;
         }
-        $(mediaBox).show();
+        $(mediaOption).show();
+    }
+
+    function removeOtherMedia(type, id) {
+        let $mediaBox = $(`#${id}`).find('.add-catchword');
+        $($mediaBox).find('.not-active input[type="file"]').val('');
+        $($mediaBox).find('.not-active input[type="hidden"]').val('');
+        $($mediaBox).find('.preview').hide();
+        let task_id = id.split('_')[1];
+        if (type === 'video' || type === 'audio' || type === 'cw') {
+            if ($(`#${task_id} .thumb img`).attr('src').split(':')[0] !== 'http') {
+                $(`#${task_id} .thumb img`).attr('src', taskHeaderImg);
+            }
+        }
+        if (type !== 'cw') {
+            let $catchword_media = $mediaBox.find('.catchword.media-option');
+            $catchword_media.find('.capsule-list .word').remove()
+            $catchword_media.find('.form-group input[type="hidden"]').val('');
+        }
     }
 
 

@@ -1,4 +1,4 @@
-<div class="form-group title task-fields hide" id="form_<%= f.object.persisted? ? f.object.id : '1' %>">
+<div class="nested-fields form-group title task-fields hide" id="form_<%= f.object.persisted? ? f.object.id : '1' %>">
     <%= f.hidden_field :user_id, value: @admin.id %>
     <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
@@ -28,6 +28,9 @@
             <div class="btn <%= 'selected' if media_option == 'audio' %>" id="btn_audio"
                 onclick="chooseOption('audio', event)">Audio</div>
         </div>
+        <% if f.object.persisted? %>
+        <%= f.hidden_field :destroy_media, class: 'destroy-media' %>
+        <% end %>
         <div class="catchword media-option" style="display: <%= media_option == 'catchword' ? 'block' : 'none' %>">
             <div class="title">Catchwords</div>
             <div class="subline">Type your catchword or choose from list below</div>
@@ -41,7 +44,7 @@
                         <% if list.catchwords.present? %>
                         <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
                             <i class="fas fa-caret-left"></i>
-                            <span class="basket-name" data-name="<%= list.name %>"
+                            <span class="basket-name cw" data-name="<%= list.name %>"
                                 data-id="<%= list.id %>"><%= list.name %></span>
                             <div class="list" id="scrollNameList">
                                 <% list.catchwords.each do |cw| %>
@@ -74,7 +77,7 @@
             <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
                 task.</div>
         </div>
-        <div class="picture media-option" style="<%= 'display: block;' if media_option == 'picture' %>">
+        <div class="picture media-option not-active" style="<%= 'display: block;' if media_option == 'picture' %>">
             <div class="title">Bild</div>
             <div class="subline">Upload an image to your pitch</div>
             <label class="btn upload" onclick="uploadClick(event)">Upload</label>
@@ -88,7 +91,7 @@
                 <% end %>
             </div>
         </div>
-        <div class="video media-option" style="<%= 'display: block;' if media_option == 'video' %>">
+        <div class="video media-option not-active" style="<%= 'display: block;' if media_option == 'video' %>">
             <div class="title">Video</div>
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -96,16 +99,18 @@
             <!-- <input onchange="loadFile(event, 'video')" accept="video/*" type="file" name="pitch[tasks_attributes][0][video]" id="pitch_tasks_attributes_0_video"> -->
 
             <div class="btn upload open-modal" data-modal="videoModal">Record</div>
-            <div class="preview">
+            <div class="preview" style="<%= 'display: block;'if f.object.video.url.present? %>">
                 <div class="time"></div>
                 <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-                <video id="video_tag" onloadedmetadata="loadMetaData(event)" style="display: none" type="video/mp4"
+                <video id="video_tag" src="<%= f.object.video.url if f.object.video.url.present? %>"
+                    onloadedmetadata="loadMetaData(event)"
+                    style="display: <%= f.object.video.url.present? ? 'block' : 'none' %>" type="video/mp4"
                     controls></video>
                 <%#= image_tag 'dash/Image.png', class: 'media-file' %>
                 <!-- <canvas id="canvas" style="overflow:auto"></canvas> -->
             </div>
         </div>
-        <div class="audio media-option" style="<%= 'display: block;' if media_option == 'audio' %>">
+        <div class="audio media-option not-active" style="<%= 'display: block;' if media_option == 'audio' %>">
             <div class="title">Audio</div>
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -114,10 +119,15 @@
             <!-- <input onchange="loadFile(event, 'audio')" accept=".mp3" type="file" name="pitch[tasks_attributes][0][audio]" id="pitch_tasks_attributes_0_audio"> -->
 
             <div class="btn upload record">Record</div>
-            <div class="preview audio-preview">
-                <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)' %>
+            <div class="preview audio-preview" style="<%= 'display: block;'if f.object.audio.url.present? %>">
+                <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)', style: 'display: block;' %>
+                <% if f.object.audio.url.present? %>
+                <div class="audio-title"><%= f.object.audio.identifier %></div>
+                <% else %>
                 <div class="audio-title"></div>
-                <audio style="display: none" onended='stopAudio(event)' controls></audio>
+                <% end %>
+                <audio src="<%= f.object.audio.url if f.object.audio.url.present? %>" style="display: none"
+                    onended='stopAudio(event)' controls></audio>
                 <div class="remove" onclick="removeMedia(event, 'audio')">remove</div>
             </div>
         </div>
@@ -190,7 +200,9 @@
         </div>
     </div>
 </div>
-
+<div class="del-link-wrapper nested-fields">
+    <%= link_to_remove_association '', f %>
+</div>
 <script>
 
     // function loadFile(e, type = '') {
@@ -368,13 +380,21 @@
         if ($())
             $('.input-field').unbind().keypress((e) => {
                 if (e.which == 13) {
-                    let target_field = $(e.target).siblings('.capsule-field')
-                    let value = $(e.target).val()
+                    let target_field = $(e.target).siblings('.capsule-field');
+                    let value = $(e.target).val();
                     if (value.length) {
-                        createCapsule(target_field, value, e)
-                        checkTaskData(e)
+                        createCapsule(target_field, value, e);
+                        checkTaskData(e);
+                        if ($(e.target).hasClass('catchword')) {
+                            let task_id = $(e.target).closest('.task-fields').attr('id');
+                            removeOtherMedia('cw', task_id);
+                            // let splitted_task_id = parseInt(task_id.split('_')[1])
+                            // if (persisted_task_ids.includes(splitted_task_id)) {
+                            //     removeOtherMedia('cw', task_id);
+                            // }
+                        }
                     }
-                    $(e.target).val("")
+                    $(e.target).val("");
                     e.preventDefault();
                     return false;
                 }
@@ -386,7 +406,6 @@
             let id = $that.closest('.option').find('.basket-name').attr('data-id')
             let value = $that.closest('.option').find('.basket-name').attr('data-name')
             let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
-            // $(capsule_list).addClass('list-with-words');
             let word = $(`<div class="word">${value}</div>`);
             if ($(target_field).val() !== "") {
                 let field_array = JSON.parse($(target_field).val())
@@ -399,6 +418,15 @@
                 $(target_field).val(JSON.stringify(Array(id)))
                 $(capsule_list).append(word)
             }
+            if ($(e.target).hasClass('cw')) {
+                let task_id = $(e.target).closest('.task-fields').attr('id');
+                removeOtherMedia('cw', task_id);
+
+                // let splitted_task_id = parseInt(task_id.split('_')[1])
+                // if (persisted_task_ids.includes(splitted_task_id)) {
+                //     removeOtherMedia('cw', task_id);
+                // }
+            }
             checkTaskData(e);
             hideDropdown();
             e.preventDefault();
@@ -406,7 +434,15 @@
         })
 
         $('.sub-cs .list .name').unbind().click(function (e) {
-            let target_field = $(this).closest('.form-group').children('.capsule-field')
+            if ($(e.target).hasClass('catchword')) {
+                let task_id = $(e.target).closest('.task-fields').attr('id');
+                removeOtherMedia('cw', task_id);
+                // let splitted_task_id = parseInt(task_id.split('_')[1])
+                // if (persisted_task_ids.includes(splitted_task_id)) {
+                //     removeOtherMedia('cw', task_id);
+                // }
+            }
+            let target_field = $(this).closest('.form-group').children('.capsule-field');
             createCapsule(target_field, $(this).attr('data-name'), e);
             checkTaskData(e);
             hideDropdown();

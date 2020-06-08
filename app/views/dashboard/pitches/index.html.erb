@@ -7,6 +7,7 @@
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches" id="pitch-list">
         <% @pitches.includes(:tasks).each do |pitch| %>
+        <!-- <a href="<%= edit_dashboard_pitch_path(pitch) %>" data-turbolinks="false" class="edit-card"> -->
         <div class="card" id="pitch">
             <div class="thumb">
                 <% if pitch.image? %>
@@ -24,13 +25,22 @@
             </div>
         </div>
         <% end %>
+        <!-- </a> -->
         <div class="card" id="newpitch">
+            <%= link_to new_dashboard_pitch_path, data: { turbolinks: false } do %>
             <%= image_tag 'dash/icons/circle-plus-green.svg' %>
+            <% end %>
             <div class="title">Create new Pitch</div>
-            <%= link_to '', new_dashboard_pitch_path, data: { turbolinks: false } %>
         </div>
     </div>
 </div>
 <script>
     new PerfectScrollbar('#pitch-list');
+    function handleClick(e) {
+        if ($(e.target).attr('class') === 'card') {
+            $(e.target).find('.btn.reversed').click();
+        } else {
+            $(e.target).closest('.card').find('.btn.reversed').click();
+        }
+    }
 </script>

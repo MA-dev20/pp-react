@@ -17,6 +17,7 @@ module Dashboard
         def create
             # TODO:
             # JSON()
+            debugger
             if Pitch.create(pitch_params)
                 redirect_to dashboard_pitches_path, status: :moved_permanently
             else
@@ -30,7 +31,33 @@ module Dashboard
         end
 
         def update
+            pitch_params[:tasks_attributes].each do |key, values|
+                if values[:destroy_media].present?
+                    id = values[:destroy_media].to_i
+                    @task = Task.find(id)
+                    if @task.image.present?
+                        @task.remove_image!
+                    elsif @task.video.present?
+                        @task.remove_video!
+                    else
+                        @task.remove_audio!
+                    end
+                    @task.update(media_option: '')
+                    @task.save!
+                end
+            end
+            if pitch_params[:destroy_image] == "true"
+                @pitch.remove_image!
+            end
+            if pitch_params[:destroy_video] == "true"
+                @pitch.remove_video!
+            end
+
             if @pitch.update(pitch_params)
+                @pitch.tasks.each do |task|
+                    task.update(destroy_media: '')
+                end
+                @pitch.update(destroy_image: 'false', destroy_video: 'false')
                 redirect_to dashboard_pitches_path, status: :moved_permanently
             else
                 flash[:alert] = 'Error while creating pitch'
@@ -52,7 +79,7 @@ module Dashboard
         private
 
         def pitch_params
-            params.require(:pitch).permit(:title, :image, :video, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids])
+            params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids, :destroy_media, :_destroy])
         end
 
         def set_pitch

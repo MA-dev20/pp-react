@@ -6,5 +6,7 @@ class AddFieldsToPitches < ActiveRecord::Migration[5.2]
     add_column :pitches, :skip_elections, :boolean, default: false
     add_column :pitches, :video, :string
     add_column :pitches, :image, :string
+    add_column :pitches, :destroy_video, :boolean, default: false
+    add_column :pitches, :destroy_image, :boolean, default: false
   end
 end

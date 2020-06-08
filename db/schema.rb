@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_04_103636) do
+ActiveRecord::Schema.define(version: 2020_06_08_105215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -255,6 +255,8 @@ ActiveRecord::Schema.define(version: 2020_06_04_103636) do
     t.boolean "skip_elections", default: false
     t.string "video"
     t.string "image"
+    t.boolean "destroy_video", default: false
+    t.boolean "destroy_image", default: false
     t.index ["user_id"], name: "index_pitches_on_user_id"
   end
 
@@ -324,6 +326,7 @@ ActiveRecord::Schema.define(version: 2020_06_04_103636) do
     t.string "video_id"
     t.string "audio_id"
     t.string "media_option", default: "catchword"
+    t.string "destroy_media"
     t.index ["pitch_id"], name: "index_tasks_on_pitch_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end

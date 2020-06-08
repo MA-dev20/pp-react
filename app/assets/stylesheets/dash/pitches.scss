@@ -2,6 +2,12 @@
 #content .card.right #pitches{
 	height: 90%;
 	font-size: 1.7vh;
+
+	.edit-card {
+		text-decoration: none;
+		color: unset;
+	}
+	
 	.search {
 		position: relative;
 		top: 2vh;
