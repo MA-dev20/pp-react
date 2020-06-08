@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   namespace :dashboard do
     resources :pitches
     post '/pitches/tasks/audio/create', to: 'pitches#createAudio', as: "create_audio"
+	post '/pitches/tasks/video/create', to: 'pitches#createVideo', as: 'create_video'
   end
 
 	

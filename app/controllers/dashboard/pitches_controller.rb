@@ -26,6 +26,11 @@ module Dashboard
             @task_media = TaskMedium.create(audio: params[:file]) if params[:file].present?
             render json: {id: @task_media.id}
         end
+		
+		def createVideo
+		  @task_media = TaskMedium.create(video: params[:file]) if params[:file].present?
+          render json: {id: @task_media.id, video_url: @task_media.video.url}
+		end
 
         def index
             @pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
