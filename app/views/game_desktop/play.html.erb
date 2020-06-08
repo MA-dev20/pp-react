@@ -31,10 +31,28 @@
 	<%= video_tag @task.video.url, id: 'task_video' %>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
+<% elsif @task.video_id != "" && TaskMedium.find(@task.video_id).video? %>
+
+<div class="video">
+	<%= video_tag TaskMedium.find(@task.video_id).video.url, id: 'task_video' %>
+</div>
+<div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
 <% elsif @task.image? %>
 <div class="video">
 	<%= image_tag @task.image.url, id: 'task_image' %>
 </div>
+<% elsif @task.audio_id != "" %>
+<div class="sound">
+	<i class="fas fa-music"></i>
+	<%= audio_tag TaskMedium.find(@task.audio_id).audio.url, id: 'task_sound' %>
+	<div class="progress"><div class="bar"></div></div>
+	<style>
+		:root {
+	  		--soundduration: <%= FFMPEG::Movie.new(TaskMedium.find(@task.audio_id).audio.current_path).duration.round(1).to_s + 's' %>;
+		}
+	</style>
+</div>
+<div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
 <% elsif @task.audio? %>
 <div class="sound">
 	<i class="fas fa-music"></i>
@@ -104,16 +122,17 @@
 	document.getElementById('dong').volume = .5;
 	document.getElementById('theme').volume = .2;
 	document.getElementById('countdown').volume = .3;
-	<% if @task.video %>
+	<% if @task.video? || @task.video_id != '' %>
 	$('#task_video').on('ended', function() {
 		$('#play .video').addClass('fadeOut');
 		$('#task').show();
 		document.getElementById('theme').play();
 		MyApp.timer.resume();
 	})
+	<% elsif @task.audio? || @task.audio_id != '' %>
 	$('#task_sound').on('ended', function() {
-		$('#play .sound').addClass('fadeOut');
-		$('#task').show();
+		$('#play .sound').fadeOut(10);
+		$('#task').fadeIn(100);
 		document.getElementById('theme').play();
 		MyApp.timer.resume();
 	})
@@ -133,14 +152,14 @@
 				document.getElementById('word_load').play();
 				$('#word').html("<%= @catchword %>");
 				textanim();
-				<% elsif  @task.video? %>
+				<% elsif  @task.video? || @task.video_id != '' %>
 					$('#play .video').show();
 					document.getElementById('task_video').play();
 				<% elsif @task.image? %>
 					$('#play .video').show();
 					document.getElementById('theme').play();
 					MyApp.timer.resume();
-				<% elsif @task.audio? %>
+				<% elsif @task.audio? || @task.audio_id != ''%>
 					$('#play .sound').show();
 					document.getElementById('task_sound').play();
 				<% end %>
