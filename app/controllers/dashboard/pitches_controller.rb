@@ -17,7 +17,6 @@ module Dashboard
         def create
             # TODO:
             # JSON()
-            debugger
             if Pitch.create(pitch_params)
                 redirect_to dashboard_pitches_path, status: :moved_permanently
             else
