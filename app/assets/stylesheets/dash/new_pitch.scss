@@ -381,6 +381,10 @@
                         left: -4vh;
                     }
                     .audio-title {
+                        width: 22vh;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                         position: relative;
                         top: 1vh;
                     }

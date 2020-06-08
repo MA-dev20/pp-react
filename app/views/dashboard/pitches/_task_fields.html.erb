@@ -97,18 +97,21 @@
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
             <%= f.hidden_field :video_id, value: '', class: 'video-id' %>
-            <!-- <input onchange="loadFile(event, 'video')" accept="video/*" type="file" name="pitch[tasks_attributes][0][video]" id="pitch_tasks_attributes_0_video"> -->
 
-            <div class="btn upload open-modal" data-modal="videoModal">Record</div>
-            <div class="preview" style="<%= 'display: block;'if f.object.video.url.present? %>">
+            <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+            <%
+                if f.object.video_id.present?
+                video = TaskMedium.find(f.object.video_id).video
+                else
+                video = f.object.video
+                end  
+            %>
+            <div class="preview" style="<%= 'display: block;' if video.present? %>">
                 <div class="time"></div>
                 <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-                <video id="video_tag" src="<%= f.object.video.url if f.object.video.url.present? %>"
-                    onloadedmetadata="loadMetaData(event)"
-                    style="display: <%= f.object.video.url.present? ? 'block' : 'none' %>" type="video/mp4"
-                    controls></video>
+                <video id="video_tag" src="<%= video.url if video.present? %>" onloadedmetadata="loadMetaData(event)"
+                    style="display: <%= video.present? ? 'block' : 'none' %>" type="video/mp4" controls></video>
                 <%#= image_tag 'dash/Image.png', class: 'media-file' %>
-                <!-- <canvas id="canvas" style="overflow:auto"></canvas> -->
             </div>
         </div>
         <div class="audio media-option not-active" style="<%= 'display: block;' if media_option == 'audio' %>">
@@ -126,7 +129,7 @@
                 audio = f.object.audio
                 end  
             %>
-            <div class="preview audio-preview" style="<%= 'display: block;'if audio.present? %>">
+            <div class="preview audio-preview" style="<%= 'display: block;' if audio.present? %>">
                 <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)', style: 'display: block;' %>
                 <% if audio.present? %>
                 <div class="audio-title"><%= audio.identifier %></div>
@@ -326,6 +329,9 @@
             }
         })
 
+
+        // Audio Recording
+
         globalForm = new FormData();
         var audioChunks;
         var recording = false;
@@ -347,7 +353,7 @@
                         rec.ondataavailable = e => {
                             audioChunks.push(e.data);
                             if (rec.state == "inactive") {
-								stream.getTracks().forEach(track => track.stop())
+                                stream.getTracks().forEach(track => track.stop())
                                 $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
                                 $preview.siblings('input[type="file"]').val('')
                                 $preview.show();
@@ -368,5 +374,116 @@
                     .catch(e => console.log(e));
             }
         })
+
+
+        // Video Recording Modal
+
+        $('.record-video').click(function () {
+            $('#videoModal').show()
+        })
+
+        $('#clodeVideoModal').on('click', function (e) {
+            e.preventDefault();
+            $('#videoModal').hide();
+        });
+        var recorder = document.getElementById('recorder');
+        var player = document.getElementById('player');
+        var file = NaN;
+        var mediaRecorder;
+        var handleSuccess = function (stream) {
+            $('.videorecord i').removeClass('fa-dot-circle');
+            $('.videorecord i').addClass('fa-stop-circle');
+            $('.videorecord').addClass('pulse');
+            $('#recorder').show();
+            $('#player').hide();
+            const options = { mimeType: 'video/webm' };
+            const recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, options);
+            recorder.srcObject = stream;
+            mediaRecorder.start();
+            mediaRecorder.addEventListener('start', function () {
+                console.log('stream started..');
+            })
+            mediaRecorder.addEventListener('dataavailable', function (e) {
+                if (e.data.size > 0) {
+                    console.log('streaming ...');
+                    recordedChunks.push(e.data);
+                }
+            });
+            mediaRecorder.addEventListener('stop', function () {
+                stream.getTracks().forEach(track => track.stop())
+                console.log('stream stopped');
+                var blob = new Blob(recordedChunks);
+                videoURL = URL.createObjectURL(blob);
+                file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+                player.src = videoURL;
+                $('#player').show();
+                $('#recorder').hide();
+                recorder.load();
+                console.log('stream saved');
+                $('.videorecord i').removeClass('fa-stop-circle');
+                $('.videorecord i').addClass('fa-dot-circle');
+                $('.videorecord').removeClass('pulse');
+                $('#stopVideo').css('display', 'inline-block');
+                $('#playVideo').css('display', 'inline-block');
+                stream = NaN;
+            });
+            document.getElementById('stopVideo').addEventListener('click', function () {
+                mediaRecorder.stop();
+            })
+            document.getElementById('videoUpload').addEventListener('click', function (e) {
+                e.preventDefault();
+                if (file != NaN) {
+                    var globalForm = new FormData();
+                    globalForm.append('file', file);
+                    sendVideo(globalForm);
+                } else {
+                    $('#videoModal').hide()
+                }
+            })
+        }
+        document.getElementById('record_video').addEventListener('click', function () {
+            if ($('#record_video').hasClass('pulse')) {
+                mediaRecorder.stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess);
+            }
+        })
+        function playVideo() {
+            var player = document.getElementById('player');
+            if ($('#playVideo i').hasClass("fa-play-circle")) {
+                $('#playVideo i').addClass('fa-pause-circle');
+                $('#playVideo i').removeClass('fa-play-circle');
+                player.play();
+                player.addEventListener('ended', function () {
+                    $('#playVideo i').addClass('fa-play-circle');
+                    $('#playVideo i').removeClass('fa-pause-circle');
+                })
+            } else {
+                $('#playVideo i').addClass('fa-play-circle');
+                $('#playVideo i').removeClass('fa-pause-circle');
+                player.pause();
+            }
+        }
+        function sendVideo(globalForm) {
+            $.ajax({
+                url: "<%= dashboard_create_video_path %>",
+                type: "post",
+                cache: false,
+                async: true,
+                contentType: false,
+                processData: false,
+                data: globalForm,
+                beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video-id').val(res.id);
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').attr('src', res.video_url);
+                    $('#videoModal').hide();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
+                    globalForm = new FormData();
+                }
+            })
+        }
     })
 </script>

@@ -17,7 +17,8 @@
                 <% end %>
             </div>
             <div class="title"><%= pitch.title %></div>
-            <div class="subtitle">Video: <%= pitch.tasks.select{|task| task.video? }.count %>, Image:
+            <div class="subtitle">Video: <%= pitch.tasks.select{|task| task.video? || task.video_id.present? }.count %>,
+                Image:
                 <%= pitch.tasks.select{|task| task.image? }.count %>, Tasks: <%= pitch.tasks.size %></div>
             <div class="buttons">
                 <%= link_to 'Edit', edit_dashboard_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
