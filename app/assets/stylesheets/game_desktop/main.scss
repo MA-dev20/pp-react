@@ -299,7 +299,7 @@ body {
 			top: 30vh;
 			border-radius: 50%;
 			border: 1vh solid rgb(var(--custcolor));
-			animation: fadeInMiddle 2s 1;
+			animation: fadeInMiddle 1s 1;
 		}
 		.circle.mid-img {
 			background-color: #00232a;
@@ -1198,9 +1198,9 @@ body {
 	animation-fill-mode: forwards;
 }
 .switch {animation: switchHand 5.5s infinite;}
-.delay2 {animation-delay: 2s;}
-.moveMiddleLeft{animation: moveMiddleLeft 2s 1 forwards;}
-.moveMiddleRight{animation: moveMiddleRight 2s 1 forwards;}
+.delay2 {animation-duration: 1s;}
+.moveMiddleLeft{animation: moveMiddleLeft 1s 1 forwards;}
+.moveMiddleRight{animation: moveMiddleRight 1s 1 forwards;}
 @keyframes fadeOut {
 	to {
 		opacity: 0;

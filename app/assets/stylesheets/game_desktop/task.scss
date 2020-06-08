@@ -96,13 +96,14 @@
 		top: 0;
 		left: 35%;
 		width: 30%;
-		animation: taskMoveIn 2s 1;
+		animation: taskMoveIn 1s 1;
 		animation-fill-mode: forwards;
 		h3 {
 			width: 100%;
 			text-align: center;
 			font-size: 6vh;
 			margin: 0 !important;
+			animation-duration: 1s !important;
 		}
 		.circle, 
 		img {

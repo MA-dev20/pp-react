@@ -29,6 +29,7 @@ class GameMobileController < ApplicationController
 	@turn2 = GameTurn.find(@game.turn2) if @game.turn2
 	@turn = GameTurn.find(@game.current_turn) if @game.current_turn
 	@task = @turn.task if @turn
+	@task = @pitch.tasks.first(@game.game_turns.where(played: true).count + 1).last if !@task
 	render @state
   end
 	
