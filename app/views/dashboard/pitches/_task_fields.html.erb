@@ -115,19 +115,25 @@
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav' %>
-            <%= f.hidden_field :audio_id, value: '', class: 'audio-id' %>
-            <!-- <input onchange="loadFile(event, 'audio')" accept=".mp3" type="file" name="pitch[tasks_attributes][0][audio]" id="pitch_tasks_attributes_0_audio"> -->
+            <%= f.hidden_field :audio_id, class: 'audio-id' %>
 
             <div class="btn upload record">Record</div>
-            <div class="preview audio-preview" style="<%= 'display: block;'if f.object.audio.url.present? %>">
+            <%
+                if f.object.audio_id.present?
+                audio = TaskMedium.find(f.object.audio_id).audio
+                else
+                audio = f.object.audio
+                end  
+            %>
+            <div class="preview audio-preview" style="<%= 'display: block;'if audio.present? %>">
                 <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)', style: 'display: block;' %>
-                <% if f.object.audio.url.present? %>
-                <div class="audio-title"><%= f.object.audio.identifier %></div>
+                <% if audio.present? %>
+                <div class="audio-title"><%= audio.identifier %></div>
                 <% else %>
                 <div class="audio-title"></div>
                 <% end %>
-                <audio src="<%= f.object.audio.url if f.object.audio.url.present? %>" style="display: none"
-                    onended='stopAudio(event)' controls></audio>
+                <audio src="<%= audio.url if audio.present? %>" style="display: none" onended='stopAudio(event)'
+                    controls></audio>
                 <div class="remove" onclick="removeMedia(event, 'audio')">remove</div>
             </div>
         </div>
@@ -205,91 +211,9 @@
 </div>
 <script>
 
-    // function loadFile(e, type = '') {
-    //     const id = $(e.target).attr('id');
-    //     let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
-    //     let file = event.target.files[0];
-    //     if (type === 'video') {
-    //         // debugger
-    //         let $video_tag = $(e.target).siblings('.preview').find('video');
-    //         $video_tag[0].src = URL.createObjectURL(file);
-    //         $video_tag.show();
-    //         // $("video")[0].src = URL.createObjectURL(file);
-    //         // $('#video_tag').show();
-    //     } else if (type === 'audio') {
-    //         let $preview = $(event.target).siblings('.preview');
-    //         $preview.siblings('.audio-id').val('');
-    //         $preview.find('.audio-title').text(file.name);
-    //         $preview.find('audio')[0].src = URL.createObjectURL(file);
-    //     } else {
-    //         let $img = $(mediaBox).find('img');
-    //         $img[0].src = URL.createObjectURL(file);
-    //     }
-    //     $(mediaBox).show();
-    // }
-
     function uploadClick(e) {
         $(e.target).siblings('input[type="file"]').click()
     }
-
-
-    // var stream, form, globalForm, recorder, audio, timer;
-    // globalForm = new FormData();
-    // var processing = false;
-    // audio = new Audio();
-
-    // function recordAudio(event) {
-    //     if (!processing) {
-    //         requestAudio(event);
-    //         processing = true;
-    //     } else {
-    //         stopRecording(event)
-    //     }
-    // }
-
-    // function requestAudio(event) {
-    //     var seconds = 10;
-    //     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    //         navigator.mediaDevices.getUserMedia({ audio: true }).then(function (str) {
-    //             stream = str;
-    //             recorder = new MediaRecorder(stream);
-    //             let chunks = [];
-    //             recorder.ondataavailable = function (e) {
-    //                 seconds -= 1;
-    //                 chunks.push(e.data);
-    //                 if (recorder.state == 'inactive') {
-    //                     debugger
-
-    //                     const blob = new Blob(chunks, { type: 'audio/webm' });
-    //                     var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-    //                     // debugger
-    //                     // $('.audio').append('file', file);
-    //                     // debugger
-    //                     $('.audio').append(file);
-
-    //                     // globalForm.append('file', file);
-    //                     // sendAudio(id, globalForm);
-    //                     processing = false;
-    //                 }
-    //             };
-    //             recorder.start(1000);
-    //             timer = setTimeout(() => {
-    //                 stopRecording(event)
-    //             }, 11000);
-    //         })
-    //     } else {
-    //         alert('Konnte Aufnahme nicht starten!')
-    //     }
-    // }
-
-    // function stopRecording(event) {
-    //     debugger
-    //     clearTimeout(timer);
-    //     if (recorder.state != 'inactive') {
-    //         recorder.stop()
-    //     }
-    //     stream.getTracks()[0].stop()
-    // }
 
     function sendAudio(globalForm) {
         $.ajax({
@@ -308,52 +232,6 @@
         })
     }
 
-
-    // globalForm = new FormData();
-    // var audioChunks;
-    // var recording = false;
-    // $('.record').on('click', function (e) {
-    //     if (recording) {
-    //         $(e.target).text('Record');
-    //         rec.stop();
-    //         recording = false;
-    //     } else {
-    //         recording = true;
-    //         $(e.target).text('Recording...');
-    //         // This will prompt for permission if not allowed earlier
-    //         let $preview = $(e.target).siblings('.preview');
-    //         var recordedAudio = $preview.find('audio')[0];
-    //         navigator.mediaDevices.getUserMedia({ audio: true })
-    //             .then(stream => {
-    //                 audioChunks = [];
-    //                 rec = new MediaRecorder(stream);
-    //                 rec.ondataavailable = e => {
-    //                     audioChunks.push(e.data);
-    //                     if (rec.state == "inactive") {
-    //                         $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-    //                         $preview.siblings('input[type="file"]').val('')
-    //                         $preview.show();
-
-    //                         let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-    //                         recordedAudio.src = URL.createObjectURL(blob);
-    //                         recordedAudio.controls = true;
-
-    //                         blob = new Blob(audioChunks, { type: 'audio/webm' });
-    //                         var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-    //                         // var formElement = document.querySelector("form");
-    //                         // var formData = new FormData(formElement)
-    //                         // formData.append("pitch[tasks_attributes][0][audio]", blob);
-    //                         globalForm.append('file', file);
-    //                         sendAudio(globalForm);
-
-    //                     }
-    //                 }
-    //                 rec.start();
-    //             })
-    //             .catch(e => console.log(e));
-    //     }
-    // })
-
     function playAudio(event) {
         let audio = $(event.target).closest('.preview').find('audio');
         if ($(event.target).hasClass('play-audio')) {
@@ -368,13 +246,6 @@
     function stopAudio(event) {
         $(event.target).siblings('img').removeClass('pause-audio').addClass('play-audio');
     }
-
-    // function endedAudio(id) {
-    //     var sound = document.getElementById('wordSound' + id);
-    //     sound.load();
-    //     $('#word_' + id + ' .play').removeClass('fa-pause-circle');
-    //     $('#word_' + id + ' .play').addClass('fa-play-circle');
-    // }
 
     $(() => {
         if ($())
@@ -421,11 +292,6 @@
             if ($(e.target).hasClass('cw')) {
                 let task_id = $(e.target).closest('.task-fields').attr('id');
                 removeOtherMedia('cw', task_id);
-
-                // let splitted_task_id = parseInt(task_id.split('_')[1])
-                // if (persisted_task_ids.includes(splitted_task_id)) {
-                //     removeOtherMedia('cw', task_id);
-                // }
             }
             checkTaskData(e);
             hideDropdown();
@@ -490,9 +356,6 @@
 
                                 blob = new Blob(audioChunks, { type: 'audio/webm' });
                                 var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-                                // var formElement = document.querySelector("form");
-                                // var formData = new FormData(formElement)
-                                // formData.append("pitch[tasks_attributes][0][audio]", blob);
                                 globalForm.append('file', file);
                                 sendAudio(globalForm);
 
