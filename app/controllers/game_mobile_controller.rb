@@ -251,8 +251,12 @@ class GameMobileController < ApplicationController
   end
 	
   def objection
-	@objection = Objection.find(params[:objection])
+	@objection = Objection.find_by(name: params[:objection])
+	if @objection
 	ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: @objection.name, objection_sound: @objection.sound? ? @objection.sound.url : ""
+	else
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: params[:objection], objection_sound: ""
+	end
   end
 
   private

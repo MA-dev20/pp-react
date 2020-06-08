@@ -52,7 +52,7 @@
 		<div class="objections" id="objection-list">
 		<% @reaction = JSON.parse(@task.reactions) %>
 		<% @reaction.each do |o| %>
-		<span onclick="sendObjection(<%= o %>)"><%= o %></span>
+		<span onclick="sendObjection('<%= o %>')"><%= o %></span>
 		<% end %>
 		</div>
 	</section>
