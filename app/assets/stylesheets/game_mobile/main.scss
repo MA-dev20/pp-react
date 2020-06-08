@@ -122,6 +122,9 @@ body {
 	animation-duration: .5s;
 	animation-iteration-count: 1;
 	z-index: 1000;
+	.head#choose-head {
+		animation: fadeIn .5s 1 forwards;
+	}
 	.head {
 		position: absolute;
 		margin-top: calc(5vh + 40px);
@@ -137,6 +140,24 @@ body {
 			width: 90vw;
 			font-size: 15px;
 			font-weight: normal;
+		}
+	}
+	.middle#choose-middle {
+		animation: fadeIn .5s 1 forwards;
+	}
+	.middle#task-middle {
+		display: flex;
+		.card {
+			align-self: center;
+			background-color: white;
+			box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
+			text-align: center;
+			border-radius: 1vw;
+			text-align: center;
+			width: 80vw;
+			margin: 0 10vw;
+			line-height: 4vh;
+			padding: 2vw;
 		}
 	}
 	.middle {
