@@ -13,6 +13,10 @@ class CreateTasks < ActiveRecord::Migration[5.2]
       t.string :reactions
       t.string :reaction_ids
       t.string :ratings
+      t.string :video_id
+      t.string :audio_id
+      t.string :media_option, default: 'catchword'
+      t.string :destroy_media
       t.references :user, foreign_key: true
       t.references :pitch, foreign_key: true
 
