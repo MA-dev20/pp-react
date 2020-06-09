@@ -272,15 +272,15 @@
         })
 
         $('.open-modal').click(function (e) {
-            if ($(e.currentTarget).attr('data-modal') == 'pitchModal') {
+            if ($(e.currentTarget).attr('data-modal') === 'pitchModal') {
                 if ($('.add-first-task').is(':visible')) {
                     return false;
                 }
             }
             e.stopPropagation();
-            let modalId = $(this).data("modal");
-            let $modal = $("#" + modalId);
-            $modal.show();
+            hideExistingTasks();
+            $('#new_pitch_form').show()
+            $(`#${$(this).data("modal")}`).show();
         })
 
         $('.close').click(function () {
