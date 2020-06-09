@@ -94,23 +94,12 @@
                         <%= image_tag 'dash/Image.png', class: 'media-file' %>
                         <% end %>
                     </div>
-                    <!-- <div class="preview">
-                        <div class="remove" onclick="removeMedia(event)">remove</div>
-                        <%= image_tag 'dash/Image.png', class: 'media-file' %>
-                    </div> -->
                 </div>
                 <div class="hr-line"></div>
                 <div class="video media-option">
                     <label for="">Pitch video</label>
                     <label for="pitch_video" class="btn upload">Upload</label>
                     <%= pitch.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'pitch-uploadfile' %>
-                    <!-- <div class="preview video-preview">
-                        <div class="time"></div>
-                        <div class="remove pitch-file" onclick="removePitchMedia(event, 'video')">remove</div>
-                        <video id="video_tag" class="pitch-video-file" onloadedmetadata="loadMetaData(event)"
-                            style="display: none" type="video/mp4" controls></video>
-                        <%#= image_tag 'dash/Image.png' %>
-                    </div> -->
                     <div class="preview video-preview"
                         style="<%= 'display: block;'if pitch.object.video.url.present? %>">
                         <div class="time"></div>

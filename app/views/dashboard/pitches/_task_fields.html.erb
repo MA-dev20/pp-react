@@ -1,4 +1,13 @@
-<div class="nested-fields form-group title task-fields hide" id="form_<%= f.object.persisted? ? f.object.id : '1' %>">
+<%
+    fields_wrapper_id = 1
+    browse_task_id ||= false
+    if browse_task_id
+        fields_wrapper_id = browse_task_id
+    else
+        fields_wrapper_id = f.object.persisted? ? f.object.id : 1
+    end
+%>
+<div class="nested-fields form-group title task-fields hide" id="form_<%= fields_wrapper_id %>">
     <%= f.hidden_field :user_id, value: @admin.id %>
     <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
@@ -8,7 +17,7 @@
             <div class="time-field">
                 <% time = f.object.time || 80 %>
                 <%= f.hidden_field :time, id: 'task_time', value: time %>
-                <div class="time" id="settime"><%= format_time(time) %></div>
+                <div class="time" id="set_time"><%= format_time(time) %></div>
                 <i class="fa fa-angle-up up" onclick="timeUp(this)"></i>
                 <i class="fa fa-angle-down down" onclick="timeDown(this)"></i>
             </div>
@@ -31,7 +40,8 @@
         <% if f.object.persisted? %>
         <%= f.hidden_field :destroy_media, class: 'destroy-media' %>
         <% end %>
-        <div class="catchword media-option" style="display: <%= media_option == 'catchword' ? 'block' : 'none' %>">
+        <div class="catchword media-option <%= 'not-active' if media_option != 'catchword' %>"
+            style="display: <%= media_option == 'catchword' ? 'block' : 'none' %>">
             <div class="title">Catchwords</div>
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
@@ -77,7 +87,8 @@
             <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
                 task.</div>
         </div>
-        <div class="picture media-option not-active" style="<%= 'display: block;' if media_option == 'picture' %>">
+        <div class="picture media-option <%= 'not-active' if media_option != 'picture' %>"
+            style="<%= 'display: block;' if media_option == 'picture' %>">
             <div class="title">Bild</div>
             <div class="subline">Upload an image to your pitch</div>
             <label class="btn upload" onclick="uploadClick(event)">Upload</label>
@@ -91,7 +102,8 @@
                 <% end %>
             </div>
         </div>
-        <div class="video media-option not-active" style="<%= 'display: block;' if media_option == 'video' %>">
+        <div class="video media-option <%= 'not-active' if media_option != 'video' %>"
+            style="<%= 'display: block;' if media_option == 'video' %>">
             <div class="title">Video</div>
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -105,15 +117,15 @@
                 video = f.object.video
                 end  
             %>
-            <div class="preview" style="<%= 'display: block;' if video.present? %>">
+            <div class="preview video-preview" style="<%= 'display: block;' if video.present? %>">
                 <div class="time"></div>
                 <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
                 <video id="video_tag" src="<%= video.url if video.present? %>" onloadedmetadata="loadMetaData(event)"
-                    style="display: <%= video.present? ? 'block' : 'none' %>" type="video/mp4" controls></video>
-                <%#= image_tag 'dash/Image.png', class: 'media-file' %>
+                    class="<%= 'hide' unless video.present? %>" type="video/mp4" controls></video>
             </div>
         </div>
-        <div class="audio media-option not-active" style="<%= 'display: block;' if media_option == 'audio' %>">
+        <div class="audio media-option <%= 'not-active' if media_option != 'audio' %>"
+            style="<%= 'display: block;' if media_option == 'audio' %>">
             <div class="title">Audio</div>
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
@@ -281,7 +293,7 @@
             let value = $that.closest('.option').find('.basket-name').attr('data-name')
             let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
             let word = $(`<div class="word">${value}</div>`);
-            if ($(target_field).val() !== "") {
+            if ($(target_field).val() != "") {
                 let field_array = JSON.parse($(target_field).val())
                 if (!field_array.includes(id)) {
                     field_array.push(id)
@@ -306,10 +318,6 @@
             if ($(e.target).hasClass('catchword')) {
                 let task_id = $(e.target).closest('.task-fields').attr('id');
                 removeOtherMedia('cw', task_id);
-                // let splitted_task_id = parseInt(task_id.split('_')[1])
-                // if (persisted_task_ids.includes(splitted_task_id)) {
-                //     removeOtherMedia('cw', task_id);
-                // }
             }
             let target_field = $(this).closest('.form-group').children('.capsule-field');
             createCapsule(target_field, $(this).attr('data-name'), e);
