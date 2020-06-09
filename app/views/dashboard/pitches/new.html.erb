@@ -115,7 +115,8 @@
                     <div class="navigator">
                         <div class="stop" id="stopVideo"><i class="far fa-stop-circle"></i></div>
                         <div id="record_video" class="videorecord"><i class="far fa-dot-circle"></i></div>
-                        <div class="play" id="playVideo" onclick="playVideo()"><i class="far fa-play-circle"></i></div>
+                        <div class="play" id="playVideo" onclick="playVideo()"><i class="far fa-play-circle"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="buttons">
@@ -125,6 +126,111 @@
             </div>
         </div>
     </div>
+    <script>
+        $('#clodeVideoModal').on('click', function (e) {
+            e.preventDefault();
+            $('#videoModal').hide();
+        });
+        var recorder = document.getElementById('recorder');
+        var player = document.getElementById('player');
+        var file = NaN;
+        var mediaRecorder;
+        var handleSuccess = function (stream) {
+            $('.videorecord i').removeClass('fa-dot-circle');
+            $('.videorecord i').addClass('fa-stop-circle');
+            $('.videorecord').addClass('pulse');
+            $('#recorder').show();
+            $('#player').hide();
+            const options = { mimeType: 'video/webm' };
+            const recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, options);
+            recorder.srcObject = stream;
+            mediaRecorder.start();
+            mediaRecorder.addEventListener('start', function () {
+                console.log('stream started..');
+            })
+            mediaRecorder.addEventListener('dataavailable', function (e) {
+                if (e.data.size > 0) {
+                    console.log('streaming ...');
+                    recordedChunks.push(e.data);
+                }
+            });
+            mediaRecorder.addEventListener('stop', function () {
+                stream.getTracks().forEach(track => track.stop())
+                console.log('stream stopped');
+                var blob = new Blob(recordedChunks);
+                videoURL = URL.createObjectURL(blob);
+                file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+                player.src = videoURL;
+                $('#player').show();
+                $('#recorder').hide();
+                recorder.load();
+                console.log('stream saved');
+                $('.videorecord i').removeClass('fa-stop-circle');
+                $('.videorecord i').addClass('fa-dot-circle');
+                $('.videorecord').removeClass('pulse');
+                $('#stopVideo').css('display', 'inline-block');
+                $('#playVideo').css('display', 'inline-block');
+                stream = NaN;
+            });
+            document.getElementById('stopVideo').addEventListener('click', function () {
+                mediaRecorder.stop();
+            })
+            document.getElementById('videoUpload').addEventListener('click', function (e) {
+                e.preventDefault();
+                if (file != NaN) {
+                    var globalForm = new FormData();
+                    globalForm.append('file', file);
+                    sendVideo(globalForm);
+                } else {
+                    $('#videoModal').hide()
+                }
+            })
+        }
+        document.getElementById('record_video').addEventListener('click', function () {
+            if ($('#record_video').hasClass('pulse')) {
+                mediaRecorder.stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess).catch(function (err) { alert('Kann Video nicht aufnehmen!') });
+            }
+        })
+        function playVideo() {
+            var player = document.getElementById('player');
+            if ($('#playVideo i').hasClass("fa-play-circle")) {
+                $('#playVideo i').addClass('fa-pause-circle');
+                $('#playVideo i').removeClass('fa-play-circle');
+                player.play();
+                player.addEventListener('ended', function () {
+                    $('#playVideo i').addClass('fa-play-circle');
+                    $('#playVideo i').removeClass('fa-pause-circle');
+                })
+            } else {
+                $('#playVideo i').addClass('fa-play-circle');
+                $('#playVideo i').removeClass('fa-pause-circle');
+                player.pause();
+            }
+        }
+        function sendVideo(globalForm) {
+            $.ajax({
+                url: "<%= dashboard_create_video_path %>",
+                type: "post",
+                cache: false,
+                async: true,
+                contentType: false,
+                processData: false,
+                data: globalForm,
+                beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video-id').val(res.id);
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').attr('src', res.video_url);
+                    $('#videoModal').hide();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
+                    globalForm = new FormData();
+                }
+            })
+        }
+    </script>
 </div>
 
 <!-- FIXME: -->

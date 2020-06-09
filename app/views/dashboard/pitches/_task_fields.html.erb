@@ -96,8 +96,7 @@
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
-            <%= f.hidden_field :video_id, value: '', class: 'video-id' %>
-
+            <%= f.hidden_field :video_id, class: 'video-id' %>
             <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
             <%
                 if f.object.video_id.present?
@@ -341,14 +340,14 @@
                 rec.stop();
                 recording = false;
             } else {
-                recording = true;
-                $(e.target).text('Recording...');
                 // This will prompt for permission if not allowed earlier
                 let $preview = $(e.target).siblings('.preview');
                 var recordedAudio = $preview.find('audio')[0];
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(stream => {
                         audioChunks = [];
+                        recording = true;
+                        $(e.target).text('Recording...');
                         rec = new MediaRecorder(stream);
                         rec.ondataavailable = e => {
                             audioChunks.push(e.data);
@@ -371,7 +370,7 @@
                         }
                         rec.start();
                     })
-                    .catch(e => console.log(e));
+                    .catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
             }
         })
 

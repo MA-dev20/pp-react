@@ -44,14 +44,15 @@
 			<% end %>
 		<% end %>
 	</section>
-	<% if @game && @game.objection_list %>
+	<% if @task && @task.reactions %>
 	<section id="objections-menu">
 		<div class="nav">
 			<i class="fas fa-times" onclick="toggleObjections()"></i>
 		</div>
 		<div class="objections" id="objection-list">
-		<% @game.objection_list.objections.each do |o| %>
-		<span onclick="sendObjection(<%= o.id %>)"><%= o.name %></span>
+		<% @reaction = JSON.parse(@task.reactions) %>
+		<% @reaction.each do |o| %>
+		<span onclick="sendObjection('<%= o %>')"><%= o %></span>
 		<% end %>
 		</div>
 	</section>

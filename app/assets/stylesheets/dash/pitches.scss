@@ -1,3 +1,14 @@
+#content {
+    .blur {
+        position: fixed;
+        top: 0; left: 25vh;
+        height: 100%; width: calc(100vw - 25vh);
+        background-color: rgba(0,0,0,.5);
+        .card#letspitch {
+            height: 45vh; width: 45vh;
+        }
+    }
+}
 #content .card#pitches,
 #content .card.right #pitches{
 	height: 90%;
@@ -49,6 +60,7 @@
 	#pitch-list {
 		position: relative;
 		left: -.5vw;
+		height: 54vh;
 		width: calc(100% + 1vw);
 	}
 	.card {

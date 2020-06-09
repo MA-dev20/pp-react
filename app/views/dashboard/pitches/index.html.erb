@@ -22,7 +22,7 @@
                 <%= pitch.tasks.select{|task| task.image? }.count %>, Tasks: <%= pitch.tasks.size %></div>
             <div class="buttons">
                 <%= link_to 'Edit', edit_dashboard_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
-                <a href="" class="btn">Pitch!</a>
+                <%= link_to 'Pitch', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
             </div>
         </div>
         <% end %>
@@ -35,6 +35,78 @@
         </div>
     </div>
 </div>
+<% if @pitch %>
+<div class="blur">
+    <div class="card" id="letspitch">
+        <h1>Jetzt Pitch starten!</h1>
+        <%= form_for(:game, url: new_game_path) do |f| %>
+        <%= f.hidden_field :pitch_id, value: @pitch.id %>
+        <div class="form-group">
+            <label for="">
+                Team
+                <% if flash[:team_id] %>
+                <span class="right red">
+                    <%= flash[:team_id] %>
+                </span>
+                <% else %>
+                <span class="right green" id="createTeam" onclick="showTeam()">
+                    Team erstellen!
+                </span>
+                <% end %>
+            </label>
+            <select name="game[team_id]" id="game_team_id" class="custom-select <%= flash[:team_id] ? 'red' : '' %>">
+                <% if !@team %>
+                <option value="" selected disabled>Team wählen!</option>
+                <% end %>
+                <% @teams.each do |t| %>
+                <option value="<%= t.id %>" <%= @team && @team.id == t.id ? 'selected' : '' %>><%= t.name %></option>
+                <% end %>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">
+                Pitch-URL
+                <% if flash[:game_url] %>
+                <span class="right red">
+                    <%= flash[:game_url] %>
+                </span>
+                <% end %>
+            </label>
+            <div class="form-field <%= flash[:game_url] ? 'red' : '' %>">
+                <div class="text">peterpitch.com/</div>
+                <%= f.text_field :password, class: 'custom-url-field' %>
+            </div>
+            <%= f.submit 'weiter!', class: 'btn btn-green' %>
+        </div>
+        <% end %>
+    </div>
+    <div class="card" id="newteam">
+        <h1>Team erstellen!</h1>
+        <%= form_for(:team, url: new_team_path) do |f| %>
+        <%= f.hidden_field :site, value: 'pitch' %>
+        <div class="form-group">
+            <label for="">
+                Name
+                Name
+                <% if flash[:team_name] %>
+                <span class="right red">
+                    <%= flash[:team_name] %>
+                </span>
+                <% end %>
+            </label>
+            <%= f.text_field :name, class: 'form-field' %>
+        </div>
+        <%= f.submit 'erstellen!', class: 'btn btn-green' %>
+        <% end %>
+    </div>
+</div>
+<script>
+    function showTeam() {
+        $('#letspitch').toggle();
+        $('#newteam').toggle();
+    }
+</script>
+<% end %>
 <script>
     new PerfectScrollbar('#pitch-list');
     function handleClick(e) {
@@ -44,4 +116,10 @@
             $(e.target).closest('.card').find('.btn.reversed').click();
         }
     }
+    $("#searchPitch").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#pitch-list .card .title").filter(function () {
+            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 </script>
