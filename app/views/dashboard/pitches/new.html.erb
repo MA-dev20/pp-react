@@ -153,15 +153,6 @@
             persisted_task_ids.forEach(id => {
                 task_ids.push(id);
             })
-            // let counter = 0;
-            // let length = $('.task-fields').length;
-            // let id = 1;
-            // while (counter < length) {
-            //     $(`.task-fields`)[counter].id = `form_${id}`;
-            //     $('.card.left .card')[counter].id = id;
-            //     id += 1;
-            //     counter += 1;
-            // }
         }
 
         $('form').on('keypress', e => {
@@ -543,14 +534,10 @@
         card += '</div>';
         card += '<div class="thumb">';
         let $mediaImg = $(`#form_${taskId} .picture.media-option img`);
-        if ($mediaImg[0] === undefined) {
-            card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
+        if ($mediaImg.attr('src')) {
+            card += `<img src='${$mediaImg.attr('src')}'>`
         } else {
-            if ($mediaImg[0].src) {
-                card += `<img src='${$mediaImg[0].src}'>`
-            } else {
-                card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
-            }
+            card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
         }
         card += `<div class="length">${$(time).val()}</div>`;
         card += '</div>';
@@ -653,6 +640,7 @@
             $mediaBox.find('video').attr('src', '');
             $mediaBox.siblings('.video-id').val('');
         } else {
+            $mediaBox.find('img.media-file').attr('src', '');
             $('.left-card.selected img')[0].src = taskHeaderImg;
         }
 
