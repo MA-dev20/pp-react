@@ -11,8 +11,7 @@ class GameDesktopController < ApplicationController
   end
 	
   def game
-	@video = PitchVideo.find(@game.video_id) if @game.video_id && @game.video_is_pitch
-	@video = Video.find(@game.video_id) if @game.video_id && !@game.video_is_pitch
+	@video = @pitch.video if @pitch.video
 	@turn1 = GameTurn.find(@game.turn1) if @game.turn1
 	@turn2 = GameTurn.find(@game.turn2) if @game.turn2
 	@turn = GameTurn.find(@game.current_turn) if @game.current_turn
