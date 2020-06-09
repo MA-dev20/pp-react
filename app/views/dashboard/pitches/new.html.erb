@@ -236,29 +236,27 @@
     </script>
 </div>
 
-<!-- <div class="blur"> -->
-<div class="card hide" id="warningCard">
-    <h1>Jetzt Pitch starten!</h1>
-    <div class="form-group">
-        <label for="">
-            Team
-            <span class="right red">
-            </span>
-            <span class="right green" id="createTeam" onclick="showTeam()">
-                Team erstellen!
-            </span>
-        </label>
-        <select name="game[team_id]" id="game_team_id" class="custom-select">
-            <option value="" selected disabled>Team wählen!</option>
-        </select>
+<div class="blur">
+    <div class="card" id="warningCard">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <h1>Are you sure?</h1>
+        <p>It'll remove your previous Media data</p>
+        <div class="buttons">
+            <button class="btn reversed cancel-btn">Cancel</button>
+            <button class="btn reversed ok-btn">Ok</button>
+        </div>
     </div>
 </div>
-<!-- </div> -->
 
 <!-- FIXME: -->
 <!-- capsules cards height -->
 
 <script>
+
+    $('.btn-line .btn').on('click', function () {
+        debugger
+        $('#warningCard').show();
+    })
 
     // new PerfectScrollbar('#scrollList');
     new PerfectScrollbar('#tasksScrollBar');
