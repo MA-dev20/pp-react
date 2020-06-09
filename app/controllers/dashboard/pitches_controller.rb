@@ -2,7 +2,7 @@ module Dashboard
     class PitchesController < ApplicationController
         before_action :set_user, :get_cw_reactions
         before_action :set_pitch, only: [:edit, :update, :deleteMedia]
-
+        before_action :get_pitches, only: [:new, :edit]
         layout "dashboard"
 
         def index
@@ -88,6 +88,10 @@ module Dashboard
 
         def set_pitch
             @pitch = Pitch.find(params[:id])
+        end
+
+        def get_pitches
+            @pitches = @admin.pitches
         end
 
         def set_user
