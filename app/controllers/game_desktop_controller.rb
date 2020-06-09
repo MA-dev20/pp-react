@@ -157,7 +157,7 @@ class GameDesktopController < ApplicationController
       redirect_to gd_game_path
       return
     elsif params[:state] == 'bestlist'
-      if @game.state == 'bestlist'
+      if @game.state != 'bestlist'
         @game.game_turns.playable.each do |gt|
           gt.update(ges_rating: nil)
         end

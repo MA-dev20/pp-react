@@ -9,11 +9,15 @@ document.getElementById('video-blur').play();
 document.getElementById('video').volume = 0.5;
 document.getElementById('video').play();
 </script>
-<% elsif @game.youtube_url && @game.youtube_url != '' %>
+<% elsif @pitch[:video_url] != '' && @pitch[:video_url].start_with?('https://vimeo.com') %>
+<div class="video-bg" style="position: absolute; height: 100%; width: 100%; background-color: black;">
+<iframe src="https://player.vimeo.com/video/<%= @pitch[:video_url].split('https://vimeo.com/')[1].split('/')[0] %>?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe><script src="https://player.vimeo.com/api/player.js"></script>
+</div>
+<% elsif @pitch[:video_url] != '' && @pitch[:video_url].include?('youtube') %>
 <div id="player" class="youtube-player"></div>
 <script src="http://www.youtube.com/player_api"></script>
 <script>
-	var video_url = '<%= @game.youtube_url %>';
+	var video_url = '<%= @pitch[:video_url] %>';
     var video_id = video_url.split('v=')[1];
     var ampersandPosition = video_id.indexOf('&');
     if (ampersandPosition != -1) {
