@@ -236,14 +236,14 @@
     </script>
 </div>
 
-<div class="blur">
+<div class="blur hide warning-card-wrapper">
     <div class="card" id="warningCard">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        <h1>Are you sure?</h1>
-        <p>It'll remove your previous Media data</p>
+        <h1>Sure you want to switch task format?</h1>
+        <p>In this case your uploaded media will be replaced.</p>
         <div class="buttons">
-            <button class="btn reversed cancel-btn">Cancel</button>
-            <button class="btn reversed ok-btn">Ok</button>
+            <button class="btn reversed cancel-btn" data-value="cancel">Cancel</button>
+            <button class="btn reversed ok-btn" data-value="ok">Ok</button>
         </div>
     </div>
 </div>
@@ -252,11 +252,6 @@
 <!-- capsules cards height -->
 
 <script>
-
-    $('.btn-line .btn').on('click', function () {
-        debugger
-        $('#warningCard').show();
-    })
 
     // new PerfectScrollbar('#scrollList');
     new PerfectScrollbar('#tasksScrollBar');
@@ -267,6 +262,12 @@
     var isTaskRemoved = false;
     var taskHeaderImg = "<%= asset_path 'dash/Image.png' %>";
     var persisted_task_ids = JSON.parse("<%= persisted_task_ids %>");
+    var selectedTaskId = '';
+    var selected_media_type = '';
+    var uploadTarget = '';
+    var method_this = '';
+    var global_event = '';
+    var global_method = '';
 
     $(document).on('ready turbolinks:load', () => {
 
@@ -303,6 +304,29 @@
 
         $('.submit').click(function (e) {
             $('form').submit();
+        })
+
+        $('.warning-card-wrapper .btn').unbind().on('click', function () {
+            let response = $(this).attr('data-value') === 'ok';
+            if (response) {
+                let destroy_capsule = selected_media_type === 'catchword' ? true : false;
+                removeOtherMedia(selected_media_type, selectedTaskId, destroy_capsule);
+                if (global_method === 'upload')
+                    $(global_event.target).siblings('input[type="file"]').click();
+                else if (global_method === 'listOptionClick')
+                    listOptionClick(global_event, method_this);
+                else if (global_method === 'listClick')
+                    listClick(global_event);
+                else if (global_method === 'cwInputFieldClick')
+                    cwInputFieldClick(global_event);
+                else if (global_method === 'audio')
+                    $('.record').click();
+                else if (global_method === 'video')
+                    $('#videoModal').show()
+            }
+            selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method = '';
+            $('.warning-card-wrapper').hide();
+            return false;
         })
 
 
@@ -431,13 +455,13 @@
 
     function chooseOption(type, event) {
         let $that = $(event.target);
-        $that.siblings('#media_option').val(type);
+        $that.siblings('.db-media-option').val(type);
         $that.closest('.add-catchword').find('.btn-line .btn.selected').removeClass('selected');
         $that.closest('.add-catchword').find('.media-option').hide();
         $that.closest('.add-catchword').find(`#btn_${type}`).addClass('selected');
         $that.closest('.add-catchword').find('.media-option').addClass('not-active');
         $that.closest('.add-catchword').find(`.${type}`).removeClass('not-active').show();
-        $('.left-card.selected .category').text($(event.target).text())
+        $('.left-card.selected .category').text($(event.target).text());
     }
 
     var timeUp = (e) => {
@@ -549,7 +573,7 @@
         $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text());
         $(`#form_${targetTaskId} .catchword .capsule-ids-field`).val($sourceTaskId.find('.catchword .capsule-ids-field').val())
         $(`#form_${targetTaskId} .add-reaction .capsule-ids-field`).val($sourceTaskId.find('.add-reaction .capsule-ids-field').val())
-        $(`#form_${targetTaskId} #media_option`).val($sourceTaskId.find('#media_option').val())
+        $(`#form_${targetTaskId} .db-media-option`).val($sourceTaskId.find('.db-media-option').val())
 
         let fields = ['.catchword', '.add-reaction', '.add-rating']
         let hidden_fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field']
@@ -807,10 +831,10 @@
         const id = $(e.target).attr('id');
         let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
         let file = event.target.files[0];
-        if (!$(e.target).hasClass('pitch-uploadfile')) {
-            let task_id = $(e.target).closest('.task-fields').attr('id');
-            removeOtherMedia(type, task_id);
-        }
+        // if (!$(e.target).hasClass('pitch-uploadfile')) {
+        //     let task_id = $(e.target).closest('.task-fields').attr('id');
+        //     removeOtherMedia(type, task_id);
+        // }
         if (type === 'video') {
             let $preview = $(event.target).siblings('.preview');
             $preview.siblings('.video-id').val('');
@@ -832,25 +856,32 @@
         $(mediaOption).show();
     }
 
-    function removeOtherMedia(type, id) {
+    function removeOtherMedia(type, id, destroy_capsule = false) {
         let $mediaBox = $(`#${id}`).find('.add-catchword');
         $($mediaBox).find('.not-active input[type="file"]').val('');
         $($mediaBox).find('.not-active input[type="hidden"]').val('');
+        $mediaBox.find('.not-active img.media-file').attr('src', '');
+        $('.left-card.selected img')[0].src = taskHeaderImg;
         $($mediaBox).find('.preview').hide();
         let task_id = id.split('_')[1];
-        media_types = ['video', 'audio', 'cw'];
+        media_types = ['video', 'audio', 'catchword'];
         if (media_types.includes(type)) {
             if ($(`#${task_id} .thumb img`).attr('src').split(':')[0] !== 'http') {
                 $(`#${task_id} .thumb img`).attr('src', taskHeaderImg);
             }
-            if (type === 'cw') {
-                if (persisted_task_ids.includes(Number(task_id))) {
-                    if ($(`#form_${task_id} .destroy-media`).val() === '')
-                        $(`#form_${task_id} .destroy-media`).val(task_id);
-                }
-            }
+            // if (type === 'catchword') {
+            //     if (persisted_task_ids.includes(Number(task_id))) {
+            //         if ($(`#form_${task_id} .destroy-media`).val() === '')
+            //             $(`#form_${task_id} .destroy-media`).val(task_id);
+            //     }
+            // }
         }
-        if (type !== 'cw') {
+        if (persisted_task_ids.includes(Number(task_id))) {
+            if ($(`#form_${task_id} .destroy-media`).val() === '')
+                $(`#form_${task_id} .destroy-media`).val(task_id);
+        }
+
+        if (type !== 'catchword' || destroy_capsule) {
             let $catchword_media = $mediaBox.find('.catchword.media-option');
             $catchword_media.find('.capsule-list .word').remove()
             $catchword_media.find('.form-group input[type="hidden"]').val('');
