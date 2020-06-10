@@ -458,8 +458,8 @@
         var audioChunks;
         var recording = false;
         $('.record').on('click', function (e) {
+            global_method = 'audio';
             if (isOtherDataUploaded(e)) {
-                global_method = 'audio';
                 $('.warning-card-wrapper').show();
             } else {
                 $('.warning-card-wrapper').hide();
@@ -505,8 +505,8 @@
         // Video Recording Modal
 
         $('.record-video').click(function (e) {
+            global_method = 'video';
             if (isOtherDataUploaded(e)) {
-                global_method = 'video';
                 $('.warning-card-wrapper').show();
                 $('#videoModal').hide();
             } else {
