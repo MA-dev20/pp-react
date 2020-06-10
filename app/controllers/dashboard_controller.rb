@@ -105,7 +105,7 @@ class DashboardController < ApplicationController
 	    t.game_turn_ratings.each do |tr|
 		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
 	    end
-	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), word: t.catchword.name, ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
+	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
 	  else
 		@turns = @turns.except(t)
 	  end

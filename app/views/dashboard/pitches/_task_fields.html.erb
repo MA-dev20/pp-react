@@ -109,7 +109,6 @@
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
             <%= f.hidden_field :video_id, class: 'video-id' %>
-
             <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
             <%
                 if f.object.video_id.present?
@@ -228,7 +227,48 @@
 <script>
 
     function uploadClick(e) {
-        $(e.target).siblings('input[type="file"]').click()
+        global_method = 'upload';
+        global_event = e;
+        if (isOtherDataUploaded(e)) {
+            $('.warning-card-wrapper').show();
+        } else {
+            $(uploadTarget).siblings('input[type="file"]').click();
+        }
+        // uploadTarget = $(e.target);
+        // selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+        // let media_type = $(`#${selectedTaskId} .btn.selected`).text().toLowerCase();
+        // selected_media_type = media_type === 'bild' ? 'picture' : media_type;
+        // let condition = false;
+        // $(`#${selectedTaskId} .not-active.media-option .preview`).each(function () {
+        //     if ($(this).css('display') === 'block')
+        //         condition = true;
+        // });
+        // if ($(`#${selectedTaskId} .catchword .capsule-list .word`).length || condition) {
+        //     $('.warning-card-wrapper').show();
+        // } else {
+        //     $(uploadTarget).siblings('input[type="file"]').click();
+        // }
+    }
+
+    function isOtherDataUploaded(e) {
+        uploadTarget = $(e.target);
+        selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+        let media_type = $(`#${selectedTaskId} .btn.selected`).text().toLowerCase();
+        selected_media_type = media_type === 'bild' ? 'picture' : media_type;
+        let condition = false;
+        $(`#${selectedTaskId} .not-active.media-option .preview`).each(function () {
+            if ($(this).css('display') === 'block')
+                condition = true;
+        });
+        cw_methods = ['listOptionClick', 'listClick', 'cwInputFieldClick'];
+        if (cw_methods.includes(global_method)) {
+            return condition;
+        }
+        if ($(`#${selectedTaskId} .catchword .capsule-list .word`).length || condition) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function sendAudio(globalForm) {
@@ -263,67 +303,142 @@
         $(event.target).siblings('img').removeClass('pause-audio').addClass('play-audio');
     }
 
+    function listOptionClick(e, this_event) {
+        let target_field = $(this_event).closest('.form-group').children('.capsule-field');
+        createCapsule(target_field, $(this_event).attr('data-name'), e);
+        checkTaskData(e);
+        hideDropdown();
+        return false;
+    }
+
+    function listClick(e) {
+        let $that = $(e.target)
+        let target_field = $that.closest('.form-group').children('.capsule-ids-field')
+        let id = $that.closest('.option').find('.basket-name').attr('data-id')
+        let value = $that.closest('.option').find('.basket-name').attr('data-name')
+        let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
+        let word = $(`<div class="word">${value}</div>`);
+        if ($(target_field).val() != "") {
+            let field_array = JSON.parse($(target_field).val())
+            if (!field_array.includes(id)) {
+                field_array.push(id)
+                $(target_field).val(JSON.stringify(field_array))
+                $(capsule_list).append(word)
+            }
+        } else {
+            $(target_field).val(JSON.stringify(Array(id)))
+            $(capsule_list).append(word)
+        }
+        checkTaskData(e);
+        hideDropdown();
+        e.preventDefault();
+        return false;
+    }
+
+    function cwInputFieldClick(e) {
+        let target_field = $(e.target).siblings('.capsule-field');
+        let value = $(e.target).val();
+        if (value.length) {
+            createCapsule(target_field, value, e);
+            checkTaskData(e);
+        }
+        $(e.target).val("");
+        e.preventDefault();
+        return false;
+    }
+
     $(() => {
         if ($())
             $('.input-field').unbind().keypress((e) => {
                 if (e.which == 13) {
+                    global_method = 'cwInputFieldClick'
+                    global_event = e;
                     let target_field = $(e.target).siblings('.capsule-field');
                     let value = $(e.target).val();
                     if (value.length) {
-                        createCapsule(target_field, value, e);
-                        checkTaskData(e);
-                        if ($(e.target).hasClass('catchword')) {
-                            let task_id = $(e.target).closest('.task-fields').attr('id');
-                            removeOtherMedia('cw', task_id);
-                            // let splitted_task_id = parseInt(task_id.split('_')[1])
-                            // if (persisted_task_ids.includes(splitted_task_id)) {
-                            //     removeOtherMedia('cw', task_id);
-                            // }
+                        if ($(e.target).attr('class').includes('catchword') && isOtherDataUploaded(e)) {
+                            $('.warning-card-wrapper').show();
+                        } else {
+                            return cwInputFieldClick(e);
                         }
                     }
-                    $(e.target).val("");
-                    e.preventDefault();
+                    // let target_field = $(e.target).siblings('.capsule-field');
+                    // let value = $(e.target).val();
+                    // if (value.length) {
+                    //     createCapsule(target_field, value, e);
+                    //     checkTaskData(e);
+                    //     if ($(e.target).hasClass('catchword')) {
+                    //         let task_id = $(e.target).closest('.task-fields').attr('id');
+                    //         removeOtherMedia('catchword', task_id);
+                    //     }
+                    // }
+                    // $(e.target).val("");
+                    // e.preventDefault();
                     return false;
                 }
             });
 
         $('.sub-cs .option').unbind().on('click', (e) => {
-            let $that = $(e.target)
-            let target_field = $that.closest('.form-group').children('.capsule-ids-field')
-            let id = $that.closest('.option').find('.basket-name').attr('data-id')
-            let value = $that.closest('.option').find('.basket-name').attr('data-name')
-            let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
-            let word = $(`<div class="word">${value}</div>`);
-            if ($(target_field).val() != "") {
-                let field_array = JSON.parse($(target_field).val())
-                if (!field_array.includes(id)) {
-                    field_array.push(id)
-                    $(target_field).val(JSON.stringify(field_array))
-                    $(capsule_list).append(word)
-                }
+            global_method = 'listClick'
+            global_event = e;
+            if ($(e.target).closest('.add-catchword').length && isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
             } else {
-                $(target_field).val(JSON.stringify(Array(id)))
-                $(capsule_list).append(word)
+                return listClick(e);
             }
-            if ($(e.target).hasClass('cw')) {
-                let task_id = $(e.target).closest('.task-fields').attr('id');
-                removeOtherMedia('cw', task_id);
-            }
-            checkTaskData(e);
-            hideDropdown();
-            e.preventDefault();
+            // listClick(e);
+            // let $that = $(e.target)
+            // let target_field = $that.closest('.form-group').children('.capsule-ids-field')
+            // let id = $that.closest('.option').find('.basket-name').attr('data-id')
+            // let value = $that.closest('.option').find('.basket-name').attr('data-name')
+            // let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
+            // let word = $(`<div class="word">${value}</div>`);
+            // if ($(target_field).val() != "") {
+            //     let field_array = JSON.parse($(target_field).val())
+            //     if (!field_array.includes(id)) {
+            //         field_array.push(id)
+            //         $(target_field).val(JSON.stringify(field_array))
+            //         $(capsule_list).append(word)
+            //     }
+            // } else {
+            //     $(target_field).val(JSON.stringify(Array(id)))
+            //     $(capsule_list).append(word)
+            // }
+            // // if ($(e.target).hasClass('cw')) {
+            // //     let task_id = $(e.target).closest('.task-fields').attr('id');
+            // //     removeOtherMedia('catchword', task_id);
+            // // }
+            // checkTaskData(e);
+            // hideDropdown();
+            // e.preventDefault();
             return false;
         })
 
         $('.sub-cs .list .name').unbind().click(function (e) {
-            if ($(e.target).hasClass('catchword')) {
-                let task_id = $(e.target).closest('.task-fields').attr('id');
-                removeOtherMedia('cw', task_id);
+            // let selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+            // cw_method = 'listOptionClick'
+            // if ($(e.target).hasClass('catchword')) {
+            //     let task_id = $(e.target).closest('.task-fields').attr('id');
+            //     removeOtherMedia('catchword', task_id);
+            // }
+            global_method = 'listOptionClick'
+            method_this = this;
+            global_event = e;
+            check_cw = false;
+            if ($(e.target)[0].nodeName === 'SPAN')
+                check_cw = true;
+            else
+                check_cw = $(e.target).attr('class').includes('catchword')
+            if (check_cw && isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
+            } else {
+                return listOptionClick(e, this);
             }
-            let target_field = $(this).closest('.form-group').children('.capsule-field');
-            createCapsule(target_field, $(this).attr('data-name'), e);
-            checkTaskData(e);
-            hideDropdown();
+
+            // let target_field = $(this).closest('.form-group').children('.capsule-field');
+            // createCapsule(target_field, $(this).attr('data-name'), e);
+            // checkTaskData(e);
+            // hideDropdown();
             return false;
         })
 
@@ -337,57 +452,67 @@
             }
         })
 
-
         // Audio Recording
 
         globalForm = new FormData();
         var audioChunks;
         var recording = false;
         $('.record').on('click', function (e) {
-            if (recording) {
-                $(e.target).text('Record');
-                rec.stop();
-                recording = false;
+            if (isOtherDataUploaded(e)) {
+                global_method = 'audio';
+                $('.warning-card-wrapper').show();
             } else {
-                recording = true;
-                $(e.target).text('Recording...');
-                // This will prompt for permission if not allowed earlier
-                let $preview = $(e.target).siblings('.preview');
-                var recordedAudio = $preview.find('audio')[0];
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(stream => {
-                        audioChunks = [];
-                        rec = new MediaRecorder(stream);
-                        rec.ondataavailable = e => {
-                            audioChunks.push(e.data);
-                            if (rec.state == "inactive") {
-                                stream.getTracks().forEach(track => track.stop())
-                                $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-                                $preview.siblings('input[type="file"]').val('')
-                                $preview.show();
+                $('.warning-card-wrapper').hide();
+                if (recording) {
+                    $(e.target).text('Record');
+                    rec.stop();
+                    recording = false;
+                } else {
+                    // This will prompt for permission if not allowed earlier
+                    let $preview = $(e.target).siblings('.preview');
+                    var recordedAudio = $preview.find('audio')[0];
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            audioChunks = [];
+                            recording = true;
+                            $(e.target).text('Recording...');
+                            rec = new MediaRecorder(stream);
+                            rec.ondataavailable = e => {
+                                audioChunks.push(e.data);
+                                if (rec.state == "inactive") {
+                                    stream.getTracks().forEach(track => track.stop())
+                                    $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
+                                    $preview.siblings('input[type="file"]').val('')
+                                    $preview.show();
 
-                                let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-                                recordedAudio.src = URL.createObjectURL(blob);
-                                recordedAudio.controls = true;
+                                    let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
+                                    recordedAudio.src = URL.createObjectURL(blob);
+                                    recordedAudio.controls = true;
 
-                                blob = new Blob(audioChunks, { type: 'audio/webm' });
-                                var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-                                globalForm.append('file', file);
-                                sendAudio(globalForm);
-
+                                    blob = new Blob(audioChunks, { type: 'audio/webm' });
+                                    var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+                                    globalForm.append('file', file);
+                                    sendAudio(globalForm);
+                                }
                             }
-                        }
-                        rec.start();
-                    })
-                    .catch(e => console.log(e));
+                            rec.start();
+                        })
+                        .catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+                }
             }
         })
 
-
         // Video Recording Modal
 
-        $('.record-video').click(function () {
-            $('#videoModal').show()
+        $('.record-video').click(function (e) {
+            if (isOtherDataUploaded(e)) {
+                global_method = 'video';
+                $('.warning-card-wrapper').show();
+                $('#videoModal').hide();
+            } else {
+                $('.warning-card-wrapper').hide();
+                $('#videoModal').show()
+            }
         })
 
         $('#clodeVideoModal').on('click', function (e) {

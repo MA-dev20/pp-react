@@ -1,3 +1,48 @@
+#content {
+    .blur {
+        position: fixed;
+        top: 0; left: 25vh;
+        height: 100%; width: calc(100vw - 25vh);
+        background-color: rgba(0,0,0,.5);
+		.card#letspitch,
+		.card#warningCard {
+            height: 45vh; width: 45vh;
+		}
+		
+		.card#warningCard {
+			text-align: center;
+			padding: 3vh; 
+			height: 30vh;
+			width: 45vh;
+			
+			h1 {
+				line-height: 4.7vh;
+			}
+
+			i {
+				font-size: 8vh;
+			}
+			p {
+				font-size: 2vh;
+			}
+
+			.buttons {
+				.btn {
+					width: calc(100% - 29vh);
+					margin: 3vh 2.3vh;
+				}
+				.ok-btn {
+					right: 0;
+					left: auto;
+				}
+	
+				.cancel-btn {
+					left: 0;
+				}
+			}
+		}
+    }
+}
 #content .card#pitches,
 #content .card.right #pitches{
 	height: 90%;
@@ -49,6 +94,7 @@
 	#pitch-list {
 		position: relative;
 		left: -.5vw;
+		height: 54vh;
 		width: calc(100% + 1vw);
 	}
 	.card {

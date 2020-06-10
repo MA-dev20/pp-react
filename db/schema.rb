@@ -142,8 +142,10 @@ ActiveRecord::Schema.define(version: 2020_06_08_121943) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "repeat", default: false
+    t.bigint "task_id"
     t.index ["catchword_id"], name: "index_game_turns_on_catchword_id"
     t.index ["game_id"], name: "index_game_turns_on_game_id"
+    t.index ["task_id"], name: "index_game_turns_on_task_id"
     t.index ["team_id"], name: "index_game_turns_on_team_id"
     t.index ["user_id"], name: "index_game_turns_on_user_id"
   end
@@ -176,7 +178,9 @@ ActiveRecord::Schema.define(version: 2020_06_08_121943) do
     t.string "show_ratings", default: "all"
     t.integer "rating_user"
     t.boolean "skip_rating_timer", default: false
+    t.bigint "pitch_id"
     t.index ["company_id"], name: "index_games_on_company_id"
+    t.index ["pitch_id"], name: "index_games_on_pitch_id"
     t.index ["rating_list_id"], name: "index_games_on_rating_list_id"
     t.index ["team_id"], name: "index_games_on_team_id"
     t.index ["user_id"], name: "index_games_on_user_id"
@@ -443,8 +447,10 @@ ActiveRecord::Schema.define(version: 2020_06_08_121943) do
   add_foreign_key "game_turn_ratings", "users"
   add_foreign_key "game_turns", "catchwords"
   add_foreign_key "game_turns", "games"
+  add_foreign_key "game_turns", "tasks"
   add_foreign_key "game_turns", "users"
   add_foreign_key "games", "companies"
+  add_foreign_key "games", "pitches"
   add_foreign_key "games", "rating_lists"
   add_foreign_key "games", "teams"
   add_foreign_key "games", "users"

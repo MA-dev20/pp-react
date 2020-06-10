@@ -1,7 +1,10 @@
 /*
  *= require barack
  *= require rangeslider
+ *= require game_desktop/task.scss
  */
+@import "font-awesome-sprockets";
+@import "font-awesome";
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
 
 body {
@@ -296,7 +299,7 @@ body {
 			top: 30vh;
 			border-radius: 50%;
 			border: 1vh solid rgb(var(--custcolor));
-			animation: fadeInMiddle 2s 1;
+			animation: fadeInMiddle 1s 1;
 		}
 		.circle.mid-img {
 			background-color: #00232a;
@@ -997,6 +1000,81 @@ body {
 			animation: fadeInMiddle 2s 1 forwards;
 			animation-delay: 5s;
 		}
+		.task {
+			position: absolute;
+			left: 15vw; top: 12.5vh;
+			width: 70vw; height: 75vh;
+			display: flex;
+			z-index: 10;
+			margin: 0;
+			.card {
+				position: relative;
+				right: 0; width: 70vw;
+				background-color: white;
+				border-radius: 1vw;
+				font-size: 5vh;
+				align-self: center;
+				text-align: center;
+				line-height: 8vh;
+				padding: 3vh 5vw;
+				box-shadow: 0 5px 10px rgba(0, 0,0, .4);
+			}
+		}
+		.sound {
+			display: none;
+			overflow: hidden;
+			position: absolute;
+			top: 25vh; left: calc(50vw - 25vh);
+			height: 50vh; width: 50vh;
+			line-height: 50vh; text-align: center;
+			font-size: 30vh; color: rgb(var(--custcolor));
+			z-index: 5;
+			background-color: white;
+			border-radius: 1vw;
+			box-shadow: 0 5px 10px rgba(0,0,0,.4);
+			i {
+				animation: pulse 3s infinite;
+			}
+			.progress {
+				position: absolute;
+				bottom: 0;
+				height: 3vh;
+				width: 100%;
+				left: 0;
+				.bar {
+					background-color: rgb(var(--custcolor));
+					height: 100%;
+					width: 100%;
+					animation: progress var(--soundduration) 1;
+				}
+			}
+			@keyframes progress {
+				to {
+					width: 0;
+				}
+			}
+		}
+		.video {
+			display: none;
+			position: absolute;
+			top: 12.5vh;
+			left: 12.5vw;
+			height: 75vh;
+			width: 75vw;
+			border-radius: 20px;
+			background-color: black;
+			overflow: hidden;
+			box-shadow: 0 5px 10px rgba(0,0,0,.4);
+			z-index: 5;
+			img,
+			video {
+				height: 100%;
+				width: 100%;
+			}
+		}
+		.video.fadeOut {
+			animation: fadeOutMiddle 2s 1 forwards;
+		}
 		.timer {
 			position: absolute;
 			bottom: 0;
@@ -1120,9 +1198,9 @@ body {
 	animation-fill-mode: forwards;
 }
 .switch {animation: switchHand 5.5s infinite;}
-.delay2 {animation-delay: 2s;}
-.moveMiddleLeft{animation: moveMiddleLeft 2s 1 forwards;}
-.moveMiddleRight{animation: moveMiddleRight 2s 1 forwards;}
+.delay2 {animation-duration: 1s;}
+.moveMiddleLeft{animation: moveMiddleLeft 1s 1 forwards;}
+.moveMiddleRight{animation: moveMiddleRight 1s 1 forwards;}
 @keyframes fadeOut {
 	to {
 		opacity: 0;
@@ -1311,6 +1389,12 @@ body {
 	}
 	to {
 		opacity: 1;
+	}
+}
+@keyframes fadeOutMiddle {
+	to {
+		transform: scale(0);
+		opacity: 0;
 	}
 }
 @keyframes fadeInMiddle50 {

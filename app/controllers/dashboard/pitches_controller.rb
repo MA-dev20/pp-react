@@ -6,7 +6,8 @@ module Dashboard
         layout "dashboard"
 
         def index
-            @pitches = @admin.pitches
+            @pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
+            @pitches = @admin.pitches.includes(:tasks)
         end
 
         def new

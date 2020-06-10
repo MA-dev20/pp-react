@@ -5,55 +5,23 @@ class GamesController < ApplicationController
 	@game = Game.where(password: game_params[:password], state: 'wait', active: true).first
 	if @game && @game.company != @company
 	  flash[:alert] = 'Das Passwort ist schon vergeben!'
-	  redirect_to dashboard_path('', team: game_params[:team_id])
+	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	  return
 	end
 	@game.update(game_params) if @game
 	@game = @company.games.new(game_params) if !@game
 	@game.user = @user
 	if @game.save
-	  redirect_to dashboard_customize_game_path(@game)
+	  game_login @game
+	  redirect_to gd_join_path(@game)
 	else
-	  redirect_to dashboard_path('', team: game_params[:team_id])
+	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	end
   end
 	
   def rating_user
 	@game.update(game_params)
 	redirect_to gm_game_path
-  end
-	
-  def customize
-	if @game.update(game_params)
-	  @CL = params[:game][:word_list] if params[:game][:word_list]
-	  if !@CL && CatchwordList.find_by(name: 'Peters Catchwords').nil?
-		flash[:alert] = 'Bitte Lade erst Catchworte hoch!'
-		redirect_to backoffice_path
-		return
-	  end
-	  @CL = [CatchwordList.find_by(name: 'Peters Catchwords').id] if !@CL
-	  build_catchwords(@game, @CL)
-	  @OL = params[:game][:objection_list] if params[:game][:objection_list]
-	  if !@OL && ObjectionList.find_by(name: 'Peters Objections').nil?
-		flash[:alert] = 'Bitte Lade erst Objections hoch!'
-		redirect_to backoffice_path
-		return
-	  end
-	  @OL = [ObjectionList.find_by(name: 'Peters Objections').id] if !@OL
-	  build_objections(@game, @OL)
-	  if !game_params[:rating_list_id] && RatingList.find_by(name: 'Peters Scores').nil?
-		flash[:alert] = 'Bitte Lade erst Ratings hoch!'
-		redirect_to backoffice_path
-		return  
-	  else
-	    @game.update(rating_list_id: RatingList.find_by(name: 'Peters Scores').id) if !game_params[:rating_list_id]
-	  end
-	  game_login @game
-	  redirect_to gd_join_path(@game)
-	else
-	  flash[:alert] = 'Konnte game nicht speichern!'
-	  redirect_to dashboard_customize_game_path(@game)
-	end
   end
 	
   def email
@@ -99,20 +67,9 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
 	  end
 	  redirect_to gm_game_path
-	elsif @game.catchword_list.nil?
-	  flash[:alert] = 'Bitte warte bis das Spiel gestartet wurde!'
-	  redirect_to gm_join_path
 	else
 	@turn = @game.game_turns.new(turn_params) if !@turn
 	@turn.user = @user
-	@catchwords = @game.catchword_list.catchwords.order("RANDOM()").map{ |c| c.id }
-	@game.game_turns.each do |t|
-	  @catchwords.delete(t.catchword_id)
-	end
-	if @catchwords.length != 0
-	@turn.catchword_id = @catchwords.first
-	else
-	@turn.catchword = @game.catchword_list.catchwords.order("RANDOM()").first
 	end
 	@turn.team = @game.team
 	if @turn.save
@@ -127,7 +84,6 @@ class GamesController < ApplicationController
 	  flash[:alert] = 'Konnte nicht beitreten!'
 	  redirect_to gm_join_path
 	end
-	end
   end
 	
   def create_rating
@@ -135,11 +91,13 @@ class GamesController < ApplicationController
 	@game = @turn.game
 	@user = current_game_user
 	params[:rating].each do |r|
-	  @rating = @turn.ratings.find_by(rating_criterium_id: r.first, user: @user)
+	  @rating_criterium = RatingCriterium.find_by(name: r.first)
+	  @rating_criterium = RatingCriterium.create(name: r.first) if !@rating_criterium
+	  @rating = @turn.ratings.find_by(rating_criterium: @rating_criterium, user: @user)
 	  if @rating
-	  	@rating.update(rating: r.last) if @rating
+	  	@rating.update(rating: r.last)
 	  else
-	  	@rating = @turn.ratings.create(rating_criterium_id: r.first, user: @user, rating: r.last)
+	  	@rating = @turn.ratings.create(rating_criterium: @rating_criterium, user: @user, rating: r.last)
 		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_turns.where(repeat: false).count - 1).to_s)
 	  end
 	end
@@ -186,7 +144,7 @@ class GamesController < ApplicationController
 	
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer)
+	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer, :pitch_id)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)

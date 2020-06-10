@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600,700&display=swap');
+#task {
+	position: relative;
+	margin-top: 10vh;
+	width: 100%;
+	h3 {
+		width: 100%;
+		text-align: center;
+		font-size: 6vh;
+		margin: 0;
+	}
+	.choose {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 5%;
+		width: 90%;
+		height: 90vh;
+		.circle-left, .circle-right {
+			top: 15vh;
+			width: 50vh; height: 50vh;
+			.circle,
+			img {
+				position: absolute;
+				top: 0; left: 0;
+				width: 35vh;
+				height: 35vh;
+				border: 1vh solid rgb(var(--custcolor));
+				border-radius: 50%;
+				margin: 6.5vh;
+				z-index: 1000;
+				box-shadow: 0 0 0 0 rgba(var(--custcolor), .5);
+				line-height: 35vh;
+				text-align: center;
+				font-size: 20vh;
+				background-color: #00232a;
+				color: white;
+			}
+			.rain {
+				.circle,
+				img {
+					position: absolute;
+					top: 16.5vh; left: 16.5vh;
+					width: 15vh; height: 15vh;
+					border: .5vh solid rgb(var(--custcolor));
+					border-radius: 50%;
+					animation-name: rain;
+					animation-duration: 2s;
+					animation-iteration-count: 1;
+					z-index: 100;
+					line-height: 15vh;
+					text-align: center;
+					font-size: 10vh;
+					background-color: #00232a;
+					color: white;
+				}
+			}
+		}
+		.circle-left {
+			position: absolute;
+			left: calc(50% - 50vh);
+		}
+		.circle-right {
+			position: absolute;
+			right: calc(50% - 50vh);
+		}
+		#finger {
+			position: absolute;
+			top: 55vh;
+			left: calc(40vw - 10vh);
+			height: 20vh;
+			z-index: 1000;
+		}
+		
+		.use-smartphone {
+			position: absolute;
+			bottom: 5vh;
+			right: 0;
+			height: 35vh; width: 17vh;
+			background-color: white;
+			border-radius: 3vh;
+			img {
+				height: 100%; width: 100%;
+			}
+			.text {
+				position: absolute;
+				top: 12.5vh;
+				line-height: 5vh;
+				font-size: 2.5vh;
+				text-align: center;
+			}
+		}
+	}
+	.turn {
+		position: absolute;
+		top: 0;
+		left: 35%;
+		width: 30%;
+		animation: taskMoveIn 1s 1;
+		animation-fill-mode: forwards;
+		h3 {
+			width: 100%;
+			text-align: center;
+			font-size: 6vh;
+			margin: 0 !important;
+			animation-duration: 1s !important;
+		}
+		.circle, 
+		img {
+			position: absolute;
+			top: 22.5vh; left: calc(15vw - 17.5vh);
+			width: 35vh;
+			height: 35vh;
+			border: 1vh solid rgb(var(--custcolor));
+			border-radius: 50%;
+			z-index: 1000;
+			box-shadow: 0 0 0 0 rgba(var(--custcolor), .5);
+			line-height: 35vh;
+			text-align: center;
+			font-size: 20vh;
+			background-color: #00232a;
+			color: white;
+		}
+	}
+	@keyframes taskMoveIn {
+		from {opacity: .5;}
+		to {
+			left: 5%;
+			opacity: 1;
+		}
+	}
+	.timer-left {
+		position: fixed;
+		bottom: 5vh;
+		left: 5vw;
+		color: rgb(var(--custcolor));
+		font-size: 10vh;
+	}
+	.task {
+		position: absolute;
+		top: 0; left: 25%;
+		width: 50%; height: 90vh;
+		display: flex;
+		h3 {
+			position: absolute;
+			width: 100%;
+			margin: 5vh 0;
+		}
+		.card {
+			h3 {
+				font-size: 3vh;
+				color: rgb(var(--custcolor));
+				margin-bottom: 1vh;
+				font-family: 'Barack-Medium';
+			}
+			position: relative;
+			right: 0;
+			width: 50vw;
+			background-color: white;
+			border-radius: 1vw;
+			padding: 1vw;
+			font-size: 5vh;
+			font-weight: normal;
+			font-family: 'Nunito', sans-serif;
+			align-self: center;
+			box-shadow: 0 5px 10px rgba(0,0,0,.4);
+		}
+	}
+	.task.right {
+		animation: moveOutLeft 1s 1;
+		animation-fill-mode: forwards;
+	}
+	.task.left {
+		animation: moveInLeft 1s 1;
+		animation-fill-mode: forwards;
+	}
+}
+@keyframes moveInLeft {
+	from {left: 98%}
+	to { left: 45%;	}
+}
+@keyframes moveOutLeft {
+	to {left: 98%}
+}
+@keyframes switchHand {
+	0% {
+		left: calc(40vw - 10vh);
+	}
+	50% {
+		left: calc(60vw - 10vh);
+	}
+	100% {
+		left: calc(40vw - 10vh);
+	}
+}
+@keyframes moveMiddleLeft {
+	to {
+		left: calc(20vw - 13.5vh);
+		transform: scale(1.4);
+	}
+}
+
+@keyframes moveMiddleRight {
+	to {
+		right: calc(20vw - 13.5vh);
+		transform: scale(1.4);
+	}
+}
