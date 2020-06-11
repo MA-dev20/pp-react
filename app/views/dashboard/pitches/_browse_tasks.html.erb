@@ -5,7 +5,7 @@
     </div>
     <h3>Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
-    <div class="pitches" id="pitch-list">
+    <div class="pitches pitch-list">
         <% pitches.each do |pitch| %>
         <div class="card">
             <div class="thumb">
@@ -60,11 +60,17 @@
 
 <script>
 
+    $("#searchPitch").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $(".pitch-list .card .title").filter(function () {
+            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
     $('#fakeForm').hide();
 
     $('.browse-tasks').on('click', function (e) {
         let $taskId = $(e.target).attr('data-task');
-        $('#pitch-list').hide();
+        $('.pitch-list').hide();
         $(`#${$taskId}`).show();
     });
 
@@ -77,7 +83,7 @@
             addFirstTaskBtn = false;
         }
         createTaskCopy(sourceId);
-        $('.browse-tasks-partial, #pitch-list, .pitch-tasks-div, .add-first-task').hide();
+        $('.browse-tasks-partial, .pitch-list, .pitch-tasks-div, .add-first-task').hide();
         $('#new_pitch_form').show();
         if (addFirstTaskBtn) {
             hideAllTasks();

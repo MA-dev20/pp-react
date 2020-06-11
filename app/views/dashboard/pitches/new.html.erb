@@ -299,7 +299,7 @@
 
         $('.task-pitch').click(function () {
             $('.menu-box, #new_pitch_form, .pitch-tasks-div').hide();
-            $('#pitch-list, .browse-tasks-partial').show();
+            $('.pitch-list, .browse-tasks-partial').show();
         })
 
         $('.submit').click(function (e) {
@@ -433,7 +433,7 @@
     }
 
     function hideExistingTasks() {
-        $('.browse-tasks-partial, #pitch-list, .pitch-tasks-div, .add-first-task').hide();
+        $('.browse-tasks-partial, .pitch-list, .pitch-tasks-div, .add-first-task').hide();
     }
 
     function showTask(id) {
