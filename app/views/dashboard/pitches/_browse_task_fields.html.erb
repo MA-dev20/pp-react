@@ -1,4 +1,4 @@
-<%= form_for task, url: '', html: {id: 'fakeForm'} do |f| %>
+<%= form_for task, url: '', html: { class: 'fake-form' } do |f| %>
 
 <%= render partial: 'task_fields', locals: { f: f, browse_task_id: "#{pitch_id}#{task.id}" } %>
 

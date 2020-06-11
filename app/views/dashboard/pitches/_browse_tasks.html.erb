@@ -66,7 +66,7 @@
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-    $('#fakeForm').hide();
+    $('fake-form').hide();
 
     $('.browse-tasks').on('click', function (e) {
         let $taskId = $(e.target).attr('data-task');
