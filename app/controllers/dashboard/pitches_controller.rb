@@ -92,7 +92,7 @@ module Dashboard
         end
 
         def get_pitches
-            @pitches = @admin.pitches
+            @pitches = @admin.pitches.includes(:tasks)
         end
 
         def set_user
