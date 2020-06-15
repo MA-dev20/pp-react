@@ -27,7 +27,7 @@
     <div class="card add-catchword">
         <div class="title">Text, Video oder Bild hinzufügen</div>
         <div class="btn-line">
-            <%= f.hidden_field :media_option, id: 'media_option' %>
+            <%= f.hidden_field :media_option, id: 'media_option', class: 'db-media-option' %>
             <% media_option = f.object.media_option %>
             <div class="btn <%= 'selected' if media_option == 'catchword' %>" id="btn_catchword"
                 onclick="chooseOption('catchword', event)">Catchword</div>
@@ -91,10 +91,9 @@
         <div class="picture media-option <%= 'not-active' if media_option != 'picture' %>"
             style="<%= 'display: block;' if media_option == 'picture' %>">
             <div class="title">Bild</div>
-            <div class="subline">Upload an image to your pitch</div>
-            <label class="btn upload" onclick="uploadClick(event)">Upload</label>
-            <%= f.file_field :image, onchange: "loadFile(event, 'task-img')", accept: 'image/*' %>
-            <div class="preview" style="<%= 'display: block;'if f.object.image.url.present? %>">
+            <!-- <div class="subline">Upload an image to your pitch</div> -->
+            <!-- <label class="btn upload" onclick="uploadClick(event)">Upload</label> -->
+            <div class="preview" style="<%= 'display: block;' if f.object.image.url.present? %>">
                 <div class="remove" onclick="removeMedia(event)">remove</div>
                 <% if f.object.image.present? %>
                 <%= image_tag f.object.image.url, class: 'media-file' %>
@@ -102,15 +101,23 @@
                 <%= image_tag 'dash/Image.png', class: 'media-file' %>
                 <% end %>
             </div>
+            <div class="dropzone-container image-drop-zone"
+                style="<%= 'display: none;' if f.object.image.url.present? %>">
+                <label class="dropzone-text">Drag and Drop Image from your Computer</label>
+                <div class="label-btn">
+                    <%= f.file_field :image, onchange: "loadFile(event, 'task-img')", class: 'image-fileinput', accept: 'image/*' %>
+                    <label class="btn upload" onclick="uploadClick(event)">Upload</label>
+                </div>
+            </div>
         </div>
         <div class="video media-option <%= 'not-active' if media_option != 'video' %>"
             style="<%= 'display: block;' if media_option == 'video' %>">
             <div class="title">Video</div>
-            <div class="subline">Upload a video to your pitch</div>
-            <div class="btn upload" onclick="uploadClick(event)">Upload</div>
-            <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
-            <%= f.hidden_field :video_id, class: 'video-id' %>
-            <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+            <!-- <div class="subline">Upload a video to your pitch</div> -->
+            <!-- <div class="btn upload" onclick="uploadClick(event)">Upload</div> -->
+            <%#= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
+            <%#= f.hidden_field :video_id, class: 'video-id' %>
+            <!-- <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div> -->
             <%
                 if f.object.video_id.present?
                 video = TaskMedium.find(f.object.video_id).video
@@ -121,19 +128,29 @@
             <div class="preview video-preview" style="<%= 'display: block;' if video.present? %>">
                 <div class="time"></div>
                 <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-                <video id="video_tag" src="<%= video.url if video.present? %>" onloadedmetadata="loadMetaData(event)"
-                    class="<%= 'hide' unless video.present? %>" type="video/mp4" controls></video>
+                <video id="video_tag" class="video-tag" src="<%= video.url if video.present? %>"
+                    onloadedmetadata="loadMetaData(event)" class="<%= 'hide' unless video.present? %>" type="video/mp4"
+                    controls></video>
+            </div>
+            <div class="dropzone-container video-drop-zone" style="<%= 'display: none;' if video.present? %>">
+                <label class="dropzone-text">Drag and Drop Video from your Computer</label>
+                <div class="label-btn">
+                    <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'video-field', id: 'video_field' %>
+                    <%= f.hidden_field :video_id, class: 'video-id' %>
+                    <div class="btn upload" onclick="uploadClick(event)">Upload</div>
+                    <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+                </div>
             </div>
         </div>
         <div class="audio media-option <%= 'not-active' if media_option != 'audio' %>"
             style="<%= 'display: block;' if media_option == 'audio' %>">
             <div class="title">Audio</div>
-            <div class="subline">Upload an audio file to your pitch</div>
-            <div class="btn upload" onclick="uploadClick(event)">Upload</div>
-            <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav' %>
-            <%= f.hidden_field :audio_id, class: 'audio-id' %>
+            <!-- <div class="subline">Upload an audio file to your pitch</div> -->
+            <!-- <div class="btn upload" onclick="uploadClick(event)">Upload</div> -->
+            <%#= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav' %>
+            <%#= f.hidden_field :audio_id, class: 'audio-id' %>
 
-            <div class="btn upload record">Record</div>
+            <!-- <div class="btn upload record">Record</div> -->
             <%
                 if f.object.audio_id.present?
                 audio = TaskMedium.find(f.object.audio_id).audio
@@ -148,9 +165,18 @@
                 <% else %>
                 <div class="audio-title"></div>
                 <% end %>
-                <audio src="<%= audio.url if audio.present? %>" style="display: none" onended='stopAudio(event)'
-                    controls></audio>
+                <audio class="audio-tag" src="<%= audio.url if audio.present? %>" style="display: none"
+                    onended='stopAudio(event)' controls></audio>
                 <div class="remove" onclick="removeMedia(event, 'audio')">remove</div>
+            </div>
+            <div class="dropzone-container audio-drop-zone" style="<%= 'display: none;' if audio.present? %>">
+                <label class="dropzone-text">Drag and Drop Audio from your Computer</label>
+                <div class="label-btn">
+                    <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav', class: 'audio-field' %>
+                    <%= f.hidden_field :audio_id, class: 'audio-id' %>
+                    <div class="btn upload" onclick="uploadClick(event)">Upload</div>
+                    <div class="btn upload record">Record</div>
+                </div>
             </div>
         </div>
     </div>
@@ -224,9 +250,149 @@
     <%= link_to_remove_association '', f %>
 </div>
 
+
 <script>
 
+
+
+    function handleImageUpload(e) {
+        let file_input = $(e.currentTarget).find('.image-fileinput');
+        file_input[0].files = global_file;
+        let file_name = $(file_input).val().split('\\').pop();
+        let file_data = $(file_input)[0].files[0];
+        let mimeType = file_data['type'];
+        if (mimeType.split('/')[0] === 'image') {
+            let url_object = URL.createObjectURL(file_data);
+            $(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
+            $('.left-card.selected img')[0].src = url_object;
+            $(e.currentTarget).siblings('.preview').show();
+            $(e.currentTarget).hide();
+            // let taskId = $(e.target).closest('.task-fields').attr('id');
+            // removeOtherMedia('picture', taskId, false);
+        }
+    }
+
+    function handleVideoUpload(e) {
+        let file_input = $(e.currentTarget).find('.video-field');
+        file_input[0].files = global_file;
+        let file_name = $(file_input).val().split('\\').pop();
+        let file_data = $(file_input)[0].files[0];
+        let mimeType = file_data['type'];
+        if (mimeType.split('/')[0] === 'video') {
+            let url_object = URL.createObjectURL(file_data);
+            let $preview = $(e.currentTarget).siblings('.preview')
+            $preview.find('.video-tag')[0].src = url_object;
+            // let taskId = $(e.target).closest('.task-fields').attr('id');
+            // removeOtherMedia('video', taskId, false);
+            $preview.find('.video-id').val('');
+            $preview.show();
+            $(e.currentTarget).hide();
+        }
+    }
+
+    function handleAudioUpload(e) {
+        let file_input = $(e.currentTarget).find('.audio-field');
+        file_input[0].files = global_file;
+        let file_name = $(file_input).val().split('\\').pop();
+        let file_data = $(file_input)[0].files[0];
+        let mimeType = file_data['type'];
+        if (mimeType.split('/')[0] === 'audio') {
+            let url_object = URL.createObjectURL(file_data);
+            let $preview = $(e.currentTarget).siblings('.preview')
+            $preview.find('.audio-tag')[0].src = url_object;
+            // let taskId = $(e.target).closest('.task-fields').attr('id');
+            // removeOtherMedia('audio', taskId, false);
+            $preview.find('.audio-id').val('');
+            $preview.find('.audio-title').text(file_data.name);
+            $preview.show();
+            $(e.currentTarget).hide();
+        }
+    }
+
     $(() => {
+
+        var imageDropZone = $('.image-drop-zone')
+        imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        imageDropZone.on('dragover dragenter', function () {
+            $(this).addClass('is-dragover');
+        })
+        imageDropZone.on('dragleave dragend drop', function () {
+            $(this).removeClass('is-dragover');
+        })
+
+        imageDropZone.on('drop', function (e) {
+            if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
+                global_method = 'imageDragDrop'
+                global_event = e;
+                global_file = e.originalEvent.dataTransfer.files;
+                if (isOtherDataUploaded(e)) {
+                    $('.warning-card-wrapper').show();
+                } else {
+                    handleImageUpload(e);
+                }
+            }
+        });
+
+
+        var videoDropZone = $('.video-drop-zone')
+        videoDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        videoDropZone.on('dragover dragenter', function () {
+            $(this).addClass('is-dragover');
+        })
+        videoDropZone.on('dragleave dragend drop', function () {
+            $(this).removeClass('is-dragover');
+        })
+
+        videoDropZone.on('drop', function (e) {
+            if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
+                global_method = 'videoDragDrop'
+                global_event = e;
+                global_file = e.originalEvent.dataTransfer.files;
+                if (isOtherDataUploaded(e)) {
+                    $('.warning-card-wrapper').show();
+                } else {
+                    handleVideoUpload(e);
+                }
+            }
+        });
+
+
+        var audioDropZone = $('.audio-drop-zone')
+        audioDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        audioDropZone.on('dragover dragenter', function () {
+            $(this).addClass('is-dragover');
+        })
+        audioDropZone.on('dragleave dragend drop', function () {
+            $(this).removeClass('is-dragover');
+        })
+
+        audioDropZone.on('drop', function (e) {
+            global_file = e.originalEvent.dataTransfer.files;
+            if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
+                global_method = 'audioDragDrop'
+                global_event = e;
+                if (isOtherDataUploaded(e)) {
+                    $('.warning-card-wrapper').show();
+                } else {
+                    handleAudioUpload(e);
+                }
+            }
+        });
+
+        // $('#fileInput').on('change', (e) => {
+        //     let file = e.target.files[0];
+        //     handleUpload(file);
+        // })
+
         // if ($())
         $('.input-field').unbind().keypress((e) => {
             if (e.which == 13) {
@@ -296,11 +462,15 @@
                 $('.warning-card-wrapper').hide();
                 if (recording) {
                     $(e.target).text('Record');
-                    rec.stop();
+                    if (rec.state === 'recording')
+                        rec.stop();
                     recording = false;
                 } else {
                     // This will prompt for permission if not allowed earlier
-                    let $preview = $(e.target).siblings('.preview');
+                    // let $preview = $(e.target).siblings('.preview');
+                    // let $preview = $(e.target).closest('.preview');
+                    let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
+                    let $dropZone = $(e.currentTarget).closest('.dropzone-container');
                     var recordedAudio = $preview.find('audio')[0];
                     navigator.mediaDevices.getUserMedia({ audio: true })
                         .then(stream => {
@@ -313,8 +483,9 @@
                                 if (rec.state == "inactive") {
                                     stream.getTracks().forEach(track => track.stop())
                                     $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-                                    $preview.siblings('input[type="file"]').val('')
+                                    $dropZone.siblings('input[type="file"]').val('')
                                     $preview.show();
+                                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.audio-drop-zone').hide();
 
                                     let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
                                     recordedAudio.src = URL.createObjectURL(blob);
@@ -445,6 +616,7 @@
                     $('#videoModal').hide();
                     $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
                     $(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video-drop-zone').hide();
                     globalForm = new FormData();
                 }
             })

@@ -267,8 +267,10 @@
     var method_this = '';
     var global_event = '';
     var global_method = '';
+    var global_file = '';
 
     $(document).on('ready turbolinks:load', () => {
+
 
         if ('<%= isEditForm %>' === 'true') {
             $('.task-fields:first').removeClass('hide');
@@ -322,8 +324,15 @@
                     $('.record').click();
                 else if (global_method === 'video')
                     $('#videoModal').show()
+                else if (global_method === 'imageDragDrop')
+                    handleImageUpload(global_event);
+                else if (global_method === 'audioDragDrop')
+                    handleAudioUpload(global_event);
+                else if (global_method === 'videoDragDrop')
+                    handleVideoUpload(global_event);
+
             }
-            selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method = '';
+            selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method, global_file = '';
             $('.warning-card-wrapper').hide();
             return false;
         })
@@ -776,8 +785,10 @@
 
     function removeMedia(e, type = '') {
         let $mediaBox = $(e.target).closest('.preview');
+        let $dropZone = $mediaBox.siblings('.dropzone-container');
         let task_id = parseInt($(e.target).closest('.task-fields').attr('id').split('_')[1]);
         $mediaBox.hide();
+        $dropZone.removeClass('hide').show();
         $mediaBox.siblings('input[type="file"]').val('');
         if (type === 'audio') {
             $mediaBox.find('audio').attr('src', '');
@@ -835,17 +846,32 @@
         //     removeOtherMedia(type, task_id);
         // }
         if (type === 'video') {
-            let $preview = $(event.target).siblings('.preview');
-            $preview.siblings('.video-id').val('');
+            // let $preview = $(event.target).siblings('.preview');
+            // $preview.siblings('.video-id').val('');
+            // let $video_tag = $preview.find('video');
+            // $video_tag[0].src = URL.createObjectURL(file);
+            let $that = $(event.currentTarget);
+            let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
+            $that.siblings('.video-id').val('');
             let $video_tag = $preview.find('video');
             $video_tag[0].src = URL.createObjectURL(file);
             $video_tag.show();
+            // $preview.show();
+            $(e.currentTarget).closest('.video-drop-zone').hide();
         } else if (type === 'audio') {
-            let $preview = $(event.target).siblings('.preview');
-            $preview.siblings('.audio-id').val('');
+            // let $preview = $(event.target).siblings('.preview');
+            // $preview.siblings('.audio-id').val('');
+            // $preview.find('.audio-title').text(file.name);
+            // $preview.find('audio')[0].src = URL.createObjectURL(file);
+            let $that = $(event.currentTarget);
+            let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
+            $that.siblings('.audio-id').val('');
+            let $audio_tag = $preview.find('audio');
+            $audio_tag[0].src = URL.createObjectURL(file);
             $preview.find('.audio-title').text(file.name);
-            $preview.find('audio')[0].src = URL.createObjectURL(file);
+            $(e.currentTarget).closest('.audio-drop-zone').hide();
         } else {
+            $(e.target).closest('.image-drop-zone').hide();
             let $img = $(mediaOption).find('img');
             let url_object = URL.createObjectURL(file);
             $img[0].src = url_object;
@@ -857,6 +883,7 @@
 
     function removeOtherMedia(type, id, destroy_capsule = false) {
         let $mediaBox = $(`#${id}`).find('.add-catchword');
+        $(`#${id} .dropzone-container`).removeClass('hide').show();
         $($mediaBox).find('.not-active input[type="file"]').val('');
         $($mediaBox).find('.not-active input[type="hidden"]').val('');
         $mediaBox.find('.not-active img.media-file').attr('src', '');

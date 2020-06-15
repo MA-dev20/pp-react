@@ -149,23 +149,31 @@
                     </div>
                 </div>
             </div>
-            <script>
-                function changeRatingTimer(type) {
-                    if (type == 'timer') {
-                        $('#skip_rating_timer_admin').removeClass('fa-check-square');
-                        $('#skip_rating_timer_admin').addClass('fa-square');
-                        $('#skip_rating_timer_timer').removeClass('fa-square');
-                        $('#skip_rating_timer_timer').addClass('fa-check-square');
-                        $('#game_skip_rating_timer').attr('value', 'false');
-                    } else {
-                        $('#skip_rating_timer_timer').removeClass('fa-check-square');
-                        $('#skip_rating_timer_timer').addClass('fa-square');
-                        $('#skip_rating_timer_admin').removeClass('fa-square');
-                        $('#skip_rating_timer_admin').addClass('fa-check-square');
-                        $('#game_skip_rating_timer').attr('value', 'true');
-                    }
-                }
-            </script>
+            <div class="checkbox-container">
+                <%= f.hidden_field(:pitch_sound) %>
+                <div class="form-group">
+                    <label for="">Pitch Sound</label>
+                    <div class="skip-election-group">
+                        <label for="">Pitch Sound 1</label>
+                        <i class="far fa-check-square" onclick="changeSound()" id="pitch_sound"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="checkbox-container">
+                <%= f.hidden_field(:skip_rating_timer) %>
+                <div class="form-group" id="skip_rating_timer">
+                    <label for="">Beenden der Bewertungsabgabe</label>
+                    <div class="skip-election-group">
+                        <label for="">automatisch nach 15s</label>
+                        <i class="far fa-check-square" id="skip_rating_timer_timer"
+                            onclick="changeRatingTimer('timer')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">manuell durch Admin</label>
+                        <i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
+                    </div>
+                </div>
+            </div>
         </div>
         <%= f.submit 'starten!', class: 'btn btn-green' %>
         <% end %>
@@ -176,6 +184,8 @@
 <script>
 
     new PerfectScrollbar('.pitch-list');
+    new PerfectScrollbar("#scroll");
+
     function handleClick(e) {
         if ($(e.target).attr('class') === 'card') {
             $(e.target).find('.btn.reversed').click();
@@ -190,10 +200,7 @@
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-</script>
 
-
-<script>
     function changeShowRating(type) {
         if ($('#ratings_all').hasClass('fa-check-square')) {
             $('#ratings_all').removeClass('fa-check-square');
@@ -238,7 +245,32 @@
             $('#pitch_skip_elections').attr('value', 'false')
         }
     }
-    new PerfectScrollbar("#scroll");
+    function changeSound() {
+        if ($("#pitch_sound").hasClass('fa-square')) {
+            $("#pitch_sound").removeClass('fa-square').addClass('fa-check-square')
+            $('#pitch_pitch_sound').attr('value', 'true')
+        } else {
+            $("#pitch_sound").removeClass('fa-check-square').addClass('fa-square')
+            $('#pitch_pitch_sound').attr('value', 'false')
+        }
+    }
+
+    $('#pitch_skip_rating_timer').attr('value', 'false');
+    function changeRatingTimer(type) {
+        if (type === 'timer') {
+            $('#skip_rating_timer_admin').removeClass('fa-check-square');
+            $('#skip_rating_timer_admin').addClass('fa-square');
+            $('#skip_rating_timer_timer').removeClass('fa-square');
+            $('#skip_rating_timer_timer').addClass('fa-check-square');
+            $('#pitch_skip_rating_timer').attr('value', 'false');
+        } else {
+            $('#skip_rating_timer_timer').removeClass('fa-check-square');
+            $('#skip_rating_timer_timer').addClass('fa-square');
+            $('#skip_rating_timer_admin').removeClass('fa-square');
+            $('#skip_rating_timer_admin').addClass('fa-check-square');
+            $('#pitch_skip_rating_timer').attr('value', 'true');
+        }
+    }
 
     function userUp() {
         var value = $('#game_max_users').val();

@@ -42,7 +42,6 @@ class DashboardController < ApplicationController
   end
 	
   def customize_game
-	debugger
 	@game = Game.find(params[:game_id])
 	@team = @game.team
 	@uCL = @admin.catchword_lists.order('name')

@@ -68,8 +68,8 @@ module Dashboard
         end
 
         def customize
-            @game = Game.find(params[:game_id])
             debugger
+            @game = Game.find(params[:game_id])
             if @pitch.update(pitch_params)
                 game_login @game
                 redirect_to gd_join_path(@game)
@@ -98,7 +98,7 @@ module Dashboard
         private
 
         def pitch_params
-            params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids, :destroy_media, :_destroy])
+            params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :skip_rating_timer, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids, :destroy_media, :_destroy])
         end
 
         def set_pitch
