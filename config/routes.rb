@@ -35,7 +35,8 @@ Rails.application.routes.draw do
     resources :pitches
     post '/pitches/tasks/audio/create', to: 'pitches#createAudio', as: "create_audio"
     delete '/pitches/:id/tasks/:task_id/media/delete', to: 'pitches#deleteMedia', as: "delete_media"
-  	post '/pitches/tasks/video/create', to: 'pitches#createVideo', as: 'create_video'
+    post '/pitches/tasks/video/create', to: 'pitches#createVideo', as: 'create_video'
+    post '/pitches/:id/customize', to: 'pitches#customize', as: 'customize_pitch'  
   end
 
 	

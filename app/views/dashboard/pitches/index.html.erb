@@ -115,27 +115,8 @@
             <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
             Pitche nach deinen Regeln
         </h3>
-        <%= form_for(:game, url: customize_game_path(@game)) do |f| %>
+        <%= form_for(:pitch, url: dashboard_customize_pitch_path(@pitch, game_id: @game.id)) do |f| %>
         <div id="scroll">
-            <!-- <div class="form-group half-left-time">
-            <label for="">Zeit pro Pitch</label>
-            <div class="time-field">
-                <%= f.hidden_field :game_seconds, value: 80 %>
-                <div class="time" id="settime">1:20</div>
-                <i class="fa fa-angle-up up" onclick="timeUp()"></i>
-                <i class="fa fa-angle-down down" onclick="timeDown()"></i>
-            </div>
-        </div>
-        <div class="form-group half-right-time">
-            <label for="">Max. Anzahl Pitches</label>
-            <div class="time-field">
-                <%= f.hidden_field :max_users, value: 0 %>
-                <div class="time" id="setusers">&infin;</div>
-                <i class="fa fa-angle-up up" onclick="userUp()"></i>
-                <i class="fa fa-angle-down down" onclick="userDown()"></i>
-            </div>
-        </div> -->
-
             <div class="checkbox-container">
                 <%= f.hidden_field(:skip_elections) %>
                 <div class="form-group">
@@ -165,21 +146,6 @@
                     <div class="skip-election-group">
                         <label for="">Bewertung überspringen</label>
                         <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="checkbox-container">
-                <%= f.hidden_field(:skip_rating_timer) %>
-                <div class="form-group" id="skip_rating_timer">
-                    <label for="">Beenden der Bewertungsabgabe</label>
-                    <div class="skip-election-group">
-                        <label for="">automatisch nach 15s</label>
-                        <i class="far fa-check-square" id="skip_rating_timer_timer"
-                            onclick="changeRatingTimer('timer')"></i>
-                    </div>
-                    <div class="skip-election-group">
-                        <label for="">manuell durch Admin</label>
-                        <i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
                     </div>
                 </div>
             </div>
@@ -248,28 +214,28 @@
         if (type == 'all') {
             $('#ratings_all').addClass('fa-check-square');
             $('#ratings_all').removeClass('fa-square');
-            $('#game_show_ratings').attr('value', 'all')
+            $('#pitch_show_ratings').attr('value', 'all')
         } else if (type == 'none') {
             $('#ratings_none').addClass('fa-check-square');
             $('#ratings_none').removeClass('fa-square');
-            $('#game_show_ratings').attr('value', 'none')
+            $('#pitch_show_ratings').attr('value', 'none')
         } else if (type == 'one') {
             $('#ratings_one').addClass('fa-check-square');
             $('#ratings_one').removeClass('fa-square');
-            $('#game_show_ratings').attr('value', 'one')
+            $('#pitch_show_ratings').attr('value', 'one')
         } else if (type == 'skip') {
             $('#ratings_skip').addClass('fa-check-square');
             $('#ratings_skip').removeClass('fa-square');
-            $('#game_show_ratings').attr('value', 'skip')
+            $('#pitch_show_ratings').attr('value', 'skip')
         }
     }
     function changeElection() {
         if ($("#skip_election").hasClass('fa-square')) {
             $("#skip_election").removeClass('fa-square').addClass('fa-check-square')
-            $('#game_skip_elections').attr('value', 'true')
+            $('#pitch_skip_elections').attr('value', 'true')
         } else {
             $("#skip_election").removeClass('fa-check-square').addClass('fa-square')
-            $('#game_skip_elections').attr('value', 'false')
+            $('#pitch_skip_elections').attr('value', 'false')
         }
     }
     new PerfectScrollbar("#scroll");

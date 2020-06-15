@@ -1,7 +1,7 @@
 module Dashboard
     class PitchesController < ApplicationController
         before_action :set_user, :get_cw_reactions
-        before_action :set_pitch, only: [:edit, :update, :deleteMedia]
+        before_action :set_pitch, only: [:edit, :update, :deleteMedia, :customize]
         before_action :get_pitches, only: [:new, :edit]
         layout "dashboard"
 
@@ -65,6 +65,18 @@ module Dashboard
                 flash[:alert] = 'Error while creating pitch'
 		        redirect_to root_path
             end
+        end
+
+        def customize
+            @game = Game.find(params[:game_id])
+            debugger
+            if @pitch.update(pitch_params)
+                game_login @game
+                redirect_to gd_join_path(@game)
+              else
+                flash[:alert] = 'Konnte game nicht speichern!'
+        		redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: @pitch.id)
+              end
         end
 
         def createAudio
