@@ -35,7 +35,7 @@
         </div>
     </div>
 </div>
-<% if @pitch %>
+<% if @pitch && !@game.present? %>
 <div class="blur">
     <div class="card" id="letspitch">
         <h1>Jetzt Pitch starten!</h1>
@@ -108,6 +108,105 @@
 </script>
 <% end %>
 
+<% if @game %>
+<div class="blur">
+    <div class="card" id="letspitch">
+        <h3>
+            <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
+            Pitche nach deinen Regeln
+        </h3>
+        <%= form_for(:game, url: customize_game_path(@game)) do |f| %>
+        <div id="scroll">
+            <!-- <div class="form-group half-left-time">
+            <label for="">Zeit pro Pitch</label>
+            <div class="time-field">
+                <%= f.hidden_field :game_seconds, value: 80 %>
+                <div class="time" id="settime">1:20</div>
+                <i class="fa fa-angle-up up" onclick="timeUp()"></i>
+                <i class="fa fa-angle-down down" onclick="timeDown()"></i>
+            </div>
+        </div>
+        <div class="form-group half-right-time">
+            <label for="">Max. Anzahl Pitches</label>
+            <div class="time-field">
+                <%= f.hidden_field :max_users, value: 0 %>
+                <div class="time" id="setusers">&infin;</div>
+                <i class="fa fa-angle-up up" onclick="userUp()"></i>
+                <i class="fa fa-angle-down down" onclick="userDown()"></i>
+            </div>
+        </div> -->
+
+            <div class="checkbox-container">
+                <%= f.hidden_field(:skip_elections) %>
+                <div class="form-group">
+                    <label for="">Nutzerauswahl vor Pitch</label>
+                    <div class="skip-election-group">
+                        <label for="">Nutzerauswahl überspringen</label>
+                        <i class="far fa-square" onclick="changeElection()" id="skip_election"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="checkbox-container">
+                <%= f.hidden_field(:show_ratings) %>
+                <div class="form-group" id="show_ratings">
+                    <label for="">Bewertungsausgabe (nach jedem Pitch)</label>
+                    <div class="skip-election-group">
+                        <label for="">Gesamtbewertung anzeigen</label>
+                        <i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">Keine Bewertung anzeigen</label>
+                        <i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">Bewertung von einer bestimmten Person anzeigen</label>
+                        <i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">Bewertung überspringen</label>
+                        <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="checkbox-container">
+                <%= f.hidden_field(:skip_rating_timer) %>
+                <div class="form-group" id="skip_rating_timer">
+                    <label for="">Beenden der Bewertungsabgabe</label>
+                    <div class="skip-election-group">
+                        <label for="">automatisch nach 15s</label>
+                        <i class="far fa-check-square" id="skip_rating_timer_timer"
+                            onclick="changeRatingTimer('timer')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">manuell durch Admin</label>
+                        <i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function changeRatingTimer(type) {
+                    if (type == 'timer') {
+                        $('#skip_rating_timer_admin').removeClass('fa-check-square');
+                        $('#skip_rating_timer_admin').addClass('fa-square');
+                        $('#skip_rating_timer_timer').removeClass('fa-square');
+                        $('#skip_rating_timer_timer').addClass('fa-check-square');
+                        $('#game_skip_rating_timer').attr('value', 'false');
+                    } else {
+                        $('#skip_rating_timer_timer').removeClass('fa-check-square');
+                        $('#skip_rating_timer_timer').addClass('fa-square');
+                        $('#skip_rating_timer_admin').removeClass('fa-square');
+                        $('#skip_rating_timer_admin').addClass('fa-check-square');
+                        $('#game_skip_rating_timer').attr('value', 'true');
+                    }
+                }
+            </script>
+        </div>
+        <%= f.submit 'starten!', class: 'btn btn-green' %>
+        <% end %>
+    </div>
+</div>
+<% end %>
+
 <script>
 
     new PerfectScrollbar('.pitch-list');
@@ -125,4 +224,77 @@
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+</script>
+
+
+<script>
+    function changeShowRating(type) {
+        if ($('#ratings_all').hasClass('fa-check-square')) {
+            $('#ratings_all').removeClass('fa-check-square');
+            $('#ratings_all').addClass('fa-square');
+        }
+        if ($('#ratings_one').hasClass('fa-check-square')) {
+            $('#ratings_one').removeClass('fa-check-square');
+            $('#ratings_one').addClass('fa-square');
+        }
+        if ($('#ratings_none').hasClass('fa-check-square')) {
+            $('#ratings_none').removeClass('fa-check-square');
+            $('#ratings_none').addClass('fa-square');
+        }
+        if ($('#ratings_skip').hasClass('fa-check-square')) {
+            $('#ratings_skip').removeClass('fa-check-square');
+            $('#ratings_skip').addClass('fa-square');
+        }
+        if (type == 'all') {
+            $('#ratings_all').addClass('fa-check-square');
+            $('#ratings_all').removeClass('fa-square');
+            $('#game_show_ratings').attr('value', 'all')
+        } else if (type == 'none') {
+            $('#ratings_none').addClass('fa-check-square');
+            $('#ratings_none').removeClass('fa-square');
+            $('#game_show_ratings').attr('value', 'none')
+        } else if (type == 'one') {
+            $('#ratings_one').addClass('fa-check-square');
+            $('#ratings_one').removeClass('fa-square');
+            $('#game_show_ratings').attr('value', 'one')
+        } else if (type == 'skip') {
+            $('#ratings_skip').addClass('fa-check-square');
+            $('#ratings_skip').removeClass('fa-square');
+            $('#game_show_ratings').attr('value', 'skip')
+        }
+    }
+    function changeElection() {
+        if ($("#skip_election").hasClass('fa-square')) {
+            $("#skip_election").removeClass('fa-square').addClass('fa-check-square')
+            $('#game_skip_elections').attr('value', 'true')
+        } else {
+            $("#skip_election").removeClass('fa-check-square').addClass('fa-square')
+            $('#game_skip_elections').attr('value', 'false')
+        }
+    }
+    new PerfectScrollbar("#scroll");
+
+    function userUp() {
+        var value = $('#game_max_users').val();
+        value = parseInt(value);
+        value++;
+        $('#game_max_users').val(value);
+        $('#setusers').text(value);
+    }
+    function userDown() {
+        var value = $('#game_max_users').val();
+        var infinite = "&infin;";
+        value = parseInt(value);
+        if (value == 0) {
+            $('#setusers').html(infinite);
+        } else if (value == 1) {
+            $('#setusers').html(infinite);
+            $('#game_max_users').val(0);
+        } else {
+            value--;
+            $('#game_max_users').val(value);
+            $('#setusers').text(value);
+        }
+    }
+
 </script>
