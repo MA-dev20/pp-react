@@ -682,6 +682,27 @@
             .far {
                 font-size: 2vh;
             }
+
+            .video-form {
+                label {
+                    font-size: 1.8vh;
+                }
+
+                .form-group {
+                    position: relative;
+                    text-align: left;
+                    .form-field {
+                        width: calc(100% - 9vh);
+                    }
+                }
+
+                .add {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    height: 5.5vh;
+                }
+            }
         }
 
         .toggle-wrapper {
@@ -746,27 +767,6 @@
                         cursor: pointer;
                         font-size: 2vh;
                     }
-                }
-            }
-
-            .video-form {
-                label {
-                    font-size: 1.8vh;
-                }
-
-                .form-group {
-                    position: relative;
-                    text-align: left;
-                    .form-field {
-                        width: calc(100% - 9vh);
-                    }
-                }
-
-                .add {
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    height: 5.5vh;
                 }
             }
 

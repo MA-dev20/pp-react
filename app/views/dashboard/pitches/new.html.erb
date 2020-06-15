@@ -83,7 +83,6 @@
     %>
 
     <div class="card right">
-        <%#= render partial: 'new_pitch_content', locals: { pitch: @pitches } %>
         <%= form_for @pitch, url: form_url, html: {id: 'new_pitch_form'} do |f| %>
         <%= hidden_field_tag :pitch_id, @pitch.id, id: 'pitch_id' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
