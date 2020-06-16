@@ -11,12 +11,11 @@ class GameDesktopController < ApplicationController
   end
 	
   def game
-	@video = @pitch.video if @pitch.video
+	@order = @pitch.task_orders
 	@turn1 = GameTurn.find(@game.turn1) if @game.turn1
 	@turn2 = GameTurn.find(@game.turn2) if @game.turn2
 	@turn = GameTurn.find(@game.current_turn) if @game.current_turn
-	@task = @turn.task if @turn && @game.state != 'choose'
-	@task = @pitch.tasks.first(@game.game_turns.where(played: true).count + 1).last if !@task
+	@task = @order.find_by(order: @game.current_task).task if @game.current_task != 0
 	if @turn && @pitch.show_ratings == 'all'
 	  @turn_ratings = @turn.game_turn_ratings.all
 	  @ges_rating = @turn.ges_rating
@@ -46,8 +45,16 @@ class GameDesktopController < ApplicationController
       @game.update(state: "wait") if @game.state != 'wait'
       redirect_to gd_game_path
 	  return
-	elsif params[:state] == 'intro'
-	  @game.update(state: "intro") if @game.state != 'intro'
+	elsif params[:state] == 'slide'
+	  @task = @pitch.task_orders.find_by(order: @game.current_task + 1).task
+	  if @game.state != 'slide'
+	  if @task && @task.task_type == 'slide'
+		@game.update(current_task: @game.current_task + 1, state: 'slide')
+	  else
+	    redirect_to gd_set_state_path('', state: 'choose')
+		return
+	  end
+	  end
       redirect_to gd_game_path
 	  return
     elsif params[:state] == 'choose'

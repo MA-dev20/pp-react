@@ -1,17 +1,16 @@
 class Task < ApplicationRecord
+	belongs_to :company, required: false
+	belongs_to :department, required: false
+	belongs_to :team, required: false
     belongs_to :user
-    belongs_to :pitch
+	belongs_to :task_medium, required: false
+	belongs_to :catchword_list, required: false
+	belongs_to :objection_list, required: false
+	belongs_to :rating_list, required: false
+	has_many :task_orders, dependent: :destroy
+	has_many :pitches, through: :task_orders
 
-    mount_uploader :image, ImageUploader
-    mount_uploader :video, VideoUploader
-    mount_uploader :audio, SoundUploader
 
-    # after_create do
-    #     self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
-    #     self.save
-    # end
-
-    # Task.group(:video, :pitch_id).count
     private
 
     def format_json_values value
