@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_02_114544) do
+ActiveRecord::Schema.define(version: 2020_06_08_121943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,8 +142,10 @@ ActiveRecord::Schema.define(version: 2020_06_02_114544) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "repeat", default: false
+    t.bigint "task_id"
     t.index ["catchword_id"], name: "index_game_turns_on_catchword_id"
     t.index ["game_id"], name: "index_game_turns_on_game_id"
+    t.index ["task_id"], name: "index_game_turns_on_task_id"
     t.index ["team_id"], name: "index_game_turns_on_team_id"
     t.index ["user_id"], name: "index_game_turns_on_user_id"
   end
@@ -176,7 +178,9 @@ ActiveRecord::Schema.define(version: 2020_06_02_114544) do
     t.string "show_ratings", default: "all"
     t.integer "rating_user"
     t.boolean "skip_rating_timer", default: false
+    t.bigint "pitch_id"
     t.index ["company_id"], name: "index_games_on_company_id"
+    t.index ["pitch_id"], name: "index_games_on_pitch_id"
     t.index ["rating_list_id"], name: "index_games_on_rating_list_id"
     t.index ["team_id"], name: "index_games_on_team_id"
     t.index ["user_id"], name: "index_games_on_user_id"
@@ -246,11 +250,17 @@ ActiveRecord::Schema.define(version: 2020_06_02_114544) do
   create_table "pitches", force: :cascade do |t|
     t.string "title"
     t.text "description"
+    t.boolean "pitch_sound", default: true
+    t.string "show_ratings", default: "all"
+    t.text "video_path"
+    t.boolean "skip_elections", default: false
+    t.string "video"
+    t.string "image"
+    t.boolean "destroy_video", default: false
+    t.boolean "destroy_image", default: false
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "video"
-    t.string "image"
     t.index ["user_id"], name: "index_pitches_on_user_id"
   end
 
@@ -313,12 +323,14 @@ ActiveRecord::Schema.define(version: 2020_06_02_114544) do
     t.string "reactions"
     t.string "reaction_ids"
     t.string "ratings"
+    t.string "video_id"
+    t.string "audio_id"
+    t.string "media_option", default: "catchword"
+    t.string "destroy_media"
     t.bigint "user_id"
     t.bigint "pitch_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "audio_id"
-    t.string "video_id"
     t.index ["pitch_id"], name: "index_tasks_on_pitch_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
@@ -435,8 +447,10 @@ ActiveRecord::Schema.define(version: 2020_06_02_114544) do
   add_foreign_key "game_turn_ratings", "users"
   add_foreign_key "game_turns", "catchwords"
   add_foreign_key "game_turns", "games"
+  add_foreign_key "game_turns", "tasks"
   add_foreign_key "game_turns", "users"
   add_foreign_key "games", "companies"
+  add_foreign_key "games", "pitches"
   add_foreign_key "games", "rating_lists"
   add_foreign_key "games", "teams"
   add_foreign_key "games", "users"

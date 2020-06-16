@@ -1,30 +1,21 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
-<section id="head">
-	<h1><%= @turn.user.fname %> mache dich bereit!</h1>
-</section>
-<section id="middle">
-	<% if @turn1 && @turn2 && (@turn1 == @turn || @turn2 == @turn) %>
-	<div class="circle-left">
-    <% if @turn1.user.avatar? %>
-    	<%= image_tag @turn1.user.avatar.url, class: 'left-img' %>
-    <% else %>
-    	<div class="circle left-img"><%= @turn1.user.fname[0].capitalize %><%= @turn1.user.lname[0].capitalize %></div>
-    <% end %>
-    </div>
-    <div class="circle-right">
-        <% if @turn2.user.avatar? %>
-    	<%= image_tag @turn2.user.avatar.url, class: 'left-img' %>
-    <% else %>
-    	<div class="circle right-img"><%= @turn2.user.fname[0].capitalize %><%= @turn2.user.lname[0].capitalize %></div>
-    <% end %>
-    </div>
-	<% else %>
-	<% if @turn.user.avatar? %>
-    	<%= image_tag @turn.user.avatar.url, class: 'mid-img pulse' %>
-    <% else %>
-    	<div class="circle mid-img pulse"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
-    <% end %>
-	<% end %>
+<section id="task">
+	<div class="turn">
+		<h3 id="head"><%= @turn.user.fname %> mache dich bereit!</h3>
+		<% if @turn.user.avatar? %>
+		<%= image_tag @turn.user.avatar.url, class: 'mid-img pulse' %>
+		<% else %>
+		<div class="circle">
+			<%= @turn.user.fname[0].capitalize + @turn.user.lname[0].capitalize %>
+		</div>
+		<% end %>
+	</div>
+	<div class="task left">
+		<h3>Deine Aufgabe</h3>
+		<div class="card">
+			<%= @task.title %>
+		</div>
+	</div>
 </section>
 <section id="skip">
 	Skip mit Leertaste

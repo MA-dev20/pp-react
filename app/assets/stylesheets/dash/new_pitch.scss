@@ -69,7 +69,7 @@
         background: #FFFFFF;
         box-shadow: 0 0 2.4vh rgba(0, 0, 0, 0.1), 0 0 3.4vh rgba(0, 0, 0, 0.08), 0 0 1.5vh rgba(0, 0, 0, 0.18);
         border-radius: 1.5vh;
-
+		z-index: 1000;
         .menu {
             cursor: pointer;
             padding: 1vh;
@@ -87,39 +87,52 @@
 		
 		padding: 0;
 		.tasks, .right-tasks {
-            width: 15vw; height: 70vh;
-            // overflow-y: scroll;
+            width: 15vw; height: 82vh;
 			.card, .task-card {
                 cursor: pointer;
-				left: .5vw; width: 14vw; height: 30.5vh;
+				left: .5vw; width: 13vw; height: 25vh;
 				padding: 0;
 				box-sizing: border-box;
 				box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+				.task-link {
+					position: absolute;
+					top: 2vh; left: 0;
+					height: 18vh; width: 13vw;
+					z-index: 10;
+				}
 				.task-title {
-					width: 13vw;
+					width: 12vw;
 					margin: 0 .5vw;
-					height: 4vh;
-					line-height: 4vh;
+					height: 3vh;
+					line-height: 3vh;
 					.fa-exclamation-triangle {
 						color: red;
 						font-size: 2vh;
 					}
 					.name {
 						float: left;
+						font-weight: bold;
+						padding-left: 1vh;
+						max-width: 8.5vw;
+						text-overflow: ellipsis;
+						height: 3vh;
+						overflow: hidden;
                     }
                     .name-div {
                         width: 6vh;
                         overflow: hidden;
                         text-overflow: ellipsis;
+						white-space: nowrap;
                     }
-					i {
+					a, i {
 						float: left;
-						font-size: 1vh;
-						line-height: 4vh;
+						font-size: .5vh;
+						line-height: 3vh;
 						margin: 0 .2vw;
 					}
 					.category {
 						float: left;
+						font-weight: bold;
 					}
 					.remove {
 						float: right;
@@ -136,8 +149,8 @@
 				}
 				.thumb {
 					position: relative;
-					width: 13vw; margin: 0 .5vw;
-					img {width: 13vw; height: 13vh;}
+					width: 12vw; margin: 0 .5vw;
+					img {width: 12vw; height: 12vh;}
 					.length {
 						position: absolute;
 						top: .5vh;
@@ -152,6 +165,12 @@
 						text-align: center;
 					}
 				}
+				.thumb.slide {
+					img {
+						height: auto;
+						max-height: 20vh;
+					}
+				}
 				.title {
 					margin: 0 .5vw;
 					font-size: 2vh;
@@ -164,12 +183,12 @@
 				}
 				.rating-criteria {
 					margin: 0 .5vw;
-					width: 13vw;
+					width: 12vw;
 					.criterium {
-						border-radius: 2vh;
-						line-height: 2.5vh; font-size: 1.5vh;
+						border-radius: 1.5vh;
+						line-height: 2vh; font-size: 1vh;
 						border: .3vh solid #d81538;
-						width: 4.65vw;
+						width: 4vw;
 						margin: .2vh 0;
 						text-overflow: ellipsis;
 						overflow: hidden;
@@ -208,6 +227,9 @@
 
 			.card.selected {
 				border: 2px solid red;
+			}
+			.card.drop-here {
+				border-top: 2px solid red;
 			}
         }
         
@@ -282,6 +304,18 @@
 		top: 5vh; left: 18vw;
 		height: 82vh; width: 65vw;
 		padding: 0;
+		.slide-preview {
+			height: 70vh; width: 60vw;
+			margin: 1vh auto;
+			text-align: center;
+			img {
+				display: inline-block;
+				max-height: 70vh;
+				max-width: calc(60vw - 5vh);
+				margin: 2.5vh;
+				border: 1px solid black;
+			}
+		}
 		.form-group.title {
 			margin: 1vh 1vw;
 			width: 63vw;
@@ -374,20 +408,31 @@
                 }
                 
                 .audio-preview {
-                    img {
-                        width: 3vh;
+					line-height: 10vh;
+                    i {
+						position: absolute;
+						line-height: 10vh;
+                        font-size: 3vh;
+						color: rgb(var(--btncolor));
                         position: absolute;
-                        bottom: -5vh;
-                        left: -4vh;
+						cursor: pointer;
+						z-index: 1000;
                     }
                     .audio-title {
+                        width: 18vh;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                         position: relative;
-                        top: 1vh;
+                        top: 0vh;
+						padding-left: 4vh;
                     }
 
                     .remove {
-                        right: 1vh;
-                        top: 4vh;
+                        width: 18vh;
+						right: 0;
+                        top: 6vh;
+						line-height: 4vh;
                     }
                 }
             }
@@ -670,7 +715,7 @@
                 font-size: 1.8vh;
             }
 
-            .checkbox-container .form-group > label {
+            .checkbox-container .form-group .heading-label {
                 font-size: 2vh;
                 font-weight: bold;
             }
@@ -961,15 +1006,102 @@
 }
 
 input[type="file"] {
-    // position: absolute;
-    // left: 0;
-    // top: 0;
-    // right: 0;
-    // bottom: 0;
-    // opacity: 0;
     display: none;
 }
 
-// .upload {
-//     cursor: pointer;
-// }
+#content {
+    
+    #pitchModal {
+        
+        #show_ratings {
+            display: none;
+        }
+    
+        .form-group label.container {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            margin: 0.2vh 0;
+        }
+    
+        .skip-elections label,
+        .pitch-sound label {
+            font-size: 2vh;
+            font-weight: bold;
+        }
+    
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+    
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 1.6vh;
+            width: 1.6vh;
+            border: 0.24vh solid rgb(29, 218, 175);
+            border-radius: 0.3vh;
+            background-color: white;
+        }
+    
+        /* On mouse-over, add a grey background color */
+        .container:hover input~.checkmark {
+            background-color: white;
+        }
+    
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked~.checkmark {
+            background-color: white;
+        }
+    
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .common-checkbox .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+    
+        /* Show the checkmark when checked */
+        .common-checkbox input:checked~.checkmark:after {
+            display: block;
+        }
+    
+    
+    
+        .rating-container .checkmark:after {
+            display: none;
+        }
+    
+        .rating-container input:checked~.checkmark:after {
+            display: block;
+        }
+    
+        .rating-container .checkmark:after {
+            content: "";
+            position: absolute;
+            display: block;
+        }
+    
+    
+    
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: .5vh;
+            top: 0.1vh;
+            width: 0.3vh;
+            height: 0.8vh;
+            border: solid rgb(29, 218, 175);
+            border-width: 0 0.3vh 0.3vh 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    }
+}

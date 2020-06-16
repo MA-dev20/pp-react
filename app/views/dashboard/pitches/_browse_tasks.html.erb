@@ -1,4 +1,4 @@
-<div id="pitches">
+<div id="pitches" class="browse-tasks-partial">
     <div class="search">
         <i class="fas fa-search"></i>
         <input type="text" placeholder="Search for pitches tasks" id="searchPitch" class="form-field">
@@ -6,72 +6,85 @@
     <h3>Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches" id="pitch-list">
+        <% @pitches.includes(:tasks).each do |pitch| %>
         <div class="card">
             <div class="thumb">
+                <% if pitch.image? %>
+                <%= image_tag pitch.image.url %>
+                <% else %>
                 <%= image_tag 'dash/Image.png' %>
+                <% end %>
             </div>
-            <div class="title">Pitchname</div>
-            <div class="subtitle">Video: 5, Image: 3, Text: 3</div>
+            <div class="title"><%= pitch.title %></div>
+            <div class="subtitle">Video: <%= pitch.tasks.select{|task| task.video? || task.video_id.present? }.count %>,
+                Image: <%= pitch.tasks.select{|task| task.image? }.count %>, Tasks: <%= pitch.tasks.size %></div>
             <div class="buttons">
-                <a href="javascript:void(0)" class="btn reversed">Browse tasks</a>
+                <button style="position: relative; top: 2vh;" data-task="pitchTasks<%= pitch.id %>"
+                    class="btn reversed browse-tasks">Browse
+                    tasks</button>
             </div>
         </div>
-        <div class="card">
-            <div class="thumb">
-                <%= image_tag 'dash/Image.png' %>
-            </div>
-            <div class="title">Pitchname</div>
-            <div class="subtitle">Video: 5, Image: 3, Text: 3</div>
-            <div class="buttons">
-                <a href="javascript:void(0)" class="btn reversed">Browse tasks</a>
-            </div>
-        </div>
+        <% end %>
     </div>
-    <div class="right-side-card" id="pitchTasks">
+    <% pitches.includes(:tasks).each do |pitch| %>
+    <div class="right-side-card hide pitch-tasks-div" id="pitchTasks<%= pitch.id %>">
         <div class="right-tasks">
+            <% pitch.tasks.each do |task| %>
             <div class="task-card">
                 <div class="thumb">
+                    <% if task.image? %>
+                    <%= image_tag task.image.url %>
+                    <% else %>
                     <%= image_tag 'dash/Image.png' %>
-                    <div class="length">120</div>
+                    <% end %>
+                    <div class="length"><%= task.time %></div>
                 </div>
-                <div class="title">Type your question</div>
+                <div class="title"><%= task.title %></div>
                 <div class="sub-title">Rating Criteria</div>
                 <div class="rating-criteria">
-                    <div class="criterium">Rhethorik</div>
-                    <div class="criterium">Spontanität</div>
-                    <div class="criterium">Diversität</div>
-                    <div class="criterium">Körpersprache</div>
+                    <% task.ratings.split(',').each do |rating| %>
+                    <div class="criterium"><%= rating %></div>
+                    <% end %>
                 </div>
                 <div class="buttons">
-                    <a href="javascript:void(0)" class="btn reversed">Use this task</a>
+                    <a href="javascript:void(0)" class="btn reversed" data-id="<%= pitch.id %><%= task.id %>"
+                        onclick="useTaskClicked(event)">Use this task</a>
                 </div>
             </div>
-
-            <div class="task-card">
-                <div class="thumb">
-                    <%= image_tag 'dash/Image.png' %>
-                    <div class="length">120</div>
-                </div>
-                <div class="title">Type your question</div>
-                <div class="sub-title">Rating Criteria</div>
-                <div class="rating-criteria">
-                    <div class="criterium">Rhethorik</div>
-                    <div class="criterium">Spontanität</div>
-                    <div class="criterium">Diversität</div>
-                    <div class="criterium">Körpersprache</div>
-                </div>
-                <div class="buttons">
-                    <a href="javascript:void(0)" class="btn reversed">Use this task</a>
-                </div>
-            </div>
+            <%= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
+            <% end %>
         </div>
     </div>
+    <% end %>
 </div>
 
 <script>
-    $('#pitchTasks').hide();
-    $('#pitches #pitch-list .btn').click(function() {
+
+    $('#fakeForm').hide();
+
+    $('.browse-tasks').on('click', function (e) {
+        let $taskId = $(e.target).attr('data-task');
         $('#pitch-list').hide();
-        $('#pitchTasks').show();
-    })
+        $(`#${$taskId}`).show();
+    });
+
+    function useTaskClicked(e) {
+        isUsedTaskClicked = true;
+        let sourceId = $(e.target).attr('data-id');
+        let addFirstTaskBtn = true;
+        if (!$('.add-first-task').is(':visible')) {
+            $('.add-link').click();
+            addFirstTaskBtn = false;
+        }
+        createTaskCopy(sourceId);
+        $('.browse-tasks-partial, #pitch-list, .pitch-tasks-div, .add-first-task').hide();
+        $('#new_pitch_form').show();
+        if (addFirstTaskBtn) {
+            hideAllTasks();
+            // showTask(sourceId);
+            $('.task-fields:first').removeClass('hide').show();
+            $('.card.left .left-card').addClass('selected');
+        }
+        isUsedTaskClicked = false;
+    }
 </script>

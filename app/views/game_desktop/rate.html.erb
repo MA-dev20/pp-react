@@ -7,20 +7,20 @@
 		<%= image_tag 'game/illus/smartphone.svg', class: 'smart' %>
 		<div class="rate">
 		<h3>Jetzt bewerten!</h3>
-		<% @game.rating_list.rating_criteria.each do |rc| %>
+		<% @task.ratings.split(',').each do |rc| %>
 			<div class="form-group">
-				<label for="" id="label_<%= rc.id %>"><%= rc.name %></label>
+				<label for="" id="label_<%= rc %>"><%= rc %></label>
 				<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
 			</div>
 			<script>
-				if($('#label_<%= rc.id %>').text().length > 24) {
-					$('#label_<%= rc.id %>').css('font-size', '14px');
+				if($('#label_<%= rc %>').text().length > 24) {
+					$('#label_<%= rc %>').css('font-size', '14px');
 				}
-				if($('#label_<%= rc.id %>').text().length > 27) {
-					$('#label_<%= rc.id %>').css('font-size', '12px');
+				if($('#label_<%= rc %>').text().length > 27) {
+					$('#label_<%= rc %>').css('font-size', '12px');
 				}
-				if($('#label_<%= rc.id %>').text().length > 33) {
-					$('#label_<%= rc.id %>').css('font-size', '10px');
+				if($('#label_<%= rc %>').text().length > 33) {
+					$('#label_<%= rc %>').css('font-size', '10px');
 				}
 			</script>
 		<% end %>

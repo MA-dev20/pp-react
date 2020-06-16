@@ -1,12 +1,12 @@
 <section id="new-pitch-navbar">
     <h1>Pitch erstellen</h1>
     <div class="form-group">
-        <input type="text" placeholder="Type pitch name here" class="form-field">
-        <button class="btn">Regeln</button>
+        <input type="text" placeholder="Type pitch name here" data-modal="pitchModal" class="open-modal form-field"
+            readonly>
+        <button class="btn done-btn open-modal" data-modal="pitchModal">Regeln</button>
     </div>
     <div class="btn-group">
         <%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
-        <%#= link_to 'Done', dashboard_pitches_path, class: 'btn' %>
         <button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
     </div>
 </section>
@@ -15,9 +15,56 @@
 
     <div class="card left">
         <div class="tasks" id="tasksScrollBar">
+            <% if @pitch.persisted? %>
+            <% 
+                persisted_task_ids = @pitch.task_ids
+                persisted_options = [];
+                obj = {}
+            %>
+            <% @pitch.tasks.each_with_index do |task, index| %>
+            <% obj = {} %>
+            <div class="card left-card <%= 'selected' if index == 0 %>" id="<%= task.id %>"
+                onclick="handleCardClick(this)">
+                <div class="task-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="name">Task</div>
+                    <i class="fas fa-circle"></i>
+                    <div class="category">
+                        <% task_media =task.media_option.titleize == 'Pitcture' ? 'Bild' : task.media_option.titleize %>
+                        <%= task_media %></div>
+                    <%
+                        obj[task.id] = task_media
+                        persisted_options.push(obj)
+                    %>
+                    <i class="fas fa-trash remove" onclick="removeTask(this)"></i>
+                    <i class="fas fa-copy copy" onclick="cloneTask(this)"></i>
+                </div>
+                <div class="thumb">
+                    <% if task.image? %>
+                    <%= image_tag task.image.url %>
+                    <% else %>
+                    <%= image_tag 'dash/Image.png' %>
+                    <% end %>
+                    <div class="length"><%= task.time %></div>
+                </div>
+                <div class="title"><%= task.title %></div>
+                <div class="sub-title">Rating Criteria</div>
+                <div class="rating-criteria">
+                    <% task.ratings.split(',').each do |rating| %>
+                    <div class="criterium"><%= rating %></div>
+                    <% end %>
+                </div>
+            </div>
+            <% end %>
+            <div class="form-group add-first-task hide">
+                <button class="btn">Add first task</button>
+            </div>
+            <% else %>
+            <% persisted_task_ids = [] %>
             <div class="form-group add-first-task">
                 <button class="btn">Add first task</button>
             </div>
+            <% end %>
         </div>
         <div class="menu-box">
             <div class="menu menu-1">Add task</div>
@@ -31,119 +78,8 @@
     </div>
 
     <div class="card right">
-        <%#= render partial: 'new_pitch_content', locals: { pitch: @pitches } %>
-        <%= form_for @pitches, url: dashboard_pitches_path, html: {id: 'new_pitch_form', method: :post} do |f| %>
-        <%= f.hidden_field :user_id, value: @admin.id %>
-
-        <%= f.fields_for :tasks do |task| %>
-        <%= render 'task_fields', f: task %>
-        <% end %>
-
-        <%= link_to_add_association 'Add task', f, :tasks, class: 'add-link hide', partial: 'task_fields' %>
-
-        <%= render partial: 'pitch_modal', locals: { pitch: f }%>
-        <% end %>
-        <%= render 'browse_tasks' %>
+        <%= render partial: 'new_task' %>
     </div>
-
-    <!-- The Modal -->
-    <!-- <div id="pitchModal" class="modal hide">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div class="heading">
-                <h1>Headline</h1>
-            </div>
-            <div class="inner-content">
-                <div class="left-section">
-                    <div class="pitch-title">
-                        <label for="">Pitch</label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Pitch title" class="form-field">
-                        </div>
-                    </div>
-                    <div class="pitch-description">
-                        <label for="">Description</label>
-                        <div class="form-group">
-                            <textarea class="form-field" placeholder="Pitch description"></textarea>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="checkbox-container">
-                        <%#= f.hidden_field(:show_ratings) %>
-                        <div class="form-group" id="show_ratings">
-                            <label for="">Bewertungsausgabe (nach jedem Pitch)</label>
-                            <div class="skip-election-group">
-                                <label for="">Gesamtbewertung anzeigen</label>
-                                <i class="far fa-check-square" id="ratings_all" onclick="changeShowRating('all')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Keine Bewertung anzeigen</label>
-                                <i class="far fa-square" id="ratings_none" onclick="changeShowRating('none')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Bewertung von einer bestimmten Person anzeigen</label>
-                                <i class="far fa-square" id="ratings_one" onclick="changeShowRating('one')"></i>
-                            </div>
-                            <div class="skip-election-group">
-                                <label for="">Bewertung überspringen</label>
-                                <i class="far fa-square" id="ratings_skip" onclick="changeShowRating('skip')"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="toggle-wrapper toggle-sound">
-                        <label for="">Pitch sound</label>
-                        <div class="toggle-my-ratings toggle-my-ratings-1">
-                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="toggle-wrapper toggle-sound">
-                        <label for="">Election of next pitch user</label>
-                        <div class="toggle-my-ratings toggle-my-ratings-1">
-                            <div class="toggle toggle-game right-side" onclick="soundCheck()">
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="right-section">
-                    <div class="picture">
-                        <label for="">Pitch image</label>
-                        <div class="btn upload">Upload</div>
-                        <div class="preview">
-                            <div class="remove">remove</div>
-                            <%= image_tag 'dash/Image.png' %>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="video">
-                        <label for="">Pitch video</label>
-                        <div class="btn upload">Upload</div>
-                        <div class="preview">
-                            <div class="time">00:16:45</div>
-                            <div class="remove">remove</div>
-                            <%= image_tag 'dash/Image.png' %>
-                        </div>
-                    </div>
-                    <div class="hr-line"></div>
-                    <div class="video-form">
-                        <label for="">You can also past a link to your video on Youtube or Vimeo</label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Youtube/Vimeo link" class="form-field">
-                            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
-                        </div>
-                    </div>
-                    <div class="btn-wrapper">
-                        <%= link_to 'Save', dashboard_pitches_path, class: 'btn' %>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
 
     <div id="videoModal" class="modal hide">
         <div class="modal-content">
@@ -154,13 +90,14 @@
             </div>
             <div class="inner-content">
                 <div class="video">
-                   <video src="" id="recorder" autoplay></video>
-                   <video src="" id="player"></video>
-                   <div class="navigator">
-                  		<div class="stop" id="stopVideo"><i class="far fa-stop-circle"></i></div>
-                  		<div id="record_video" class="videorecord"><i class="far fa-dot-circle"></i></div>
-                   		<div class="play" id="playVideo" onclick="playVideo()"><i class="far fa-play-circle"></i></div>
-                   </div>
+                    <video src="" id="recorder" autoplay></video>
+                    <video src="" id="player"></video>
+                    <div class="navigator">
+                        <div class="stop" id="stopVideo"><i class="far fa-stop-circle"></i></div>
+                        <div id="record_video" class="videorecord"><i class="far fa-dot-circle"></i></div>
+                        <div class="play" id="playVideo" onclick="playVideo()"><i class="far fa-play-circle"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="buttons">
                     <a href="" class="btn reversed" id="clodeVideoModal">Cancel</a>
@@ -170,110 +107,122 @@
         </div>
     </div>
     <script>
-		$('#clodeVideoModal').on('click', function(e) {
-			e.preventDefault();
-			$('#videoModal').hide();
-		});
-		var recorder = document.getElementById('recorder');
-		var player = document.getElementById('player');
-		var file = NaN;
-		var mediaRecorder;
-		var handleSuccess = function(stream) {
-			$('.videorecord i').removeClass('fa-dot-circle');
-			$('.videorecord i').addClass('fa-stop-circle');
-			$('.videorecord').addClass('pulse');
-			$('#recorder').show();
-			$('#player').hide();
-			const options = {mimeType: 'video/webm'};
-    		const recordedChunks = [];
-    		mediaRecorder = new MediaRecorder(stream, options);
-			recorder.srcObject = stream;
-			mediaRecorder.start();
-			mediaRecorder.addEventListener('start', function() {
-				console.log('stream started..');
-			})
-			mediaRecorder.addEventListener('dataavailable', function(e) {
-				if (e.data.size > 0) {
-					console.log('streaming ...');
-        			recordedChunks.push(e.data);
-      			}
-			});
-			mediaRecorder.addEventListener('stop', function() {
-				stream.getTracks().forEach(track => track.stop())
-				console.log('stream stopped');
-				var blob = new Blob(recordedChunks);
-				videoURL = URL.createObjectURL(blob);
-				file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
-				player.src = videoURL;
-				$('#player').show();
-				$('#recorder').hide();
-				recorder.load();
-				console.log('stream saved');
-				$('.videorecord i').removeClass('fa-stop-circle');
-				$('.videorecord i').addClass('fa-dot-circle');
-				$('.videorecord').removeClass('pulse');
-				$('#stopVideo').css('display', 'inline-block');
-				$('#playVideo').css('display', 'inline-block');
-				stream = NaN;
-			});
-			document.getElementById('stopVideo').addEventListener('click', function() {
-				mediaRecorder.stop();
-			})
-			document.getElementById('videoUpload').addEventListener('click', function(e) {
-				e.preventDefault();
-				if(file != NaN ) {
-					var globalForm = new FormData();
-					globalForm.append('file', file);
-					sendVideo(globalForm);
-				} else {
-					$('#videoModal').hide()
-				}
-			})
-		}
-		document.getElementById('record_video').addEventListener('click', function() {
-			if($('#record_video').hasClass('pulse')) {
-				mediaRecorder.stop();
-			} else {
-				navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess);
-			}
-		})
-		function playVideo() {
-			var player = document.getElementById('player');
-			if($('#playVideo i').hasClass("fa-play-circle")) {
-				$('#playVideo i').addClass('fa-pause-circle');
-				$('#playVideo i').removeClass('fa-play-circle');
-				player.play();
-				player.addEventListener('ended', function() {
-					$('#playVideo i').addClass('fa-play-circle');
-					$('#playVideo i').removeClass('fa-pause-circle');
-				})
-			} else {
-				$('#playVideo i').addClass('fa-play-circle');
-				$('#playVideo i').removeClass('fa-pause-circle');
-				player.pause();
-			}
-		}
-		function sendVideo(globalForm) {
-			$.ajax({
-				url: "<%= dashboard_create_video_path %>",
-				type: "post",
-				cache: false,
-				async: true,
-				contentType: false,
-				processData: false,
-				data: globalForm,
-				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-				success: function (res) {
-					$(`#form_${$('.left-card.selected').attr('id')}`).find('.video-id').val(res.id);
-					$(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').attr('src', res.video_url);
-					$('#videoModal').hide();
-					$(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
-					$(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
-					globalForm = new FormData();
-				}
-			})
-    	}
-	</script>
+        $('#clodeVideoModal').on('click', function (e) {
+            e.preventDefault();
+            $('#videoModal').hide();
+        });
+        var recorder = document.getElementById('recorder');
+        var player = document.getElementById('player');
+        var file = NaN;
+        var mediaRecorder;
+        var handleSuccess = function (stream) {
+            $('.videorecord i').removeClass('fa-dot-circle');
+            $('.videorecord i').addClass('fa-stop-circle');
+            $('.videorecord').addClass('pulse');
+            $('#recorder').show();
+            $('#player').hide();
+            const options = { mimeType: 'video/webm' };
+            const recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, options);
+            recorder.srcObject = stream;
+            mediaRecorder.start();
+            mediaRecorder.addEventListener('start', function () {
+                console.log('stream started..');
+            })
+            mediaRecorder.addEventListener('dataavailable', function (e) {
+                if (e.data.size > 0) {
+                    console.log('streaming ...');
+                    recordedChunks.push(e.data);
+                }
+            });
+            mediaRecorder.addEventListener('stop', function () {
+                stream.getTracks().forEach(track => track.stop())
+                console.log('stream stopped');
+                var blob = new Blob(recordedChunks);
+                videoURL = URL.createObjectURL(blob);
+                file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+                player.src = videoURL;
+                $('#player').show();
+                $('#recorder').hide();
+                recorder.load();
+                console.log('stream saved');
+                $('.videorecord i').removeClass('fa-stop-circle');
+                $('.videorecord i').addClass('fa-dot-circle');
+                $('.videorecord').removeClass('pulse');
+                $('#stopVideo').css('display', 'inline-block');
+                $('#playVideo').css('display', 'inline-block');
+                stream = NaN;
+            });
+            document.getElementById('stopVideo').addEventListener('click', function () {
+                mediaRecorder.stop();
+            })
+            document.getElementById('videoUpload').addEventListener('click', function (e) {
+                e.preventDefault();
+                if (file != NaN) {
+                    var globalForm = new FormData();
+                    globalForm.append('file', file);
+                    sendVideo(globalForm);
+                } else {
+                    $('#videoModal').hide()
+                }
+            })
+        }
+        document.getElementById('record_video').addEventListener('click', function () {
+            if ($('#record_video').hasClass('pulse')) {
+                mediaRecorder.stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess).catch(function (err) { alert('Kann Video nicht aufnehmen!') });
+            }
+        })
+        function playVideo() {
+            var player = document.getElementById('player');
+            if ($('#playVideo i').hasClass("fa-play-circle")) {
+                $('#playVideo i').addClass('fa-pause-circle');
+                $('#playVideo i').removeClass('fa-play-circle');
+                player.play();
+                player.addEventListener('ended', function () {
+                    $('#playVideo i').addClass('fa-play-circle');
+                    $('#playVideo i').removeClass('fa-pause-circle');
+                })
+            } else {
+                $('#playVideo i').addClass('fa-play-circle');
+                $('#playVideo i').removeClass('fa-pause-circle');
+                player.pause();
+            }
+        }
+        function sendVideo(globalForm) {
+            $.ajax({
+                url: "<%= dashboard_create_video_path %>",
+                type: "post",
+                cache: false,
+                async: true,
+                contentType: false,
+                processData: false,
+                data: globalForm,
+                beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video-id').val(res.id);
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').attr('src', res.video_url);
+                    $('#videoModal').hide();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
+                    globalForm = new FormData();
+                }
+            })
+        }
+    </script>
+</div>
+
+<div class="blur hide warning-card-wrapper">
+    <div class="card" id="warningCard">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <h1>Sure you want to switch task format?</h1>
+        <p>In this case your uploaded media will be replaced.</p>
+        <div class="buttons">
+            <button class="btn reversed cancel-btn" data-value="cancel">Cancel</button>
+            <button class="btn reversed ok-btn" data-value="ok">Ok</button>
+        </div>
+    </div>
 </div>
 
 <!-- FIXME: -->
@@ -284,9 +233,18 @@
     // new PerfectScrollbar('#scrollList');
     new PerfectScrollbar('#tasksScrollBar');
 
-    var task_ids = [1]
-    var clonning = false
-    var isTaskRemoved = false
+    var task_ids = [1];
+    var clonning = false;
+    var isUsedTaskClicked = false;
+    var isTaskRemoved = false;
+    var taskHeaderImg = "<%= asset_path 'dash/Image.png' %>";
+    var persisted_task_ids = JSON.parse("<%= persisted_task_ids %>");
+    var selectedTaskId = '';
+    var selected_media_type = '';
+    var uploadTarget = '';
+    var method_this = '';
+    var global_event = '';
+    var global_method = '';
 
     $(document).on('ready turbolinks:load', () => {
 
@@ -309,17 +267,35 @@
         hideDropdown()
 
         $('.task-pitch').click(function () {
-            $('#new-pitch-content .card.right #pitches').show()
-            $('#new_pitch_form').hide();
-            $('.menu-box').hide()
-        })
-
-        $('.video-record').click(function () {
-            $('#videoModal').show()
+            $('.menu-box, #new_pitch_form, .pitch-tasks-div').hide();
+            $('#pitch-list, .browse-tasks-partial').show();
         })
 
         $('.submit').click(function (e) {
             $('form').submit();
+        })
+
+        $('.warning-card-wrapper .btn').unbind().on('click', function () {
+            let response = $(this).attr('data-value') === 'ok';
+            if (response) {
+                let destroy_capsule = selected_media_type === 'catchword' ? true : false;
+                removeOtherMedia(selected_media_type, selectedTaskId, destroy_capsule);
+                if (global_method === 'upload')
+                    $(global_event.target).siblings('input[type="file"]').click();
+                else if (global_method === 'listOptionClick')
+                    listOptionClick(global_event, method_this);
+                else if (global_method === 'listClick')
+                    listClick(global_event);
+                else if (global_method === 'cwInputFieldClick')
+                    cwInputFieldClick(global_event);
+                else if (global_method === 'audio')
+                    $('.record').click();
+                else if (global_method === 'video')
+                    $('#videoModal').show()
+            }
+            selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method = '';
+            $('.warning-card-wrapper').hide();
+            return false;
         })
 
 
@@ -350,15 +326,19 @@
         // Nested Attributes
 
         $('form').on('cocoon:after-insert', function (e, insertedItem) {
-            console.log('cocoon')
-            let text_array = $(insertedItem).children('input:first').attr('id').split('_')
-            let id = parseInt(text_array[3])
-            task_ids.push(id)
-            $('.task-fields:first').attr('id', `form_${id}`)
+            console.log('cocoon');
+            let text_array = $(insertedItem).children('input:first').attr('id').split('_');
+            let id = parseInt(text_array[3]);
+            task_ids.push(id);
+            $('.task-fields:first').attr('id', `form_${id}`);
             if (clonning) {
-                $('#new_pitch_form .task-fields:first').after($(insertedItem))
+                $('#new_pitch_form .task-fields:first').after($(insertedItem));
+            } else if (isUsedTaskClicked) {
+                $('#new_pitch_form .task-fields:first').after($(insertedItem));
+                hideAllTasks();
+                showTask(id);
             } else {
-                $('#new_pitch_form').prepend($(insertedItem))
+                $('#new_pitch_form').prepend($(insertedItem));
                 createCard(id);
                 hideAllTasks();
                 showTask(id);
@@ -386,17 +366,28 @@
 
         })
 
+        $('.show-ratings-container .checkmark').on('click', (e) => {
+            let $that = $(e.target);
+            if (!$that.siblings('input[type="checkbox"]').is(":checked")) {
+                let value = $that.attr('data-value');
+                $('.show-ratings-container').find(":checkbox:checked").removeAttr('checked');
+                $('.show-ratings-container').find('.rating-container').removeClass('rating-container');
+                $that.closest('.container').addClass('rating-container');
+                $('#show_ratings').attr('value', value);
+                $that.siblings('input[type="checkbox"]').attr("checked", "checked");
+            }
+        })
 
         $('.open-modal').click(function (e) {
-            if ($(e.currentTarget).attr('data-modal') == 'pitchModal') {
+            if ($(e.currentTarget).attr('data-modal') === 'pitchModal') {
                 if ($('.add-first-task').is(':visible')) {
                     return false;
                 }
             }
             e.stopPropagation();
-            let modalId = $(this).data("modal");
-            let $modal = $("#" + modalId);
-            $modal.show();
+            hideExistingTasks();
+            $('#new_pitch_form').show()
+            $(`#${$(this).data("modal")}`).show();
         })
 
         $('.close').click(function () {
@@ -408,6 +399,10 @@
     function hideAllTasks() {
         $('.left-card').removeClass('selected');
         $('#new_pitch_form .task-fields').hide();
+    }
+
+    function hideExistingTasks() {
+        $('.browse-tasks-partial, #pitch-list, .pitch-tasks-div, .add-first-task').hide();
     }
 
     function showTask(id) {
@@ -429,17 +424,19 @@
 
     function chooseOption(type, event) {
         let $that = $(event.target);
+        $that.siblings('.db-media-option').val(type);
         $that.closest('.add-catchword').find('.btn-line .btn.selected').removeClass('selected');
         $that.closest('.add-catchword').find('.media-option').hide();
         $that.closest('.add-catchword').find(`#btn_${type}`).addClass('selected');
-        $that.closest('.add-catchword').find(`.${type}`).show();
-        $('.left-card.selected .category').text($(event.target).text())
+        $that.closest('.add-catchword').find('.media-option').addClass('not-active');
+        $that.closest('.add-catchword').find(`.${type}`).removeClass('not-active').show();
+        $('.left-card.selected .category').text($(event.target).text());
     }
 
     var timeUp = (e) => {
         let id = $(e).closest('.task-fields').attr('id')
         let time_field = $(`#${id}`).find('#task_time')
-        let display_time = $(`#${id}`).find('#settime')
+        let display_time = $(`#${id}`).find('#set_time')
         let value = $(time_field).val();
         if (value < 1800) {
             value = parseInt(value);
@@ -461,7 +458,7 @@
     var timeDown = (e) => {
         let id = $(e).closest('.task-fields').attr('id')
         let time_field = $(`#${id}`).find('#task_time')
-        let display_time = $(`#${id}`).find('#settime')
+        let display_time = $(`#${id}`).find('#set_time')
         let value = $(time_field).val();
         if (value > 10) {
             value = parseInt(value);
@@ -490,18 +487,21 @@
 
     var handleCardClick = (e) => {
         if (!clonning && !isTaskRemoved) {
-            console.log('handleClick')
-            hideAllTasks()
-            showTask($(e).attr('id'))
+            console.log('handleClick');
+            hideAllTasks();
+            hideExistingTasks();
+            $('#new_pitch_form').show();
+            showTask($(e).attr('id'));
         }
         clonning = false;
         isTaskRemoved = false;
     }
 
     var removeTask = (e) => {
-        let id = $(e).closest('.left-card').attr('id')
-        $(`#form_${id}`).remove()
-        $(`#${id}`).remove()
+        let id = $(e).closest('.left-card').attr('id');
+        $(`#form_${id} + .del-link-wrapper a`).click();
+        $(`#form_${id}`).remove();
+        $(`#${id}`).remove();
         let index = task_ids.indexOf(parseInt(id));
         task_ids = [...task_ids.slice(0, index), ...task_ids.slice(index + 1, task_ids.length)]
         if (task_ids.length) {
@@ -515,35 +515,34 @@
     }
 
     var cloneTask = (e) => {
-        console.log('cloneTask')
-        clonning = true
+        console.log('cloneTask');
+        clonning = true;
         let id = $(e).closest('.left-card').attr('id');
-        $('.add-link').click()
-        createTaskCopy(id)
+        $('.add-link').click();
+        createTaskCopy(id);
         hideAllTasks();
         showTask(id);
-
-
     }
 
     var createTaskCopy = (id) => {
-        console.log('createTaskCopy')
-        let sourceTaskId = id
-        let targetTaskId = getLastId()
-        copyTaskFormData(targetTaskId, sourceTaskId)
-        createCard(targetTaskId)
+        console.log('createTaskCopy');
+        let sourceTaskId = id;
+        let targetTaskId = getLastId();
+        copyTaskFormData(targetTaskId, sourceTaskId);
+        createCard(targetTaskId);
     }
 
     FIXME:
     // task_time, #set_time id duplication 
     function copyTaskFormData(targetTaskId, sourceTaskId) {
-        console.log('copyFormData')
-        let $sourceTaskId = $(`#form_${sourceTaskId}`)
-        $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val())
-        $(`#form_${targetTaskId} #task_time`).val($sourceTaskId.find('#task_time').val())
-        $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text())
+        console.log('copyFormData');
+        let $sourceTaskId = $(`#form_${sourceTaskId}`);
+        $(`#form_${targetTaskId} .title-form-field`).val($sourceTaskId.find('.title-field').val());
+        $(`#form_${targetTaskId} #task_time`).val($sourceTaskId.find('#task_time').val());
+        $(`#form_${targetTaskId} #set_time`).text($sourceTaskId.find('#set_time').text());
         $(`#form_${targetTaskId} .catchword .capsule-ids-field`).val($sourceTaskId.find('.catchword .capsule-ids-field').val())
         $(`#form_${targetTaskId} .add-reaction .capsule-ids-field`).val($sourceTaskId.find('.add-reaction .capsule-ids-field').val())
+        $(`#form_${targetTaskId} .db-media-option`).val($sourceTaskId.find('.db-media-option').val())
 
         let fields = ['.catchword', '.add-reaction', '.add-rating']
         let hidden_fields = ['.cw-hidden-field', '.reaction-hidden-field', '.rating-hidden-field']
@@ -558,18 +557,22 @@
             $(`#form_${targetTaskId} ${fields[i]} .capsule-list`).append(word_div_list)
         }
 
-        let media_options = ['picture', 'video', 'audio']
-        let attributes = ['image', 'video', 'audio']
-        let counter = 0
+        let media_options = ['picture', 'video', 'audio'];
+        let attributes = ['image', 'video', 'audio'];
+        let counter = 0;
+        let attr_num = targetTaskId === 1 ? 0 : targetTaskId;
         media_options.forEach(media => {
             $cloneData = $(`#form_${sourceTaskId}`).find(`.${media}.media-option`).clone();
             $(`#form_${targetTaskId}`).find(`.${media}.media-option`).remove();
             $(`#form_${targetTaskId} .card.add-catchword`).append($cloneData);
-            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('id', `pitch_tasks_attributes_${targetTaskId}_${attributes[counter]}`);
-            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('name', `pitch[tasks_attributes][${targetTaskId}][${attributes[counter]}]`);
+            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('id', `pitch_tasks_attributes_${attr_num}_${attributes[counter]}`);
+            $(`#form_${targetTaskId} .${media}.media-option input[type="file"]`).attr('name', `pitch[tasks_attributes][${attr_num}][${attributes[counter]}]`);
             if (media === 'audio') {
-                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('id', `pitch_tasks_attributes_${targetTaskId}_audio_id`);
-                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('name', `pitch[tasks_attributes][${targetTaskId}][audio_id]`);
+                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('id', `pitch_tasks_attributes_${attr_num}_audio_id`);
+                $(`#form_${targetTaskId} .${media}.media-option .audio-id`).attr('name', `pitch[tasks_attributes][${attr_num}][audio_id]`);
+            } else if (media === 'video') {
+                $(`#form_${targetTaskId} .${media}.media-option .video-id`).attr('id', `pitch_tasks_attributes_${attr_num}_video_id`);
+                $(`#form_${targetTaskId} .${media}.media-option .video-id`).attr('name', `pitch[tasks_attributes][${attr_num}][video_id]`);
             }
             if ($(`#form_${sourceTaskId} #btn_${media}`).hasClass('selected')) {
                 $(`#form_${targetTaskId} .btn-line .btn`).removeClass('selected')
@@ -647,8 +650,8 @@
         card += '</div>';
         card += '<div class="thumb">';
         let $mediaImg = $(`#form_${taskId} .picture.media-option img`);
-        if ($mediaImg[0].src) {
-            card += `<img src='${$mediaImg[0].src}'>`
+        if ($mediaImg.attr('src')) {
+            card += `<img src='${$mediaImg.attr('src')}'>`
         } else {
             card += "<%= escape_javascript image_tag 'dash/Image.png' %>";
         }
@@ -742,29 +745,51 @@
     }
 
     function removeMedia(e, type = '') {
-        let $mediaBox = $(e.target).closest('.preview')
-        $mediaBox.hide()
-        $mediaBox.siblings('input[type="file"]').val('')
-        if (type == 'audio') {
-            $mediaBox.find('audio').attr('src', '')
-            $mediaBox.siblings('.audio-id').val('')
-        } else if (type == 'video') {
-            $mediaBox.find('video').attr('src', '')
+        let $mediaBox = $(e.target).closest('.preview');
+        let task_id = parseInt($(e.target).closest('.task-fields').attr('id').split('_')[1]);
+        $mediaBox.hide();
+        $mediaBox.siblings('input[type="file"]').val('');
+        if (type === 'audio') {
+            $mediaBox.find('audio').attr('src', '');
+            $mediaBox.siblings('.audio-id').val('');
+        } else if (type === 'video') {
+            $mediaBox.find('video').attr('src', '');
+            $mediaBox.siblings('.video-id').val('');
+        } else {
+            $mediaBox.find('img.media-file').attr('src', '');
+            $('.left-card.selected img')[0].src = taskHeaderImg;
+        }
+
+        if (persisted_task_ids.includes(task_id)) {
+            type = type || 'image';
+            if (type === 'Bild')
+                type = 'Picture';
+            $(`#form_${task_id} .destroy-media`).val(task_id);
         }
     }
 
     function loadMetaData(e) {
-        const video_duration = new Date($(e.target)[0].duration * 1000).toISOString().substr(11, 8)
-        $(e.target).siblings('.time').text(video_duration);
+        if ($(e.target)[0].duration === Infinity) {
+            $(e.target).siblings('.time').text('');
+        } else {
+            const video_duration = new Date($(e.target)[0].duration * 1000).toISOString().substr(11, 8)
+            $(e.target).siblings('.time').text(video_duration);
+        }
     }
 
 
     function loadFile(e, type = '') {
         const id = $(e.target).attr('id');
-        let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
+        let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
         let file = event.target.files[0];
+        // if (!$(e.target).hasClass('pitch-uploadfile')) {
+        //     let task_id = $(e.target).closest('.task-fields').attr('id');
+        //     removeOtherMedia(type, task_id);
+        // }
         if (type === 'video') {
-            let $video_tag = $(e.target).siblings('.preview').find('video');
+            let $preview = $(event.target).siblings('.preview');
+            $preview.siblings('.video-id').val('');
+            let $video_tag = $preview.find('video');
             $video_tag[0].src = URL.createObjectURL(file);
             $video_tag.show();
         } else if (type === 'audio') {
@@ -773,13 +798,61 @@
             $preview.find('.audio-title').text(file.name);
             $preview.find('audio')[0].src = URL.createObjectURL(file);
         } else {
-            let $img = $(mediaBox).find('img');
+            let $img = $(mediaOption).find('img');
             let url_object = URL.createObjectURL(file);
             $img[0].src = url_object;
             if (type === 'task-img')
                 $('.left-card.selected img')[0].src = url_object;
         }
-        $(mediaBox).show();
+        $(mediaOption).show();
     }
 
+    function removeOtherMedia(type, id, destroy_capsule = false) {
+        let $mediaBox = $(`#${id}`).find('.add-catchword');
+        $($mediaBox).find('.not-active input[type="file"]').val('');
+        $($mediaBox).find('.not-active input[type="hidden"]').val('');
+        $mediaBox.find('.not-active img.media-file').attr('src', '');
+        $('.left-card.selected img')[0].src = taskHeaderImg;
+        $($mediaBox).find('.preview').hide();
+        let task_id = id.split('_')[1];
+        media_types = ['video', 'audio', 'catchword'];
+        if (media_types.includes(type)) {
+            if ($(`#${task_id} .thumb img`).attr('src').split(':')[0] !== 'http') {
+                $(`#${task_id} .thumb img`).attr('src', taskHeaderImg);
+            }
+            // if (type === 'catchword') {
+            //     if (persisted_task_ids.includes(Number(task_id))) {
+            //         if ($(`#form_${task_id} .destroy-media`).val() === '')
+            //             $(`#form_${task_id} .destroy-media`).val(task_id);
+            //     }
+            // }
+        }
+        if (persisted_task_ids.includes(Number(task_id))) {
+            if ($(`#form_${task_id} .destroy-media`).val() === '')
+                $(`#form_${task_id} .destroy-media`).val(task_id);
+        }
+
+        if (type !== 'catchword' || destroy_capsule) {
+            let $catchword_media = $mediaBox.find('.catchword.media-option');
+            $catchword_media.find('.capsule-list .word').remove()
+            $catchword_media.find('.form-group input[type="hidden"]').val('');
+        }
+    }
+
+
+    function deleteServerMedia(pitch_id, task_id, media) {
+        $.ajax({
+            url: `/dashboard/pitches/${pitch_id}/tasks/${task_id}/media/delete`,
+            type: "delete",
+            cache: false,
+            async: true,
+            contentType: false,
+            processData: false,
+            data: media,
+            beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+            success: function (res) {
+                console.log('Media deleted');
+            }
+        })
+    }
 </script>

@@ -39,21 +39,21 @@
 </div>
 <%= form_for(:rating, url: new_rating_path(@turn)) do |f| %>
 <div class="middle">
-	<% @game.rating_list.rating_criteria.each do |rc| %>
+	<% @task.ratings.split(',').each do |rc| %>
 	<div class="form-group">
-		<label for="" class="rangeLabel" id="label_<%= rc.id %>"><%= rc.name %></label>
-		<div id="rangeVal_<%= rc.id %>" class="rangeVal">5.0</div>
-		<%= f.range_field rc.id, min: 0, max: 100, id: 'slider_'+ rc.id.to_s %>
+		<label for="" class="rangeLabel" id="label_<%= rc %>"><%= rc %></label>
+		<div id="rangeVal_<%= rc %>" class="rangeVal">5.0</div>
+		<input type="range" name="rating[<%= rc %>]" min="0" max="100" id="slider_<%= rc %>">
 	</div>
 	<script>
-		if($('#label_<%= rc.id %>').text().length > 20) {
-			$('#label_<%= rc.id %>').css("font-size", "2.5vh");
+		if($('#label_<%= rc %>').text().length > 20) {
+			$('#label_<%= rc %>').css("font-size", "2.5vh");
 		}
-		if($('#label_<%= rc.id %>').text().length > 27) {
-			$('#label_<%= rc.id %>').css("font-size", "2vh");
+		if($('#label_<%= rc %>').text().length > 27) {
+			$('#label_<%= rc %>').css("font-size", "2vh");
 		}
-		if($('#label_<%= rc.id %>').text().length > 34) {
-			$('#label_<%= rc.id %>').css("font-size", "1.5vh");
+		if($('#label_<%= rc %>').text().length > 34) {
+			$('#label_<%= rc %>').css("font-size", "1.5vh");
 		}
 		$('input[type="range"]').rangeslider({
 			polyfill: false,
@@ -74,8 +74,8 @@
 			onSlideEnd: function(position, value) {}
 		});
 		
-		document.getElementById('slider_<%= rc.id %>').oninput = function() {
-			document.getElementById('rangeVal_<%= rc.id %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		document.getElementById('slider_<%= rc %>').oninput = function() {
+			document.getElementById('rangeVal_<%= rc %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 		}
 	</script>
 	<% end %>

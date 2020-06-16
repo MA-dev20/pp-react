@@ -105,7 +105,7 @@ class DashboardController < ApplicationController
 	    t.game_turn_ratings.each do |tr|
 		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
 	    end
-	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), word: t.catchword.name, ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
+	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
 	  else
 		@turns = @turns.except(t)
 	  end
@@ -195,13 +195,19 @@ class DashboardController < ApplicationController
 	@comments = @turn.comments.where.not(time: nil).order(:time)
   end
 
-  def pitches; end
-
-  def new_pitch
-	@pitch = Pitch.new
+  def pitches
+	@pitches = @admin.pitches
+	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
   end
-
-  def create_pitch
+  def new_pitch
+	@pitch = @admin.pitches.create()
+	redirect_to dashboard_edit_pitch_path(@pitch)
+  end
+  def edit_pitch
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = @pitch.tasks.find(params[:task_id]) if params[:task_id]
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
   end
 	
   private

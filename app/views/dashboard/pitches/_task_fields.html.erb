@@ -1,4 +1,13 @@
-<div class="form-group title task-fields hide" id="form_1">
+<%
+    fields_wrapper_id = 1
+    browse_task_id ||= false
+    if browse_task_id
+        fields_wrapper_id = browse_task_id
+    else
+        fields_wrapper_id = f.object.persisted? ? f.object.id : 1
+    end
+%>
+<div class="nested-fields form-group title task-fields hide" id="form_<%= fields_wrapper_id %>">
     <%= f.hidden_field :user_id, value: @admin.id %>
     <%= f.text_field :title, class: 'title-field form-field title-form-field', onkeyup: "handleKeyEvent(this)", placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
     <div class="card time-limit">
@@ -6,8 +15,9 @@
         <div class="subline">Set your time limit. Standard time limit is 120 seconds.</div>
         <div class="form-group">
             <div class="time-field">
-                <%= f.hidden_field :time, id: 'task_time', value: 80 %>
-                <div class="time" id="settime">1:20</div>
+                <% time = f.object.time || 80 %>
+                <%= f.hidden_field :time, id: 'task_time', value: time %>
+                <div class="time" id="set_time"><%= format_time(time) %></div>
                 <i class="fa fa-angle-up up" onclick="timeUp(this)"></i>
                 <i class="fa fa-angle-down down" onclick="timeDown(this)"></i>
             </div>
@@ -16,12 +26,20 @@
     <div class="card add-catchword">
         <div class="title">Text, Video oder Bild hinzufügen</div>
         <div class="btn-line">
-            <div class="btn selected" id="btn_catchword" onclick="chooseOption('catchword', event)">Catchword</div>
-            <div class="btn" id="btn_picture" onclick="chooseOption('picture', event)">Bild</div>
-            <div class="btn" id="btn_video" onclick="chooseOption('video', event)">Video</div>
-            <div class="btn" id="btn_audio" onclick="chooseOption('audio', event)">Audio</div>
+            <%= f.hidden_field :media_option, id: 'media_option' %>
+            <% media_option = f.object.media_option %>
+            <div class="btn <%= 'selected' if media_option == 'catchword' %>" id="btn_catchword"
+                onclick="chooseOption('catchword', event)">Catchword</div>
+            <div class="btn <%= 'selected' if media_option == 'picture' %>" id="btn_picture"
+                onclick="chooseOption('picture', event)">Bild</div>
+            <div class="btn <%= 'selected' if media_option == 'video' %>" id="btn_video" onclick="chooseOption('video', event)">Video</div>
+            <div class="btn <%= 'selected' if media_option == 'audio' %>" id="btn_audio" onclick="chooseOption('audio', event)">Audio</div>
         </div>
-        <div class="catchword media-option">
+        <% if f.object.persisted? %>
+        <%= f.hidden_field :destroy_media, class: 'destroy-media' %>
+        <% end %>
+        <div class="catchword media-option <%= 'not-active' if media_option != 'catchword' %>"
+            style="display: <%= media_option == 'catchword' ? 'block' : 'none' %>">
             <div class="title">Catchwords</div>
             <div class="subline">Type your catchword or choose from list below</div>
             <div class="form-group">
@@ -34,7 +52,7 @@
                         <% if list.catchwords.present? %>
                         <div class="option" onmouseover="showList(this)" onmouseout="hideList(this)">
                             <i class="fas fa-caret-left"></i>
-                            <span class="basket-name" data-name="<%= list.name %>"
+                            <span class="basket-name cw" data-name="<%= list.name %>"
                                 data-id="<%= list.id %>"><%= list.name %></span>
                             <div class="list" id="scrollNameList">
                                 <% list.catchwords.each do |cw| %>
@@ -52,53 +70,83 @@
                 </div>
             </div>
             <div class="capsule-list list-with-words">
+                <% if f.object.persisted? %>
+                <% cws = f.object.catchwords? ? JSON(f.object.catchwords) : [] %>
+                <% cws.each do |cw| %>
+                <div class="word"><%= cw %></div>
+                <% end %>
+                <% cw_ids = f.object.catchword_ids? ? JSON(f.object.catchword_ids) : [] %>
+                <% cw_ids.each do |cw_id| %>
+                <% cw = @cw_lists.select{ |obj| obj.id == cw_id.to_i }[0] %>
+                <div class="word"><%= cw.name %></div>
+                <% end %>
+                <% end %>
             </div>
-            <!-- <div class="capsule-list <%= f.object.catchwords.present? ? 'list-with-words' : '' %>">
-            </div> -->
             <div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
                 task.</div>
         </div>
-        <div class="picture media-option">
+        <div class="picture media-option <%= 'not-active' if media_option != 'picture' %>"
+            style="<%= 'display: block;' if media_option == 'picture' %>">
             <div class="title">Bild</div>
             <div class="subline">Upload an image to your pitch</div>
             <label class="btn upload" onclick="uploadClick(event)">Upload</label>
             <%= f.file_field :image, onchange: "loadFile(event, 'task-img')", accept: 'image/*' %>
-            <div class="preview">
+            <div class="preview" style="<%= 'display: block;'if f.object.image.url.present? %>">
                 <div class="remove" onclick="removeMedia(event)">remove</div>
+                <% if f.object.image.present? %>
+                <%= image_tag f.object.image.url, class: 'media-file' %>
+                <% else %>
                 <%= image_tag 'dash/Image.png', class: 'media-file' %>
+                <% end %>
             </div>
         </div>
-        <div class="video media-option">
+        <div class="video media-option <%= 'not-active' if media_option != 'video' %>"
+            style="<%= 'display: block;' if media_option == 'video' %>">
             <div class="title">Video</div>
             <div class="subline">Upload a video to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
             <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', id: 'video_field' %>
-            <%= f.hidden_field :video_id, value: '', class: 'video-id' %>
-            <!-- <input onchange="loadFile(event, 'video')" accept="video/*" type="file" name="pitch[tasks_attributes][0][video]" id="pitch_tasks_attributes_0_video"> -->
-
-            <div class="btn upload open-modal" data-modal="videoModal">Record</div>
-            <div class="preview">
+            <%= f.hidden_field :video_id, class: 'video-id' %>
+            <div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+            <%
+                if f.object.video_id.present?
+                video = TaskMedium.find(f.object.video_id).video
+                else
+                video = f.object.video
+                end  
+            %>
+            <div class="preview video-preview" style="<%= 'display: block;' if video.present? %>">
                 <div class="time"></div>
                 <div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-                <video id="video_tag" onloadedmetadata="loadMetaData(event)" style="display: none" type="video/mp4"
-                    controls></video>
-                <%#= image_tag 'dash/Image.png', class: 'media-file' %>
-                <!-- <canvas id="canvas" style="overflow:auto"></canvas> -->
+                <video id="video_tag" src="<%= video.url if video.present? %>" onloadedmetadata="loadMetaData(event)"
+                    class="<%= 'hide' unless video.present? %>" type="video/mp4" controls></video>
             </div>
         </div>
-        <div class="audio media-option">
+        <div class="audio media-option <%= 'not-active' if media_option != 'audio' %>"
+            style="<%= 'display: block;' if media_option == 'audio' %>">
             <div class="title">Audio</div>
             <div class="subline">Upload an audio file to your pitch</div>
             <div class="btn upload" onclick="uploadClick(event)">Upload</div>
-            <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3' %>
-            <%= f.hidden_field :audio_id, value: '', class: 'audio-id' %>
-            <!-- <input onchange="loadFile(event, 'audio')" accept=".mp3" type="file" name="pitch[tasks_attributes][0][audio]" id="pitch_tasks_attributes_0_audio"> -->
+            <%= f.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav' %>
+            <%= f.hidden_field :audio_id, class: 'audio-id' %>
 
             <div class="btn upload record">Record</div>
-            <div class="preview audio-preview">
-                <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)' %>
+            <%
+                if f.object.audio_id.present?
+                audio = TaskMedium.find(f.object.audio_id).audio
+                else
+                audio = f.object.audio
+                end  
+            %>
+            <div class="preview audio-preview" style="<%= 'display: block;' if audio.present? %>">
+                <%= image_tag 'dash/icons/audio-icon.svg', class: 'play-audio', onclick: 'playAudio(event)', style: 'display: block;' %>
+                <% if audio.present? %>
+                <div class="audio-title"><%= audio.identifier %></div>
+                <% else %>
                 <div class="audio-title"></div>
-                <audio style="display: none" onended='stopAudio(event)' controls></audio>
+                <% end %>
+                <audio src="<%= audio.url if audio.present? %>" style="display: none" onended='stopAudio(event)'
+                    controls></audio>
                 <div class="remove" onclick="removeMedia(event, 'audio')">remove</div>
             </div>
         </div>
@@ -135,6 +183,17 @@
             </div>
         </div>
         <div class="capsule-list list-with-words">
+            <% if f.object.persisted? %>
+            <% reactions = f.object.reactions? ? JSON(f.object.reactions) : [] %>
+            <% reaction_ids = f.object.reaction_ids? ? JSON(f.object.reaction_ids) : [] %>
+            <% reactions.each do |reaction| %>
+            <div class="word"><%= reaction %></div>
+            <% end %>
+            <% reaction_ids.each do |reaction_id| %>
+            <% reaction = @obj_lists.select{ |obj| obj.id == reaction_id.to_i }[0] %>
+            <div class="word"><%= reaction.name %></div>
+            <% end %>
+            <% end %>
         </div>
         <!-- <div class="capsule-list <%= f.object.reactions.present? ? 'list-with-words' : '' %>">
         </div> -->
@@ -152,97 +211,63 @@
             <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
         </div>
         <div class="capsule-list">
+            <% if f.object.persisted? %>
+            <% f.object.ratings.split(',').each do |rating| %>
+            <div class="word"><%= rating %></div>
+            <% end %>
+            <% end %>
         </div>
     </div>
 </div>
-
+<div class="del-link-wrapper nested-fields">
+    <%= link_to_remove_association '', f %>
+</div>
 <script>
 
-    // function loadFile(e, type = '') {
-    //     const id = $(e.target).attr('id');
-    //     let mediaBox = $(`#${id}`).closest('.media-option').find('.preview');
-    //     let file = event.target.files[0];
-    //     if (type === 'video') {
-    //         // debugger
-    //         let $video_tag = $(e.target).siblings('.preview').find('video');
-    //         $video_tag[0].src = URL.createObjectURL(file);
-    //         $video_tag.show();
-    //         // $("video")[0].src = URL.createObjectURL(file);
-    //         // $('#video_tag').show();
-    //     } else if (type === 'audio') {
-    //         let $preview = $(event.target).siblings('.preview');
-    //         $preview.siblings('.audio-id').val('');
-    //         $preview.find('.audio-title').text(file.name);
-    //         $preview.find('audio')[0].src = URL.createObjectURL(file);
-    //     } else {
-    //         let $img = $(mediaBox).find('img');
-    //         $img[0].src = URL.createObjectURL(file);
-    //     }
-    //     $(mediaBox).show();
-    // }
-
     function uploadClick(e) {
-        $(e.target).siblings('input[type="file"]').click()
+        global_method = 'upload';
+        global_event = e;
+        if (isOtherDataUploaded(e)) {
+            $('.warning-card-wrapper').show();
+        } else {
+            $(uploadTarget).siblings('input[type="file"]').click();
+        }
+        // uploadTarget = $(e.target);
+        // selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+        // let media_type = $(`#${selectedTaskId} .btn.selected`).text().toLowerCase();
+        // selected_media_type = media_type === 'bild' ? 'picture' : media_type;
+        // let condition = false;
+        // $(`#${selectedTaskId} .not-active.media-option .preview`).each(function () {
+        //     if ($(this).css('display') === 'block')
+        //         condition = true;
+        // });
+        // if ($(`#${selectedTaskId} .catchword .capsule-list .word`).length || condition) {
+        //     $('.warning-card-wrapper').show();
+        // } else {
+        //     $(uploadTarget).siblings('input[type="file"]').click();
+        // }
     }
 
-
-    // var stream, form, globalForm, recorder, audio, timer;
-    // globalForm = new FormData();
-    // var processing = false;
-    // audio = new Audio();
-
-    // function recordAudio(event) {
-    //     if (!processing) {
-    //         requestAudio(event);
-    //         processing = true;
-    //     } else {
-    //         stopRecording(event)
-    //     }
-    // }
-
-    // function requestAudio(event) {
-    //     var seconds = 10;
-    //     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    //         navigator.mediaDevices.getUserMedia({ audio: true }).then(function (str) {
-    //             stream = str;
-    //             recorder = new MediaRecorder(stream);
-    //             let chunks = [];
-    //             recorder.ondataavailable = function (e) {
-    //                 seconds -= 1;
-    //                 chunks.push(e.data);
-    //                 if (recorder.state == 'inactive') {
-    //                     debugger
-
-    //                     const blob = new Blob(chunks, { type: 'audio/webm' });
-    //                     var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-    //                     // debugger
-    //                     // $('.audio').append('file', file);
-    //                     // debugger
-    //                     $('.audio').append(file);
-
-    //                     // globalForm.append('file', file);
-    //                     // sendAudio(id, globalForm);
-    //                     processing = false;
-    //                 }
-    //             };
-    //             recorder.start(1000);
-    //             timer = setTimeout(() => {
-    //                 stopRecording(event)
-    //             }, 11000);
-    //         })
-    //     } else {
-    //         alert('Konnte Aufnahme nicht starten!')
-    //     }
-    // }
-
-    // function stopRecording(event) {
-    //     debugger
-    //     clearTimeout(timer);
-    //     if (recorder.state != 'inactive') {
-    //         recorder.stop()
-    //     }
-    //     stream.getTracks()[0].stop()
-    // }
+    function isOtherDataUploaded(e) {
+        uploadTarget = $(e.target);
+        selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+        let media_type = $(`#${selectedTaskId} .btn.selected`).text().toLowerCase();
+        selected_media_type = media_type === 'bild' ? 'picture' : media_type;
+        let condition = false;
+        $(`#${selectedTaskId} .not-active.media-option .preview`).each(function () {
+            if ($(this).css('display') === 'block')
+                condition = true;
+        });
+        cw_methods = ['listOptionClick', 'listClick', 'cwInputFieldClick'];
+        if (cw_methods.includes(global_method)) {
+            return condition;
+        }
+        if ($(`#${selectedTaskId} .catchword .capsule-list .word`).length || condition) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     function sendAudio(globalForm) {
         $.ajax({
@@ -261,52 +286,6 @@
         })
     }
 
-
-    // globalForm = new FormData();
-    // var audioChunks;
-    // var recording = false;
-    // $('.record').on('click', function (e) {
-    //     if (recording) {
-    //         $(e.target).text('Record');
-    //         rec.stop();
-    //         recording = false;
-    //     } else {
-    //         recording = true;
-    //         $(e.target).text('Recording...');
-    //         // This will prompt for permission if not allowed earlier
-    //         let $preview = $(e.target).siblings('.preview');
-    //         var recordedAudio = $preview.find('audio')[0];
-    //         navigator.mediaDevices.getUserMedia({ audio: true })
-    //             .then(stream => {
-    //                 audioChunks = [];
-    //                 rec = new MediaRecorder(stream);
-    //                 rec.ondataavailable = e => {
-    //                     audioChunks.push(e.data);
-    //                     if (rec.state == "inactive") {
-    //                         $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-    //                         $preview.siblings('input[type="file"]').val('')
-    //                         $preview.show();
-
-    //                         let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-    //                         recordedAudio.src = URL.createObjectURL(blob);
-    //                         recordedAudio.controls = true;
-
-    //                         blob = new Blob(audioChunks, { type: 'audio/webm' });
-    //                         var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-    //                         // var formElement = document.querySelector("form");
-    //                         // var formData = new FormData(formElement)
-    //                         // formData.append("pitch[tasks_attributes][0][audio]", blob);
-    //                         globalForm.append('file', file);
-    //                         sendAudio(globalForm);
-
-    //                     }
-    //                 }
-    //                 rec.start();
-    //             })
-    //             .catch(e => console.log(e));
-    //     }
-    // })
-
     function playAudio(event) {
         let audio = $(event.target).closest('.preview').find('audio');
         if ($(event.target).hasClass('play-audio')) {
@@ -322,59 +301,142 @@
         $(event.target).siblings('img').removeClass('pause-audio').addClass('play-audio');
     }
 
-    // function endedAudio(id) {
-    //     var sound = document.getElementById('wordSound' + id);
-    //     sound.load();
-    //     $('#word_' + id + ' .play').removeClass('fa-pause-circle');
-    //     $('#word_' + id + ' .play').addClass('fa-play-circle');
-    // }
+    function listOptionClick(e, this_event) {
+        let target_field = $(this_event).closest('.form-group').children('.capsule-field');
+        createCapsule(target_field, $(this_event).attr('data-name'), e);
+        checkTaskData(e);
+        hideDropdown();
+        return false;
+    }
+
+    function listClick(e) {
+        let $that = $(e.target)
+        let target_field = $that.closest('.form-group').children('.capsule-ids-field')
+        let id = $that.closest('.option').find('.basket-name').attr('data-id')
+        let value = $that.closest('.option').find('.basket-name').attr('data-name')
+        let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
+        let word = $(`<div class="word">${value}</div>`);
+        if ($(target_field).val() != "") {
+            let field_array = JSON.parse($(target_field).val())
+            if (!field_array.includes(id)) {
+                field_array.push(id)
+                $(target_field).val(JSON.stringify(field_array))
+                $(capsule_list).append(word)
+            }
+        } else {
+            $(target_field).val(JSON.stringify(Array(id)))
+            $(capsule_list).append(word)
+        }
+        checkTaskData(e);
+        hideDropdown();
+        e.preventDefault();
+        return false;
+    }
+
+    function cwInputFieldClick(e) {
+        let target_field = $(e.target).siblings('.capsule-field');
+        let value = $(e.target).val();
+        if (value.length) {
+            createCapsule(target_field, value, e);
+            checkTaskData(e);
+        }
+        $(e.target).val("");
+        e.preventDefault();
+        return false;
+    }
 
     $(() => {
         if ($())
             $('.input-field').unbind().keypress((e) => {
                 if (e.which == 13) {
-                    let target_field = $(e.target).siblings('.capsule-field')
-                    let value = $(e.target).val()
+                    global_method = 'cwInputFieldClick'
+                    global_event = e;
+                    let target_field = $(e.target).siblings('.capsule-field');
+                    let value = $(e.target).val();
                     if (value.length) {
-                        createCapsule(target_field, value, e)
-                        checkTaskData(e)
+                        if ($(e.target).attr('class').includes('catchword') && isOtherDataUploaded(e)) {
+                            $('.warning-card-wrapper').show();
+                        } else {
+                            return cwInputFieldClick(e);
+                        }
                     }
-                    $(e.target).val("")
-                    e.preventDefault();
+                    // let target_field = $(e.target).siblings('.capsule-field');
+                    // let value = $(e.target).val();
+                    // if (value.length) {
+                    //     createCapsule(target_field, value, e);
+                    //     checkTaskData(e);
+                    //     if ($(e.target).hasClass('catchword')) {
+                    //         let task_id = $(e.target).closest('.task-fields').attr('id');
+                    //         removeOtherMedia('catchword', task_id);
+                    //     }
+                    // }
+                    // $(e.target).val("");
+                    // e.preventDefault();
                     return false;
                 }
             });
 
         $('.sub-cs .option').unbind().on('click', (e) => {
-            let $that = $(e.target)
-            let target_field = $that.closest('.form-group').children('.capsule-ids-field')
-            let id = $that.closest('.option').find('.basket-name').attr('data-id')
-            let value = $that.closest('.option').find('.basket-name').attr('data-name')
-            let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
-            // $(capsule_list).addClass('list-with-words');
-            let word = $(`<div class="word">${value}</div>`);
-            if ($(target_field).val() != "") {
-                let field_array = JSON.parse($(target_field).val())
-                if (!field_array.includes(id)) {
-                    field_array.push(id)
-                    $(target_field).val(JSON.stringify(field_array))
-                    $(capsule_list).append(word)
-                }
+            global_method = 'listClick'
+            global_event = e;
+            if ($(e.target).closest('.add-catchword').length && isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
             } else {
-                $(target_field).val(JSON.stringify(Array(id)))
-                $(capsule_list).append(word)
+                return listClick(e);
             }
-            checkTaskData(e);
-            hideDropdown();
-            e.preventDefault();
+            // listClick(e);
+            // let $that = $(e.target)
+            // let target_field = $that.closest('.form-group').children('.capsule-ids-field')
+            // let id = $that.closest('.option').find('.basket-name').attr('data-id')
+            // let value = $that.closest('.option').find('.basket-name').attr('data-name')
+            // let capsule_list = $that.closest('.form-group').siblings('.capsule-list')
+            // let word = $(`<div class="word">${value}</div>`);
+            // if ($(target_field).val() != "") {
+            //     let field_array = JSON.parse($(target_field).val())
+            //     if (!field_array.includes(id)) {
+            //         field_array.push(id)
+            //         $(target_field).val(JSON.stringify(field_array))
+            //         $(capsule_list).append(word)
+            //     }
+            // } else {
+            //     $(target_field).val(JSON.stringify(Array(id)))
+            //     $(capsule_list).append(word)
+            // }
+            // // if ($(e.target).hasClass('cw')) {
+            // //     let task_id = $(e.target).closest('.task-fields').attr('id');
+            // //     removeOtherMedia('catchword', task_id);
+            // // }
+            // checkTaskData(e);
+            // hideDropdown();
+            // e.preventDefault();
             return false;
         })
 
         $('.sub-cs .list .name').unbind().click(function (e) {
-            let target_field = $(this).closest('.form-group').children('.capsule-field')
-            createCapsule(target_field, $(this).attr('data-name'), e);
-            checkTaskData(e);
-            hideDropdown();
+            // let selectedTaskId = $(e.target).closest('.task-fields').attr('id');
+            // cw_method = 'listOptionClick'
+            // if ($(e.target).hasClass('catchword')) {
+            //     let task_id = $(e.target).closest('.task-fields').attr('id');
+            //     removeOtherMedia('catchword', task_id);
+            // }
+            global_method = 'listOptionClick'
+            method_this = this;
+            global_event = e;
+            check_cw = false;
+            if ($(e.target)[0].nodeName === 'SPAN')
+                check_cw = true;
+            else
+                check_cw = $(e.target).attr('class').includes('catchword')
+            if (check_cw && isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
+            } else {
+                return listOptionClick(e, this);
+            }
+
+            // let target_field = $(this).closest('.form-group').children('.capsule-field');
+            // createCapsule(target_field, $(this).attr('data-name'), e);
+            // checkTaskData(e);
+            // hideDropdown();
             return false;
         })
 
@@ -388,50 +450,171 @@
             }
         })
 
+        // Audio Recording
+
         globalForm = new FormData();
         var audioChunks;
         var recording = false;
         $('.record').on('click', function (e) {
-            if (recording) {
-                $(e.target).text('Record');
-                rec.stop();
-                recording = false;
+            global_method = 'audio';
+            if (isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
             } else {
-                recording = true;
-                $(e.target).text('Recording...');
-                // This will prompt for permission if not allowed earlier
-                let $preview = $(e.target).siblings('.preview');
-                var recordedAudio = $preview.find('audio')[0];
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(stream => {
-                        audioChunks = [];
-                        rec = new MediaRecorder(stream);
-                        rec.ondataavailable = e => {
-                            audioChunks.push(e.data);
-                            if (rec.state == "inactive") {
-								stream.getTracks().forEach(track => track.stop())
-                                $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-                                $preview.siblings('input[type="file"]').val('')
-                                $preview.show();
+                $('.warning-card-wrapper').hide();
+                if (recording) {
+                    $(e.target).text('Record');
+                    rec.stop();
+                    recording = false;
+                } else {
+                    // This will prompt for permission if not allowed earlier
+                    let $preview = $(e.target).siblings('.preview');
+                    var recordedAudio = $preview.find('audio')[0];
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            audioChunks = [];
+                            recording = true;
+                            $(e.target).text('Recording...');
+                            rec = new MediaRecorder(stream);
+                            rec.ondataavailable = e => {
+                                audioChunks.push(e.data);
+                                if (rec.state == "inactive") {
+                                    stream.getTracks().forEach(track => track.stop())
+                                    $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
+                                    $preview.siblings('input[type="file"]').val('')
+                                    $preview.show();
 
-                                let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-                                recordedAudio.src = URL.createObjectURL(blob);
-                                recordedAudio.controls = true;
+                                    let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
+                                    recordedAudio.src = URL.createObjectURL(blob);
+                                    recordedAudio.controls = true;
 
-                                blob = new Blob(audioChunks, { type: 'audio/webm' });
-                                var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-                                // var formElement = document.querySelector("form");
-                                // var formData = new FormData(formElement)
-                                // formData.append("pitch[tasks_attributes][0][audio]", blob);
-                                globalForm.append('file', file);
-                                sendAudio(globalForm);
-
+                                    blob = new Blob(audioChunks, { type: 'audio/webm' });
+                                    var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+                                    globalForm.append('file', file);
+                                    sendAudio(globalForm);
+                                }
                             }
-                        }
-                        rec.start();
-                    })
-                    .catch(e => console.log(e));
+                            rec.start();
+                        })
+                        .catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+                }
             }
         })
+
+        // Video Recording Modal
+
+        $('.record-video').click(function (e) {
+            global_method = 'video';
+            if (isOtherDataUploaded(e)) {
+                $('.warning-card-wrapper').show();
+                $('#videoModal').hide();
+            } else {
+                $('.warning-card-wrapper').hide();
+                $('#videoModal').show()
+            }
+        })
+
+        $('#clodeVideoModal').on('click', function (e) {
+            e.preventDefault();
+            $('#videoModal').hide();
+        });
+        var recorder = document.getElementById('recorder');
+        var player = document.getElementById('player');
+        var file = NaN;
+        var mediaRecorder;
+        var handleSuccess = function (stream) {
+            $('.videorecord i').removeClass('fa-dot-circle');
+            $('.videorecord i').addClass('fa-stop-circle');
+            $('.videorecord').addClass('pulse');
+            $('#recorder').show();
+            $('#player').hide();
+            const options = { mimeType: 'video/webm' };
+            const recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, options);
+            recorder.srcObject = stream;
+            mediaRecorder.start();
+            mediaRecorder.addEventListener('start', function () {
+                console.log('stream started..');
+            })
+            mediaRecorder.addEventListener('dataavailable', function (e) {
+                if (e.data.size > 0) {
+                    console.log('streaming ...');
+                    recordedChunks.push(e.data);
+                }
+            });
+            mediaRecorder.addEventListener('stop', function () {
+                stream.getTracks().forEach(track => track.stop())
+                console.log('stream stopped');
+                var blob = new Blob(recordedChunks);
+                videoURL = URL.createObjectURL(blob);
+                file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+                player.src = videoURL;
+                $('#player').show();
+                $('#recorder').hide();
+                recorder.load();
+                console.log('stream saved');
+                $('.videorecord i').removeClass('fa-stop-circle');
+                $('.videorecord i').addClass('fa-dot-circle');
+                $('.videorecord').removeClass('pulse');
+                $('#stopVideo').css('display', 'inline-block');
+                $('#playVideo').css('display', 'inline-block');
+                stream = NaN;
+            });
+            document.getElementById('stopVideo').addEventListener('click', function () {
+                mediaRecorder.stop();
+            })
+            document.getElementById('videoUpload').addEventListener('click', function (e) {
+                e.preventDefault();
+                if (file != NaN) {
+                    var globalForm = new FormData();
+                    globalForm.append('file', file);
+                    sendVideo(globalForm);
+                } else {
+                    $('#videoModal').hide()
+                }
+            })
+        }
+        document.getElementById('record_video').addEventListener('click', function () {
+            if ($('#record_video').hasClass('pulse')) {
+                mediaRecorder.stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess);
+            }
+        })
+        function playVideo() {
+            var player = document.getElementById('player');
+            if ($('#playVideo i').hasClass("fa-play-circle")) {
+                $('#playVideo i').addClass('fa-pause-circle');
+                $('#playVideo i').removeClass('fa-play-circle');
+                player.play();
+                player.addEventListener('ended', function () {
+                    $('#playVideo i').addClass('fa-play-circle');
+                    $('#playVideo i').removeClass('fa-pause-circle');
+                })
+            } else {
+                $('#playVideo i').addClass('fa-play-circle');
+                $('#playVideo i').removeClass('fa-pause-circle');
+                player.pause();
+            }
+        }
+        function sendVideo(globalForm) {
+            $.ajax({
+                url: "<%= dashboard_create_video_path %>",
+                type: "post",
+                cache: false,
+                async: true,
+                contentType: false,
+                processData: false,
+                data: globalForm,
+                beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+                success: function (res) {
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video-id').val(res.id);
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').attr('src', res.video_url);
+                    $('#videoModal').hide();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('#video_tag').show();
+                    $(`#form_${$('.left-card.selected').attr('id')}`).find('.video .preview').show();
+                    globalForm = new FormData();
+                }
+            })
+        }
     })
 </script>
