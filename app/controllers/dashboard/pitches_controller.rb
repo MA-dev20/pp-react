@@ -68,7 +68,6 @@ module Dashboard
         end
 
         def customize
-            debugger
             @game = Game.find(params[:game_id])
             if @pitch.update(pitch_params)
                 game_login @game
