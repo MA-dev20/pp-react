@@ -1,78 +1,84 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <title>Peter Pitch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1dacf1"/>
-    <%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= action_cable_meta_tag %>
 
-    <%= stylesheet_link_tag    'game_mobile/main', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'game_mobile/main'%>
+<head>
+	<title>Peter Pitch</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#1dacf1" />
+	<%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
+	<%= csrf_meta_tags %>
+	<%= csp_meta_tag %>
+	<%= action_cable_meta_tag %>
+
+	<%= stylesheet_link_tag    'game_mobile/main', media: 'all', 'data-turbolinks-track': 'reload' %>
+	<%= javascript_include_tag 'game_mobile/main'%>
 </head>
 <style>
-	<% if current_page?(gm_error_path) %>
-	:root {
-	  --custcolor: 255,0,0;
-	  --btncolor: 255,0,0;
+	<% if current_page?(gm_error_path) %>:root {
+		--custcolor: 255, 0, 0;
+		--btncolor: 255, 0, 0;
 	}
-	<% else %>
-	:root {
-	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
-	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
+
+	<% else %>:root {
+		--custcolor: <%=@company.color1[0] %>, <%=@company.color1[1] %>, <%=@company.color1[2] %>;
+		--btncolor: <%=@company.color2[0] %>, <%=@company.color2[1] %>, <%=@company.color2[2] %>;
 	}
+
 	<% end %>
-	
 </style>
+
 <body>
 	<section id="navbar">
 		<%= image_tag 'logos/peterpitch.png', class: 'logo' %>
 		<% if current_page?(gm_error_path) %>
-			FEHLER
+		FEHLER
 		<% else %>
-			<%= @game.team.name %>
-			<% if @omenu && @admin.role != 'user' %>
-				<div class="objection-btn" onclick="toggleObjections()">
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-			<% else %>
-				<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
-			<% end %>
+		<%= @game.team.name %>
+		<% if @omenu && @admin.role != 'user' %>
+		<div class="objection-btn" onclick="toggleObjections()">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<% else %>
+		<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
+		<% end %>
 		<% end %>
 	</section>
-	<% if @task && @task.reactions %>
+	<% if @task && @task.reactions.present? %>
 	<section id="objections-menu">
 		<div class="nav">
 			<i class="fas fa-times" onclick="toggleObjections()"></i>
 		</div>
 		<div class="objections" id="objection-list">
-		<% @reaction = JSON.parse(@task.reactions) %>
-		<% @reaction.each do |o| %>
-		<span onclick="sendObjection('<%= o %>')"><%= o %></span>
-		<% end %>
+			<% @reaction = JSON.parse(@task.reactions) %>
+			<% @reaction.each do |o| %>
+			<span onclick="sendObjection('<%= o %>')"><%= o %></span>
+			<% end %>
 		</div>
 	</section>
 	<% end %>
 	<section id="content">
 		<%= yield %>
 	</section>
-	
-<svg viewbox= "0 0 316 316" style="position: absolute; opacity: .3; left: -200px; height: 350px; z-index: 10;">
-    <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
-</svg>
-<svg viewbox= "0 0 316 316" style="position: absolute; opacity: .8; top: 60vh; right: -45px; height: 100px; z-index: 10;">
-    <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
-</svg>
+
+	<svg viewbox="0 0 316 316" style="position: absolute; opacity: .3; left: -200px; height: 350px; z-index: 10;">
+		<path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round"
+			stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z"
+			opacity=".149" />
+	</svg>
+	<svg viewbox="0 0 316 316"
+		style="position: absolute; opacity: .8; top: 60vh; right: -45px; height: 100px; z-index: 10;">
+		<path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round"
+			stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z"
+			opacity=".149" />
+	</svg>
 </body>
 
 
 <script>
 	posBottom();
-	window.onresize = function(){posBottom()};
+	window.onresize = function () { posBottom() };
 	function posBottom() {
 		var height = window.innerHeight
 		var width = window.innerWidth
@@ -87,10 +93,10 @@
 		$.ajax({
 			url: "<%= gm_objection_path %>",
 			type: 'post',
-			data: {objection: oID},
-			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			data: { objection: oID },
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
-				$('#objections-menu').hide();	
+				$('#objections-menu').hide();
 			},
 		});
 	}
