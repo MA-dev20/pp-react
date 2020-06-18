@@ -31,6 +31,14 @@ class PitchesController < ApplicationController
     @task = @pitch.tasks.create(user: @pitch.user)
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
+
+  def update_pitch
+	@pitch = Pitch.find(params[:id])
+	if @pitch.update(pitch_params)
+		redirect_to dashboard_pitches_path
+	end
+
+  end
 	
   def update_task
 	@pitch = Pitch.find(params[:pitch_id])
@@ -166,9 +174,14 @@ class PitchesController < ApplicationController
   end
 	
   private
+  	def pitch_params
+		params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id)
+	end
+
     def task_params
 	  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :task_type, :title, :time, :task_medium_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating_list)
 	end
+
 	def media_params
 	  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type)
 	end

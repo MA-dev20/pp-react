@@ -1010,7 +1010,7 @@ input[type="file"] {
 }
 
 #content {
-    
+
     #pitchModal {
         
         #show_ratings {
@@ -1102,6 +1102,27 @@ input[type="file"] {
             -webkit-transform: rotate(45deg);
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
+        }
+
+        .video-form {
+            label {
+                font-size: 1.8vh;
+            }
+    
+            .form-group {
+                position: relative;
+                text-align: left;
+                .form-field {
+                    width: calc(100% - 9vh);
+                }
+            }
+    
+            .add {
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: 5.5vh;
+            }
         }
     }
 }

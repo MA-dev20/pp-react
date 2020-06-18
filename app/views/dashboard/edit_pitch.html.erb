@@ -1,17 +1,20 @@
 <section id="new-pitch-navbar">
-    <h1>Pitch erstellen</h1>
-    <div class="btn-group">
-        <%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
-        <button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
-    </div>
+	<h1>Pitch erstellen</h1>
+	<div class="btn-group">
+		<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+		<button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
+	</div>
 </section>
 
 <div id="new-pitch-content">
 	<div class="card left">
 		<div class="tasks" id="tasksScrollBar">
-		<% @pitch.task_orders.order(:order).each do |t| %>
-			<div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>" id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)" ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)" data-id="<%= t.id %>">
-				<div class="task-link"  onclick="selectTask(<%= t.task_id %>)"></div>
+			<% @pitch.task_orders.order(:order).each do |t| %>
+			<div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>"
+				id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
+				ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
+				data-id="<%= t.id %>">
+				<div class="task-link" onclick="selectTask(<%= t.task_id %>)"></div>
 				<% if t.task.task_type != "slide" %>
 				<div class="task-title">
 					<% if !t.task.valide %>
@@ -27,14 +30,16 @@
 				</div>
 				<div class="thumb">
 					<% if t.task.task_medium && t.task.task_medium.video? %>
-						<%= image_tag t.task.task_medium.video.thumb.url %>
+					<%= image_tag t.task.task_medium.video.thumb.url %>
 					<% elsif t.task.task_medium && t.task.task_medium.image? %>
-						<%= image_tag t.task.task_medium.image.url %>
+					<%= image_tag t.task.task_medium.image.url %>
 					<% else %>
-						<%= image_tag 'dash/Image.png' %>
+					<%= image_tag 'dash/Image.png' %>
 					<% end %>
 					<% if t.task.time %>
-					<div class="length"><%= (t.task.time / 60).to_s %>:<%= (t.task.time % 60) < 10 ? '0' + (t.task.time % 60).to_s : (t.task.time % 60).to_s %></div>
+					<div class="length">
+						<%= (t.task.time / 60).to_s %>:<%= (t.task.time % 60) < 10 ? '0' + (t.task.time % 60).to_s : (t.task.time % 60).to_s %>
+					</div>
 					<% else %>
 					<div class="length">1:20</div>
 					<% end %>
@@ -58,36 +63,36 @@
 				</div>
 				<div class="thumb slide">
 					<% if t.task.task_medium && t.task.task_medium.video? %>
-						<%= image_tag t.task.task_medium.video.thumb.url %>
+					<%= image_tag t.task.task_medium.video.thumb.url %>
 					<% elsif t.task.task_medium && t.task.task_medium.image? %>
-						<%= image_tag t.task.task_medium.image.url %>
+					<%= image_tag t.task.task_medium.image.url %>
 					<% else %>
-						<%= image_tag 'dash/Image.png' %>
+					<%= image_tag 'dash/Image.png' %>
 					<% end %>
 				</div>
 				<% end %>
 			</div>
-		<% end %>
-		<% if @pitch.tasks.count == 0 %>
-		<div class="form-group add-first-task">
-        	<button class="btn" onclick="addTask()">Add first task</button>
-        </div>
-        <% end %>
-        <%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_pdf_form"} do |t| %>
-        <div class="menu-box">
-            <div class="menu" onclick="addTask()">Add task</div>
-            <div class="menu task-pitch">Add task from existing pitch</div>
-            <label for="task_medium_pdf" class="menu">Import PDF</label>
-        </div>
-        <%= t.file_field :pdf, accept: '.pdf'%>
+			<% end %>
+			<% if @pitch.tasks.count == 0 %>
+			<div class="form-group add-first-task">
+				<button class="btn" onclick="addTask()">Add first task</button>
+			</div>
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_pdf_form"} do |t| %>
+			<div class="menu-box">
+				<div class="menu" onclick="addTask()">Add task</div>
+				<div class="menu task-pitch">Add task from existing pitch</div>
+				<label for="task_medium_pdf" class="menu">Import PDF</label>
+			</div>
+			<%= t.file_field :pdf, accept: '.pdf'%>
 			<%= t.hidden_field :media_type, value: 'pdf' %>
-       <% end %>
-        <div class="add-task">
-            <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img' %>
-        </div>
+			<% end %>
+			<div class="add-task">
+				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img' %>
+			</div>
 		</div>
 	</div>
-	
+
 	<div class="card right">
 		<% if @task && @task.task_type == 'slide' %>
 		<%= render partial: 'dashboard/pitches/new_pdf' %>
@@ -95,9 +100,21 @@
 		<%= render partial: 'dashboard/pitches/new_task' %>
 		<% end %>
 	</div>
+
+	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
 </div>
 
 <script>
+
+	$('.open-modal').click(function (e) {
+		// $('#new_pitch_form').show();
+		$(`#${$(this).data("modal")}`).show();
+	})
+
+	$('.close').click(function () {
+		$('.modal').hide()
+	})
+
 	function allowDrop(ev) {
 		ev.preventDefault();
 		$('.selected').removeClass('selected');
@@ -123,17 +140,17 @@
 			async: true,
 			contentType: false,
 			processData: false,
-			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-			success: function(res) {
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
 				selectTask(res.id);
 			},
 		})
 	}
-	$('#task_medium_pdf').on('change', function() {
-	var globalForm = new FormData(document.getElementById('add_pdf_form'));
-	sendMedia(globalForm);
-})
-function sendMedia(globalForm) {
+	$('#task_medium_pdf').on('change', function () {
+		var globalForm = new FormData(document.getElementById('add_pdf_form'));
+		sendMedia(globalForm);
+	})
+	function sendMedia(globalForm) {
 		var url = "<%= create_task_media_url(@pitch) %>";
 		$.ajax({
 			url: url,
@@ -144,15 +161,15 @@ function sendMedia(globalForm) {
 			processData: false,
 			data: globalForm,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-			success: function(res) {
+			success: function (res) {
 				<% if @pitch.tasks.count != 0 %>
-				selectTask(<%= @pitch.tasks.last.id %>);
+					selectTask(<%= @pitch.tasks.last.id %>);
 				<% end %>
 			}
 		})
 }
 	new PerfectScrollbar('#tasksScrollBar');
-	$('.add-task-img').on('click', function() {
+	$('.add-task-img').on('click', function () {
 		$('.menu-box').toggle()
 	})
 	function addTask() {
@@ -170,20 +187,20 @@ function sendMedia(globalForm) {
 			processData: false,
 			data: globalForm,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-			success: function(res) {
-				var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id='+task_id ;
-	  			window.location.replace(URL);
+			success: function (res) {
+				var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+				window.location.replace(URL);
 				showTaskMedia("<%= @task.task_type %>");
 			}
 		})
-	  <% else %>
-			var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id='+task_id ;
-	  		window.location.replace(URL);
+			<% else %>
+			var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+		window.location.replace(URL);
 	  <% end %>
 	}
 	<% if @task %>
-	$('#tasksScrollBar').animate({
-       	scrollTop: $("#task_<%= @task.id %>").offset().top - $('#tasksScrollBar').offset().top - 10
-    }, 50);
+		$('#tasksScrollBar').animate({
+			scrollTop: $("#task_<%= @task.id %>").offset().top - $('#tasksScrollBar').offset().top - 10
+		}, 50);
 	<% end %>
 </script>

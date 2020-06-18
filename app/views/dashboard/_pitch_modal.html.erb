@@ -1,0 +1,68 @@
+<div id="pitchModal" class="modal hide">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="heading">
+            <h1>Headline</h1>
+        </div>
+        <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put' do |f| %>
+        <%= f.hidden_field :user_id, value: @admin.id %>
+        <div class="inner-content">
+            <div class="left-section">
+                <div class="pitch-title">
+                    <label for="">Pitch</label>
+                    <div class="form-group">
+                        <%= f.text_field :title, class: 'form-field', placeholder: 'Pitch title' %>
+                    </div>
+                </div>
+                <div class="pitch-description">
+                    <label for="">Description</label>
+                    <div class="form-group">
+                        <%= f.text_area :description, class: 'form-field', placeholder: 'Pitch description' %>
+                    </div>
+                </div>
+                <div class="hr-line"></div>
+                <div class="video-form">
+                    <label for="">You can also past a link to your video on Youtube or Vimeo</label>
+                    <div class="form-group">
+                        <%= f.text_field :video_path, class: 'form-field', placeholder: 'Youtube/Vimeo link'%>
+                        <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="picture media-option">
+                    <label for="">Pitch image</label>
+                    <label for="pitch_image" class="btn upload">Upload</label>
+                    <%= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*', class: 'pitch-uploadfile' %>
+                    <div class="preview image-preview" style="<%= 'display: block;'if pitch.image.url.present? %>">
+                        <div class="remove pitch-file" onclick="removePitchMedia(event, 'image')">remove</div>
+                        <% if pitch.image.present? %>
+                        <%= image_tag pitch.image.url, class: 'media-file' %>
+                        <% else %>
+                        <%= image_tag 'dash/Image.png', class: 'media-file' %>
+                        <% end %>
+                    </div>
+                </div>
+                <div class="hr-line"></div>
+                <div class="video media-option">
+                    <label for="">Pitch video</label>
+                    <label for="pitch_video" class="btn upload">Upload</label>
+                    <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'pitch-uploadfile' %>
+                    <div class="preview video-preview" style="<%= 'display: block;'if pitch.video.url.present? %>">
+                        <div class="time"></div>
+                        <div class="remove pitch-file" onclick="removePitchMedia(event, 'video')">remove</div>
+                        <video id="video_tag" src="<%= pitch.video.url if pitch.video.url.present? %>"
+                            onloadedmetadata="loadMetaData(event)"
+                            style="display: <%= pitch.video.url.present? ? 'block' : 'none' %>" type="video/mp4"
+                            controls></video>
+                    </div>
+                </div>
+                <div class="hr-line"></div>
+                <div class="btn-wrapper">
+                    <%= f.submit 'Save', class: 'submit-btn btn' %>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
