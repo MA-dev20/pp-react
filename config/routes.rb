@@ -34,8 +34,10 @@ Rails.application.routes.draw do
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:pitch_id/edit', to: 'dashboard#edit_pitch', as: 'dashboard_edit_pitch'
   get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
+  put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
+  post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'  
+ 
   
-  put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch' 
   put 'pitches/:pitch_id/tasks/:task_id/setOrder/:order', to: 'pitches#set_order'
   post 'task/:task_id/task_media/new', to: 'pitches#create_task_media', as: 'create_task_media'
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'

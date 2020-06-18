@@ -198,6 +198,7 @@ class DashboardController < ApplicationController
   def pitches
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
+    @game = Game.find(params[:game_id]) if params[:game_id]
   end
   def new_pitch
 	@pitch = @admin.pitches.create()
@@ -211,6 +212,7 @@ class DashboardController < ApplicationController
   end
 	
   private
+  
 	def set_user
 	  if user_signed_in?
 		@admin = current_user

@@ -87,7 +87,19 @@ class PitchesController < ApplicationController
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
-	
+
+  def customize
+	@pitch = Pitch.find(params[:pitch_id])
+	@game = Game.find(params[:game_id])
+	if @pitch.update(pitch_params)
+		game_login @game
+		redirect_to gd_join_path(@game)
+	else
+		flash[:alert] = 'Konnte game nicht speichern!'
+		redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: @pitch.id)
+	end
+  end
+
   def create_task_media
 	@pitch = Pitch.find(params[:task_id])
 	@task_medium = TaskMedium.create(media_params)
