@@ -1,7 +1,7 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div id="count_channel" data-game-id='<%= @game.id %>'></div>
-<% if @task.catchwords != '' %>
-<% @catchword = JSON.parse(@task.catchwords).sample %>
+<% if @task.task_type == 'catchword' %>
+<% @catchword = @turn.catchword %>
 <% end %>
 <section id="timeroverlay">
 		<svg viewbox="0 0 100 100">
@@ -26,45 +26,25 @@
 		<div class="circle play-avatar"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
 	<% end %>
 </div>
-<% if @task.video? %>
+<% if @task.task_medium && @task.task_medium.video? %>
 <div class="video">
-	<%= video_tag @task.video.url, id: 'task_video' %>
+	<%= video_tag @task.task_medium.video.url, id: 'task_video' %>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
-<% elsif @task.video_id != "" && TaskMedium.find(@task.video_id).video? %>
-
+<% elsif @task.task_medium && @task.task_medium.image? %>
 <div class="video">
-	<%= video_tag TaskMedium.find(@task.video_id).video.url, id: 'task_video' %>
+	<%= image_tag @task.task_medium.image.url, id: 'task_image' %>
 </div>
-<div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
-<% elsif @task.image? %>
-<div class="video">
-	<%= image_tag @task.image.url, id: 'task_image' %>
-</div>
-<% elsif @task.audio_id != "" %>
+<% elsif @task.task_medium && @task.task_medium.audio? %>
 <div class="sound">
 	<i class="fas fa-music"></i>
-	<%= audio_tag TaskMedium.find(@task.audio_id).audio.url, id: 'task_sound' %>
+	<%= audio_tag @task.task_medium.audio.url, id: 'task_sound' %>
 	<div class="progress"><div class="bar"></div></div>
 	<style>
 		:root {
-	  		--soundduration: <%= FFMPEG::Movie.new(TaskMedium.find(@task.audio_id).audio.current_path).duration.round(1).to_s + 's' %>;
+	  		--soundduration: <%= @task.task_medium.duration.round(1).to_s + 's' %>;
 		}
 	</style>
-</div>
-<div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
-<% elsif @task.audio? %>
-<div class="sound">
-	<i class="fas fa-music"></i>
-	<%= audio_tag @task.audio.url, id: "task_sound" %>
-	<div class="progress">
-		<div class="bar"></div>
-	</div>
-	<style>
-	:root {
-	  --soundduration: <%= FFMPEG::Movie.new(@task.audio.current_path).duration.round(1).to_s + 's' %>;
-	}
-</style>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
 <% else %>
@@ -111,8 +91,8 @@
 <%= audio_tag 'game/play/dong.mp3', id: 'dong' %>
 <%= audio_tag 'game/play/theme.wav', loop: true, id: 'theme' %>
 <%= audio_tag 'game/play/countdown.mp3', id: 'countdown' %>
-<% if Catchword.find_by(name: @catchword) && Catchword.find_by(name: @catchword).sound? %>
-	<%= audio_tag Catchword.find_by(name: @catchword).sound.url, id: 'word_sound' %>
+<% if @catchword && @catchword.sound? %>
+	<%= audio_tag @catchword.sound.url, id: 'word_sound' %>
 <% end %>
 <%= audio_tag 'game/play/objection_ring.mp3', id: 'o_start' %>
 <%= audio_tag 'game/play/objection_theme.mp3', loop: true, id: 'o_theme' %>
@@ -122,14 +102,14 @@
 	document.getElementById('dong').volume = .5;
 	document.getElementById('theme').volume = .2;
 	document.getElementById('countdown').volume = .3;
-	<% if @task.video? || @task.video_id != '' %>
+	<% if @task.task_medium && @task.task_medium.video? %>
 	$('#task_video').on('ended', function() {
 		$('#play .video').addClass('fadeOut');
 		$('#task').show();
 		document.getElementById('theme').play();
 		MyApp.timer.resume();
 	})
-	<% elsif @task.audio? || @task.audio_id != '' %>
+	<% elsif @task.task_medium && @task.task_medium.audio? %>
 	$('#task_sound').on('ended', function() {
 		$('#play .sound').fadeOut(10);
 		$('#task').fadeIn(100);
@@ -150,16 +130,16 @@
 				clearInterval(beginTimer);
 				<% if @catchword %>
 				document.getElementById('word_load').play();
-				$('#word').html("<%= @catchword %>");
+				$('#word').html("<%= @catchword.name %>");
 				textanim();
-				<% elsif  @task.video? || @task.video_id != '' %>
+				<% elsif  @task.task_medium && @task.task_medium.video? %>
 					$('#play .video').show();
 					document.getElementById('task_video').play();
-				<% elsif @task.image? %>
+				<% elsif @task.task_medium && @task.task_medium.image? %>
 					$('#play .video').show();
 					document.getElementById('theme').play();
 					MyApp.timer.resume();
-				<% elsif @task.audio? || @task.audio_id != ''%>
+				<% elsif @task.task_medium && @task.task_medium.audio? %>
 					$('#play .sound').show();
 					document.getElementById('task_sound').play();
 				<% end %>
@@ -178,7 +158,7 @@
 	function callback() {
 		document.getElementById('word_load').pause();
 		document.getElementById('dong').play();
-		<% if Catchword.find_by(name: @catchword) && Catchword.find_by(name: @catchword).sound? %>
+		<% if @catchword && @catchword.sound? %>
 		document.getElementById('word_sound').play();
 		<% end %>
 		document.getElementById('theme').play();
@@ -187,16 +167,16 @@
 	
 	$('#navbar').hide();
 	<% if @catchword %>
-	if(<%= @catchword.length %> > 23) {
+	if(<%= @catchword.name.length %> > 23) {
 		$('.word').css("font-size", '9vh');
 	}
-	if(<%= @catchword.length %> > 26) {
+	if(<%= @catchword.name.length %> > 26) {
 		$('.word').css("font-size", '8vh');
 	}
-	if(<%= @catchword.length %> > 29) {
+	if(<%= @catchword.name.length %> > 29) {
 		$('.word').css("font-size", '7vh');
 	}
-	if(<%= @catchword.length %> > 33) {
+	if(<%= @catchword.name.length %> > 33) {
 		$('.word').css('line-height','8vh');
 	}
 	<% end %>
