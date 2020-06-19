@@ -101,8 +101,11 @@ class PitchesController < ApplicationController
   end
 
   def create_task_media
-	@pitch = Pitch.find(params[:task_id])
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:task_id])
 	@task_medium = TaskMedium.create(media_params)
+	@task.update(task_medium_id: @task_medium.id)
+	debugger
 	if @task_medium.media_type == 'audio'
 	  render json: {id: @task_medium.id, type: @task_medium.media_type, preview: @task_medium.audio.url, title: @task_medium.audio.identifier}
 	elsif @task_medium.media_type == 'video'

@@ -39,7 +39,7 @@ Rails.application.routes.draw do
  
   
   put 'pitches/:pitch_id/tasks/:task_id/setOrder/:order', to: 'pitches#set_order'
-  post 'task/:task_id/task_media/new', to: 'pitches#create_task_media', as: 'create_task_media'
+  post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'
   post 'pitches/:pitch_id/task/:task_id/update', to: 'pitches#update_task', as: 'update_task'
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'

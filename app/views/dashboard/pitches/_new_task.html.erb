@@ -1,231 +1,237 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
-	<div class="form-group title">
-		<%= f.hidden_field :user_id, value: @admin.id %>
-		<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+<div class="form-group title">
+	<%= f.hidden_field :user_id, value: @admin.id %>
+	<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+</div>
+
+<div class="card time-limit">
+	<div class="title">Time limit</div>
+	<div class="subline">Set your time limit.</div>
+	<div class="form-group">
+		<div class="time-field">
+			<% if @task.time %>
+			<%= f.hidden_field :time, id: 'task_time', value: @task.time %>
+			<div class="time" id="set_task_time">
+				<%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? '0' + (@task.time % 60).to_s : (@task.time % 60).to_s %>
+			</div>
+			<% else %>
+			<%= f.hidden_field :time, id: 'task_time', value: 80 %>
+			<div class="time" id="set_task_time">1:20</div>
+			<% end %>
+			<i class="fa fa-angle-up up" onclick="timeUp()"></i>
+			<i class="fa fa-angle-down down" onclick="timeDown()"></i>
+		</div>
 	</div>
-	
-	<div class="card time-limit">
-		<div class="title">Time limit</div>
-		<div class="subline">Set your time limit.</div>
-		<div class="form-group">
-			<div class="time-field">
-				<% if @task.time %>
-				<%= f.hidden_field :time, id: 'task_time', value: @task.time %>
-				<div class="time" id="set_task_time"><%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? '0' + (@task.time % 60).to_s : (@task.time % 60).to_s %></div>
-				<% else %>
-				<%= f.hidden_field :time, id: 'task_time', value: 80 %>
-				<div class="time" id="set_task_time">1:20</div>
+</div>
+<%= f.hidden_field :task_type %>
+<%= f.hidden_field :catchword_list_id %>
+<%= f.hidden_field :task_medium_id %>
+<% end %>
+<div class="card add-reaction">
+	<%= form_for :list, url: create_task_list_path(@task, list: 'objection'), html: {id: "add_ol_form"} do |f| %>
+	<div class="title">Reactions</div>
+	<div class="subline">Type new reactions or choose from list below</div>
+	<div class="form-group">
+		<%= f.text_field :name , placeholder: "Type your reactions", value: '', class: 'form-field' %>
+		<div class="ol custom-select" onclick="openList('objection')">Reactions
+			<div class="sub-cs" id="ol-options">
+				<% @ol_list.each do |list| %>
+				<div class="option" onclick="sendList('objection', '<%= list.id %>')">
+					<span class="basker-name vw"><%= list.name %></span>
+				</div>
 				<% end %>
-				<i class="fa fa-angle-up up" onclick="timeUp()"></i>
-				<i class="fa fa-angle-down down" onclick="timeDown()"></i>
 			</div>
 		</div>
 	</div>
-	<%= f.hidden_field :task_type %>
-	<%= f.hidden_field :catchword_list_id %>
-	<%= f.hidden_field :task_medium_id %>
+	<div class="capsule-list list-with-words">
+		<% if @task.objection_list %>
+		<% @task.objection_list.objections.each do |ow| %>
+		<div class="word"><%= ow.name %></div>
+		<% end %>
+		<% end %>
+	</div>
 	<% end %>
-	<div class="card add-reaction">
-		<%= form_for :list, url: create_task_list_path(@task, list: 'objection'), html: {id: "add_ol_form"} do |f| %>
-		<div class="title">Reactions</div>
-		<div class="subline">Type new reactions or choose from list below</div>
+</div>
+
+<div class="card add-catchword">
+	<div class="title">Text, Video oder Bild hinzufügen!</div>
+	<div class="btn-line">
+
+		<div class="btn" id="btn_catchword" onclick="showTaskMedia('catchword')">Catchword</div>
+		<div class="btn" id="btn_image" onclick="showTaskMedia('image')">Bild</div>
+		<div class="btn" id="btn_video" onclick="showTaskMedia('video')">Video</div>
+		<div class="btn" id="btn_audio" onclick="showTaskMedia('audio')">Audio</div>
+	</div>
+
+	<div class="catchword">
+		<%= form_for :list, url: create_task_list_path(@task, type: 'catchword'), html: {id: "add_cw_form"} do |cw| %>
+		<div class="title">Catchwords</div>
+		<div class="subline">Type your Catchword or choose from list below</div>
 		<div class="form-group">
-			<%= f.text_field :name , placeholder: "Type your reactions", value: '', class: 'form-field' %>
-			<div class="ol custom-select" onclick="openList('objection')">Reactions
-				<div class="sub-cs" id="ol-options">
-					<% @ol_list.each do |list| %>
-					<div class="option" onclick="sendList('objection', '<%= list.id %>')">
-						<span class="basker-name vw"><%= list.name %></span>
+			<%= cw.text_field :name, placeholder: 'Type your catchword', value: '', class: 'form-field' %>
+			<div class="cw custom-select" onclick="openList('catchword')">Catchword
+				<div class="sub-cs" id="cw-options">
+					<% @cw_lists.each do |list| %>
+					<div class="option" onclick="sendList('catchword', '<%= list.id %>')">
+						<span class="basket-name vw"><%= list.name %></span>
 					</div>
 					<% end %>
 				</div>
 			</div>
 		</div>
 		<div class="capsule-list list-with-words">
-			<% if @task.objection_list %>
-				<% @task.objection_list.objections.each do |ow| %>
-				<div class="word"><%= ow.name %></div>
-				<% end %>
+			<% if @task.catchword_list %>
+			<% @task.catchword_list.catchwords.each do |cw| %>
+			<div class="word"><%= cw.name %></div>
+			<% end %>
 			<% end %>
 		</div>
+		<div class="info">If more than one catchword is chosen, we will choose one of them randomly for this task.</div>
 		<% end %>
-	</div>
-	
-	<div class="card add-catchword">
-		<div class="title">Text, Video oder Bild hinzufügen!</div>
-		<div class="btn-line">
-			
-			<div class="btn" id="btn_catchword" onclick="showTaskMedia('catchword')">Catchword</div>
-			<div class="btn" id="btn_image" onclick="showTaskMedia('image')">Bild</div>
-			<div class="btn" id="btn_video" onclick="showTaskMedia('video')">Video</div>
-			<div class="btn" id="btn_audio" onclick="showTaskMedia('audio')">Audio</div>
-		</div>
-		
-		<div class="catchword">
-			<%= form_for :list, url: create_task_list_path(@task, type: 'catchword'), html: {id: "add_cw_form"} do |cw| %>
-			<div class="title">Catchwords</div>
-			<div class="subline">Type your Catchword or choose from list below</div>
-			<div class="form-group">
-				<%= cw.text_field :name, placeholder: 'Type your catchword', value: '', class: 'form-field' %>
-				<div class="cw custom-select" onclick="openList('catchword')">Catchword
-					<div class="sub-cs" id="cw-options">
-						<% @cw_lists.each do |list| %>
-						<div class="option" onclick="sendList('catchword', '<%= list.id %>')">
-							<span class="basket-name vw"><%= list.name %></span>
-						</div>
-						<% end %>
-					</div>
-				</div>
-			</div>
-			<div class="capsule-list list-with-words">
-				<% if @task.catchword_list %>
-					<% @task.catchword_list.catchwords.each do |cw| %>
-						<div class="word"><%= cw.name %></div>
-					<% end %>
-				<% end %>
-			</div>
-			<div class="info">If more than one catchword is chosen, we will choose one of them randomly for this task.</div>
-			<% end %>
-			<script>
-				$('#add_cw_form').on('submit', function(e) {
-					e.preventDefault();
-					$('#task_task_type').val('catchword');
-					var formData = new FormData(document.getElementById('add_cw_form'));
-					commitList('catchword', formData);
-				})
-				$('#add_ol_form').on('submit', function(e) {
-					e.preventDefault();
-					var formData = new FormData(document.getElementById('add_ol_form'));
-					commitList('objection', formData);
-				})
-				
-				function sendList(type, ListID) {
-					var formData = new FormData();
-					formData.append("list[list_id]", ListID);
-					commitList(type, formData);
-				}
-				
-				function commitList(type, formData) {
-					var url = "<%= create_task_list_path(@task) %>?type="+type;
-					$.ajax({
-						url: url,
-						type: 'post',
-						cache: false,
-						async: true,
-						contentType: false,
-						processData: false,
-						data: formData,
-						beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-						success: function(res) {
-							if( type == 'catchword') {
-							  $('#task_catchword_list_id').val(res.id);
-							} else if( type == 'objection' ) {
-								$('#task_objection_list_id').val(res.id);
-							} else if(type == 'rating') {
-								$('#task_rating_list_id').val(res.id);
-							}
-							selectTask(<%= @task.id %>);
+		<script>
+			$('#add_cw_form').on('submit', function (e) {
+				e.preventDefault();
+				$('#task_task_type').val('catchword');
+				var formData = new FormData(document.getElementById('add_cw_form'));
+				commitList('catchword', formData);
+			})
+			$('#add_ol_form').on('submit', function (e) {
+				e.preventDefault();
+				var formData = new FormData(document.getElementById('add_ol_form'));
+				commitList('objection', formData);
+			})
+
+			function sendList(type, ListID) {
+				var formData = new FormData();
+				formData.append("list[list_id]", ListID);
+				commitList(type, formData);
+			}
+
+			function commitList(type, formData) {
+				var url = "<%= create_task_list_path(@task) %>?type=" + type;
+				$.ajax({
+					url: url,
+					type: 'post',
+					cache: false,
+					async: true,
+					contentType: false,
+					processData: false,
+					data: formData,
+					beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+					success: function (res) {
+						if (type == 'catchword') {
+							$('#task_catchword_list_id').val(res.id);
+						} else if (type == 'objection') {
+							$('#task_objection_list_id').val(res.id);
+						} else if (type == 'rating') {
+							$('#task_rating_list_id').val(res.id);
 						}
+						selectTask(<%= @task.id %>);
+			}
 					})
 				}
-				function openList(type) {
-					if( type == 'catchword' ) {
-						$('#cw-options').toggle();
-					} else if( type == 'objection' ) {
-						$('#ol-options').toggle();
-					}
+			function openList(type) {
+				if (type == 'catchword') {
+					$('#cw-options').toggle();
+				} else if (type == 'objection') {
+					$('#ol-options').toggle();
 				}
-			</script>
-		</div>
-		
-		<div class="picture">
-			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_image_form"} do |t| %>
-			<div class="title">Bild</div>
-			<div class="subline">Upload an image to your pitch</div>
-			<label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label>
-			<%= t.file_field :image %>
-			<%= t.hidden_field :media_type, value: 'image' %>
-			<% end %>
-			<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
-				<% if @task.task_medium && @task.task_medium.image? %>
-				<%= image_tag @task.task_medium.image.url %>
-				<% else %>
-				<img src="" alt="">
-				<% end %>
-			</div>
-		</div>
-		<div class="popup" id="popup">
-			<div class="img-container">
-				<%= image_tag '', id: 'media_image' %>
-			</div>
-			<div class="center">
-				<div class="btn btn-green" id="crop">speichern</div>
-			</div>
-			<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
-		</div>
-		
-		<div class="video">
-			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_video_form"} do |t| %>
-			<div class="title">Video</div>
-			<div class="subline">Upload an Video to your pitch</div>
-			<label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label>
-			<%= t.file_field :video %>
-			<%= t.hidden_field :media_type, value: 'video' %>
-			<% end %>
-			<div class="preview video-preview" style="display: <%= @task.task_medium && @task.task_medium.video? ? 'block' : 'none' %>">
-				<% if @task.task_medium && @task.task_medium.video? %>
-				<div class="time"><%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %></div>
-				<%= video_tag @task.task_medium.video.url, controls: true %>
-				<% else %>
-				<div class="time"></div>
-				<video src="" controls></video>
-				<% end %>
-			</div>
-		</div>
-		
-		<div class="audio">
-			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: 'add_audio_form'} do |t| %>
-				<div class="title">Audio</div>
-				<div class="subline">Upload an audio file to your pitch</div>
-				<label for="task_medium_audio" class="btn upload">Upload</label>
-				<%= t.file_field :audio %>
-				<%= t.hidden_field :media_type, value: 'audio' %>
-			<% end %>
-			<div class="preview audio-preview" style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
-				<i class="fas fa-play-circle play-audio" onclick="playAudio()"></i>
-				<% if @task.task_medium && @task.task_medium.audio? %>
-				
-				<div class="audio-title"><%= @task.task_medium.audio.identifier %></div>
-				<%= audio_tag @task.task_medium.audio.url, id: 'task-audio'%>
-				<div class="remove">remove</div>
-				<% else %>
-				<div class="audio-title"></div>
-				<audio src="" id="task-audio"></audio>
-				<div class="remove">remove</div>
-				<% end %>
-			</div>
-		</div>
-		
+			}
+		</script>
 	</div>
-	
-	<div class="card add-rating">
-		<%= form_for :list, url: create_task_list_path(@task, list: 'rating'), html: {id: "add_rl_form"} do |f| %>
-		<div class="title">Rating Criteria</div>
-		<div class="subline">You can add up to 4 rating criterias</div>
-		<div class="form-group">
-			<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
-			<%= f.text_field :name, class: 'form-field rating-field', onblur: 'looseFocus(event)' %>
-			<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+
+	<div class="picture">
+		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_image_form"} do |t| %>
+		<div class="title">Bild</div>
+		<div class="subline">Upload an image to your pitch</div>
+		<label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label>
+		<%= t.file_field :image %>
+		<%= t.hidden_field :media_type, value: 'image' %>
+		<% end %>
+		<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
+			<% if @task.task_medium && @task.task_medium.image? %>
+			<%= image_tag @task.task_medium.image.url %>
+			<% else %>
+			<img src="" alt="">
+			<% end %>
 		</div>
-		<div class="capsule-list">
-            <% if @task.rating_list %>
-            <% @task.rating_list.rating_criteria.each do |rating| %>
-            <div class="word"><%= rating.name %></div>
-            <% end %>
-            <% end %>
-        </div>
+	</div>
+	<div class="popup" id="popup">
+		<div class="img-container">
+			<%= image_tag '', id: 'media_image' %>
+		</div>
+		<div class="center">
+			<div class="btn btn-green" id="crop">speichern</div>
+		</div>
+		<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+	</div>
+
+	<div class="video">
+		<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_video_form"} do |t| %>
+		<div class="title">Video</div>
+		<div class="subline">Upload an Video to your pitch</div>
+		<label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label>
+		<%= t.file_field :video %>
+		<%= t.hidden_field :media_type, value: 'video' %>
+		<% end %>
+		<div class="preview video-preview"
+			style="display: <%= @task.task_medium && @task.task_medium.video? ? 'block' : 'none' %>">
+			<% if @task.task_medium && @task.task_medium.video? %>
+			<div class="time">
+				<%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %>
+			</div>
+			<%= video_tag @task.task_medium.video.url, controls: true %>
+			<% else %>
+			<div class="time"></div>
+			<video src="" controls></video>
+			<% end %>
+		</div>
+	</div>
+
+	<div class="audio">
+		<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: 'add_audio_form'} do |t| %>
+		<div class="title">Audio</div>
+		<div class="subline">Upload an audio file to your pitch</div>
+		<label for="task_medium_audio" class="btn upload">Upload</label>
+		<%= t.file_field :audio %>
+		<%= t.hidden_field :media_type, value: 'audio' %>
+		<% end %>
+		<div class="preview audio-preview"
+			style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
+			<i class="fas fa-play-circle play-audio" onclick="playAudio()"></i>
+			<% if @task.task_medium && @task.task_medium.audio? %>
+
+			<div class="audio-title"><%= @task.task_medium.audio.identifier %></div>
+			<%= audio_tag @task.task_medium.audio.url, id: 'task-audio'%>
+			<div class="remove">remove</div>
+			<% else %>
+			<div class="audio-title"></div>
+			<audio src="" id="task-audio"></audio>
+			<div class="remove">remove</div>
+			<% end %>
+		</div>
+	</div>
+
+</div>
+
+<div class="card add-rating">
+	<%= form_for :list, url: create_task_list_path(@task, list: 'rating'), html: {id: "add_rl_form"} do |f| %>
+	<div class="title">Rating Criteria</div>
+	<div class="subline">You can add up to 4 rating criterias</div>
+	<div class="form-group">
+		<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
+		<%= f.text_field :name, class: 'form-field rating-field', onblur: 'looseFocus(event)' %>
+		<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+	</div>
+	<div class="capsule-list">
+		<% if @task.rating_list %>
+		<% @task.rating_list.rating_criteria.each do |rating| %>
+		<div class="word"><%= rating.name %></div>
+		<% end %>
 		<% end %>
 	</div>
+	<% end %>
+</div>
 
 
 <script>
@@ -234,14 +240,14 @@
 		var formData = new FormData(document.getElementById('add_rl_form'));
 		commitList('rating', formData);
 	}
-	$('#add_rl_form').on('submit', function(e) {
+	$('#add_rl_form').on('submit', function (e) {
 		e.preventDefault();
 		var formData = new FormData(document.getElementById('add_rl_form'));
 		commitList('rating', formData);
 	})
 	showTaskMedia("<%= @task.task_type %>");
 	function playAudio() {
-		if( $('.audio .preview .play-audio').hasClass('fa-play-circle') ) {
+		if ($('.audio .preview .play-audio').hasClass('fa-play-circle')) {
 			document.getElementById('task-audio').play();
 			$('.audio .preview .play-audio').removeClass('fa-play-circle');
 			$('.audio .preview .play-audio').addClass('fa-pause-circle');
@@ -252,64 +258,64 @@
 		}
 	}
 	function showPopup() {
-        $('#popup').show();
-    }
+		$('#popup').show();
+	}
 	function hidePopup() {
 		$('#popup').hide();
 	}
 	(function ($) {
-	  $.each(['show', 'hide'], function (i, ev) {
-	    var el = $.fn[ev];
-	    $.fn[ev] = function () {
-	      this.trigger(ev);
-	      return el.apply(this, arguments);
-	    };
-	  });
+		$.each(['show', 'hide'], function (i, ev) {
+			var el = $.fn[ev];
+			$.fn[ev] = function () {
+				this.trigger(ev);
+				return el.apply(this, arguments);
+			};
+		});
 	})(jQuery);
 	var inputAvatar = document.getElementById('task_medium_image');
 	var image = document.getElementById('media_image');
-	inputAvatar.addEventListener('change', function(e) {
+	inputAvatar.addEventListener('change', function (e) {
 		var files = e.target.files;
-		var done = function(url) {
+		var done = function (url) {
 			inputAvatar.value = '';
 			image.src = url;
 			$('#popup').show();
 		};
 		var reader, file, url;
-		if(files && files.length > 0) {
+		if (files && files.length > 0) {
 			file = files[0];
-			if(URL) {
+			if (URL) {
 				done(URL.createObjectURL(file));
-			} else if(FileReader) {
+			} else if (FileReader) {
 				reader = new FileReader();
-				reader.onload = function(e) {
+				reader.onload = function (e) {
 					done(reader.result);
 				}
 				reader.readAsDataURL(file);
 			}
 		}
 	})
-	$('#popup').on('show', function() {
+	$('#popup').on('show', function () {
 		cropper = new Cropper(image, {
-			aspectRatio: 1.77,	
+			aspectRatio: 1.77,
 		});
 	})
-	$('#popup').on('hide', function() {
+	$('#popup').on('hide', function () {
 		cropper.destroy();
 		cropper = null;
 	})
-	
-	$('#crop').on('click', function() {
+
+	$('#crop').on('click', function () {
 		var initialURL, canvas;
-		if(cropper) {
+		if (cropper) {
 			canvas = cropper.getCroppedCanvas({
 				fillColor: "white",
 				width: 500,
 				height: 500,
 			});
-			canvas.toBlob(function(blob) {
+			canvas.toBlob(function (blob) {
 				var date = new Date().getTime();
-				var file = new window.File([blob], 'image_'+date+'.jpg', {type: 'image/jpg'});
+				var file = new window.File([blob], 'image_' + date + '.jpg', { type: 'image/jpg' });
 				var formData = new FormData();
 				formData.append("task_medium[media_type]", 'image');
 				formData.append("task_medium[image]", file);
@@ -319,25 +325,25 @@
 	})
 	function showTaskMedia(type) {
 		$('.btn-line .btn.selected').removeClass('selected')
-		if( type == 'catchword' || type == '' ) {
+		if (type == 'catchword' || type == '') {
 			$('.add-catchword .catchword').show();
 			$('.add-catchword .picture').hide();
 			$('.add-catchword .video').hide();
 			$('.add-catchword .audio').hide();
 			$('.btn-line #btn_catchword').addClass('selected');
-		} else if( type == 'image' ) {
+		} else if (type == 'image') {
 			$('.add-catchword .catchword').hide();
 			$('.add-catchword .picture').show();
 			$('.add-catchword .video').hide();
 			$('.add-catchword .audio').hide();
 			$('.btn-line #btn_image').addClass('selected');
-		} else if( type == 'video' ) {
+		} else if (type == 'video') {
 			$('.add-catchword .catchword').hide();
 			$('.add-catchword .picture').hide();
 			$('.add-catchword .video').show();
 			$('.add-catchword .audio').hide();
 			$('.btn-line #btn_video').addClass('selected');
-		} else if( type == 'audio' ) {
+		} else if (type == 'audio') {
 			$('.add-catchword .catchword').hide();
 			$('.add-catchword .picture').hide();
 			$('.add-catchword .video').hide();
@@ -345,11 +351,11 @@
 			$('.btn-line #btn_audio').addClass('selected');
 		}
 	}
-	$('#task_medium_video').on('change', function() {
+	$('#task_medium_video').on('change', function () {
 		var globalForm = new FormData(document.getElementById('add_video_form'));
 		sendMedia(globalForm);
 	})
-	$('#task_medium_audio').on('change', function() {
+	$('#task_medium_audio').on('change', function () {
 		var globalForm = new FormData(document.getElementById('add_audio_form'));
 		sendMedia(globalForm);
 	})
@@ -364,23 +370,23 @@
 			processData: false,
 			data: globalForm,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-			success: function(res) {
+			success: function (res) {
 				$('#task_task_medium_id').val(res.id);
 				$('#task_task_type').val(res.type);
 				$('#task_<%= @task.id %> .task-title .category').text(res.type);
-				if( res.type == 'image' ) {
+				if (res.type == 'image') {
 					$('.picture .preview img').attr('src', res.preview);
 					$('.picture .preview').show();
 					$('#task_<%= @task.id %> .thumb img').attr('src', res.preview);
 					$('#popup').hide();
-				} else if( res.type == 'video' ) {
+				} else if (res.type == 'video') {
 					$('.video .preview video').attr('src', res.preview);
-				    $('#task_<%= @task.id %> .thumb img').attr('src', res.thumb);
+					$('#task_<%= @task.id %> .thumb img').attr('src', res.thumb);
 					$('.video .preview .time').text(res.duration);
 					$('.video .preview').show();
-				} else if(res.type == 'audio') {
+				} else if (res.type == 'audio') {
 					$('.audio .preview audio').attr('src', res.preview);
-					$('#task_<%= @task.id %> .thumb img').attr('src', '<%= asset_path('dash/Image.png') %>');
+					$('#task_<%= @task.id %> .thumb img').attr('src', '<%= asset_path("dash/Image.png") %>');
 					$('.audio .preview .audio-title').text(res.title)
 					$('.audio .preview').show();
 				}
@@ -388,24 +394,24 @@
 			}
 		})
 	}
-		
+
 	function timeUp() {
 		var time = parseInt($('#task_time').val());
 		time += 5;
 		$('#task_time').val(time);
 		min = parseInt(time / 60);
 		sec = Math.round(time % 60);
-		if( sec < 10 ) {sec = '0' + sec}
+		if (sec < 10) { sec = '0' + sec }
 		$('#set_task_time').text(min + ':' + sec)
 		$('#task_<%= @task.id %> .thumb .length').text(min + ':' + sec);
 	}
 	function timeDown() {
 		var time = parseInt($('#task_time').val());
-		if (time > 5) {time -= 5;}
+		if (time > 5) { time -= 5; }
 		$('#task_time').val(time);
 		min = parseInt(time / 60);
 		sec = Math.round(time % 60);
-		if( sec < 10 ) {sec = '0' + sec}
+		if (sec < 10) { sec = '0' + sec }
 		$('#set_task_time').text(min + ':' + sec);
 		$('#task_<%= @task.id %> .thumb .length').text(min + ':' + sec);
 	}

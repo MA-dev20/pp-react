@@ -151,7 +151,7 @@
 		sendMedia(globalForm);
 	})
 	function sendMedia(globalForm) {
-		var url = "<%= create_task_media_url(@pitch) %>";
+		var url = "<%= create_task_media_url(@pitch, task_id: @task&.id) %>";
 		$.ajax({
 			url: url,
 			type: 'post',
