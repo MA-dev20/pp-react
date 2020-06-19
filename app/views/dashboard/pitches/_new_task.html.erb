@@ -245,7 +245,7 @@
 		var formData = new FormData(document.getElementById('add_rl_form'));
 		commitList('rating', formData);
 	})
-	showTaskMedia("<%= @task.task_type %>");
+	showTaskMedia("<%= @task.task_medium.media_type %>");
 	function playAudio() {
 		if ($('.audio .preview .play-audio').hasClass('fa-play-circle')) {
 			document.getElementById('task-audio').play();
@@ -360,7 +360,7 @@
 		sendMedia(globalForm);
 	})
 	function sendMedia(globalForm) {
-		var url = "<%= create_task_media_url(@pitch) %>";
+		var url = "<%= create_task_media_url(@pitch, task_id: @task&.id) %>";
 		$.ajax({
 			url: url,
 			type: 'post',
