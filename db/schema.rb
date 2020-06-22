@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2020_06_10_124848) do
+ActiveRecord::Schema.define(version: 2020_06_15_081202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -266,6 +265,7 @@ ActiveRecord::Schema.define(version: 2020_06_10_124848) do
     t.boolean "destroy_image", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "skip_rating_timer", default: false
     t.index ["company_id"], name: "index_pitches_on_company_id"
     t.index ["department_id"], name: "index_pitches_on_department_id"
     t.index ["team_id"], name: "index_pitches_on_team_id"
