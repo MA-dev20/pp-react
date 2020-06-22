@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'
   post 'pitches/:pitch_id/task/:task_id/update', to: 'pitches#update_task', as: 'update_task'
-  delete 'pitches/:pitch_id/task/:task_id/image', to: 'pitches#delete_image', as: 'delete_task_image'
+  delete 'pitches/:pitch_id/task/:task_id/media', to: 'pitches#delete_media', as: 'delete_task_media'
 
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'

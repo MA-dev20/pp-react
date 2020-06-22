@@ -148,7 +148,7 @@
 		<%#= t.file_field :image, accept: 'image/*' %>
 		<%#= t.hidden_field :media_type, value: 'image' %>
 		<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
-			<%= link_to "remove", delete_task_image_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
 
 			<% if @task.task_medium && @task.task_medium.image? %>
 			<%= image_tag @task.task_medium.image.url %>
@@ -179,49 +179,75 @@
 	</div>
 
 	<div class="video">
-		<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_video_form"} do |t| %>
+		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_video_form"} do |t| %>
 		<div class="title">Video</div>
-		<div class="subline">Upload an Video to your pitch</div>
-		<label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label>
-		<%= t.file_field :video %>
-		<%= t.hidden_field :media_type, value: 'video' %>
-		<% end %>
+		<!-- <div class="subline">Upload an Video to your pitch</div> -->
+		<!-- <label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label> -->
+		<%#= t.file_field :video %>
+		<%#= t.hidden_field :media_type, value: 'video' %>
 		<div class="preview video-preview"
 			style="display: <%= @task.task_medium && @task.task_medium.video? ? 'block' : 'none' %>">
 			<% if @task.task_medium && @task.task_medium.video? %>
 			<div class="time">
 				<%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %>
 			</div>
-			<%= video_tag @task.task_medium.video.url, controls: true %>
+			<div class="remove" onclick="removeMedia(event, 'video')">remove</div>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+			<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
 			<% else %>
 			<div class="time"></div>
-			<video src="" controls></video>
+			<video class="video-tag" src="" controls></video>
 			<% end %>
 		</div>
+		<div class="dropzone-container video-drop-zone"
+			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.video? %>">
+			<label class="dropzone-text">Drag and Drop Video from your Computer</label>
+			<div class="label-btn">
+				<%= t.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'video-field' %>
+				<%#= t.hidden_field :video_id, class: 'video-id' %>
+				<%= t.hidden_field :media_type, value: 'video' %>
+				<!-- <div class="btn upload" id="task_medium_video">Upload</div> -->
+				<label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label>
+				<div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+			</div>
+		</div>
+		<% end %>
 	</div>
 
 	<div class="audio">
-		<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: 'add_audio_form'} do |t| %>
+		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: 'add_audio_form'} do |t| %>
 		<div class="title">Audio</div>
-		<div class="subline">Upload an audio file to your pitch</div>
-		<label for="task_medium_audio" class="btn upload">Upload</label>
+		<!-- <div class="subline">Upload an audio file to your pitch</div> -->
+		<!-- <label for="task_medium_audio" class="btn upload">Upload</label> -->
 		<%= t.file_field :audio %>
 		<%= t.hidden_field :media_type, value: 'audio' %>
-		<% end %>
 		<div class="preview audio-preview"
 			style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
 			<i class="fas fa-play-circle play-audio" onclick="playAudio()"></i>
 			<% if @task.task_medium && @task.task_medium.audio? %>
 
 			<div class="audio-title"><%= @task.task_medium.audio.identifier %></div>
-			<%= audio_tag @task.task_medium.audio.url, id: 'task-audio'%>
-			<div class="remove">remove</div>
+			<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag' %>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
 			<% else %>
 			<div class="audio-title"></div>
-			<audio src="" id="task-audio"></audio>
+			<audio src="" id="task-audio" class="audio-tag"></audio>
 			<div class="remove">remove</div>
 			<% end %>
 		</div>
+		<div class="dropzone-container audio-drop-zone"
+			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.audio? %>">
+			<label class="dropzone-text">Drag and Drop Audio from your Computer</label>
+			<div class="label-btn">
+				<%= t.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav', class: 'audio-field' %>
+				<%#= f.hidden_field :audio_id, class: 'audio-id' %>
+				<%= t.hidden_field :media_type, value: 'audio' %>
+				<label for="task_medium_audio" class="btn upload">Upload</label>
+				<div class="btn upload record">Record</div>
+			</div>
+		</div>
+		<% end %>
+
 	</div>
 
 </div>
@@ -291,6 +317,101 @@
 			return false;
 			// let taskId = $(e.target).closest('.task-fields').attr('id');
 			// removeOtherMedia('picture', taskId, false);
+		}
+	}
+
+	var videoDropZone = $('.video-drop-zone')
+	videoDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	videoDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	videoDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	videoDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
+			handleVideoUpload(e);
+			// global_method = 'videoDragDrop'
+			// global_event = e;
+			// global_file = e.originalEvent.dataTransfer.files;
+			// if (isOtherDataUploaded(e)) {
+			// 	$('.warning-card-wrapper').show();
+			// } else {
+			// 	handleVideoUpload(e);
+			// }
+		}
+	});
+
+	function handleVideoUpload(e) {
+		let file_input = $(e.currentTarget).find('.video-field');
+		// file_input[0].files = global_file;
+		file_input[0].files = e.originalEvent.dataTransfer.files;;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'video') {
+			let url_object = URL.createObjectURL(file_data);
+			let $preview = $(e.currentTarget).siblings('.preview')
+			$preview.find('.video-tag')[0].src = url_object;
+			// let taskId = $(e.target).closest('.task-fields').attr('id');
+			// removeOtherMedia('video', taskId, false);
+			$preview.find('.video-id').val('');
+			$preview.show();
+			$(e.currentTarget).hide();
+			$('#add_video_form').submit();
+		}
+	}
+
+
+
+	var audioDropZone = $('.audio-drop-zone')
+	audioDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	audioDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	audioDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	audioDropZone.on('drop', function (e) {
+		var global_file = e.originalEvent.dataTransfer.files;
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
+			handleAudioUpload(e);
+			// global_method = 'audioDragDrop'
+			// global_event = e;
+			// if (isOtherDataUploaded(e)) {
+			// 	$('.warning-card-wrapper').show();
+			// } else {
+			// 	handleAudioUpload(e);
+			// }
+		}
+	});
+
+	function handleAudioUpload(e) {
+		let file_input = $(e.currentTarget).find('.audio-field');
+		// file_input[0].files = global_file;
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'audio') {
+			let url_object = URL.createObjectURL(file_data);
+			let $preview = $(e.currentTarget).siblings('.preview')
+			$preview.find('.audio-tag')[0].src = url_object;
+			// let taskId = $(e.target).closest('.task-fields').attr('id');
+			// removeOtherMedia('audio', taskId, false);
+			$preview.find('.audio-id').val('');
+			$preview.find('.audio-title').text(file_data.name);
+			$preview.show();
+			$(e.currentTarget).hide();
+			$('#add_audio_form').submit();
 		}
 	}
 
@@ -510,4 +631,82 @@
 		$('#set_task_time').text(min + ':' + sec);
 		$('#task_<%= @task.id %> .thumb .length').text(min + ':' + sec);
 	}
+
+
+
+	// Audio Recording
+
+	globalForm = new FormData();
+	var audioChunks;
+	var recording = false;
+	$('.record').on('click', function (e) {
+		global_method = 'audio';
+		// if (isOtherDataUploaded(e)) {
+		// 	$('.warning-card-wrapper').show();
+		// } else {
+		// $('.warning-card-wrapper').hide();
+		if (recording) {
+			$(e.target).text('Uploading...');
+			if (rec.state === 'recording')
+				rec.stop();
+			recording = false;
+		} else {
+			// This will prompt for permission if not allowed earlier	
+			let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
+			let $dropZone = $(e.currentTarget).closest('.dropzone-container');
+			var recordedAudio = $preview.find('audio')[0];
+			navigator.mediaDevices.getUserMedia({ audio: true })
+				.then(stream => {
+					audioChunks = [];
+					recording = true;
+					$(e.target).text('Recording...');
+					rec = new MediaRecorder(stream);
+					rec.ondataavailable = e => {
+						audioChunks.push(e.data);
+						if (rec.state == "inactive") {
+							stream.getTracks().forEach(track => track.stop())
+							// $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
+							// $dropZone.siblings('input[type="file"]').val('')
+
+							let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
+							recordedAudio.src = URL.createObjectURL(blob);
+							recordedAudio.controls = true;
+
+							blob = new Blob(audioChunks, { type: 'audio/webm' });
+							var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							globalForm.append('task_medium[audio]', file);
+							globalForm.append('task_medium[media_type]', 'audio');
+
+							// sendAudio(globalForm);
+							sendMedia(globalForm);
+						}
+					}
+					rec.start();
+				})
+				.catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+		}
+		// }
+	})
+
+
+
+	// Video Recording
+
+	$('.record-video').click(function (e) {
+		global_method = 'video';
+		$('#videoModal').show()
+
+		// if (isOtherDataUploaded(e)) {
+		// 	$('.warning-card-wrapper').show();
+		// 	$('#videoModal').hide();
+		// } else {
+		// 	$('.warning-card-wrapper').hide();
+		// 	$('#videoModal').show()
+		// }
+	})
+
+
+
+
+
 </script>

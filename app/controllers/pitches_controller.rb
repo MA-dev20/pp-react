@@ -58,7 +58,7 @@ class PitchesController < ApplicationController
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 
-  def delete_image
+  def delete_media
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	@task.update(task_medium_id: nil)
@@ -113,12 +113,14 @@ class PitchesController < ApplicationController
 	@task_medium = TaskMedium.create(media_params)
 	@task.update(task_medium_id: @task_medium.id)
 	if @task_medium.media_type == 'audio'
-	  render json: {id: @task_medium.id, type: @task_medium.media_type, preview: @task_medium.audio.url, title: @task_medium.audio.identifier}
+	#   render json: {id: @task_medium.id, type: @task_medium.media_type, preview: @task_medium.audio.url, title: @task_medium.audio.identifier}
+	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	elsif @task_medium.media_type == 'video'
 	  min = @task_medium.duration / 60
 	  sec = @task_medium.duration % 60
 	  sec = '0' + sec.to_s if sec < 10
-	  render json: {id: @task_medium.id, preview: @task_medium.video.url, thumb: @task_medium.video.thumb.url, type: @task_medium.media_type, duration: min.to_s + ':' + sec.to_s}
+	#   render json: {id: @task_medium.id, preview: @task_medium.video.url, thumb: @task_medium.video.thumb.url, type: @task_medium.media_type, duration: min.to_s + ':' + sec.to_s}
+	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	elsif @task_medium.media_type == 'image'
 	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	#   render json: {id: @task_medium.id, preview: @task_medium.image.url, type: @task_medium.media_type}
