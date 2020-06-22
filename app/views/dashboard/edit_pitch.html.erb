@@ -23,7 +23,8 @@
 					<div class="name"><%= t.order %>. Task</div>
 					<i class="fas fa-circle"></i>
 					<div class="category">
-						<%= t.task.task_type %>
+						<% media_type = t.task.task_medium&.media_type %>
+						<%= media_type.present? ? media_type : t.task.task_type %>
 					</div>
 					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
 					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
