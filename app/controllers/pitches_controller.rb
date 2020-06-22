@@ -57,6 +57,13 @@ class PitchesController < ApplicationController
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
+
+  def delete_image
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:task_id])
+	@task.update(task_medium_id: nil)
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  end
 	
   def copy_task
 	@task = Task.find(params[:task_id])
@@ -113,7 +120,8 @@ class PitchesController < ApplicationController
 	  sec = '0' + sec.to_s if sec < 10
 	  render json: {id: @task_medium.id, preview: @task_medium.video.url, thumb: @task_medium.video.thumb.url, type: @task_medium.media_type, duration: min.to_s + ':' + sec.to_s}
 	elsif @task_medium.media_type == 'image'
-	  render json: {id: @task_medium.id, preview: @task_medium.image.url, type: @task_medium.media_type}
+	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+	#   render json: {id: @task_medium.id, preview: @task_medium.image.url, type: @task_medium.media_type}
 	elsif @task_medium.media_type == 'pdf'
 	  path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
 	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)

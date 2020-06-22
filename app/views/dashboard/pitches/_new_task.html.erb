@@ -143,18 +143,30 @@
 	<div class="picture">
 		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_image_form"} do |t| %>
 		<div class="title">Bild</div>
-		<div class="subline">Upload an image to your pitch</div>
-		<label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label>
-		<%= t.file_field :image %>
-		<%= t.hidden_field :media_type, value: 'image' %>
-		<% end %>
+		<!-- <div class="subline">Upload an image to your pitch</div> -->
+		<!-- <label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label> -->
+		<%#= t.file_field :image, accept: 'image/*' %>
+		<%#= t.hidden_field :media_type, value: 'image' %>
 		<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
+			<%= link_to "remove", delete_task_image_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+
 			<% if @task.task_medium && @task.task_medium.image? %>
 			<%= image_tag @task.task_medium.image.url %>
 			<% else %>
 			<img src="" alt="">
 			<% end %>
 		</div>
+		<div class="dropzone-container image-drop-zone"
+			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.image? %>">
+			<label class="dropzone-text">Drag and Drop Image from your Computer</label>
+			<div class="label-btn">
+				<%= t.file_field :image, onchange: "loadFile(event, 'task-img')", class: 'image-fileinput', accept: 'image/*' %>
+				<%= t.hidden_field :media_type, value: 'image' %>
+				<!-- <label class="btn upload" onclick="uploadClick(event)">Upload</label> -->
+				<label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label>
+			</div>
+		</div>
+		<% end %>
 	</div>
 	<div class="popup" id="popup">
 		<div class="img-container">
@@ -235,6 +247,89 @@
 
 
 <script>
+
+	var imageDropZone = $('.image-drop-zone')
+	imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	imageDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	imageDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	imageDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
+			handleImageUpload(e);
+			// global_method = 'imageDragDrop'
+			// global_event = e;
+			// global_file = e.originalEvent.dataTransfer.files;
+			// if (isOtherDataUploaded(e)) {
+			// 	$('.warning-card-wrapper').show();
+			// } else {
+			// 	handleImageUpload(e);
+			// }
+		}
+	});
+
+	function handleImageUpload(e) {
+		let file_input = $(e.currentTarget).find('.image-fileinput');
+		// file_input[0].files = global_file;
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'image') {
+			let url_object = URL.createObjectURL(file_data);
+			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
+			$('.left-card.selected img')[0].src = url_object;
+			$(e.currentTarget).siblings('.preview').show();
+			$(e.currentTarget).hide();
+			$('#add_image_form').submit();
+			return false;
+			// let taskId = $(e.target).closest('.task-fields').attr('id');
+			// removeOtherMedia('picture', taskId, false);
+		}
+	}
+
+	// function loadFile(e, type = '') {
+	// 	const id = $(e.target).attr('id');
+	// 	let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
+	// 	let file = event.target.files[0];
+	// 	if (type === 'video') {
+	// 		let $that = $(event.currentTarget);
+	// 		let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
+	// 		$that.siblings('.video-id').val('');
+	// 		let $video_tag = $preview.find('video');
+	// 		$video_tag[0].src = URL.createObjectURL(file);
+	// 		$video_tag.show();
+	// 		// $preview.show();
+	// 		$(e.currentTarget).closest('.video-drop-zone').hide();
+	// 	} else if (type === 'audio') {
+	// 		// let $preview = $(event.target).siblings('.preview');
+	// 		// $preview.siblings('.audio-id').val('');
+	// 		// $preview.find('.audio-title').text(file.name);
+	// 		// $preview.find('audio')[0].src = URL.createObjectURL(file);
+	// 		let $that = $(event.currentTarget);
+	// 		let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
+	// 		$that.siblings('.audio-id').val('');
+	// 		let $audio_tag = $preview.find('audio');
+	// 		$audio_tag[0].src = URL.createObjectURL(file);
+	// 		$preview.find('.audio-title').text(file.name);
+	// 		$(e.currentTarget).closest('.audio-drop-zone').hide();
+	// 	} else {
+	// 		$(e.target).closest('.image-drop-zone').hide();
+	// 		let $img = $(mediaOption).find('img');
+	// 		let url_object = URL.createObjectURL(file);
+	// 		$img[0].src = url_object;
+	// 		if (type === 'task-img')
+	// 			$('.left-card.selected img')[0].src = url_object;
+	// 	}
+	// 	$(mediaOption).show();
+	// }
+
 	function looseFocus(event) {
 		event.preventDefault();
 		var formData = new FormData(document.getElementById('add_rl_form'));
@@ -245,7 +340,7 @@
 		var formData = new FormData(document.getElementById('add_rl_form'));
 		commitList('rating', formData);
 	})
-	showTaskMedia("<%= @task.task_medium.media_type %>");
+	showTaskMedia("<%= @task.task_medium&.media_type %>");
 	function playAudio() {
 		if ($('.audio .preview .play-audio').hasClass('fa-play-circle')) {
 			document.getElementById('task-audio').play();

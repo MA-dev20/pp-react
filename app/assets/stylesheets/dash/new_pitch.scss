@@ -403,7 +403,9 @@
 						top: 5vh;
 						color: red;
 						cursor: pointer;
-						font-size: 2vh;
+                        font-size: 2vh;
+                        text-decoration: none;
+                        
 					}
                 }
                 
@@ -786,6 +788,7 @@
                         color: red;
                         cursor: pointer;
                         font-size: 2vh;
+                        text-decoration: none;
                     }
                 }
             }
@@ -1009,6 +1012,10 @@ input[type="file"] {
     display: none;
 }
 
+.is-dragover {
+    opacity: 0.2;
+}
+
 #content {
 
     #pitchModal {
@@ -1124,5 +1131,43 @@ input[type="file"] {
                 height: 5.5vh;
             }
         }
+    }
+
+    .dropzone-container {
+        height: 23vh;
+        width: 100%;
+        border-style: dashed;
+        position: relative;
+        text-align: center;
+        display: inline-block;
+        border: 2px dashed #ccc;
+        background-color: #fff;
+    }
+
+    .dropzone-text {
+        top: 8vh;
+        font-size: 2vh;
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center !important;
+    }
+
+    .label-btn {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        color: #fff;
+        font-size: 2vh;
+        display: flex;
+        justify-content: center;
+    }
+
+    .label-btn .btn {
+        position: relative;
+        width: 12vh !important;
     }
 }
