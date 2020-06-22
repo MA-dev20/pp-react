@@ -16,8 +16,10 @@
                 <% end %>
             </div>
             <div class="title"><%= pitch.title %></div>
-            <div class="subtitle">Video: <%= pitch.tasks.select{|task| task.video? || task.video_id.present? }.count %>,
-                Image: <%= pitch.tasks.select{|task| task.image? }.count %>, Tasks: <%= pitch.tasks.size %></div>
+            <div class="subtitle">
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size %>,
+                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
+            </div>
             <div class="buttons">
                 <button style="position: relative; top: 2vh;" data-task="pitchTasks<%= pitch.id %>"
                     class="btn reversed browse-tasks">Browse
@@ -32,8 +34,8 @@
             <% pitch.tasks.each do |task| %>
             <div class="task-card">
                 <div class="thumb">
-                    <% if task.image? %>
-                    <%= image_tag task.image.url %>
+                    <% if task.task_medium&.image&.present? %>
+                    <%= image_tag task.task_medium&.image&.url %>
                     <% else %>
                     <%= image_tag 'dash/Image.png' %>
                     <% end %>
@@ -42,8 +44,8 @@
                 <div class="title"><%= task.title %></div>
                 <div class="sub-title">Rating Criteria</div>
                 <div class="rating-criteria">
-                    <% task.ratings.split(',').each do |rating| %>
-                    <div class="criterium"><%= rating %></div>
+                    <% task.rating_list&.rating_criteria&.each do |rating| %>
+                    <div class="criterium"><%= rating.name %></div>
                     <% end %>
                 </div>
                 <div class="buttons">
@@ -51,7 +53,7 @@
                         onclick="useTaskClicked(event)">Use this task</a>
                 </div>
             </div>
-            <%= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
+            <%#= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
             <% end %>
         </div>
     </div>

@@ -12,9 +12,9 @@ class GamesController < ApplicationController
 	@game = @company.games.new(game_params) if !@game
 	@game.user = @user
 	if @game.save
-		redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: params[:game][:pitch_id])
 	#   game_login @game
 	#   redirect_to gd_join_path(@game)
+	  redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: params[:game][:pitch_id])
 	else
 	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	end	

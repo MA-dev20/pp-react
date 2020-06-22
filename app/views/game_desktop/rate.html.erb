@@ -7,7 +7,7 @@
 		<%= image_tag 'game/illus/smartphone.svg', class: 'smart' %>
 		<div class="rate">
 		<h3>Jetzt bewerten!</h3>
-		<% @task.ratings.split(',').each do |rc| %>
+		<% @task.rating_list.rating_criteria.each do |rc| %>
 			<div class="form-group">
 				<label for="" id="label_<%= rc %>"><%= rc %></label>
 				<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">

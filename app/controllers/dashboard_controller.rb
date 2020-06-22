@@ -195,16 +195,25 @@ class DashboardController < ApplicationController
 	@comments = @turn.comments.where.not(time: nil).order(:time)
   end
 
-  def pitches; end
-
-  def new_pitch
-	@pitch = Pitch.new
+  def pitches
+	@pitches = @admin.pitches
+	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
+    @game = Game.find(params[:game_id]) if params[:game_id]
   end
-
-  def create_pitch
+  def new_pitch
+	@pitch = @admin.pitches.create()
+	redirect_to dashboard_edit_pitch_path(@pitch)
+  end
+  def edit_pitch
+	@pitches = @admin.pitches
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = @pitch.tasks.find(params[:task_id]) if params[:task_id]
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
   end
 	
   private
+  
 	def set_user
 	  if user_signed_in?
 		@admin = current_user

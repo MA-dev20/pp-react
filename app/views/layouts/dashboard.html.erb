@@ -94,7 +94,7 @@
 				<div class="text">Video Tool</div>
 				<%= link_to '', dashboard_video_path %>
 			</div>
-			<div class="link <%= current_page?(new_dashboard_pitch_path) || current_page?(dashboard_pitches_path) ? 'active' : '' %>"
+			<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>"
 				d>
 				<i class="fab fa-youtube"></i>
 				<div class="text">Pitches</div>

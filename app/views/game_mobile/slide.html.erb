@@ -1,6 +1,6 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="head">
-	<h1>Intro läuft...</h1>
+	<h1>Pitch läuft...</h1>
 </div>
 <div class="middle">
 	<% if @admin.avatar? %>
@@ -11,6 +11,6 @@
 </div>
 <div class="bottom">
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
-	<%= link_to 'weiter', gm_set_state_path('', state: 'choose'), class: 'btn custom-btn' %>
+	<%= link_to 'weiter', gm_set_state_path('', state: 'slide', slide: @game.current_task + 1), class: 'btn custom-btn' %>
 	<% end %>
 </div>

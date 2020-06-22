@@ -77,30 +77,9 @@
 
     </div>
 
-    <%
-        isEditForm = @pitch.persisted?
-        form_url = isEditForm ? dashboard_pitch_path : dashboard_pitches_path
-    %>
-
     <div class="card right">
-        <%= form_for @pitch, url: form_url, html: {id: 'new_pitch_form'} do |f| %>
-        <%= hidden_field_tag :pitch_id, @pitch.id, id: 'pitch_id' %>
-        <%= f.hidden_field :user_id, value: @admin.id %>
-        <%= f.hidden_field :destroy_image, class: 'destroy-image' %>
-        <%= f.hidden_field :destroy_video, class: 'destroy-video' %>
 
-        <%= f.fields_for :tasks do |task| %>
-        <%= render 'task_fields', f: task %>
-        <% end %>
-
-        <%= link_to_add_association 'Add task', f, :tasks, class: 'add-link hide', partial: 'task_fields' %>
-
-        <%= render partial: 'pitch_modal', locals: { pitch: f }%>
-
-        <% end %>
-
-        <%= render partial: 'browse_tasks', locals: { pitches: @pitches } %>
-
+        <%= render partial: 'new_task' %>
     </div>
 
     <div id="videoModal" class="modal hide">
@@ -247,6 +226,8 @@
     </div>
 </div>
 
+
+
 <!-- FIXME: -->
 <!-- capsules cards height -->
 
@@ -270,16 +251,6 @@
     var global_file = '';
 
     $(document).on('ready turbolinks:load', () => {
-
-
-        if ('<%= isEditForm %>' === 'true') {
-            $('.task-fields:first').removeClass('hide');
-            task_ids.pop();
-            persisted_task_ids.forEach(id => {
-                task_ids.push(id);
-            })
-        }
-
         $('form').on('keypress', e => {
             if (e.keyCode == 13) {
                 return false;
@@ -806,24 +777,6 @@
             if (type === 'Bild')
                 type = 'Picture';
             $(`#form_${task_id} .destroy-media`).val(task_id);
-        }
-    }
-
-    function removePitchMedia(e, type = '') {
-        let isEditForm = "<%= isEditForm %>";
-        if (type === 'video') {
-            $('.pitch-video-file').attr('src', '');
-            $('.video-preview').hide();
-            $('#pitch_video').val('');
-            if (isEditForm === 'true') {
-                $('.destroy-video').val(true);
-            }
-        } else {
-            $('.image-preview').hide();
-            $('#pitch_image').val('');
-            if (isEditForm === 'true') {
-                $('.destroy-image').val(true);
-            }
         }
     }
 

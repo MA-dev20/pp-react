@@ -13,9 +13,26 @@ module Dashboard
         end
 
         def new
-            @pitch = @admin.pitches.new
-            @pitch.tasks.build
+            @pitch = @admin.pitches.create()
+		 	@cw_lists = @admin.catchword_lists.all
         end
+		
+		def create_task
+		  @task = Task.create(task_params)
+		end
+		def create_task_media
+		  @task = Task.find(params[:task_id])
+		  @task_medium = TaskMedium.create(media_params)
+		  if @task_medium.type == 'audio'
+		    render json: {id: @task_medium.id, type: @task_medium.type}
+		  elsif @task_medium.type == 'video'
+			render json: {id: @task_medium.id, preview: @task_medium.video.thumb.url, type: @task_medium.type}
+		  elsif @task_medium.type == 'image'
+			render json: {id: @task_medium.id, preview: @task_medium.image.url, type: @task_medium.type}
+		  elsif @task_medium.type == 'pdf'
+			render json: {id: @task_medium.id, preview: @task_medium.pdf.url, type: @task_medium.type}
+		  end
+		end
 
         def create
             # TODO:
@@ -99,6 +116,13 @@ module Dashboard
         def pitch_params
             params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :skip_rating_timer, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids, :destroy_media, :_destroy])
         end
+		
+		def task_params
+		  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :type, :title, :time, :task_media_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating_list)
+		end
+		def media_params
+		  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type)
+		end
 
         def set_pitch
             @pitch = Pitch.find(params[:id])

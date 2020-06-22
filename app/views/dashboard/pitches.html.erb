@@ -1,13 +1,12 @@
 <div class="card" id="pitches">
     <div class="search">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
+        <input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
     </div>
     <h3>Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
-    <div class="pitches pitch-list">
-        <% @pitches.includes(:tasks).each do |pitch| %>
-        <!-- <a href="<%= edit_dashboard_pitch_path(pitch) %>" data-turbolinks="false" class="edit-card"> -->
+    <div class="pitches" id="pitch-list">
+        <% @pitches.each do |pitch| %>
         <div class="card" id="pitch">
             <div class="thumb">
                 <% if pitch.image? %>
@@ -17,20 +16,19 @@
                 <% end %>
             </div>
             <div class="title"><%= pitch.title %></div>
-            <div class="subtitle">Video: <%= pitch.tasks.select{|task| task.video? || task.video_id.present? }.count %>,
-                Image:
-                <%= pitch.tasks.select{|task| task.image? }.count %>, Tasks: <%= pitch.tasks.size %></div>
+            <div class="subtitle">
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size %>,
+                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
+            </div>
             <div class="buttons">
-                <%= link_to 'Edit', edit_dashboard_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
+                <%= link_to 'Edit', dashboard_edit_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
                 <%= link_to 'Pitch', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
             </div>
         </div>
         <% end %>
         <!-- </a> -->
         <div class="card" id="newpitch">
-            <%= link_to new_dashboard_pitch_path, data: { turbolinks: false } do %>
-            <%= image_tag 'dash/icons/circle-plus-green.svg' %>
-            <% end %>
+            <%= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
             <div class="title">Create new Pitch</div>
         </div>
     </div>
@@ -107,7 +105,6 @@
     }
 </script>
 <% end %>
-
 <% if @game %>
 <div class="blur">
     <div class="card" id="letspitch">
@@ -115,7 +112,7 @@
             <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
             Pitche nach deinen Regeln
         </h3>
-        <%= form_for(:pitch, url: dashboard_customize_pitch_path(@pitch, game_id: @game.id)) do |f| %>
+        <%= form_for(:pitch, url: customize_pitch_path(pitch_id: @pitch.id, game_id: @game.id)) do |f| %>
         <div id="scroll">
             <div class="checkbox-container">
                 <%= f.hidden_field(:skip_elections) %>
@@ -159,21 +156,7 @@
                     </div>
                 </div>
             </div>
-            <div class="checkbox-container">
-                <%= f.hidden_field(:skip_rating_timer) %>
-                <div class="form-group" id="skip_rating_timer">
-                    <label for="">Beenden der Bewertungsabgabe</label>
-                    <div class="skip-election-group">
-                        <label for="">automatisch nach 15s</label>
-                        <i class="far fa-check-square" id="skip_rating_timer_timer"
-                            onclick="changeRatingTimer('timer')"></i>
-                    </div>
-                    <div class="skip-election-group">
-                        <label for="">manuell durch Admin</label>
-                        <i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <%= f.submit 'starten!', class: 'btn btn-green' %>
         <% end %>
@@ -183,7 +166,7 @@
 
 <script>
 
-    new PerfectScrollbar('.pitch-list');
+    new PerfectScrollbar('#pitch-list');
     new PerfectScrollbar("#scroll");
 
     function handleClick(e) {
@@ -193,13 +176,13 @@
             $(e.target).closest('.card').find('.btn.reversed').click();
         }
     }
-
     $("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
-        $(".pitch-list .card .title").filter(function () {
+        $("#pitch-list .card .title").filter(function () {
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
 
     function changeShowRating(type) {
         if ($('#ratings_all').hasClass('fa-check-square')) {

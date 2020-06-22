@@ -31,13 +31,24 @@ Rails.application.routes.draw do
   # get 'dashboard/pitch/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
   # get 'dashboard/pitch/save', to: 'dashboard#create_pitch', as: 'dashboard_create_pitch'
 
-  namespace :dashboard do
-    resources :pitches
-    post '/pitches/tasks/audio/create', to: 'pitches#createAudio', as: "create_audio"
-    delete '/pitches/:id/tasks/:task_id/media/delete', to: 'pitches#deleteMedia', as: "delete_media"
-    post '/pitches/tasks/video/create', to: 'pitches#createVideo', as: 'create_video'
-    post '/pitches/:id/customize', to: 'pitches#customize', as: 'customize_pitch'  
-  end
+
+  get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
+  get '/dashboard/pitches/:pitch_id/edit', to: 'dashboard#edit_pitch', as: 'dashboard_edit_pitch'
+  get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
+  put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
+  post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'  
+ 
+  
+  put 'pitches/:pitch_id/tasks/:task_id/setOrder/:order', to: 'pitches#set_order'
+  post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
+  get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'
+  post 'pitches/:pitch_id/task/:task_id/update', to: 'pitches#update_task', as: 'update_task'
+  delete 'pitches/:pitch_id/task/:task_id/media', to: 'pitches#delete_media', as: 'delete_task_media'
+
+  post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
+  get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
+  get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
+  
 
 	
   get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'

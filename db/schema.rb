@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_15_081202) do
+
+ActiveRecord::Schema.define(version: 2020_06_10_124848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +180,7 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
     t.integer "rating_user"
     t.boolean "skip_rating_timer", default: false
     t.bigint "pitch_id"
+    t.integer "current_task", default: 0
     t.index ["company_id"], name: "index_games_on_company_id"
     t.index ["pitch_id"], name: "index_games_on_pitch_id"
     t.index ["rating_list_id"], name: "index_games_on_rating_list_id"
@@ -248,6 +250,10 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
   end
 
   create_table "pitches", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "department_id"
+    t.bigint "team_id"
+    t.bigint "user_id"
     t.string "title"
     t.text "description"
     t.boolean "pitch_sound", default: true
@@ -258,10 +264,11 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
     t.string "image"
     t.boolean "destroy_video", default: false
     t.boolean "destroy_image", default: false
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "skip_rating_timer", default: false
+    t.index ["company_id"], name: "index_pitches_on_company_id"
+    t.index ["department_id"], name: "index_pitches_on_department_id"
+    t.index ["team_id"], name: "index_pitches_on_team_id"
     t.index ["user_id"], name: "index_pitches_on_user_id"
   end
 
@@ -307,32 +314,47 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
   create_table "task_media", force: :cascade do |t|
     t.string "audio"
     t.string "video"
+    t.string "pdf"
+    t.string "image"
+    t.integer "duration"
+    t.string "media_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "tasks", force: :cascade do |t|
-    t.string "title"
-    t.string "thumbnail"
-    t.integer "time"
-    t.string "type"
-    t.string "catchwords"
-    t.string "catchword_ids"
-    t.string "image"
-    t.string "video"
-    t.string "audio"
-    t.string "reactions"
-    t.string "reaction_ids"
-    t.string "ratings"
-    t.string "video_id"
-    t.string "audio_id"
-    t.string "media_option", default: "catchword"
-    t.string "destroy_media"
-    t.bigint "user_id"
+  create_table "task_orders", force: :cascade do |t|
     t.bigint "pitch_id"
+    t.bigint "task_id"
+    t.integer "order", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["pitch_id"], name: "index_tasks_on_pitch_id"
+    t.index ["pitch_id"], name: "index_task_orders_on_pitch_id"
+    t.index ["task_id"], name: "index_task_orders_on_task_id"
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "department_id"
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.string "task_type"
+    t.string "title"
+    t.integer "time"
+    t.bigint "task_medium_id"
+    t.integer "task_slide", default: 0
+    t.boolean "valide", default: false
+    t.bigint "catchword_list_id"
+    t.bigint "objection_list_id"
+    t.bigint "rating_list_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catchword_list_id"], name: "index_tasks_on_catchword_list_id"
+    t.index ["company_id"], name: "index_tasks_on_company_id"
+    t.index ["department_id"], name: "index_tasks_on_department_id"
+    t.index ["objection_list_id"], name: "index_tasks_on_objection_list_id"
+    t.index ["rating_list_id"], name: "index_tasks_on_rating_list_id"
+    t.index ["task_medium_id"], name: "index_tasks_on_task_medium_id"
+    t.index ["team_id"], name: "index_tasks_on_team_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -466,6 +488,9 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
   add_foreign_key "objections", "companies"
   add_foreign_key "pitch_videos", "game_turns"
   add_foreign_key "pitch_videos", "users"
+  add_foreign_key "pitches", "companies"
+  add_foreign_key "pitches", "departments"
+  add_foreign_key "pitches", "teams"
   add_foreign_key "pitches", "users"
   add_foreign_key "rating_list_rating_criteria", "rating_criteria"
   add_foreign_key "rating_list_rating_criteria", "rating_lists"
@@ -474,7 +499,15 @@ ActiveRecord::Schema.define(version: 2020_06_15_081202) do
   add_foreign_key "ratings", "game_turns"
   add_foreign_key "ratings", "rating_criteria"
   add_foreign_key "ratings", "users"
-  add_foreign_key "tasks", "pitches"
+  add_foreign_key "task_orders", "pitches"
+  add_foreign_key "task_orders", "tasks"
+  add_foreign_key "tasks", "catchword_lists"
+  add_foreign_key "tasks", "companies"
+  add_foreign_key "tasks", "departments"
+  add_foreign_key "tasks", "objection_lists"
+  add_foreign_key "tasks", "rating_lists"
+  add_foreign_key "tasks", "task_media"
+  add_foreign_key "tasks", "teams"
   add_foreign_key "tasks", "users"
   add_foreign_key "team_ratings", "rating_criteria"
   add_foreign_key "team_ratings", "teams"

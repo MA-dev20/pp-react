@@ -34,7 +34,7 @@
 		FEHLER
 		<% else %>
 		<%= @game.team.name %>
-		<% if @omenu && @admin.role != 'user' %>
+		<% if @omenu && @admin.role != 'user' && @task && @task.objection_list %>
 		<div class="objection-btn" onclick="toggleObjections()">
 			<span></span>
 			<span></span>
@@ -45,14 +45,14 @@
 		<% end %>
 		<% end %>
 	</section>
-	<% if @task && @task.reactions.present? %>
+	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
 		<div class="nav">
 			<i class="fas fa-times" onclick="toggleObjections()"></i>
 		</div>
 		<div class="objections" id="objection-list">
-			<% @reaction = JSON.parse(@task.reactions) %>
-			<% @reaction.each do |o| %>
+
+			<% @task.objection_list.objections.each do |o| %>
 			<span onclick="sendObjection('<%= o %>')"><%= o %></span>
 			<% end %>
 		</div>
