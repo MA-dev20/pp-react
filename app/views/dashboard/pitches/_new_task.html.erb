@@ -148,7 +148,7 @@
 		<%#= t.file_field :image, accept: 'image/*' %>
 		<%#= t.hidden_field :media_type, value: 'image' %>
 		<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'remove' %>
 
 			<% if @task.task_medium && @task.task_medium.image? %>
 			<%= image_tag @task.task_medium.image.url %>
@@ -160,10 +160,9 @@
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.image? %>">
 			<label class="dropzone-text">Drag and Drop Image from your Computer</label>
 			<div class="label-btn">
-				<%= t.file_field :image, onchange: "loadFile(event, 'task-img')", class: 'image-fileinput', accept: 'image/*' %>
+				<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
-				<!-- <label class="btn upload" onclick="uploadClick(event)">Upload</label> -->
-				<label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label>
+				<label class="btn upload" id="image_upload_btn">Upload</label>
 			</div>
 		</div>
 		<% end %>
@@ -192,7 +191,7 @@
 				<%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %>
 			</div>
 			<div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
 			<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
 			<% else %>
 			<div class="time"></div>
@@ -203,12 +202,11 @@
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.video? %>">
 			<label class="dropzone-text">Drag and Drop Video from your Computer</label>
 			<div class="label-btn">
-				<%= t.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'video-field' %>
+				<%= t.file_field :video, accept: 'video/*', class: 'video-field' %>
 				<%#= t.hidden_field :video_id, class: 'video-id' %>
 				<%= t.hidden_field :media_type, value: 'video' %>
-				<!-- <div class="btn upload" id="task_medium_video">Upload</div> -->
-				<label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label>
-				<div class="btn upload open-modal record-video" data-modal="videoModal">Record</div>
+				<label class="btn upload" id="video_upload_btn">Upload</label>
+				<div class="btn upload open-modal record-video">Record</div>
 			</div>
 		</div>
 		<% end %>
@@ -228,7 +226,7 @@
 
 			<div class="audio-title"><%= @task.task_medium.audio.identifier %></div>
 			<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag' %>
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, class: 'remove' %>
+			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'remove' %>
 			<% else %>
 			<div class="audio-title"></div>
 			<audio src="" id="task-audio" class="audio-tag"></audio>
@@ -239,16 +237,18 @@
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.audio? %>">
 			<label class="dropzone-text">Drag and Drop Audio from your Computer</label>
 			<div class="label-btn">
-				<%= t.file_field :audio, onchange: "loadFile(event, 'audio')", accept: '.mp3,.wav', class: 'audio-field' %>
+				<%= t.file_field :audio, accept: '.mp3,.wav', class: 'audio-field' %>
 				<%#= f.hidden_field :audio_id, class: 'audio-id' %>
 				<%= t.hidden_field :media_type, value: 'audio' %>
-				<label for="task_medium_audio" class="btn upload">Upload</label>
+				<label class="btn upload" id="audio_upload_btn">Upload</label>
 				<div class="btn upload record">Record</div>
 			</div>
 		</div>
 		<% end %>
 
 	</div>
+	<%= link_to "", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, id: 'removeMedia' %>
+
 
 </div>
 
@@ -288,22 +288,20 @@
 
 	imageDropZone.on('drop', function (e) {
 		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
-			handleImageUpload(e);
-			// global_method = 'imageDragDrop'
-			// global_event = e;
-			// global_file = e.originalEvent.dataTransfer.files;
-			// if (isOtherDataUploaded(e)) {
-			// 	$('.warning-card-wrapper').show();
-			// } else {
-			// 	handleImageUpload(e);
-			// }
+			global_method = 'imageDragDrop'
+			global_event = e;
+			global_file = e.originalEvent.dataTransfer.files;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleImageUpload(e);
+			}
 		}
 	});
 
 	function handleImageUpload(e) {
 		let file_input = $(e.currentTarget).find('.image-fileinput');
-		// file_input[0].files = global_file;
-		file_input[0].files = e.originalEvent.dataTransfer.files;
+		file_input[0].files = global_file;
 		let file_name = $(file_input).val().split('\\').pop();
 		let file_data = $(file_input)[0].files[0];
 		let mimeType = file_data['type'];
@@ -314,7 +312,6 @@
 			$(e.currentTarget).siblings('.preview').show();
 			$(e.currentTarget).hide();
 			$('#add_image_form').submit();
-			return false;
 			// let taskId = $(e.target).closest('.task-fields').attr('id');
 			// removeOtherMedia('picture', taskId, false);
 		}
@@ -334,22 +331,20 @@
 
 	videoDropZone.on('drop', function (e) {
 		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
-			handleVideoUpload(e);
-			// global_method = 'videoDragDrop'
-			// global_event = e;
-			// global_file = e.originalEvent.dataTransfer.files;
-			// if (isOtherDataUploaded(e)) {
-			// 	$('.warning-card-wrapper').show();
-			// } else {
-			// 	handleVideoUpload(e);
-			// }
+			global_method = 'videoDragDrop'
+			global_event = e;
+			global_file = e.originalEvent.dataTransfer.files;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleVideoUpload(e);
+			}
 		}
 	});
 
 	function handleVideoUpload(e) {
 		let file_input = $(e.currentTarget).find('.video-field');
-		// file_input[0].files = global_file;
-		file_input[0].files = e.originalEvent.dataTransfer.files;;
+		file_input[0].files = global_file;
 		let file_name = $(file_input).val().split('\\').pop();
 		let file_data = $(file_input)[0].files[0];
 		let mimeType = file_data['type'];
@@ -381,23 +376,21 @@
 	})
 
 	audioDropZone.on('drop', function (e) {
-		var global_file = e.originalEvent.dataTransfer.files;
+		global_file = e.originalEvent.dataTransfer.files;
 		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
-			handleAudioUpload(e);
-			// global_method = 'audioDragDrop'
-			// global_event = e;
-			// if (isOtherDataUploaded(e)) {
-			// 	$('.warning-card-wrapper').show();
-			// } else {
-			// 	handleAudioUpload(e);
-			// }
+			global_method = 'audioDragDrop'
+			global_event = e;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleAudioUpload(e);
+			}
 		}
 	});
 
 	function handleAudioUpload(e) {
 		let file_input = $(e.currentTarget).find('.audio-field');
-		// file_input[0].files = global_file;
-		file_input[0].files = e.originalEvent.dataTransfer.files;
+		file_input[0].files = global_file;
 		let file_name = $(file_input).val().split('\\').pop();
 		let file_data = $(file_input)[0].files[0];
 		let mimeType = file_data['type'];
@@ -414,42 +407,6 @@
 			$('#add_audio_form').submit();
 		}
 	}
-
-	// function loadFile(e, type = '') {
-	// 	const id = $(e.target).attr('id');
-	// 	let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
-	// 	let file = event.target.files[0];
-	// 	if (type === 'video') {
-	// 		let $that = $(event.currentTarget);
-	// 		let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
-	// 		$that.siblings('.video-id').val('');
-	// 		let $video_tag = $preview.find('video');
-	// 		$video_tag[0].src = URL.createObjectURL(file);
-	// 		$video_tag.show();
-	// 		// $preview.show();
-	// 		$(e.currentTarget).closest('.video-drop-zone').hide();
-	// 	} else if (type === 'audio') {
-	// 		// let $preview = $(event.target).siblings('.preview');
-	// 		// $preview.siblings('.audio-id').val('');
-	// 		// $preview.find('.audio-title').text(file.name);
-	// 		// $preview.find('audio')[0].src = URL.createObjectURL(file);
-	// 		let $that = $(event.currentTarget);
-	// 		let $preview = $(event.currentTarget).closest('.dropzone-container').siblings('.preview');
-	// 		$that.siblings('.audio-id').val('');
-	// 		let $audio_tag = $preview.find('audio');
-	// 		$audio_tag[0].src = URL.createObjectURL(file);
-	// 		$preview.find('.audio-title').text(file.name);
-	// 		$(e.currentTarget).closest('.audio-drop-zone').hide();
-	// 	} else {
-	// 		$(e.target).closest('.image-drop-zone').hide();
-	// 		let $img = $(mediaOption).find('img');
-	// 		let url_object = URL.createObjectURL(file);
-	// 		$img[0].src = url_object;
-	// 		if (type === 'task-img')
-	// 			$('.left-card.selected img')[0].src = url_object;
-	// 	}
-	// 	$(mediaOption).show();
-	// }
 
 	function looseFocus(event) {
 		event.preventDefault();
@@ -488,6 +445,40 @@
 			};
 		});
 	})(jQuery);
+
+	$('#image_upload_btn').on('click', function (e) {
+		field_id = 'task_medium_image';
+		global_method = 'upload';
+		if (isOtherMediaExists()) {
+			$('.warning-card-wrapper').show();
+		} else {
+			$('.warning-card-wrapper').hide();
+			$('#task_medium_image').click();
+		}
+	})
+
+	$('#video_upload_btn').on('click', function (e) {
+		field_id = 'task_medium_video';
+		global_method = 'upload';
+		if (isOtherMediaExists()) {
+			$('.warning-card-wrapper').show();
+		} else {
+			$('.warning-card-wrapper').hide();
+			$('#task_medium_video').click();
+		}
+	})
+
+	$('#audio_upload_btn').on('click', function (e) {
+		field_id = 'task_medium_audio';
+		global_method = 'upload';
+		if (isOtherMediaExists()) {
+			$('.warning-card-wrapper').show();
+		} else {
+			$('.warning-card-wrapper').hide();
+			$('#task_medium_audio').click();
+		}
+	})
+
 	var inputAvatar = document.getElementById('task_medium_image');
 	var image = document.getElementById('media_image');
 	inputAvatar.addEventListener('change', function (e) {
@@ -641,51 +632,50 @@
 	var recording = false;
 	$('.record').on('click', function (e) {
 		global_method = 'audio';
-		// if (isOtherDataUploaded(e)) {
-		// 	$('.warning-card-wrapper').show();
-		// } else {
-		// $('.warning-card-wrapper').hide();
-		if (recording) {
-			$(e.target).text('Uploading...');
-			if (rec.state === 'recording')
-				rec.stop();
-			recording = false;
+		if (isOtherMediaExists() && !mediaDeleted) {
+			$('.warning-card-wrapper').show();
 		} else {
-			// This will prompt for permission if not allowed earlier	
-			let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
-			let $dropZone = $(e.currentTarget).closest('.dropzone-container');
-			var recordedAudio = $preview.find('audio')[0];
-			navigator.mediaDevices.getUserMedia({ audio: true })
-				.then(stream => {
-					audioChunks = [];
-					recording = true;
-					$(e.target).text('Recording...');
-					rec = new MediaRecorder(stream);
-					rec.ondataavailable = e => {
-						audioChunks.push(e.data);
-						if (rec.state == "inactive") {
-							stream.getTracks().forEach(track => track.stop())
-							// $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
-							// $dropZone.siblings('input[type="file"]').val('')
+			$('.warning-card-wrapper').hide();
+			if (recording) {
+				$(e.target).text('Uploading...');
+				if (rec.state === 'recording')
+					rec.stop();
+				recording = false;
+			} else {
+				// This will prompt for permission if not allowed earlier	
+				let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
+				let $dropZone = $(e.currentTarget).closest('.dropzone-container');
+				var recordedAudio = $preview.find('audio')[0];
+				navigator.mediaDevices.getUserMedia({ audio: true })
+					.then(stream => {
+						audioChunks = [];
+						recording = true;
+						$(e.target).text('Recording...');
+						rec = new MediaRecorder(stream);
+						rec.ondataavailable = e => {
+							audioChunks.push(e.data);
+							if (rec.state === "inactive") {
+								stream.getTracks().forEach(track => track.stop())
+								// $(recordedAudio).siblings('.audio-title').text('Task-audio.mp3')
+								// $dropZone.siblings('input[type="file"]').val('')
 
-							let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-							recordedAudio.src = URL.createObjectURL(blob);
-							recordedAudio.controls = true;
+								let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
+								recordedAudio.src = URL.createObjectURL(blob);
+								recordedAudio.controls = true;
 
-							blob = new Blob(audioChunks, { type: 'audio/webm' });
-							var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-							globalForm.append('task_medium[audio]', file);
-							globalForm.append('task_medium[media_type]', 'audio');
-
-							// sendAudio(globalForm);
-							sendMedia(globalForm);
+								blob = new Blob(audioChunks, { type: 'audio/webm' });
+								var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+								globalForm.append('task_medium[audio]', file);
+								globalForm.append('task_medium[media_type]', 'audio');
+								sendMedia(globalForm);
+								mediaDeleted = false;
+							}
 						}
-					}
-					rec.start();
-				})
-				.catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+						rec.start();
+					})
+					.catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+			}
 		}
-		// }
 	})
 
 
@@ -694,19 +684,37 @@
 
 	$('.record-video').click(function (e) {
 		global_method = 'video';
-		$('#videoModal').show()
-
-		// if (isOtherDataUploaded(e)) {
-		// 	$('.warning-card-wrapper').show();
-		// 	$('#videoModal').hide();
-		// } else {
-		// 	$('.warning-card-wrapper').hide();
-		// 	$('#videoModal').show()
-		// }
+		if (isOtherMediaExists()) {
+			$('#videoModal').hide();
+			$('.warning-card-wrapper').show();
+		} else {
+			$('.warning-card-wrapper').hide();
+			$('#videoModal').show();
+		}
 	})
 
 
+	function isOtherMediaExists() {
+		let is_media_present = <%= @task.reload.catchword_list_id.present? || @task.reload.task_medium.present? %>
+		return is_media_present
+	}
 
+
+	function deleteMedia() {
+		var url = "<%= delete_task_media_url(@pitch, task_id: @task&.id) %>";
+		$.ajax({
+			url: url,
+			type: 'delete',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+			}
+		})
+	}
 
 
 </script>
