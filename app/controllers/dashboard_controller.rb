@@ -205,6 +205,7 @@ class DashboardController < ApplicationController
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
   def edit_pitch
+	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = @pitch.tasks.find(params[:task_id]) if params[:task_id]
 	@cw_lists = @admin.catchword_lists

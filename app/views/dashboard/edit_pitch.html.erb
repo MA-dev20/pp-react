@@ -99,6 +99,9 @@
 		<% elsif @task %>
 		<%= render partial: 'dashboard/pitches/new_task' %>
 		<% end %>
+
+		<%= render partial: 'dashboard/pitches/browse_tasks', locals: { pitches: @pitches } %>
+
 	</div>
 
 	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
@@ -242,9 +245,6 @@
 	$('.warning-card-wrapper .btn').unbind().on('click', function () {
 		let response = $(this).attr('data-value') === 'ok';
 		if (response) {
-			// let destroy_capsule = selected_media_type === 'catchword' ? true : false;
-			// removeOtherMedia(selected_media_type, selectedTaskId, destroy_capsule);
-			// $('#removeMedia').click();
 			deleteMedia(global_method === 'cw' ? 'cw' : '');
 			mediaDeleted = true
 			if (global_method === 'upload') {
@@ -263,29 +263,18 @@
 				submitCwForm();
 			else if (global_method === 'catchwordList')
 				sendList('catchword', cwListId);
-			// else if (global_method === 'listOptionClick')
-			// 	listOptionClick(global_event, method_this);
-			// else if (global_method === 'listClick')
-			// 	listClick(global_event);
-			// else if (global_method === 'cwInputFieldClick')
-			// 	cwInputFieldClick(global_event);
-			// else if (global_method === 'audio')
-			// 	$('.record').click();
-			// else if (global_method === 'video')
-			// 	$('#videoModal').show()
-			// else if (global_method === 'imageDragDrop')
-			// 	handleImageUpload(global_event);
-			// else if (global_method === 'audioDragDrop')
-			// 	handleAudioUpload(global_event);
-			// else if (global_method === 'videoDragDrop')
-			// 	handleVideoUpload(global_event);
-
 		}
 		field_id, global_event, global_method, global_file = '';
 		cwListId = 0;
-		// selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method, global_file = '';
 		$('.warning-card-wrapper').hide();
 		return false;
+	})
+
+
+	$('.task-pitch').click(function () {
+		$('#new_task_form, .card.right .card').hide();
+		$('#pitches').show();
+		$('#pitches .card').show();
 	})
 
 	$('.open-modal').click(function (e) {
