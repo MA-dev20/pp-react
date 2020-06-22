@@ -270,6 +270,49 @@
 		return false;
 	})
 
+	function loadFile(e, type = '') {
+		const id = $(e.target).attr('id');
+		let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
+		let file = event.target.files[0];
+		if (type === 'video') {
+			let $that = $(event.currentTarget);
+			let $preview = $(event.currentTarget).siblings('.preview');
+			let $video_tag = $preview.find('video');
+			$video_tag[0].src = URL.createObjectURL(file);
+			$video_tag.show();
+		} else {
+			$(e.target).closest('.image-drop-zone').hide();
+			let $img = $(mediaOption).find('img');
+			let url_object = URL.createObjectURL(file);
+			$img[0].src = url_object;
+			if (type === 'task-img')
+				$('.left-card.selected img')[0].src = url_object;
+		}
+		$(mediaOption).show();
+	}
+
+	function removePitchMedia(e, type = '') {
+		if (type === 'video') {
+			$('.pitch-video-file').attr('src', '');
+			$('.video-preview').hide();
+			$('#pitch_video').val('');
+
+		} else {
+			$('.image-preview').hide();
+			$('#pitch_image').val('');
+
+		}
+	}
+
+	function loadMetaData(e) {
+		if ($(e.target)[0].duration === Infinity) {
+			$(e.target).siblings('.time').text('');
+		} else {
+			const video_duration = new Date($(e.target)[0].duration * 1000).toISOString().substr(11, 8)
+			$(e.target).siblings('.time').text(video_duration);
+		}
+	}
+
 
 	$('.task-pitch').click(function () {
 		$('#new_task_form, .card.right .card').hide();
