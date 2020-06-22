@@ -61,10 +61,9 @@ class PitchesController < ApplicationController
   def delete_media
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
-	debugger
 	unless params[:type].present?
 		if @task.catchword_list_id.present?
-			@task.update(catchword_list_id: nil)
+			@task.update(catchword_list_id: nil, task_medium_id: nil)
 		end
 	end
 	@task.update(task_medium_id: nil)

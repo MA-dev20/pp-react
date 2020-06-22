@@ -72,7 +72,7 @@
 			<div class="cw custom-select" onclick="openList('catchword')">Catchword
 				<div class="sub-cs" id="cw-options">
 					<% @cw_lists.each do |list| %>
-					<div class="option" onclick="sendList('catchword', '<%= list.id %>')">
+					<div class="option" onclick="handleClick('catchword', '<%= list.id %>')">
 						<span class="basket-name vw"><%= list.name %></span>
 					</div>
 					<% end %>
@@ -91,10 +91,22 @@
 		<script>
 			$('#add_cw_form').on('submit', function (e) {
 				e.preventDefault();
+				if ($('#add_cw_form .form-field').val().length > 0) {
+					global_method = 'cw'
+					if (isOtherMediaExists()) {
+						$('.warning-card-wrapper').show();
+					} else {
+						submitCwForm();
+					}
+				} else {
+					return false;
+				}
+			})
+			function submitCwForm() {
 				$('#task_task_type').val('catchword');
 				var formData = new FormData(document.getElementById('add_cw_form'));
 				commitList('catchword', formData);
-			})
+			}
 			$('#add_ol_form').on('submit', function (e) {
 				e.preventDefault();
 				var formData = new FormData(document.getElementById('add_ol_form'));
@@ -105,6 +117,16 @@
 				var formData = new FormData();
 				formData.append("list[list_id]", ListID);
 				commitList(type, formData);
+			}
+
+			function handleClick(type, ListID) {
+				global_method = 'catchwordList'
+				cwListId = ListID;
+				if (isOtherMediaExists()) {
+					$('.warning-card-wrapper').show();
+				} else {
+					sendList(type, ListID);
+				}
 			}
 
 			function commitList(type, formData) {
@@ -121,15 +143,19 @@
 					success: function (res) {
 						if (type == 'catchword') {
 							$('#task_catchword_list_id').val(res.id);
+							if (mediaDeleted) {
+								$('#task_task_medium_id').val('');
+							}
 						} else if (type == 'objection') {
 							$('#task_objection_list_id').val(res.id);
 						} else if (type == 'rating') {
 							$('#task_rating_list_id').val(res.id);
 						}
+						mediaDeleted = false;
 						selectTask(<%= @task.id %>);
 			}
-					})
-				}
+				})
+			}
 			function openList(type) {
 				if (type == 'catchword') {
 					$('#cw-options').toggle();
@@ -248,7 +274,6 @@
 
 	</div>
 	<%= link_to "", delete_task_media_path(@pitch, task_id: @task.id), method: :delete, id: 'removeMedia' %>
-
 
 </div>
 
@@ -695,7 +720,12 @@
 
 
 	function isOtherMediaExists() {
-		let is_media_present = <%= @task.reload.catchword_list_id.present? || @task.reload.task_medium.present? %>
+		let is_media_present = false;
+		if ($('.btn-line .btn.selected').text().toLowerCase() === 'catchword') {
+			is_media_present = <%= @task.reload.task_medium.present? %>
+		} else {
+			is_media_present = <%= @task.reload.catchword_list_id.present? || @task.reload.task_medium.present? %>
+		}
 		return is_media_present
 	}
 

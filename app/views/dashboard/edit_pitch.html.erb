@@ -237,6 +237,7 @@
 	var global_method = '';
 	var field_id = '';
 	var mediaDeleted = false;
+	var cwListId = 0;
 
 	$('.warning-card-wrapper .btn').unbind().on('click', function () {
 		let response = $(this).attr('data-value') === 'ok';
@@ -244,7 +245,7 @@
 			// let destroy_capsule = selected_media_type === 'catchword' ? true : false;
 			// removeOtherMedia(selected_media_type, selectedTaskId, destroy_capsule);
 			// $('#removeMedia').click();
-			deleteMedia();
+			deleteMedia(global_method === 'cw' ? 'cw' : '');
 			mediaDeleted = true
 			if (global_method === 'upload') {
 				$(`#${field_id}`).click();
@@ -258,6 +259,10 @@
 				$('#videoModal').show()
 			else if (global_method === 'audio')
 				$('.record').click();
+			else if (global_method === 'cw')
+				submitCwForm();
+			else if (global_method === 'catchwordList')
+				sendList('catchword', cwListId);
 			// else if (global_method === 'listOptionClick')
 			// 	listOptionClick(global_event, method_this);
 			// else if (global_method === 'listClick')
@@ -277,6 +282,7 @@
 
 		}
 		field_id, global_event, global_method, global_file = '';
+		cwListId = 0;
 		// selectedTaskId, selected_media_type, uploadTarget, method_this, global_event, global_method, global_file = '';
 		$('.warning-card-wrapper').hide();
 		return false;
