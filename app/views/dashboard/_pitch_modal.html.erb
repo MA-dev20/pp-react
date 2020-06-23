@@ -5,6 +5,8 @@
             <h1>Headline</h1>
         </div>
         <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put' do |f| %>
+        <%= f.hidden_field :destroy_image, class: 'destroy-image' %>
+        <%= f.hidden_field :destroy_video, class: 'destroy-video' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
         <div class="inner-content">
             <div class="left-section">

@@ -34,7 +34,14 @@ class PitchesController < ApplicationController
 
   def update_pitch
 	@pitch = Pitch.find(params[:id])
+	if pitch_params[:destroy_image] == "true"
+		@pitch.remove_image!
+	end
+	if pitch_params[:destroy_video] == "true"
+		@pitch.remove_video!
+	end
 	if @pitch.update(pitch_params)
+		@pitch.update(destroy_image: 'false', destroy_video: 'false')
 		redirect_to dashboard_pitches_path
 	end
 

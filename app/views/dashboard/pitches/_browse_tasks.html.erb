@@ -61,6 +61,8 @@
 
 <script>
 
+    new PerfectScrollbar('.pitch-list');
+
     $("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $(".pitch-list .card .title").filter(function () {
