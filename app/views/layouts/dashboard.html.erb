@@ -138,7 +138,12 @@
 	function toggleModal() {
 		$('.modal-blur').toggle();
 	}
-	new PerfectScrollbar('#content');
+
+	if (<%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch))) {
+	} else {
+		new PerfectScrollbar('#content');
+	}
+
 
 </script>
 
