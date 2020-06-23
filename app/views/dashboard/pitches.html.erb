@@ -177,12 +177,14 @@
         <% end %>
     </div>
 </div>
+<script>
+    new PerfectScrollbar("#scroll");
+</script>
 <% end %>
 
 <script>
 
     new PerfectScrollbar('#pitch-list');
-    new PerfectScrollbar("#scroll");
 
     function handleClick(e) {
         if ($(e.target).attr('class') === 'card') {
