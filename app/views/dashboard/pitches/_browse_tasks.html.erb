@@ -77,23 +77,4 @@
         $(`#${$taskId}`).show();
     });
 
-    function useTaskClicked(e) {
-        isUsedTaskClicked = true;
-        let sourceId = $(e.target).attr('data-id');
-        let addFirstTaskBtn = true;
-        if (!$('.add-first-task').is(':visible')) {
-            $('.add-link').click();
-            addFirstTaskBtn = false;
-        }
-        createTaskCopy(sourceId);
-        $('.browse-tasks-partial, .pitch-list, .pitch-tasks-div, .add-first-task').hide();
-        $('#new_pitch_form').show();
-        if (addFirstTaskBtn) {
-            hideAllTasks();
-            // showTask(sourceId);
-            $('.task-fields:first').removeClass('hide').show();
-            $('.card.left .left-card').addClass('selected');
-        }
-        isUsedTaskClicked = false;
-    }
 </script>
