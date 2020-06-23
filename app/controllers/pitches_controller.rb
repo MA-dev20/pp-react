@@ -206,7 +206,7 @@ class PitchesController < ApplicationController
 	
   private
   	def pitch_params
-		params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id)
+		params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :skip_rating_timer, :destroy_image, :destroy_video, :user_id)
 	end
 
     def task_params

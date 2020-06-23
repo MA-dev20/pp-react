@@ -156,6 +156,21 @@
                     </div>
                 </div>
             </div>
+            <div class="checkbox-container">
+                <%= f.hidden_field(:skip_rating_timer) %>
+                <div class="form-group" id="skip_rating_timer">
+                    <label for="">Beenden der Bewertungsabgabe</label>
+                    <div class="skip-election-group">
+                        <label for="">automatisch nach 15s</label>
+                        <i class="far fa-check-square" id="skip_rating_timer_timer"
+                            onclick="changeRatingTimer('timer')"></i>
+                    </div>
+                    <div class="skip-election-group">
+                        <label for="">manuell durch Admin</label>
+                        <i class="far fa-square" id="skip_rating_timer_admin" onclick="changeRatingTimer('admin')"></i>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <%= f.submit 'starten!', class: 'btn btn-green' %>
@@ -176,6 +191,7 @@
             $(e.target).closest('.card').find('.btn.reversed').click();
         }
     }
+
     $("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $("#pitch-list .card .title").filter(function () {
