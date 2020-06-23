@@ -49,8 +49,7 @@
                     <% end %>
                 </div>
                 <div class="buttons">
-                    <a href="javascript:void(0)" class="btn reversed" data-id="<%= pitch.id %><%= task.id %>"
-                        onclick="useTaskClicked(event)">Use this task</a>
+                    <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
                 </div>
             </div>
             <%#= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
