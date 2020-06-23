@@ -4,6 +4,16 @@
 		height: 27vh !important;
 	}
 
+	#pitch-list {
+		height: 54vh;
+
+		.ps__thumb-y {
+			height: 135px;
+    		position: relative;
+    		right: 6vh;
+		}
+	}
+
 	
     .blur {
         position: fixed;
