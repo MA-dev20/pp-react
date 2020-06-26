@@ -1,0 +1,86 @@
+<div id="pitchModal" class="option-modal modal hide">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="heading">
+            <h5>Add a task for interactive presentation.</h5>
+        </div>
+        <div class="inner-content">
+            <div class="row">
+                <div class="card-heading">
+                    <h2>Task</h2>
+                    <h2>Import PDF</h2>
+                    <h2>Existing Pitch</h2>
+                </div>
+                <div class="card-content">
+                    <div class="modal-card task-div">
+                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTask()" %>
+                        <!-- <label>Task</label> -->
+                    </div>
+                    <div class="modal-card import-div">
+                        <%= image_tag 'dash/import-PDF.png', class: 'card-img import-PDF' %>
+                        <!-- <label>Import</label> -->
+                    </div>
+                    <div class="modal-card browse-div">
+                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img task-pitch' %>
+                        <!-- <label>Browse</label> -->
+                    </div>
+                </div>
+            </div>
+            <div class="heading">
+                <h5>Add a task for interactive presentation.</h5>
+            </div>
+            <div class="row">
+                <div class="card-heading">
+                    <h2>Image</h2>
+                    <h2>Video</h2>
+                    <h2>Audio</h2>
+                </div>
+                <div class="card-content">
+
+                    <div class="modal-card task-div">
+                        <%= image_tag 'dash/image-icon.png', class: 'card-img' %>
+                        <!-- <label>Image</label> -->
+                    </div>
+                    <div class="modal-card import-div">
+                        <%= image_tag 'dash/video-icon.png', class: 'card-img' %>
+                        <!-- <label>Video</label> -->
+                    </div>
+                    <div class="modal-card browse-div">
+                        <%= image_tag 'dash/audio.png', class: 'card-img' %>
+                        <!-- <label>Audio</label> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-img {
+        width: 18vh;
+        position: absolute;
+        top: -1vh;
+        left: -2vh;
+    }
+
+    /* .row {
+        display: flex;
+    }
+
+    .modal-card {
+        border: 1px solid #CFD3D6;
+        box-sizing: border-box;
+        border-radius: 8px;
+        width: 20vh;
+        height: 20vh;
+        margin-left: 2.3vh;
+        position: relative;
+    }
+
+    .modal-card label {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    } */
+</style>

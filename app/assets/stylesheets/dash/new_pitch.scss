@@ -1043,6 +1043,60 @@
 
     }
 
+    .option-modal {
+
+        .heading h5 {
+            margin-left: 2.3vh;
+        }
+
+        .modal-content {
+            width: 54vh;
+        }
+
+        .inner-content {
+            display: block;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    
+        .card-heading {
+            display: flex;
+        }
+    
+        .card-heading h2 {
+            margin-left: 2.3vh;
+            width: 20vh;
+            font-size: 1.7vh;
+        }
+    
+        .card-content {
+            display: flex;
+        }
+    
+        .modal-card {
+            // border: 1px solid #CFD3D6;
+            cursor: pointer;
+            box-sizing: border-box;
+            border-radius: 8px;
+            width: 15vh;
+            height: 15vh;
+            margin-left: 2.3vh;
+            position: relative;
+        }
+    
+        .modal-card label {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
     .close {
         position: relative;
         top: -2vh;

@@ -2,7 +2,7 @@
 	<h1>Pitch erstellen</h1>
 	<div class="btn-group">
 		<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
-		<button class="btn done-btn open-modal" data-modal="pitchModal">Done</button>
+		<button class="btn done-btn open-modal" data-modal="pitch-modal">Done</button>
 	</div>
 </section>
 
@@ -97,7 +97,7 @@
 			<%= t.hidden_field :media_type, value: 'pdf' %>
 			<% end %>
 			<div class="add-task">
-				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img' %>
+				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
 			</div>
 		</div>
 	</div>
@@ -114,30 +114,10 @@
 	</div>
 
 	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
+
+	<%= render partial: 'options_modal', locals: { pitch: @pitch } %>
+
 </div>
-
-
-<style>
-	/* .thumb {
-		border: 1px solid #CFD3D6;
-		border-radius: 8px;
-		width: 12vh;
-		height: 13vh;
-		width: 12.5vw !important;
-	} */
-
-	/* .thumb .no-image-icon {
-		position: absolute;
-		left: 45%;
-		top: 35%;
-		width: 3vh !important;
-		height: 4vh !important;
-	} */
-
-	/* .tasks .card {
-		width: 14vw !important;
-	} */
-</style>
 
 
 <div id="videoModal" class="modal hide">
@@ -348,13 +328,14 @@
 
 
 	$('.task-pitch').click(function () {
+		$('.option-modal').hide()
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div').hide();
 		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
 	})
 
 	$('.open-modal').click(function (e) {
 		// $('#new_pitch_form').show();
-		$(`#${$(this).data("modal")}`).show();
+		$(`.${$(this).data("modal")}`).show();
 	})
 
 	$('.close').click(function () {
@@ -393,7 +374,12 @@
 		})
 	}
 
+	$('.import-PDF').on('click', function () {
+		$('#task_medium_pdf').click();
+	})
+
 	$('#task_medium_pdf').on('change', function () {
+		$('.option-modal').hide();
 		var globalForm = new FormData(document.getElementById('add_pdf_form'));
 		sendMediaPDF(globalForm);
 	})
@@ -417,9 +403,9 @@
 		})
 }
 	new PerfectScrollbar('#tasksScrollBar');
-	$('.add-task-img').on('click', function () {
-		$('.menu-box').toggle()
-	})
+	// $('.add-task-img').on('click', function () {
+	// 	$('.menu-box').toggle()
+	// })
 	function addTask() {
 		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
