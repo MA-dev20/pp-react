@@ -32,7 +32,13 @@
 	<div class="title">Reactions</div>
 	<div class="subline">Type new reactions or choose from list below</div>
 	<div class="form-group">
-		<%= f.text_field :name , placeholder: "Type your reactions", value: '', class: 'form-field' %>
+		<div class="reaction-input-field-div">
+			<%= f.text_field :name , placeholder: "Type your reactions", value: '', class: 'form-field' %>
+			<div class="add-cw">
+				<img class="add-cw-img"
+					src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+			</div>
+		</div>
 		<div class="ol custom-select" onclick="openList('objection')">Reactions
 			<div class="sub-cs" id="ol-options">
 				<% @ol_list.each do |list| %>
@@ -43,32 +49,66 @@
 			</div>
 		</div>
 	</div>
-	<div class="capsule-list list-with-words">
+	<% if @task.objection_list %>
+	<div class="title">List</div>
+	<% end %>
+	<div class="words-list ow-list">
 		<% if @task.objection_list %>
 		<% @task.objection_list.objections.each do |ow| %>
-		<div class="word"><%= ow.name %></div>
+		<div class="hr-line"></div>
+		<div class="words-wrapper">
+			<div class="word"><%= ow.name %></div>
+			<a class="fas fa-trash remove"></a>
+		</div>
 		<% end %>
 		<% end %>
 	</div>
+	<script>
+		new PerfectScrollbar('.ow-list');
+	</script>
 	<% end %>
 </div>
 
 <div class="card add-catchword">
-	<div class="title">Text, Video oder Bild hinzufügen!</div>
-	<div class="btn-line">
-
-		<div class="btn" id="btn_catchword" onclick="showTaskMedia('catchword')">Catchword</div>
-		<div class="btn" id="btn_image" onclick="showTaskMedia('image')">Bild</div>
-		<div class="btn" id="btn_video" onclick="showTaskMedia('video')">Video</div>
-		<div class="btn" id="btn_audio" onclick="showTaskMedia('audio')">Audio</div>
+	<% 
+		media_type = @task.task_medium&.media_type&.titleize
+		media_type = media_type.present? ? media_type : @task.task_type&.titleize 
+	%>
+	<div class="catchword-heading catchword">
+		<div class="title">Text, Video oder Bild hinzufügen!</div>
+		<div class="form-group">
+			<div class="cw custom-select" onclick="showOptions()">
+				<label><%= media_type.present? ? media_type.titleize : 'Catchword' %></label>
+				<div class="sub-cs media-options">
+					<div class="option catchword-option" onclick="handleOptionClick('catchword', event)">
+						<span class="basket-name vw">Catchword</span>
+					</div>
+					<div class="option image-option" onclick="handleOptionClick('image', event)">
+						<span class="basket-name vw">Image</span>
+					</div>
+					<div class="option video-option" onclick="handleOptionClick('video', event)">
+						<span class="basket-name vw">Video</span>
+					</div>
+					<div class="option audio-option" onclick="handleOptionClick('audio', event)">
+						<span class="basket-name vw">Audio</span>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
-	<div class="catchword">
+	<div class="hr-line"></div>
+
+	<div class="catchword media-option">
 		<%= form_for :list, url: create_task_list_path(@task, type: 'catchword'), html: {id: "add_cw_form"} do |cw| %>
 		<div class="title">Catchwords</div>
 		<div class="subline">Type your Catchword or choose from list below</div>
-		<div class="form-group">
+		<div class="form-group fields">
 			<%= cw.text_field :name, placeholder: 'Type your catchword', value: '', class: 'form-field' %>
+			<div class="add-cw">
+				<img class="add-cw-img"
+					src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+			</div>
 			<div class="cw custom-select" onclick="openList('catchword')">Catchword
 				<div class="sub-cs" id="cw-options">
 					<% @cw_lists.each do |list| %>
@@ -79,13 +119,23 @@
 				</div>
 			</div>
 		</div>
-		<div class="capsule-list list-with-words">
+		<% if @task.catchword_list %>
+		<div class="title list-title">List</div>
+		<% end %>
+		<div class="words-list cw-list">
 			<% if @task.catchword_list %>
 			<% @task.catchword_list.catchwords.each do |cw| %>
-			<div class="word"><%= cw.name %></div>
+			<div class="hr-line"></div>
+			<div class="words-wrapper">
+				<div class="word"><%= cw.name %></div>
+				<a class="fas fa-trash remove"></a>
+			</div>
 			<% end %>
 			<% end %>
 		</div>
+		<script>
+			new PerfectScrollbar('.cw-list');
+		</script>
 		<div class="info">If more than one catchword is chosen, we will choose one of them randomly for this task.</div>
 		<% end %>
 		<script>
@@ -129,6 +179,20 @@
 				}
 			}
 
+			function showOptions() {
+				$('.catchword-heading .media-options').toggle();
+			}
+
+			function handleOptionClick(type, e) {
+				e.stopPropagation();
+				$('.catchword-heading .option').show();
+				$(`.${type}-option`).hide();
+				$('.add-catchword .media-option').hide();
+				$(`.add-catchword .${type}.media-option`).show();
+				$('.catchword-heading .custom-select label').text(type);
+				$('.catchword-heading .media-options').toggle();
+			}
+
 			function commitList(type, formData) {
 				var url = "<%= create_task_list_path(@task) %>?type=" + type;
 				$.ajax({
@@ -166,17 +230,19 @@
 		</script>
 	</div>
 
-	<div class="picture">
+	<div class="picture image media-option">
 		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_image_form"} do |t| %>
-		<div class="title">Bild</div>
+		<div class="title">Image</div>
 		<!-- <div class="subline">Upload an image to your pitch</div> -->
 		<!-- <label for="task_medium_image" class="btn upload" id="image_upload_btn">Upload</label> -->
 		<%#= t.file_field :image, accept: 'image/*' %>
 		<%#= t.hidden_field :media_type, value: 'image' %>
 		<div class="preview" style="display: <%= @task.task_medium && @task.task_medium.image? ? 'block' : 'none' %>">
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'remove' %>
-
 			<% if @task.task_medium && @task.task_medium.image? %>
+			<div class="remove-option">
+				<label><%= File.basename(@task.task_medium.image.url) %></label>
+				<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+			</div>
 			<%= image_tag @task.task_medium.image.url %>
 			<% else %>
 			<img src="" alt="">
@@ -184,11 +250,12 @@
 		</div>
 		<div class="dropzone-container image-drop-zone"
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.image? %>">
-			<label class="dropzone-text">Drag and Drop Image from your Computer</label>
+			<label class="dropzone-text">Drag and Drop file from your Computer</label>
 			<div class="label-btn">
 				<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
-				<label class="btn upload" id="image_upload_btn">Upload</label>
+				<label class="btn reversed upload" id="image_upload_btn">Upload from Computer</label>
+				<label class="btn reversed upload image-library" id="">Image library</label>
 			</div>
 		</div>
 		<% end %>
@@ -203,7 +270,7 @@
 		<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
 	</div>
 
-	<div class="video">
+	<div class="video media-option">
 		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_video_form"} do |t| %>
 		<div class="title">Video</div>
 		<!-- <div class="subline">Upload an Video to your pitch</div> -->
@@ -213,11 +280,15 @@
 		<div class="preview video-preview"
 			style="display: <%= @task.task_medium && @task.task_medium.video? ? 'block' : 'none' %>">
 			<% if @task.task_medium && @task.task_medium.video? %>
-			<div class="time">
+			<!-- <div class="time">
 				<%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %>
+			</div> -->
+			<!-- <div class="remove" onclick="removeMedia(event, 'video')">remove</div> -->
+			<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
+			<div class="remove-option">
+				<label><%= File.basename(@task.task_medium.video.url) %></label>
+				<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 			</div>
-			<div class="remove" onclick="removeMedia(event, 'video')">remove</div>
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
 			<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
 			<% else %>
 			<div class="time"></div>
@@ -226,19 +297,28 @@
 		</div>
 		<div class="dropzone-container video-drop-zone"
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.video? %>">
-			<label class="dropzone-text">Drag and Drop Video from your Computer</label>
+			<label class="dropzone-text">Drag and Drop file from your Computer</label>
 			<div class="label-btn">
 				<%= t.file_field :video, accept: 'video/*', class: 'video-field' %>
 				<%#= t.hidden_field :video_id, class: 'video-id' %>
 				<%= t.hidden_field :media_type, value: 'video' %>
-				<label class="btn upload" id="video_upload_btn">Upload</label>
-				<div class="btn upload open-modal record-video">Record</div>
+				<div class="btn-wrapper">
+					<label class="btn reversed upload" id="video_upload_btn">Upload from computer</label>
+					<div class="btn reversed upload open-modal record-video">Record</div>
+				</div>
+				<div class="video-form">
+					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
+					<div class="form-group">
+						<input type="text" class="form-field" placeholder="Youtube/Vimeo link">
+						<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
+					</div>
+				</div>
 			</div>
 		</div>
 		<% end %>
 	</div>
 
-	<div class="audio">
+	<div class="audio media-option">
 		<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: 'add_audio_form'} do |t| %>
 		<div class="title">Audio</div>
 		<!-- <div class="subline">Upload an audio file to your pitch</div> -->
@@ -247,12 +327,18 @@
 		<%= t.hidden_field :media_type, value: 'audio' %>
 		<div class="preview audio-preview"
 			style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
-			<i class="fas fa-play-circle play-audio" onclick="playAudio()"></i>
 			<% if @task.task_medium && @task.task_medium.audio? %>
-
-			<div class="audio-title"><%= @task.task_medium.audio.identifier %></div>
+			<!-- <div class="audio-title"><%= @task.task_medium.audio.identifier %></div> -->
+			<div class="remove-option">
+				<label><%= File.basename(@task.task_medium.audio.url) %></label>
+				<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+			</div>
+			<div class="audio-play-div">
+				<%= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio', onclick: 'playAudio()' %>
+				<!-- <i class="fas fa-play-circle play-audio" onclick="playAudio()"></i> -->
+			</div>
 			<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag' %>
-			<%= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'remove' %>
+			<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'remove' %>
 			<% else %>
 			<div class="audio-title"></div>
 			<audio src="" id="task-audio" class="audio-tag"></audio>
@@ -261,13 +347,13 @@
 		</div>
 		<div class="dropzone-container audio-drop-zone"
 			style="<%= 'display: none;' if @task.task_medium && @task.task_medium.audio? %>">
-			<label class="dropzone-text">Drag and Drop Audio from your Computer</label>
+			<label class="dropzone-text">Drag and Drop file from your Computer</label>
 			<div class="label-btn">
 				<%= t.file_field :audio, accept: '.mp3,.wav', class: 'audio-field' %>
 				<%#= f.hidden_field :audio_id, class: 'audio-id' %>
 				<%= t.hidden_field :media_type, value: 'audio' %>
-				<label class="btn upload" id="audio_upload_btn">Upload</label>
-				<div class="btn upload record">Record</div>
+				<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
+				<div class="btn reversed upload record">Record</div>
 			</div>
 		</div>
 		<% end %>
@@ -281,24 +367,51 @@
 	<%= form_for :list, url: create_task_list_path(@task, list: 'rating'), html: {id: "add_rl_form"} do |f| %>
 	<div class="title">Rating Criteria</div>
 	<div class="subline">You can add up to 4 rating criterias</div>
-	<div class="form-group">
-		<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
-		<%= f.text_field :name, class: 'form-field rating-field', onblur: 'looseFocus(event)' %>
-		<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+	<div class="form-group-wrapper">
+		<div class="form-group">
+			<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
+			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+		</div>
+		<div class="form-group">
+			<div class="star"><%= image_tag 'dash/icons/criteria2.svg'%></div>
+			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+		</div>
 	</div>
-	<div class="capsule-list">
+	<div class="form-group-wrapper">
+		<div class="form-group">
+			<div class="star"><%= image_tag 'dash/icons/criteria3.svg'%></div>
+			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+		</div>
+		<div class="form-group">
+			<div class="star"><%= image_tag 'dash/icons/criteria4.svg'%></div>
+			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+		</div>
+	</div>
+	<!-- <div class="capsule-list">
 		<% if @task.rating_list %>
 		<% @task.rating_list.rating_criteria.each do |rating| %>
 		<div class="word"><%= rating.name %></div>
 		<% end %>
 		<% end %>
-	</div>
+	</div> -->
 	<% end %>
 </div>
 
 
 <script>
 
+
+	media_type = '<%= media_type&.downcase %>'
+	if (media_type) {
+		$('.add-catchword .media-option').hide();
+		$(`.${media_type}-option`).hide();
+		$(`.add-catchword .${media_type}.media-option`).show();
+	} else {
+		$('.catchword-option').hide();
+		$('.add-catchword .catchword.media-option').show();
+	}
 	var imageDropZone = $('.image-drop-zone')
 	imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
 		e.preventDefault();
@@ -335,10 +448,9 @@
 			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
 			$('.left-card.selected img')[0].src = url_object;
 			$(e.currentTarget).siblings('.preview').show();
-			$(e.currentTarget).hide();
+			// $(e.currentTarget).hide();
+			$('.image-drop-zone').hide();
 			$('#add_image_form').submit();
-			// let taskId = $(e.target).closest('.task-fields').attr('id');
-			// removeOtherMedia('picture', taskId, false);
 		}
 	}
 
@@ -443,7 +555,8 @@
 		var formData = new FormData(document.getElementById('add_rl_form'));
 		commitList('rating', formData);
 	})
-	showTaskMedia("<%= @task.task_medium&.media_type %>");
+	// showTaskMedia("<%= @task.task_medium&.media_type %>");
+
 	function playAudio() {
 		if ($('.audio .preview .play-audio').hasClass('fa-play-circle')) {
 			document.getElementById('task-audio').play();

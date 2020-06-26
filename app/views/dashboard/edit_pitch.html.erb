@@ -45,7 +45,7 @@
 					<%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
 					<% end %>
 					<% if t.task.time %>
-					<div class="length length-bg">
+					<div class="length <%= 'length-bg' if image_url.present? %>">
 						<%= (t.task.time / 60).to_s %>:<%= (t.task.time % 60) < 10 ? '0' + (t.task.time % 60).to_s : (t.task.time % 60).to_s %>
 					</div>
 					<% else %>
