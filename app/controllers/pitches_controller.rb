@@ -78,6 +78,17 @@ class PitchesController < ApplicationController
 		redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	end
   end
+
+  def delete_words
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:task_id])
+	if params[:type] == 'objection'
+		@task.objection_list.objections.find(params[:word_id]).destroy
+	else
+		@task.catchword_list.catchwords.find(params[:word_id]).destroy
+	end
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  end
 	
   def copy_task
 	@task = Task.find(params[:task_id])
@@ -210,6 +221,59 @@ class PitchesController < ApplicationController
 	end
 	render json: {id: @list.id}
   end
+
+  def create_ratings
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:task_id])
+	if @task.rating_list
+		@list = @task.rating_list
+	else
+		@list = RatingList.create(name: "task_list")
+		@task.update(rating_list_id: @list.id)
+	end
+	
+	# Not allowed same values
+	duplicate_values = false
+	ratings = task_params.to_h.values
+	ratings.each do |rating|
+		if ratings.count(rating) > 1
+			duplicate_values = true
+		end
+	end
+	# [:rating1, :rating2, :rating3, :rating4].each do |rating|
+	# 	if task_params[rating].present?
+	# 		[:rating1, :rating2, :rating3, :rating4].each do |rating_task|
+	# 			if rating_task != rating
+	# 				if @task[rating_task] == task_params[rating]
+	# 					duplicate_values = true
+	# 				end
+	# 			end
+	# 		end
+	# 	end
+	# end
+
+	unless duplicate_values
+		[:rating1, :rating2, :rating3, :rating4].each do |rating|
+			if task_params[rating].present?
+				unless @task[rating].present?
+					@list.rating_criteria.create(name: task_params[rating])
+				end
+			elsif @task[rating].present? 
+				@list.rating_criteria.find_by(name: @task[rating]).destroy
+			end
+		end
+		@task.update(task_params)
+		index = 0
+		[:rating1, :rating2, :rating3, :rating4].each do |rating|
+			if @task[rating].present?
+				@list.rating_criteria[index].update(name: task_params[rating])
+				index += 1
+			end
+		end
+	end
+
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  end
 	
   private
   	def pitch_params
@@ -217,7 +281,7 @@ class PitchesController < ApplicationController
 	end
 
     def task_params
-	  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :task_type, :title, :time, :task_medium_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating_list)
+	  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :task_type, :title, :time, :task_medium_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating1, :rating2, :rating3, :rating4, :rating_list)
 	end
 
 	def media_params

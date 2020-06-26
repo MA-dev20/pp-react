@@ -44,8 +44,11 @@ Rails.application.routes.draw do
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'
   post 'pitches/:pitch_id/task/:task_id/update', to: 'pitches#update_task', as: 'update_task'
   delete 'pitches/:pitch_id/task/:task_id/media', to: 'pitches#delete_media', as: 'delete_task_media'
+  delete 'pitches/:pitch_id/task/:task_id/words', to: 'pitches#delete_words', as: 'delete_task_words'
+
 
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
+  post 'pitches/:pitch_id/tasks/:task_id/create_ratings', to: 'pitches#create_ratings', as: 'create_ratings'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
   

@@ -58,7 +58,8 @@
 		<div class="hr-line"></div>
 		<div class="words-wrapper">
 			<div class="word"><%= ow.name %></div>
-			<a class="fas fa-trash remove"></a>
+			<!-- <a class="fas fa-trash remove"></a> -->
+			<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'fas fa-trash remove' %>
 		</div>
 		<% end %>
 		<% end %>
@@ -128,7 +129,7 @@
 			<div class="hr-line"></div>
 			<div class="words-wrapper">
 				<div class="word"><%= cw.name %></div>
-				<a class="fas fa-trash remove"></a>
+				<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'fas fa-trash remove' %>
 			</div>
 			<% end %>
 			<% end %>
@@ -186,7 +187,9 @@
 			function handleOptionClick(type, e) {
 				e.stopPropagation();
 				$('.catchword-heading .option').show();
+				$('.catchword-heading .media-options .option').removeClass('active').addClass('not-active');
 				$(`.${type}-option`).hide();
+				$(`.${type}-option`).removeClass('not-active').addClass('active');
 				$('.add-catchword .media-option').hide();
 				$(`.add-catchword .${type}.media-option`).show();
 				$('.catchword-heading .custom-select label').text(type);
@@ -364,54 +367,62 @@
 </div>
 
 <div class="card add-rating">
-	<%= form_for :list, url: create_task_list_path(@task, list: 'rating'), html: {id: "add_rl_form"} do |f| %>
+	<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"} do |f| %>
 	<div class="title">Rating Criteria</div>
 	<div class="subline">You can add up to 4 rating criterias</div>
 	<div class="form-group-wrapper">
 		<div class="form-group">
 			<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
-			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%= f.text_field :rating1, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
 			<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
 		</div>
 		<div class="form-group">
 			<div class="star"><%= image_tag 'dash/icons/criteria2.svg'%></div>
-			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%= f.text_field :rating2, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
 		</div>
 	</div>
 	<div class="form-group-wrapper">
 		<div class="form-group">
 			<div class="star"><%= image_tag 'dash/icons/criteria3.svg'%></div>
-			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%= f.text_field :rating3, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
 			<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
 		</div>
 		<div class="form-group">
 			<div class="star"><%= image_tag 'dash/icons/criteria4.svg'%></div>
-			<%= f.text_field :name, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+			<%= f.text_field :rating4, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
 		</div>
 	</div>
-	<!-- <div class="capsule-list">
-		<% if @task.rating_list %>
-		<% @task.rating_list.rating_criteria.each do |rating| %>
-		<div class="word"><%= rating.name %></div>
-		<% end %>
-		<% end %>
-	</div> -->
 	<% end %>
 </div>
 
 
 <script>
 
+	$('#add_rating_form').on('keypress', e => {
+		if (e.keyCode == 13) {
+			$('#add_rating_form').submit();
+		}
+	});
+
+	$('.add-cw-img').on('click', e => {
+		$(e.target).closest('form').submit();
+	})
 
 	media_type = '<%= media_type&.downcase %>'
 	if (media_type) {
+		$('.catchword-heading .media-options .option').addClass('not-active');
 		$('.add-catchword .media-option').hide();
 		$(`.${media_type}-option`).hide();
 		$(`.add-catchword .${media_type}.media-option`).show();
+		$(`.catchword-heading .media-options .${media_type}-option`).removeClass('not-active').addClass('active');
 	} else {
 		$('.catchword-option').hide();
+		$('.catchword-heading .media-options .option').addClass('not-active');
+		$('.catchword-heading .media-options .catchword-option').removeClass('not-active').addClass('active');
 		$('.add-catchword .catchword.media-option').show();
 	}
+
+
 	var imageDropZone = $('.image-drop-zone')
 	imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
 		e.preventDefault();
@@ -834,8 +845,8 @@
 
 	function isOtherMediaExists() {
 		let is_media_present = false;
-		if ($('.btn-line .btn.selected').text().toLowerCase() === 'catchword') {
-			is_media_present = <%= @task.reload.task_medium.present? %>
+		if ($('.catchword-heading .media-options .active span').text().toLowerCase() === 'catchword') {
+			is_media_present = <%= @task.task_medium.present? %>
 		} else {
 			is_media_present = <%= @task.reload.catchword_list_id.present? || @task.reload.task_medium.present? %>
 		}
