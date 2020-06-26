@@ -1401,6 +1401,19 @@ input[type="file"] {
                 height: 5.5vh;
             }
         }
+
+        .media-file {
+            float: right;
+            height: 12vh;
+            width: 20vh;
+            border-radius: 1vh;
+        }
+
+        #video_tag {
+            float: right;
+            height: 12vh;
+            width: 22vh;
+        }
     }
 
     // .preview {
