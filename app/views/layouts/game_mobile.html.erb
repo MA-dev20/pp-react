@@ -13,7 +13,7 @@
     <%= javascript_include_tag 'game_mobile/main'%>
 </head>
 <style>
-	<% if current_page?(gm_error_path) %>
+	<% if @company %>
 	:root {
 	  --custcolor: 255,0,0;
 	  --btncolor: 255,0,0;
@@ -32,17 +32,30 @@
 		<% if current_page?(gm_error_path) %>
 			FEHLER
 		<% else %>
-			<%= @game.team.name %>
-			<% if @omenu && @admin.role != 'user' && @task && @task.objection_list %>
-				<div class="objection-btn" onclick="toggleObjections()">
-					<span></span>
-					<span></span>
-					<span></span>
+		<%= @game.team.name %>
+			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' %>
+				<% if @game && @game.state == 'play' %>
+				<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
+				<% else %>
+				<%= link_to '', gm_set_state_path('', state: 'bestlist'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
+				<% end %>
+				<div class="menu" onclick="toggleMenu()">
+					<i class="fas fa-bars"></i>
 				</div>
 			<% else %>
 				<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
 			<% end %>
 		<% end %>
+	</section>
+	<section id="menu">
+		<i class="fas fa-times close" onclick="toggleMenu()"></i>
+		<% if @task && @task.objection_list && @game.state == 'play' %>
+		<div class="link" onclick="toggleObjections()">Einwände</div>
+		<% end %>
+		<% if @pitch %>
+		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation</div>
+		<% end %>
+		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Spielerliste</div>
 	</section>
 	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
@@ -59,6 +72,62 @@
 	<section id="content">
 		<%= yield %>
 	</section>
+	<% if @pitch %>
+	<section id="nav-menu">
+		<div class="heading">Folienübersicht</div>
+		<div class="subheading">klicke auf eine Folie, um zu dieser zu springen</div>
+		<i class="fas fa-times close" onclick="toggleNav()"></i>
+		<% @pitch.task_orders.order(:order).each do |t| %>
+		<div class="link">
+    		<div class="slide"><%= t.order %></div>
+	    	<div class="preview">
+	    		<% if t.task.task_medium && t.task.task_medium.video? %>
+	    		<%= image_tag t.task.task_medium.video.thumb.url %>
+	    		<% elsif t.task.task_medium && t.task.task_medium.image? %>
+	    		<%= image_tag t.task.task_medium.image.url %>
+	    		<% else %>
+	    		<%= image_tag 'fallback/PlaceholderPP.png' %>
+	    		<% end %>
+	    	</div>
+	    	<div class="title">
+	    		<% if t.task.title && t.task.title != '' %>
+	    		<%= t.task.title %>
+	    		<% end %>
+	    	</div>
+			<%= link_to '', gm_set_slide_path(t.order) %>
+		</div>
+		<% end %>
+	</section>
+	<section id="user-menu">
+		<div class="heading">Userliste</div>
+		<div class="subheading">Wer kommt noch dran?</div>
+		<i class="fas fa-times close" onclick="toggleUser()"></i>
+		<% @game.game_turns.playable.each do |gt| %>
+		<div class="user">
+			<div class="name">
+				<div class="avatar">
+					<% if gt.user.avatar? %>
+						<%= image_tag gt.user.avatar.url %>
+					<% else %>
+						<div class="circle"><%= gt.user.fname[0].capitalize + gt.user.lname[0].capitalize %></div>
+					<% end %>
+				</div>
+				<%= gt.user.fname + ' ' + gt.user.lname %>
+			</div>
+			<%= link_to 'nächster Pitcher', gm_set_current_path(gt), class: 'next' %>
+			<%= link_to 'entfernen', gm_delete_turn_path(gt),class: 'remove', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+		</div>
+		<% end %>
+	</section>
+	<% end %>
+	
+	<% if flash[:alert] %>
+	<div class="flash-alert">
+		<div class="heading">Fehler!</div>
+		<i class="fas fa-times close" onclick="hideFlash()"></i>
+		<div class="text"><%= flash[:alert] %></div>
+	</div>
+	<% end %>
 	
 <svg viewbox= "0 0 316 316" style="position: absolute; opacity: .3; left: -200px; height: 350px; z-index: 10;">
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
@@ -70,6 +139,20 @@
 
 
 <script>
+	function hideFlash() {
+		$('.flash-alert').hide();
+	}
+	function toggleUser() {
+		$('#menu').hide();
+		$('#user-menu').toggle();
+	}
+	function toggleMenu() {
+		$('#menu').toggle();
+	}
+	function toggleNav() {
+		$('#menu').hide();
+		$('#nav-menu').toggle();
+	}
 	posBottom();
 	window.onresize = function(){posBottom()};
 	function posBottom() {
@@ -80,6 +163,7 @@
 	}
 	new PerfectScrollbar('#objection-list')
 	function toggleObjections() {
+		$('#menu').hide();
 		$("#objections-menu").toggle()
 	}
 	function sendObjection(oID) {

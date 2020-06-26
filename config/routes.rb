@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   get 'games/:game_id/join', to: 'game_desktop#join', as: 'gd_join'
 	
   get 'games/game', to: 'game_desktop#game', as: "gd_game"
+  get 'games/game/set_slide/:slide', to: 'game_desktop#set_slide', as: 'gd_set_slide'
   get 'games/game/set_state', to: 'game_desktop#set_state', as: 'gd_set_state'
   get 'games/game/repeat', to: 'game_desktop#repeat', as: 'gd_repeat'
   get 'games/game/ended', to: 'game_desktop#ended', as: 'gd_ended'
@@ -77,6 +78,8 @@ Rails.application.routes.draw do
   get ':password', to: 'game_mobile#welcome', as: 'gm'
   get 'mobile/game/new_user', to: 'game_mobile#new_name', as: 'gm_new_name'
   get 'mobile/games/login', to: 'game_mobile#login', as: 'gm_login'
+  get 'mobile/games/turns/:turn_id/delete', to: 'game_mobile#delete_turn', as: 'gm_delete_turn'
+  get 'mobile/games/turns/:turn_id/set_current', to: 'game_mobile#set_current', as: 'gm_set_current'
   
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'	
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
@@ -84,6 +87,7 @@ Rails.application.routes.draw do
   put 'mobile/game/send_emoji', to: 'game_mobile#send_emoji', as: 'gm_send_emoji'
   get 'mobile/game/choosen', to: 'game_mobile#choosen', as: 'gm_choosen'
   post 'mobile/game/objection', to: 'game_mobile#objection', as: "gm_objection"
+  get 'mobile/game/set_slide/:slide', to: 'game_mobile#set_slide', as: 'gm_set_slide'
   get 'mobile/game/set_state', to: 'game_mobile#set_state', as: "gm_set_state"
   get 'mobile/game/turn_repeat', to: 'game_mobile#repeat_turn', as: 'gm_repeat_turn'
   get 'mobile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'

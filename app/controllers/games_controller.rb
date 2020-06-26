@@ -2,11 +2,22 @@ class GamesController < ApplicationController
   before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch, :rating_user]
   before_action :set_game, only: [:customize, :email, :create_turn, :name, :rating_user]
   def create
-	@game = Game.where(password: game_params[:password], state: 'wait', active: true).first
+	@game = Game.where(password: game_params[:password], active: true).last
 	if @game && @game.company != @company
 	  flash[:alert] = 'Das Passwort ist schon vergeben!'
 	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	  return
+	elsif @game
+	  @games = Game.where(company: @company, password: game_params[:password], active: true)
+	  @games.each do |g|
+		if g.created_at <= Date.yesterday
+		  g.update(active: false)
+		elsif g.game_ratings.count == 0
+		  g.update(state: 'wait')
+		else
+		  @game = g
+		end
+	  end
 	end
 	@game.update(game_params) if @game
 	@game = @company.games.new(game_params) if !@game
@@ -67,6 +78,7 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
 	  end
 	  redirect_to gm_game_path
+	  return
 	else
 	@turn = @game.game_turns.new(turn_params) if !@turn
 	@turn.user = @user
@@ -80,9 +92,11 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
 	  end
 	  redirect_to gm_game_path
+	  return
 	else
 	  flash[:alert] = 'Konnte nicht beitreten!'
 	  redirect_to gm_join_path
+	  return
 	end
   end
 	
@@ -110,6 +124,11 @@ class GamesController < ApplicationController
 	
   def record_pitch
 	@turn = GameTurn.find(params[:turn_id])
+	@game = @turn.game
+	@task = @game.pitch.task_orders.find_by(order: @game.current_task).task
+	if @task.task_type == 'catchword'
+	  @turn.update(catchword: @task.catchword_list.catchwords.sample)
+	end
 	flash[:alert] = 'Konnte Entscheidung nicht speichern!' if !@turn.update(turn_params)
 	@turn.game.update(state: "play")
 	ActionCable.server.broadcast "game_#{@turn.game.id}_channel", game_state: 'changed'

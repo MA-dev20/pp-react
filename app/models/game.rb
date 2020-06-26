@@ -11,7 +11,7 @@ class Game < ApplicationRecord
 	self.state = 'wait'
   end
   after_update do
-	if self.previous_changes["state"] || self.previous_changes['current_turn'] || self.previous_changes['current_task']
+	if self.previous_changes["state"] || self.previous_changes['current_turn']
 	  ActionCable.server.broadcast "game_#{self.id}_channel", game_state: 'changed'
 	end
   end
