@@ -236,7 +236,7 @@ class PitchesController < ApplicationController
 	duplicate_values = false
 	ratings = task_params.to_h.values
 	ratings.each do |rating|
-		if ratings.count(rating) > 1
+		if rating.present? && ratings.count(rating) > 1
 			duplicate_values = true
 		end
 	end
