@@ -586,6 +586,7 @@
                     font-size: 2vh;
                     cursor: pointer;
                     padding: 0.5vh;
+                    padding-top: 0.7vh;
                 }
             }
             .form-group.fields {
@@ -702,6 +703,7 @@
             }
 
             .list-title {
+                font-size: 1.7vh;
                 line-height: 3vh;
             }
 
@@ -767,7 +769,8 @@
             }
 
             .title {
-                font-size: 2vh !important;
+                font-size: 1.7vh !important;
+                line-height: 4vh;
             }
 		}
 		.card.add-rating {
