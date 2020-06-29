@@ -296,6 +296,8 @@
 			<% else %>
 			<div class="time"></div>
 			<video class="video-tag" src="" controls></video>
+			<!-- <iframe width="420" height="345" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+			</iframe> -->
 			<% end %>
 		</div>
 		<div class="dropzone-container video-drop-zone"
@@ -312,8 +314,8 @@
 				<div class="video-form">
 					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
 					<div class="form-group">
-						<input type="text" class="form-field" placeholder="Youtube/Vimeo link">
-						<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
+						<input type="text" class="form-field" id="videoLink" placeholder="Youtube/Vimeo link">
+						<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add add-video-link' %>
 					</div>
 				</div>
 			</div>
@@ -616,6 +618,54 @@
 			$('#task_medium_video').click();
 		}
 	})
+
+	$('.add-video-link').on('click', function (e) {
+		field_id = 'video_url';
+		global_method = 'url';
+		if (isOtherMediaExists()) {
+			$('.warning-card-wrapper').show();
+		} else {
+			$('.warning-card-wrapper').hide();
+			updateVideoUrl();
+			// $('#task_medium_video').click();
+		}
+	})
+
+	function updateVideoUrl() {
+		var url = "<%= update_video_url(@pitch, task_id: @task&.id) %>";
+		$.ajax({
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#task_task_medium_id').val(res.id);
+				$('#task_task_type').val(res.type);
+				$('#task_<%= @task.id %> .task-title .category').text(res.type);
+				if (res.type == 'image') {
+					$('.picture .preview img').attr('src', res.preview);
+					$('.picture .preview').show();
+					$('#task_<%= @task.id %> .thumb img').attr('src', res.preview);
+					$('#popup').hide();
+				} else if (res.type == 'video') {
+					$('.video .preview video').attr('src', res.preview);
+					$('#task_<%= @task.id %> .thumb img').attr('src', res.thumb);
+					$('.video .preview .time').text(res.duration);
+					$('.video .preview').show();
+				} else if (res.type == 'audio') {
+					$('.audio .preview audio').attr('src', res.preview);
+					$('#task_<%= @task.id %> .thumb img').attr('src', '<%= asset_path("dash/Image.png") %>');
+					$('.audio .preview .audio-title').text(res.title)
+					$('.audio .preview').show();
+				}
+				globalForm = new FormData();
+			}
+		})
+	}
 
 	$('#audio_upload_btn').on('click', function (e) {
 		field_id = 'task_medium_audio';
