@@ -632,7 +632,7 @@
 	})
 
 	function updateVideoUrl() {
-		var url = "<%= update_video_url(@pitch, task_id: @task&.id) %>";
+		var url = "<%= update_video_url_url(@pitch, task_id: @task&.id) %>";
 		$.ajax({
 			url: url,
 			type: 'post',
