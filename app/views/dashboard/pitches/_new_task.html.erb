@@ -120,11 +120,6 @@
 						var formData = new FormData(document.getElementById('add_cw_form'));
 						commitList('catchword', formData);
 					}
-					$('#add_ol_form').on('submit', function (e) {
-						e.preventDefault();
-						var formData = new FormData(document.getElementById('add_ol_form'));
-						commitList('objection', formData);
-					})
 
 					function sendList(type, ListID) {
 						var formData = new FormData();
@@ -407,6 +402,7 @@
 
 
 <script>
+
 
 	$('#add_rating_form').on('keypress', e => {
 		if (e.keyCode == 13) {
