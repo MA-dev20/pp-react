@@ -55,10 +55,16 @@
 				<!-- <div class="title"><%= t.task.title %></div> -->
 				<div class="task-subtitle">Rating criteria:</div>
 				<div class="rating-criteria">
+					<% criteria_count = t.task&.rating_list&.rating_criteria&.count %>
 					<% if t.task.rating_list %>
 					<% t.task.rating_list.rating_criteria.each do |rating| %>
 					<div class="criterium"><%= rating.name %></div>
-					<% end end %>
+					<% end %>
+					<% end %>
+					<% criteria_count = 4 - (criteria_count.present? ? criteria_count : 0) %>
+					<% criteria_count.times do |time| %>
+					<div class="criterium">-</div>
+					<% end %>
 				</div>
 				<% else %>
 				<div class="task-title">
