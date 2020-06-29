@@ -80,7 +80,7 @@
 						</div>
 					</div>
 				</div>
-				<% if @task.catchword_list %>
+				<% if @task.catchword_list&.catchwords&.present? %>
 				<div class="title list-title">List</div>
 				<% end %>
 				<div class="words-list cw-list">
@@ -384,7 +384,7 @@
 				</div>
 			</div>
 		</div>
-		<% if @task.objection_list.present? %>
+		<% if @task.objection_list&.objections&.present? %>
 		<div class="title">List</div>
 		<% end %>
 		<div class="words-list ow-list">
