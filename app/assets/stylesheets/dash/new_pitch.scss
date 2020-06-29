@@ -105,7 +105,10 @@
                     width: 12.7vw;
 					margin: 0 .5vw;
 					height: 3vh;
-					line-height: 3vh;
+                    line-height: 3vh;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
 					.fa-exclamation-triangle {
 						color: red;
 						font-size: 2vh;
