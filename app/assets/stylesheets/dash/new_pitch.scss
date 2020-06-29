@@ -372,7 +372,8 @@
 		}
 		.card.time-limit {
 			position: absolute;
-			left: 1vw; top: 6.5vh;
+            left: 1vw; 
+            top: 8vh;
             height: 16vh;
             width: 15vh;
 			.form-group {
@@ -558,7 +559,7 @@
             }
 
             .ow-list {
-                height: 11vh;
+                height: 7vh;
                 .ps__thumb-y {
                     top: 23vh !important;
                     height: 8vh !important;
@@ -620,9 +621,11 @@
                 .sub-cs {
                     display: none;
                     position: relative;
+                    float: right;
+                    right: -3.2vh;
                     top: 0.2vh;
                     // left: 1.8vh;
-                    left: -2vh;
+                    // left: -2vh;
                     width: 24.8vh;
                     background-color: white;
                     border: .1vh solid #dfe1e5;
@@ -704,7 +707,7 @@
                 justify-content: space-between;
 
                 .form-field {
-                    width: 78%;
+                    width: 77%;
                 }
 
                 .add-cw {
@@ -748,13 +751,19 @@
             height: 40vh;
             width: 38vh;
 
+            .far {
+                position: relative;
+                top: 1.2vh;
+                font-size: 2vh;
+            }
+
             .custom-select {
                 margin-top: 1vh;
                 width: 86%;
             }
 
             .title {
-                margin-top: 1vh;
+                font-size: 2vh !important;
             }
 		}
 		.card.add-rating {
@@ -806,7 +815,7 @@
         }
 
         .add-reaction .form-group .sub-cs {
-            left: 10.7vh;
+            // left: 7.4vh;
         }
         .add-reaction, .catchword, .add-rating {
             .capsule-list {
@@ -1545,6 +1554,11 @@ input[type="file"] {
     display: flex;
     flex-direction: column;
 }
+
+#task_title {
+    height: 7vh !important;
+}
+
 
 .hr-line {
     // border-top: 0.1vh solid #CFD3D6;

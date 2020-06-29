@@ -163,6 +163,12 @@
 		var formData = new FormData(document.getElementById('add_ol_form'));
 		commitList('objection', formData);
 	})
+
+	function sendList(type, ListID) {
+		var formData = new FormData();
+		formData.append("list[list_id]", ListID);
+		commitList(type, formData);
+	}
 	var recorder = document.getElementById('recorder');
 	var player = document.getElementById('player');
 	var file = NaN;
