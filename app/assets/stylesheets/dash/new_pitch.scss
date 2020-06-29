@@ -1506,6 +1506,12 @@ input[type="file"] {
     }
 }
 
+.card.right {
+    background-color: transparent !important;
+    border-radius: none !important;
+    box-shadow: none !important;
+    padding: unset !important;
+}
 .hr-line {
     border-top: 0.2vh solid #CFD3D6;
     padding: 1.5vh;
