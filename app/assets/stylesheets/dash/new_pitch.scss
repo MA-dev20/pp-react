@@ -169,6 +169,8 @@
                     }
 					.length {
                         border: 1px solid #69DEA9;
+                        background: #fff;
+                        color: #000;
                         box-sizing: border-box;
                         border-radius: 1vh;
 						position: absolute;
@@ -185,11 +187,6 @@
 						// line-height: 3vh;
 						font-size: 2vh;
 						text-align: center;
-                    }
-                    
-                    .length-bg {
-                        background: #69DEA9;
-                        color: #FFFFFF;
                     }
                 }
                 
