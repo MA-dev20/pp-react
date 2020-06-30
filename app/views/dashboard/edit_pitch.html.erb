@@ -354,10 +354,12 @@
 
 	$('.open-modal').click(function (e) {
 		// $('#new_pitch_form').show();
+		$('.remove-option').hide();
 		$(`.${$(this).data("modal")}`).show();
 	})
 
 	$('.close').click(function () {
+		$('.remove-option').show();
 		$('.modal').hide()
 	})
 
