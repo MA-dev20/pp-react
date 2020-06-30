@@ -929,7 +929,7 @@
 		if ($('.catchword-heading .media-options .active span').text().toLowerCase() === 'catchword') {
 			is_media_present = <%= @task.task_medium.present? %>
 		} else {
-			is_media_present = <%= @task.reload.catchword_list_id.present? || @task.reload.task_medium.present? %>
+			is_media_present = <%= @task.catchword_list&.catchwords&.present? || @task.task_medium.present? %>
 		}
 		return is_media_present
 	}
