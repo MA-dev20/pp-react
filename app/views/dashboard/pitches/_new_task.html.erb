@@ -34,7 +34,7 @@
 			<% 
 			media_type = @task.task_medium&.media_type&.titleize
 			media_type = media_type.present? ? media_type : @task.task_type&.titleize 
-		%>
+			%>
 			<div class="catchword-heading catchword">
 				<div class="title">Text, Video oder Bild hinzufügen!</div>
 				<div class="form-group">
@@ -169,18 +169,19 @@
 							data: formData,
 							beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 							success: function (res) {
-								if (type == 'catchword') {
-									$('#task_catchword_list_id').val(res.id);
-									if (mediaDeleted) {
-										$('#task_task_medium_id').val('');
-									}
-								} else if (type == 'objection') {
-									$('#task_objection_list_id').val(res.id);
-								} else if (type == 'rating') {
-									$('#task_rating_list_id').val(res.id);
-								}
-								mediaDeleted = false;
-								selectTask(<%= @task.id %>);
+								// if (type == 'catchword') {
+								// 	$('#task_catchword_list_id').val(res.id);
+								// 	$('.catchword.media-option').show();
+								// 	if (mediaDeleted) {
+								// 		$('#task_task_medium_id').val('');
+								// 	}
+								// } else if (type == 'objection') {
+								// 	$('#task_objection_list_id').val(res.id);
+								// } else if (type == 'rating') {
+								// 	$('#task_rating_list_id').val(res.id);
+								// }
+								// mediaDeleted = false;
+								// selectTask(<%= @task.id %>);
 					}
 					})
 				}
@@ -763,6 +764,7 @@
 				var formData = new FormData();
 				formData.append("task_medium[media_type]", 'image');
 				formData.append("task_medium[image]", file);
+				$('#popup').hide();
 				sendMedia(formData);
 			});
 		};

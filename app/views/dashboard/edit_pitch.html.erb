@@ -472,6 +472,8 @@
 		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
 	function selectTask(task_id) {
+		debugger
+
 	  <% if @task %>
 		var globalForm = new FormData(document.getElementById('new_task_form'));
 		$.ajax({
