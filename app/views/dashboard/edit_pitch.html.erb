@@ -121,12 +121,25 @@
 
 		<%= render partial: 'dashboard/pitches/browse_tasks', locals: { pitches: @pitches } %>
 
+		
 	</div>
 
 	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
 
 	<%= render partial: 'options_modal', locals: { pitch: @pitch } %>
 
+</div>
+
+<div id="loaderModal" class="modal hide">
+	<div class="modal-content">
+		<div class="inner-content">
+			<div class="loader-img">
+				<!-- <i class="fa fa-spinner" aria-hidden="true"></i> -->
+				<!-- <i class="fas fa-spinner"></i> -->
+				<div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -156,6 +169,8 @@
 	</div>
 </div>
 <script>
+		// $('#loaderModal').show();
+
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
 		$('#videoModal').hide();
@@ -416,6 +431,7 @@
 
 	function sendMediaPDF(globalForm) {
 		var url = "<%= create_task_media_url(@pitch) %>";
+		$('#loaderModal').show();
 		$.ajax({
 			url: url,
 			type: 'post',
@@ -426,6 +442,7 @@
 			data: globalForm,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
+				$('#loaderModal').hide();
 				<% if @pitch.tasks.count != 0 %>
 					selectTask(<%= @pitch.tasks.last.id %>);
 				<% end %>

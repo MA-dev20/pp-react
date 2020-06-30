@@ -482,10 +482,20 @@
                         position: relative;
 						border-radius: 1vh;
                     }
+                    .audio-play-div i {
+                        font-size: 8vh;
+                        line-height: 28vh;
+                        color: #fff;
+                    }
+
+                    .pause-audio {
+                        display: none;
+                    }
                     .audio-play-div {
                         background:#69DEA9;
                         
-                        img {
+                        img, i {
+                            cursor: pointer;
                             width: 8vh;
                             position: absolute;
                             margin: auto;
@@ -493,6 +503,7 @@
                             left: 0;
                             right: 0;
                             bottom: 0;
+                            height: auto;
                         }
                     }
 
@@ -1195,7 +1206,8 @@
         cursor: pointer;
     }
 
-    #videoModal .modal-content {
+    #videoModal .modal-content,
+    #loaderModal .modal-content {
         width: 72vh;
         height: 62vh;
 		.inner-content {
@@ -1276,9 +1288,6 @@
             float: right;
         }
     }
-
-
-
 
     .toggle-my-ratings {
         position: absolute;
@@ -1640,4 +1649,45 @@ input[type="file"] {
     .thumb-border {
         height: 12vh;
     }
+}
+
+#loaderModal {
+    .modal-content {
+        background: transparent;
+        box-shadow: none;
+    }
+    .loader-img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+    .fa-spinner {
+        display: inline-block;
+    }
+}
+
+
+
+#loading-bar-spinner.spinner {
+    left: 50%;
+    margin-left: -20px;
+    top: 50%;
+    margin-top: -20px;
+    position: absolute;
+    z-index: 19 !important;
+    animation: loading-bar-spinner 600ms linear infinite;
+}
+
+#loading-bar-spinner.spinner .spinner-icon {
+    width: 40px;
+    height: 40px;
+    border:  solid 4px transparent;
+    border-top-color:  rgb(var(--custcolor)) !important;
+    border-left-color: rgb(var(--custcolor)) !important;
+    border-radius: 50%;
+}
+
+@keyframes loading-bar-spinner {
+  0%   { transform: rotate(0deg);   transform: rotate(0deg); }
+  100% { transform: rotate(360deg); transform: rotate(360deg); }
 }

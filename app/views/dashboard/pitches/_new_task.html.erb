@@ -301,10 +301,12 @@
 						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 					</div>
 					<div class="audio-play-div">
-						<%= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio', onclick: 'playAudio()' %>
+						<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
+						<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
+						<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
 						<!-- <i class="fas fa-play-circle play-audio" onclick="playAudio()"></i> -->
 					</div>
-					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag' %>
+					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>
 					<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'remove' %>
 					<% else %>
 					<div class="audio-title"></div>
@@ -602,16 +604,26 @@
 	// showTaskMedia("<%= @task.task_medium&.media_type %>");
 
 	function playAudio() {
-		if ($('.audio .preview .play-audio').hasClass('fa-play-circle')) {
+		if ($('.audio-play-div .play-audio').hasClass('audio-play-circle')) {
 			document.getElementById('task-audio').play();
-			$('.audio .preview .play-audio').removeClass('fa-play-circle');
-			$('.audio .preview .play-audio').addClass('fa-pause-circle');
-		} else {
-			document.getElementById('task-audio').pause();
-			$('.audio .preview .play-audio').removeClass('fa-pause-circle');
-			$('.audio .preview .play-audio').addClass('fa-play-circle');
+			$('.audio-play-div .audio-play-circle').hide();
+			$('.audio-play-div .audio-pause-circle').show();
 		}
 	}
+
+	function pauseAudio() {
+		if ($('.audio-play-div .pause-audio').hasClass('audio-pause-circle')) {
+			document.getElementById('task-audio').pause();
+			$('.audio-play-div .audio-pause-circle').hide();
+			$('.audio-play-div .audio-play-circle').show();
+		} 
+	}
+
+	function stopAudio() {
+		$('.audio-play-div .audio-play-circle').show();
+		$('.audio-play-div .audio-pause-circle').hide();
+	}
+
 	function showPopup() {
 		$('#popup').show();
 	}
@@ -798,6 +810,7 @@
 	})
 	function sendMedia(globalForm) {
 		var url = "<%= create_task_media_url(@pitch, task_id: @task&.id) %>";
+		$('#loaderModal').show();
 		$.ajax({
 			url: url,
 			type: 'post',
@@ -808,6 +821,7 @@
 			data: globalForm,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
+				$('#loaderModal').hide();
 				$('#task_task_medium_id').val(res.id);
 				$('#task_task_type').val(res.type);
 				$('#task_<%= @task.id %> .task-title .category').text(res.type);
