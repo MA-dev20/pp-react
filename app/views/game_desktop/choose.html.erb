@@ -5,14 +5,14 @@
 		<h3 id="head">Wer soll pitchen?</h3>
 		<div class="circle-left fadeInLeft">
 			<% if @turn1.user.avatar? %>
-			<%= image_tag @turn1.user.avatar.url, id: 'left-img' %>	
+			<%= image_tag @turn1.user.avatar.url, id: 'left-img' %>
 			<% else %>
 			<div class="circle" id="left-img"><%= @turn1.user.fname[0].capitalize + @turn1.user.lname[0].capitalize %></div>
 			<% end %>
 		</div>
 		<div class="circle-right fadeInRight">
 			<% if @turn2.user.avatar? %>
-			<%= image_tag @turn2.user.avatar.url, id: 'right-img' %>	
+			<%= image_tag @turn2.user.avatar.url, id: 'right-img' %>
 			<% else %>
 			<div class="circle" id="right-img"><%= @turn2.user.fname[0].capitalize + @turn2.user.lname[0].capitalize %></div>
 			<% end %>
@@ -20,7 +20,7 @@
 		<%= image_tag 'game/illus/finger.svg', id: 'finger', class: 'fadeInLeft' %>
 		<div class="use-smartphone fadeInBottom">
 			<%= image_tag "game/illus/smartphone.svg" %>
-    		<div class="text">Wähle am Smartphone</div>	
+    		<div class="text">Wähle am Smartphone</div>
 		</div>
 	</div>
 	<div class="timer-left fadeInLeft">15s</div>
@@ -63,7 +63,7 @@
 		setInterval(function() {
 			sec--;
 			if(sec > 15) {
-				$(".timer-left").text(sec - 15 + 's');	
+				$(".timer-left").text(sec - 15 + 's');
 			}
 			if(sec == 15) {
 				$('.task').addClass('right');
@@ -71,7 +71,7 @@
 				$(".timer-left").text('0s');
 			}
 			if(sec < 15) {
-				$(".timer-left").text(sec + 's');	
+				$(".timer-left").text(sec + 's');
 			}
 			if(sec == 2) {
 				$('.timer-left').removeClass("fadeInLeft");
@@ -92,4 +92,9 @@
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'turn') %>');
 	}
+	$(window).keypress(function (e) {
+		if (e.key === ' ' || e.key === 'Spacebar') {
+			redirect();
+		}
+	})
 </script>

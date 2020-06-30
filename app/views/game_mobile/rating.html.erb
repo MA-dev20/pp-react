@@ -13,9 +13,9 @@
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
 		<%= link_to 'Pitch wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
 		<% if @game.game_turns.playable.count == 0 || (@game.game_turns.where(played: true).count == @game.max_users && @game.max_users != 0) %>
-			<%= link_to 'zur Bestenliste', gm_set_state_path('', state: 'slide', slide: @game.current_task + 1), class: 'btn custom-btn' %>
+			<%= link_to 'zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn custom-btn' %>
 		<% else %>
-		<%= link_to 'zum nächsten Pitch', gm_set_state_path('', state: 'slide', slide: @game.current_task + 1), class: 'btn custom-btn' %>
+		<%= link_to 'zum nächsten Pitch', gm_set_slide_path(@game.current_task + 1), class: 'btn custom-btn' %>
 		<% end %>
 	<% end %>
 </div>

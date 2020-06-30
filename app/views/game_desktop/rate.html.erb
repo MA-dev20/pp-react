@@ -9,18 +9,18 @@
 		<h3>Jetzt bewerten!</h3>
 		<% @task.rating_list.rating_criteria.each do |rc| %>
 			<div class="form-group">
-				<label for="" id="label_<%= rc %>"><%= rc %></label>
+				<label for="" id="label_<%= rc.name %>"><%= rc.name %></label>
 				<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
 			</div>
 			<script>
-				if($('#label_<%= rc %>').text().length > 24) {
-					$('#label_<%= rc %>').css('font-size', '14px');
+				if($('#label_<%= rc.name %>').text().length > 24) {
+					$('#label_<%= rc.name %>').css('font-size', '14px');
 				}
-				if($('#label_<%= rc %>').text().length > 27) {
-					$('#label_<%= rc %>').css('font-size', '12px');
+				if($('#label_<%= rc.name %>').text().length > 27) {
+					$('#label_<%= rc.name %>').css('font-size', '12px');
 				}
-				if($('#label_<%= rc %>').text().length > 33) {
-					$('#label_<%= rc %>').css('font-size', '10px');
+				if($('#label_<%= rc.name %>').text().length > 33) {
+					$('#label_<%= rc.name %>').css('font-size', '10px');
 				}
 			</script>
 		<% end %>
@@ -42,13 +42,13 @@
 	setTimeout(function() {
 		beginTimer();
 	},1000);
-	
+
 	function beginTimer() {
 		var seconds = 15;
 		var beginTimer = setInterval(function() {
 			$('#rate_timer').text(seconds + 's');
 			if (seconds == 0) {
-			  redirect();
+				redirect();
 			}
 			seconds--;
 		},1000)
@@ -62,7 +62,7 @@
         if (e.key === ' ' || e.key === 'Spacebar') {
             redirect();
         };
-    }) 
+    })
 	$('input[type="range"]').rangeslider({
 		polyfill: false,
 		rangeClass: 'rangeslider',
@@ -71,7 +71,7 @@
     	verticalClass: 'rangeslider--vertical',
     	fillClass: 'rangeslider__fill',
     	handleClass: 'rangeslider__handle',
-		
+
 		// Callback function
     	onInit: function() {},
 

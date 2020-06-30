@@ -4,7 +4,7 @@ Rails.application.routes.draw do
       }
   mount ActionCable.server => '/cable'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-	
+
   root 'landing#index'
 
   get 'product/', to: 'landing#product', as: 'product'
@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get 'datenschutz', to: 'landing#datenschutz', as: 'datenschutz'
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
- 
+
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:pitch_id/edit', to: 'dashboard#edit_pitch', as: 'dashboard_edit_pitch'
   get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
-	
+
   put 'pitches/:pitch_id/tasks/:task_id/setOrder/:order', to: 'pitches#set_order'
   post 'task/:task_id/task_media/new', to: 'pitches#create_task_media', as: 'create_task_media'
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'
@@ -42,21 +42,21 @@ Rails.application.routes.draw do
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
-  
 
-	
+
+
   get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'
   get 'dashboard/company/edit', to: 'dash_company#company', as: 'company_dash_edit'
   get 'dashboard/company/departments', to: 'dash_company#departments', as: 'company_dash_departments'
   get 'dashboard/company/departments/:department_id', to: 'dash_company#department', as: 'company_dash_department'
-	
+
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"
   get 'backoffice/companies/:company_id', to: 'backoffice#companies', as: "backoffice_company"
   get 'backoffice/catchwords', to: 'backoffice#catchwords', as: 'backoffice_catchwords'
   get 'backoffice/objections', to: 'backoffice#objections', as: 'backoffice_objections'
   get 'backoffice/ratings', to: 'backoffice#ratings', as: 'backoffice_ratings'
-	
+
   # COMPANY
   post 'companies/register', to: 'company#register', as: 'register_company'
   post 'companies/new', to: 'company#new', as: 'new_company'
@@ -64,24 +64,26 @@ Rails.application.routes.draw do
   post 'companies/:company_id/edit', to: 'company#edit', as: 'edit_company'
   get 'companies/:company_id/destroy', to: 'company#destroy', as: 'destroy_company'
   put 'companies/:company_id/edit_logo', to: 'company#edit_logo', as: 'edit_logo_company'
-	
+
   #GAME DESKTOP
   get 'games/:game_id/join', to: 'game_desktop#join', as: 'gd_join'
-	
+
   get 'games/game', to: 'game_desktop#game', as: "gd_game"
   get 'games/game/set_slide/:slide', to: 'game_desktop#set_slide', as: 'gd_set_slide'
   get 'games/game/set_state', to: 'game_desktop#set_state', as: 'gd_set_state'
   get 'games/game/repeat', to: 'game_desktop#repeat', as: 'gd_repeat'
   get 'games/game/ended', to: 'game_desktop#ended', as: 'gd_ended'
-	
+
   #GAME MOBILE
   get ':password', to: 'game_mobile#welcome', as: 'gm'
   get 'mobile/game/new_user', to: 'game_mobile#new_name', as: 'gm_new_name'
   get 'mobile/games/login', to: 'game_mobile#login', as: 'gm_login'
   get 'mobile/games/turns/:turn_id/delete', to: 'game_mobile#delete_turn', as: 'gm_delete_turn'
-  get 'mobile/games/turns/:turn_id/set_current', to: 'game_mobile#set_current', as: 'gm_set_current'
-  
-  get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'	
+  put 'mobile/games/turns/:turn_id/delete_task', to: 'game_mobile#delete_task_user', as: 'gm_delete_task'
+  get 'mobile/games/turns/:turn_id/logout', to: 'game_mobile#logout', as: 'gm_logout'
+  get 'mobile/games/turns/:turn_id/task/:task_id', to: 'game_mobile#set_task_user', as: 'gm_set_task_user'
+
+  get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   put 'mobile/game/set_timer', to: 'game_mobile#set_timer', as: 'gm_set_timer'
   put 'mobile/game/send_emoji', to: 'game_mobile#send_emoji', as: 'gm_send_emoji'
@@ -93,8 +95,8 @@ Rails.application.routes.draw do
   get 'mobile/game/repeat', to: 'game_mobile#repeat', as: 'gm_repeat'
   get 'mobile/game/ended', to: 'game_mobile#ended', as: 'gm_ended'
   get 'mobile/game/error', to: 'game_mobile#error', as: 'gm_error'
-	
-	
+
+
   # DEPARTMENT
   post 'departments/new', to: 'department#new', as: "new_department"
   post 'department/:department_id/edit', to: 'department#edit', as: 'edit_department'
@@ -113,14 +115,14 @@ Rails.application.routes.draw do
   put 'games/pitches/:pitch_id/favorite', to: 'games#favorite_pitch', as: 'favorite_pitch'
   get 'games/pitches/:pitch_id/destroy_pitch', to: 'games#destroy_pitch', as: 'delete_pitch'
   post 'games/:game_id/set_rating_user', to: 'games#rating_user', as: 'set_rating_user'
-	
+
   #TEAM
   post 'teams/create', to: 'teams#create', as: 'new_team'
   post 'teams/:team_id/edit', to: 'teams#edit', as: 'edit_team'
   get 'teams/:team_id/destroy', to: 'teams#destroy', as: 'destroy_team'
   put 'teams/:team_id/add/user/:user_id', to: 'teams#add_user'
   get 'teams/:team_id/delete/user/:user_id',to: 'teams#delete_user', as: 'delete_user_from_team'
-	
+
   #USER
   post 'users/create', to: 'users#create', as: 'new_user'
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
@@ -131,7 +133,7 @@ Rails.application.routes.draw do
   put 'users/:user_id/make_department_admin', to: 'users#department_admin', as: 'make_department_admin'
   put 'users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
   put 'users/:user_id/make_user', to: 'users#user', as: 'make_user'
-	
+
   #Customize
   post 'lists/new', to: 'customize#new_list', as: 'new_list'
   post 'lists/:list_id/edit', to: 'customize#edit_list', as: 'edit_list'
@@ -144,12 +146,12 @@ Rails.application.routes.draw do
   get 'delete/:type/:list/:id', to: 'customize#deleteEntry', as: 'delete_entry'
   get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
   get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
-	
+
   #Comments
   post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'
   post 'turns/:turn_id/comments/:comment_id/update', to: 'comments#update', as: 'update_comment'
   get 'turns/:turn_id/comments/:comment_id/destroy', to: 'comments#destroy', as: 'destroy_comment'
-	
+
   #VIDEOS
   post 'videos/new', to: 'video#new', as: "new_video"
   post 'videos/:video_id/edit', to: 'video#edit', as: 'edit_video'

@@ -15,16 +15,16 @@
 <style>
 	<% if @company %>
 	:root {
-	  --custcolor: 255,0,0;
-	  --btncolor: 255,0,0;
-	}
-	<% else %>
-	:root {
 	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
 	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
 	}
+  <% else %>
+  :root {
+	  --custcolor: 69,177, 255;
+	  --btncolor: 29, 218, 175;
+	}
 	<% end %>
-	
+
 </style>
 <body>
 	<section id="navbar">
@@ -34,28 +34,41 @@
 		<% else %>
 		<%= @game.team.name %>
 			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' %>
-				<% if @game && @game.state == 'play' %>
-				<%= link_to '', gm_set_state_path('', state: 'rate'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
-				<% else %>
-				<%= link_to '', gm_set_state_path('', state: 'bestlist'), class: 'nav-i fas fa-step-forward', id: 'pitch-btn', data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
-				<% end %>
 				<div class="menu" onclick="toggleMenu()">
-					<i class="fas fa-bars"></i>
+					<div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
 				</div>
-			<% else %>
-				<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company' %>
+			<% elsif @game && @admin && @game.game_turns.find_by(user_id: @admin.id) %>
+        <%= link_to '', gm_logout_path(@game.game_turns.find_by(user_id: @admin.id)), class: 'nav-i fas fa-step-forward', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
 			<% end %>
 		<% end %>
 	</section>
 	<section id="menu">
+    <%= image_tag 'logos/peterpitch.png', class: 'logo' %>
 		<i class="fas fa-times close" onclick="toggleMenu()"></i>
 		<% if @task && @task.objection_list && @game.state == 'play' %>
 		<div class="link" onclick="toggleObjections()">Einwände</div>
 		<% end %>
 		<% if @pitch %>
-		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation</div>
+		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation <i class="fas fa-chevron-right next"></i></div>
 		<% end %>
-		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Spielerliste</div>
+		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Spielerliste <i class="fas fa-chevron-right next"></i></div>
+    <% if @game && @game.state == 'play' %>
+    <div class="link end-pitch">
+      <i class="fas fa-sign-out-alt"></i>
+      Pitch beenden
+      <i class="fas fa-chevron-right next">
+      <%= link_to '', gm_set_state_path('', state: 'rate'), data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
+    </div>
+
+    <% end %>
+    <div class="link end">
+      <i class="fas fa-sign-out-alt"></i>
+      Pitchrunde beenden
+      <i class="fas fa-chevron-right next"></i>
+      <%= link_to '', gm_set_state_path('', state: 'bestlist'), data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
+    </div>
 	</section>
 	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
@@ -75,52 +88,100 @@
 	<% if @pitch %>
 	<section id="nav-menu">
 		<div class="heading">Folienübersicht</div>
-		<div class="subheading">klicke auf eine Folie, um zu dieser zu springen</div>
+		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
+    <div class="back" onclick="toggleNav()">
+      <i class="fas fa-chevron-left"></i>zum Menü
+    </div>
 		<i class="fas fa-times close" onclick="toggleNav()"></i>
 		<% @pitch.task_orders.order(:order).each do |t| %>
-		<div class="link">
-    		<div class="slide"><%= t.order %></div>
+		<div class="link <%= @game.current_task == t.order ? 'selected' : '' %>" id="task_<%= t.order %>">
+        <div class="title"><%= t.task.title && t.task.title != '' ? t.task.title : '' %></div>
 	    	<div class="preview">
+          <div class="slide"><%= t.order %></div>
+          <% if @game.game_turns.find_by(task_id: t.task_id) %>
+            <% this_turn = @game.game_turns.find_by(task_id: t.task_id) %>
+            <% if this_turn.user.avatar? %>
+              <div class="user"><%= image_tag this_turn.user.avatar.url %></div>
+            <% else %>
+              <div class="user"><%= this_turn.user.fname[0].capitalize + this_turn.user.lname[0].capitalize %></div>
+            <% end %>
+          <% end %>
 	    		<% if t.task.task_medium && t.task.task_medium.video? %>
-	    		<%= image_tag t.task.task_medium.video.thumb.url %>
+	    		   <%= image_tag t.task.task_medium.video.thumb.url %>
 	    		<% elsif t.task.task_medium && t.task.task_medium.image? %>
-	    		<%= image_tag t.task.task_medium.image.url %>
+	    		   <%= image_tag t.task.task_medium.image.url %>
 	    		<% else %>
-	    		<%= image_tag 'fallback/PlaceholderPP.png' %>
+	    		   <%= image_tag 'fallback/PlaceholderPP.png' %>
 	    		<% end %>
 	    	</div>
-	    	<div class="title">
-	    		<% if t.task.title && t.task.title != '' %>
-	    		<%= t.task.title %>
-	    		<% end %>
-	    	</div>
-			<%= link_to '', gm_set_slide_path(t.order) %>
+
+        <div class="links" %>
+            <% if t.task.task_type != 'slide' %>
+              <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump' %>
+              <% if @game.game_turns.find_by(task_id: t.task_id) %>
+                <div class="user" onclick="deleteUser(<%= this_turn.id %>)">User entfernen</div>
+              <% else %>
+                <a href="?this_task=<%= t.task_id %>" class="user">User auswählen</a>
+              <% end %>
+            <% else %>
+            <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump center' %>
+            <% end %>
+        </div>
 		</div>
 		<% end %>
 	</section>
+  <% if params[:this_task] %>
+    <section id="task_user-menu">
+        <div class="heading">Userliste</div>
+        <div class="subheading">Wer soll diese Task erledigen?</div>
+        <div class="back" onclick="toggleTaskUser()"><i class="fas fa-chevron-left"></i>zur Folienübersicht</div>
+        <% @game.game_turns.where(play: true, played: false).each do |t| %>
+        <% this_turn = @game.game_turns.where(played: false, task_id: params[:this_task]).first %>
+        <% if t != this_turn %>
+        <div class="user">
+          <div class="avatar">
+            <% if t.user.avatar? %>
+              <%= image_tag t.user.avatar.url %>
+            <% else %>
+              <div class="circle"><%= t.user.fname[0].capitalize + t.user.lname[0].capitalize %></div>
+            <% end %>
+            </div>
+            <div class="name">
+              <%= t.user.fname + ' ' + t.user.lname %>
+            </div>
+            <% if t.task %>
+            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task]), class: 'fas fa-chevron-right add-user', data: {confirm: 'Der User ist schon einer anderen task zugeornet. Willst du das überschreiben?'} %>
+            <% else %>
+            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task]), class: 'fas fa-chevron-right add-user' %>
+            <% end %>
+        </div>
+        <% end %>
+        <% end %>
+    </section>
+  <% end %>
 	<section id="user-menu">
 		<div class="heading">Userliste</div>
-		<div class="subheading">Wer kommt noch dran?</div>
-		<i class="fas fa-times close" onclick="toggleUser()"></i>
-		<% @game.game_turns.playable.each do |gt| %>
+		<div class="subheading">Wer hat noch keine Task?</div>
+		<div class="back" onclick="toggleUser()"><i class="fas fa-chevron-left"></i>zum Menu</div>
+		<% @game.game_turns.where(play: true, task_id: nil).each do |gt| %>
 		<div class="user">
+      <div class="avatar">
+        <% if gt.user.avatar? %>
+          <%= image_tag gt.user.avatar.url %>
+        <% else %>
+          <div class="circle"><%= gt.user.fname[0].capitalize + gt.user.lname[0].capitalize %></div>
+        <% end %>
+      </div>
 			<div class="name">
-				<div class="avatar">
-					<% if gt.user.avatar? %>
-						<%= image_tag gt.user.avatar.url %>
-					<% else %>
-						<div class="circle"><%= gt.user.fname[0].capitalize + gt.user.lname[0].capitalize %></div>
-					<% end %>
-				</div>
+
 				<%= gt.user.fname + ' ' + gt.user.lname %>
 			</div>
-			<%= link_to 'nächster Pitcher', gm_set_current_path(gt), class: 'next' %>
-			<%= link_to 'entfernen', gm_delete_turn_path(gt),class: 'remove', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+      <%= link_to '', gm_delete_turn_path(gt),class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
 		</div>
 		<% end %>
 	</section>
 	<% end %>
-	
+
 	<% if flash[:alert] %>
 	<div class="flash-alert">
 		<div class="heading">Fehler!</div>
@@ -128,7 +189,7 @@
 		<div class="text"><%= flash[:alert] %></div>
 	</div>
 	<% end %>
-	
+
 <svg viewbox= "0 0 316 316" style="position: absolute; opacity: .3; left: -200px; height: 350px; z-index: 10;">
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
 </svg>
@@ -139,20 +200,48 @@
 
 
 <script>
+  function deleteUser(tID) {
+    var url = '/mobile/games/turns/' + tID + '/delete_task';
+    $.ajax({
+      url: url,
+      type: 'put',
+      cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+          $('#task_' + res.order + ' .user').remove();
+          $('#task_' + res.order + ' .links .user').remove();
+          var userDiv = "<a href='?this_task="+ res.task + "' class='user'>User auswählen</a>"
+          $('#task_' + res.order + ' .links').append(userDiv);
+			}
+    })
+  }
+  function toggleTaskUser() {
+    $('#task_user-menu').toggle();
+    $('#nav-menu').toggle();
+  }
 	function hideFlash() {
 		$('.flash-alert').hide();
 	}
 	function toggleUser() {
-		$('#menu').hide();
+		$('#menu').toggle();
 		$('#user-menu').toggle();
 	}
 	function toggleMenu() {
 		$('#menu').toggle();
 	}
 	function toggleNav() {
-		$('#menu').hide();
+		$('#menu').toggle();
 		$('#nav-menu').toggle();
 	}
+  <% if params[:slide] %>
+    $('#nav-menu').show();
+    $('#nav-menu').animate({
+      scrollTop: $('#task_<%= params[:slide] %>').offset().top
+    }, 100)
+  <% end %>
 	posBottom();
 	window.onresize = function(){posBottom()};
 	function posBottom() {
@@ -161,7 +250,7 @@
 		$('body').css("height", height)
 		$('body').css("width", width)
 	}
-	new PerfectScrollbar('#objection-list')
+
 	function toggleObjections() {
 		$('#menu').hide();
 		$("#objections-menu").toggle()
@@ -173,7 +262,7 @@
 			data: {objection: oID},
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
-				$('#objections-menu').hide();	
+				$('#objections-menu').hide();
 			},
 		});
 	}
