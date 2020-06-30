@@ -760,6 +760,10 @@
             display: flex;
             justify-content: space-between;
 
+            .title {
+                line-height: 4;
+            }
+
             .form-group {
                 width: 22vh;
 
@@ -1605,6 +1609,8 @@ input[type="file"] {
 }
 
 #task_title {
+    width: calc(100% - 4vh) !important;
+    padding: 0 2vh !important;
     height: 8vh !important;
 }
 
