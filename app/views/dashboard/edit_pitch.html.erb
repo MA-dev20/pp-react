@@ -347,9 +347,15 @@
 
 
 	$('.task-pitch').click(function () {
-		$('.option-modal').hide()
+		$('.option-modal').hide();
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div').hide();
 		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
+
+		//Browse pitch tasks 
+		$('.pitches-header').text('Pitches');
+		$('.pitch-tasks-list .ps__rail-y').hide();
+		$('.pitch-list .ps__rail-y').show();
+		$('#searchPitch').attr('data-pitch-id', '');
 	})
 
 	$('.open-modal').click(function (e) {

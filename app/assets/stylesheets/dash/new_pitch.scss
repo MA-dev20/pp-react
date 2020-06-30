@@ -90,7 +90,7 @@
             width: 15vw; height: 73vh;
 			.card, .task-card {
                 cursor: pointer;
-				left: .5vw; width: 13vw; height: 31.5vh;
+				left: .5vw; width: 13.6vw; height: 31.5vh;
 				padding: 0;
 				box-sizing: border-box;
 				box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
@@ -304,7 +304,11 @@
 		}
     }
 
-    
+    .pitch-tasks-list {
+        position: relative;
+        height: 61vh;
+    }
+
     .right-side-card {
         height: 61vh;
         width: 100%;
@@ -323,17 +327,34 @@
                     .btn {
                         height: 4.5vh;
                         line-height: 4.5vh;
-                        width: 25.2vh;
+                        width: 26vh;
+                        width: 92%;
                         margin: 1vh 1.1vh;
                     }
                 }
 
+                .title {
+                    line-height: 1.5vh;
+                    height: 2vh;
+                    font-weight: normal;
+                    font-size: 1.7vh;
+                }
+
                 .thumb {
-                    padding-top: 0.5vw;
+                    // padding-top: 0.5vw;
 
                     .length {
-                        top: 1.8vh;
+                        top: 1vh;
                     }
+                }
+
+                .thumb {
+                    padding-top: 0;
+                    height: 12.5vh;
+                }
+            
+                .thumb-border {
+                    height: 12vh;
                 }
             }
         }
@@ -948,7 +969,7 @@
         label {
             display: block;
             line-height: 5vh;
-            font-size: 2vh;
+            font-size: 1.5vh;
             font-weight: bold;
         }
 
@@ -1102,6 +1123,18 @@
     
         .card-heading {
             display: flex;
+        }
+
+        .card-img {
+            width: 10vh;
+            position: absolute;
+            top: 1.3vh;
+            left: 2vh;
+        }
+
+        .row2 .card-img {
+            left: 2.2vh;
+            top: 1.3vh;
         }
     
         .card-heading h2 {
@@ -1571,4 +1604,25 @@ input[type="file"] {
     // border-top: 0.1vh solid #CFD3D6;
     border-top: 1px solid #CFD3D6;
     padding: 1.5vh;
+}
+
+.browse-tasks-partial {
+    position: relative;
+    top: 1vh;
+    height: 78vh !important;
+    display: block;
+    background-color: white;
+    border-radius: 1vh;
+    box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
+}
+
+.task-card {
+    .thumb {
+        padding-top: 0;
+        height: 12.5vh;
+    }
+
+    .thumb-border {
+        height: 12vh;
+    }
 }

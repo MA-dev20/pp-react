@@ -1,9 +1,10 @@
 <div id="pitches" class="browse-tasks-partial">
     <div class="search">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search for pitches tasks" id="searchPitch" class="form-field">
+        <input type="text" placeholder="Search for pitches tasks" data-pitch-id="" id="searchPitch"
+            class="form-field search-field">
     </div>
-    <h3>Pitches</h3>
+    <h3 class="pitches-header">Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches pitch-list">
         <% pitches.each do |pitch| %>
@@ -21,42 +22,73 @@
                 Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
             </div>
             <div class="buttons">
-                <button style="position: relative; top: 2vh;" data-task="pitchTasks<%= pitch.id %>"
-                    class="btn reversed browse-tasks">Browse
+                <button style="position: relative; top: 2vh;" data-pitch-id="<%= pitch.id %>"
+                    data-task="pitchTasks<%= pitch.id %>" data-name="<%= pitch.title %>"
+                    data-tasks-count="<%= pitch.tasks.count > 4 %>" class="btn
+                    reversed browse-tasks">Browse
                     tasks</button>
             </div>
         </div>
         <% end %>
     </div>
-    <% pitches.each do |pitch| %>
-    <div class="right-side-card hide pitch-tasks-div" id="pitchTasks<%= pitch.id %>">
-        <div class="right-tasks">
-            <% pitch.tasks.each do |task| %>
-            <div class="task-card">
-                <div class="thumb">
-                    <% if task.task_medium&.image&.present? %>
-                    <%= image_tag task.task_medium&.image&.url %>
+    <div class="pitch-tasks-list">
+        <% pitches.each do |pitch| %>
+        <div class="right-side-card hide pitch-tasks-div" id="pitchTasks<%= pitch.id %>">
+            <div class="right-tasks">
+                <% pitch.tasks.each_with_index do |task, index| %>
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="name"><%= index + 1 %>. Task</div>
+                    </div>
+                    <div class="task-subtitle title">
+                        <%= task.title&.titleize %>
+                    </div>
+                    <% if task.task_medium && task.task_medium.video? %>
+                    <% image_url = task.task_medium.video.thumb.url %>
+                    <% elsif task.task_medium && task.task_medium.image? %>
+                    <% image_url = task.task_medium.image.url %>
                     <% else %>
-                    <%= image_tag 'dash/Image.png' %>
+                    <% image_url = nil %>
                     <% end %>
-                    <div class="length"><%= task.time %></div>
+                    <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
+                        <% if task.task_medium && task.task_medium.video? %>
+                        <%= image_tag task.task_medium.video.thumb.url, class: 'image' %>
+                        <% elsif task.task_medium && task.task_medium.image? %>
+                        <%= image_tag task.task_medium.image.url, class: 'image' %>
+                        <% else %>
+                        <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
+                        <% end %>
+                        <% if task.time %>
+                        <div class="length">
+                            <%= (task.time / 60).to_s %>:<%= (task.time % 60) < 10 ? '0' + (task.time % 60).to_s : (task.time % 60).to_s %>
+                        </div>
+                        <% else %>
+                        <div class="length">1:20</div>
+                        <% end %>
+                    </div>
+                    <div class="task-subtitle">Rating criteria:</div>
+                    <div class="rating-criteria">
+                        <% criteria_count = task&.rating_list&.rating_criteria&.count %>
+                        <% if task.rating_list %>
+                        <% task.rating_list.rating_criteria.each do |rating| %>
+                        <div class="criterium"><%= rating.name %></div>
+                        <% end %>
+                        <% end %>
+                        <% criteria_count = 4 - (criteria_count.present? ? criteria_count : 0) %>
+                        <% criteria_count.times do |time| %>
+                        <div class="criterium">-</div>
+                        <% end %>
+                    </div>
+                    <div class="buttons">
+                        <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
+                    </div>
                 </div>
-                <div class="title"><%= task.title %></div>
-                <div class="sub-title">Rating Criteria</div>
-                <div class="rating-criteria">
-                    <% task.rating_list&.rating_criteria&.each do |rating| %>
-                    <div class="criterium"><%= rating.name %></div>
-                    <% end %>
-                </div>
-                <div class="buttons">
-                    <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
-                </div>
+                <%#= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
+                <% end %>
             </div>
-            <%#= render partial: 'browse_task_fields', locals: { task: task, pitch_id: pitch.id } %>
-            <% end %>
         </div>
+        <% end %>
     </div>
-    <% end %>
 </div>
 
 <script>
@@ -65,14 +97,35 @@
 
     $("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
-        $(".pitch-list .card .title").filter(function () {
-            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+        if ($(this).attr('data-pitch-id') === '') {
+            $(".pitch-list .card .title").filter(function () {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        } else {
+            var pitch_id = $(this).attr('data-pitch-id');
+            $(`#pitchTasks${pitch_id} .task-card .title`).filter(function () {
+                $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        }
     });
+
     $('fake-form').hide();
 
     $('.browse-tasks').on('click', function (e) {
+        // $('#searchPitch').attr('id', 'searchTask');
+        $('#searchPitch').val('');
+        $('#searchPitch').attr('data-pitch-id', `${$(e.target).attr('data-pitch-id')}`);
+
         let $taskId = $(e.target).attr('data-task');
+        $('.pitches-header').text($(e.target).attr('data-name'));
+        if ($(e.target).attr('data-tasks-count') === 'true') {
+            new PerfectScrollbar('.pitch-tasks-list');
+            $('.pitch-tasks-list .ps__rail-y').show();
+        } else {
+            $('.pitch-tasks-list .ps__rail-y').hide();
+        }
+        $('.pitch-list .ps__rail-y').hide();
+
         $('.pitch-list').hide();
         $(`#${$taskId}`).show();
     });
