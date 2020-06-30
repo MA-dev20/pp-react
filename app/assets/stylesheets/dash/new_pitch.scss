@@ -586,20 +586,25 @@
                 padding: 0.5vh;
             }
 
-            .ow-list {
-                height: 7vh;
+            .words-list {
+                .ps__rail-y {
+                    height: 0 !important;
+                }
+                // .ps__rail-y, .ps__thumb-y {
+                //     // background: red !important;
+                // }  
                 .ps__thumb-y {
-                    top: 23vh !important;
-                    height: 8vh !important;
-                }               
+                    top: 25vh !important;
+                }    
+            }
+
+            .ow-list {
+                height: 10vh;             
             }
 
             .cw-list {
+                // position: relative;
                 height: 14vh;
-                .ps__thumb-y {
-                    top: 23vh !important;
-                    height: 8vh !important;
-                }
             }
 
             .words-wrapper {

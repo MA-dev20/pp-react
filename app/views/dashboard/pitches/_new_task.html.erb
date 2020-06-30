@@ -95,7 +95,11 @@
 					<% end %>
 				</div>
 				<script>
-					new PerfectScrollbar('.cw-list');
+					var cw_count = '<%= @task.catchword_list&.catchwords&.count %>'
+					console.log(cw_count);
+					if (cw_count !== '' && (Number(cw_count) > 4)) {
+						new PerfectScrollbar('.cw-list');
+					}
 				</script>
 				<div class="info">If more than one catchword is chosen, we will choose one of them randomly for this
 					task.
@@ -401,7 +405,10 @@
 			<% end %>
 		</div>
 		<script>
-			new PerfectScrollbar('.ow-list');
+			var ow_count = '<%= @task.objection_list&.objections&.count %>'
+			if (ow_count !== '' && (Number(ow_count) > 3)) {
+				new PerfectScrollbar('.ow-list');
+			}
 		</script>
 		<% end %>
 	</div>
