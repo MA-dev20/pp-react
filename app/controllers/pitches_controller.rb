@@ -134,9 +134,11 @@ class PitchesController < ApplicationController
 
   def create_task_media
 	@pitch = Pitch.find(params[:pitch_id])
-	@task = Task.find(params[:task_id])
 	@task_medium = TaskMedium.create(media_params)
-	@task.update(task_medium_id: @task_medium.id)
+	if params[:task_id].present?
+		@task = Task.find(params[:task_id])
+		@task.update(task_medium_id: @task_medium.id)
+	end
 	if @task_medium.media_type == 'audio'
 	#   render json: {id: @task_medium.id, type: @task_medium.media_type, preview: @task_medium.audio.url, title: @task_medium.audio.identifier}
 	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)

@@ -69,13 +69,16 @@
 				</div>
 				<% else %>
 				<div class="task-title">
-					<% if t.task.title && t.task.title != '' %>
+					<!-- <% if t.task.title && t.task.title != '' %>
 					<div class="name"><%= t.order.to_s + '. ' + t.task.title %></div>
-					<% else %>
+					<% end %> -->
 					<div class="name"><%= t.order %>. Slide</div>
-					<% end %>
+
 					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
 					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
+				</div>
+				<div class="task-subtitle">
+					<%= t.task.title&.titleize %>
 				</div>
 				<div class="thumb slide">
 					<% if t.task.task_medium && t.task.task_medium.video? %>
