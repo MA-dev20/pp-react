@@ -191,6 +191,7 @@
 	var player = document.getElementById('player');
 	var file = NaN;
 	var mediaRecorder;
+	var video_upload_click = false;
 	var handleSuccess = function (stream) {
 		$('.videorecord i').removeClass('fa-dot-circle');
 		$('.videorecord i').addClass('fa-stop-circle');
@@ -228,6 +229,13 @@
 			$('#stopVideo').css('display', 'inline-block');
 			$('#playVideo').css('display', 'inline-block');
 			stream = NaN;
+
+			if (video_upload_click) {
+				var globalForm = new FormData();
+				globalForm.append('task_medium[video]', file);
+				globalForm.append('task_medium[media_type]', 'video');
+				sendMedia(globalForm);
+			}
 		});
 		document.getElementById('stopVideo').addEventListener('click', function () {
 			mediaRecorder.stop();
@@ -235,14 +243,20 @@
 		document.getElementById('videoUpload').addEventListener('click', function (e) {
 			e.preventDefault();
 			if (file != NaN) {
-				var globalForm = new FormData();
-				// globalForm.append('file', file);
-				globalForm.append('task_medium[video]', file);
-				globalForm.append('task_medium[media_type]', 'video');
-				sendMedia(globalForm);
-				// sendVideo(globalForm);
+				$('#videoModal').hide()
+				if ($('#record_video').hasClass('pulse')) {
+					video_upload_click = true;
+					mediaRecorder.stop();
+				} else {
+					video_upload_click = false;
+					var globalForm = new FormData();
+					globalForm.append('task_medium[video]', file);
+					globalForm.append('task_medium[media_type]', 'video');
+					sendMedia(globalForm);
+				}
 			} else {
 				$('#videoModal').hide()
+				video_upload_click = false;
 			}
 		})
 	}
@@ -448,7 +462,8 @@
 				<% end %>
 			}
 		})
-}
+	}
+
 	new PerfectScrollbar('#tasksScrollBar');
 	// $('.add-task-img').on('click', function () {
 	// 	$('.menu-box').toggle()

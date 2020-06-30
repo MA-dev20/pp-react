@@ -416,11 +416,7 @@
 	</div>
 </div>
 
-
-
-
 <script>
-
 
 	function showReactions() {
 		if ($('#reactionCheck').hasClass('fa-check-square')) {
@@ -433,6 +429,7 @@
 			$('#add_ol_form').show();
 		}
 	}
+
 	$('#add_rating_form').on('keypress', e => {
 		if (e.keyCode == 13) {
 			$('#add_rating_form').submit();
@@ -543,8 +540,6 @@
 			$('#add_video_form').submit();
 		}
 	}
-
-
 
 	var audioDropZone = $('.audio-drop-zone')
 	audioDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
