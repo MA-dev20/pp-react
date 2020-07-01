@@ -421,10 +421,12 @@
 		if ($('#reactionCheck').hasClass('fa-check-square')) {
 			$('#reactionCheck').removeClass('fa-check-square');
 			$('#reactionCheck').addClass('fa-square');
+			$('.add-reaction').css('height', '8vh');
 			$('#add_ol_form').hide();
 		} else {
 			$('#reactionCheck').removeClass('fa-square');
 			$('#reactionCheck').addClass('fa-check-square');
+			$('.add-reaction').css('height', '40vh');			
 			$('#add_ol_form').show();
 		}
 	}
