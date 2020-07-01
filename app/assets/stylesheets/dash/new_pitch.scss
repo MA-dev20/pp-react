@@ -433,7 +433,7 @@
 
             position: relative;
             float: right;
-            right: 3.1vh;
+            right: 3.4vh;
             top: -1.5vh; 
             // left: 10.7vw;
             width: 66vh;
@@ -802,7 +802,9 @@
             top: -1.5vh; 
             right: 1vw;
             height: 40vh;
-            width: 38vh;
+            width: 37vh;
+            min-width: 37vh;
+            // width: 100%;
 
             .far {
                 position: relative;
@@ -816,6 +818,7 @@
             }
 
             .ol-text-field {
+                float: none;
                 width: 31vh;
                 min-width: 32.5vh;
             }
@@ -827,7 +830,7 @@
 		}
 		.card.add-rating {
             position: relative;
-            right: 3.1vh;
+            right: 3.4vh;
             height: 24vh;
             width: 66vh;
             .form-group-wrapper {
@@ -868,6 +871,9 @@
 
         .add-reaction .form-group .sub-cs {
             // left: 7.4vh;
+            position: absolute;
+            right: -0.1vh;
+            top: 5.7vh;
         }
         .add-reaction, .catchword, .add-rating {
             .capsule-list {
