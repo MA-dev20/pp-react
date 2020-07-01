@@ -17,13 +17,14 @@
 				<div class="task-link" onclick="selectTask(<%= t.task_id %>)"></div>
 				<% if t.task.task_type != "slide" %>
 				<div class="task-title">
+					<div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
 					<% if !t.task.valide %>
 					<i class="fas fa-exclamation-triangle"></i>
 					<% end %>
 					<div class="name"><%= t.order %>. Task</div>
 					<!-- <i class="fas fa-circle"></i> -->
-					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
-					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
+					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
 				</div>
 				<div class="task-subtitle">
 					<%= t.task.title&.titleize %>
@@ -69,11 +70,8 @@
 				</div>
 				<% else %>
 				<div class="task-title">
-					<!-- <% if t.task.title && t.task.title != '' %>
-					<div class="name"><%= t.order.to_s + '. ' + t.task.title %></div>
-					<% end %> -->
+					<div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
 					<div class="name"><%= t.order %>. Slide</div>
-
 					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
 					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
 				</div>
@@ -171,6 +169,15 @@
 <script>
 		// $('#loaderModal').show();
 
+	// function removeSlide(e) {
+	// 	$(e.target).siblings('.hidden-remove-task').click();
+	// 	e.stopPropagation();
+	// }
+
+	// $('.remove-task').on('click', function(e) {
+	// 	e.preventDefault();
+	// 	e.stopPropagation();	
+	// })
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
 		$('#videoModal').hide();
@@ -393,7 +400,7 @@
 	$('.open-modal').click(function (e) {
 		// $('#new_pitch_form').show();
 		$('.remove-option').hide();
-		$(`.${$(this).data("modal")}`).show();
+		$(`.${$(this).data("modal")}`).toggle();
 	})
 
 	$('.close').click(function () {

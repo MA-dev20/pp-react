@@ -98,7 +98,10 @@
 				.task-link {
 					position: absolute;
 					top: 4vh; left: 0;
-					height: 18vh; width: 13vw;
+                    // height: 18vh; 
+                    // width: 13vw;
+                    height: 27.5vh;
+                    width: 14vw;
 					z-index: 10;
 				}
 				.task-title, .task-subtitle {
@@ -111,6 +114,14 @@
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
+
+                    .select-task-link {
+                        position: absolute;
+                        left: 0;
+                        width: 22.5vh;
+                        height: 4vh;
+                    }
+
 					.fa-exclamation-triangle {
 						color: red;
 						font-size: 2vh;
@@ -296,6 +307,7 @@
         }
 
 		.add-task {
+            z-index: 10;
 			position: absolute;
 			bottom: 2vh;
 			right: 2vh;
