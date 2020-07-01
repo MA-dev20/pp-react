@@ -209,7 +209,7 @@
 						<label><%= File.basename(@task.task_medium.image.url) %></label>
 						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 					</div>
-					<%= image_tag @task.task_medium.image.url %>
+					<%= image_tag @task.task_medium.image.url, class: 'preview-img-tag' %>
 					<% else %>
 					<img src="" alt="">
 					<% end %>
