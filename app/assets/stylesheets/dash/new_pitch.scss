@@ -215,12 +215,15 @@
                     border: 0.1vh solid #CFD3D6;
                 }
 				.thumb.slide {
-                    margin-top: 4vh;
+                    // margin-top: 4vh;
+                    height: 80%;
+                    width: 13vw;
 					img {
                         width: 100%;
                         height: 100%;
                         border-radius: 1vh;
-                        object-fit: cover;
+                        // object-fit: cover;
+                        object-fit: contain;
 					}
 				}
 				.title {
