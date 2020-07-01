@@ -87,7 +87,8 @@
 		
 		padding: 0;
 		.tasks, .right-tasks {
-            width: 15vw; height: 73vh;
+            width: 15vw; 
+            height: 82vh;
 			.card, .task-card {
                 cursor: pointer;
 				left: .5vw; width: 13.6vw; height: 31.5vh;
@@ -102,6 +103,7 @@
 				}
 				.task-title, .task-subtitle {
                     // width: 12vw;
+                    font-size: 2vh;
                     width: 12.7vw;
 					margin: 0 .5vw;
 					height: 3vh;
