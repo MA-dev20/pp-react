@@ -153,7 +153,7 @@
 						$(`.${type}-option`).removeClass('not-active').addClass('active');
 						$('.add-catchword .media-option').hide();
 						$(`.add-catchword .${type}.media-option`).show();
-						$('.catchword-heading .custom-select label').text(type);
+						$('.catchword-heading .custom-select label').text(type[0].toUpperCase() + type.slice(1));
 						$('.catchword-heading .media-options').toggle();
 					}
 
