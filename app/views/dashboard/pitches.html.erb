@@ -184,7 +184,13 @@
 
 <script>
 
-    new PerfectScrollbar('#pitch-list');
+    var pitches_count = '<%= @pitches&.count %>'
+    console.log(pitches_count)
+    if (pitches_count !== '') {
+        if (Number(pitches_count) >= 10) {
+            new PerfectScrollbar('#pitch-list');
+        }
+    }
 
     function handleClick(e) {
         if ($(e.target).attr('class') === 'card') {
