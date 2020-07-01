@@ -433,7 +433,7 @@
 
             position: relative;
             float: right;
-            right: 4vh;
+            right: 3.1vh;
             top: -1.5vh; 
             // left: 10.7vw;
             width: 66vh;
@@ -817,6 +817,7 @@
 
             .ol-text-field {
                 width: 31vh;
+                min-width: 32.5vh;
             }
 
             .title {
@@ -825,15 +826,8 @@
             }
 		}
 		.card.add-rating {
-			// position: absolute;
-            // top: 52vh;
-            // height: 24vh;
-            // width: 66vh;
-            // left: 10.7vw;
             position: relative;
-            // float: right;
-            right: 4vh;
-            // top: -1vh;
+            right: 3.1vh;
             height: 24vh;
             width: 66vh;
             .form-group-wrapper {
