@@ -594,13 +594,6 @@
                         top: 0vh;
 						padding-left: 4vh;
                     }
-
-                    // .remove {
-                    //     width: 18vh;
-					// 	right: 0;
-                    //     top: 6vh;
-					// 	line-height: 4vh;
-                    // }
                 }
             }
             
@@ -824,7 +817,7 @@
 
             .far {
                 position: relative;
-                top: 1.5vh;
+                top: 1vh;
                 font-size: 2vh;
             }
 
@@ -841,8 +834,16 @@
             }
 
             .title {
-                font-size: 1.7vh !important;
                 line-height: 4vh;
+            }
+
+            .reactions-title {
+                font-size: 2vh !important;
+            }
+
+            .ow-list-title {
+                font-size: 1.7vh !important;
+                line-height: 3vh;
             }
 		}
 		.card.add-rating {

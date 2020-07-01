@@ -363,7 +363,7 @@
 		<div class="checkbox-container">
 			<div class="form-group" id="show_ratings">
 				<div class="skip-election-group">
-					<label class="title">Reactions</label>
+					<label class="title reactions-title">Reactions</label>
 					<%#= image_tag 'dash/Checkbox.svg', onclick: "showReactions()" %>
 					<i class="far fa-check-square" id="reactionCheck" onclick="showReactions()"></i>
 				</div>
@@ -391,7 +391,7 @@
 			</div>
 		</div>
 		<% if @task.objection_list&.objections&.present? %>
-		<div class="title">List</div>
+		<div class="title ow-list-title">List</div>
 		<% end %>
 		<div class="words-list ow-list">
 			<% if @task.objection_list.present? %>
