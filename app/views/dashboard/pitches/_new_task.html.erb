@@ -297,7 +297,7 @@
 					style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
 					<% if @task.task_medium && @task.task_medium.audio? %>
 					<!-- <div class="audio-title"><%= @task.task_medium.audio.identifier %></div> -->
-					<div class="remove-option">
+					<div class="remove-option remove-option-audio">
 						<label><%= File.basename(@task.task_medium.audio.url) %></label>
 						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 					</div>

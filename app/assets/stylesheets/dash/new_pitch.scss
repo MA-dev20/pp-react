@@ -538,7 +538,6 @@
                         height: 5vh;
                         padding: 0 1.5vh;
                         position: absolute;
-                        // background: rgba(255, 255, 255, 0.3);
                         background: rgba(105, 222, 169, 1);
                         border-radius: 1vh;
                         z-index: 5555;
@@ -555,6 +554,10 @@
                             line-height: 2vh;
                             color: #fff;
                         }
+                    }
+
+                    .remove-option-audio {
+                        background: rgba(255, 255, 255, 0.3);
                     }
 					.remove {
                         position: relative;
@@ -832,8 +835,9 @@
 
             .ol-text-field {
                 float: none;
-                width: 31vh;
-                min-width: 32.5vh;
+                // width: 31vh;
+                width: 31.7vh;
+                // min-width: 32.5vh;
             }
 
             .title {
@@ -885,7 +889,7 @@
         .add-reaction .form-group .sub-cs {
             // left: 7.4vh;
             position: absolute;
-            right: -0.1vh;
+            right: -0.2vh;
             top: 5.7vh;
         }
         .add-reaction, .catchword, .add-rating {
