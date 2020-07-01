@@ -339,23 +339,21 @@
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
-					<%= f.text_field :rating1, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
-					<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+					<%= f.text_field :rating1, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria2.svg'%></div>
-					<%= f.text_field :rating2, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating2, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 			</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria3.svg'%></div>
-					<%= f.text_field :rating3, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
-					<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-rating add add-rating-btn' %>
+					<%= f.text_field :rating3, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria4.svg'%></div>
-					<%= f.text_field :rating4, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating4, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 			</div>
 			<% end %>
@@ -587,10 +585,18 @@
 		}
 	}
 
+	function changeInput(event) {
+		$('#add_rating_form').submit();
+	}
+
 	function looseFocus(event) {
-		event.preventDefault();
-		var formData = new FormData(document.getElementById('add_rl_form'));
-		commitList('rating', formData);
+		$(event.target)[0].placeholder = 'Type new rating criteria'
+		// if ($(event.target).val()) {
+		// 	$('#add_rating_form').submit();
+		// }
+		// event.preventDefault();
+		// var formData = new FormData(document.getElementById('add_rl_form'));
+		// commitList('rating', formData);
 	}
 	$('#add_rl_form').on('submit', function (e) {
 		e.preventDefault();
