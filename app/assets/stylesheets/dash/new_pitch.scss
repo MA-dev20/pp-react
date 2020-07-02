@@ -549,7 +549,8 @@
                         height: 5vh;
                         padding: 0 1.5vh;
                         position: absolute;
-                        background: rgba(105, 222, 169, 1);
+                        // background: rgba(105, 222, 169, 1);
+                        background: rgba(var(--custcolor), 0.8);
                         border-radius: 1vh;
                         z-index: 5555;
 
@@ -568,15 +569,12 @@
                     }
 
                     .remove-option-audio {
-                        background: rgba(255, 255, 255, 0.3);
+                        // background: rgba(255, 255, 255, 0.3);
+                        background: rgba(var(--custcolor), 0.8);
                     }
 					.remove {
                         position: relative;
                         float: right;
-                        // margin: 1.5vh;
-						// position: absolute;
-						// right: 10.5vw;
-						// top: 5vh;
 						color: #FFFFFF;
 						cursor: pointer;
                         font-size: 2vh;
