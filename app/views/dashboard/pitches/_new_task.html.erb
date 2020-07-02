@@ -3,8 +3,7 @@
 	<%= f.hidden_field :user_id, value: @admin.id %>
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
 </div>
-
-<div class="card time-limit">
+<div class="card time-limit hide">
 	<div class="title">Time limit</div>
 	<div class="subline">Set your time limit.</div>
 	<div class="form-group">
@@ -29,6 +28,23 @@
 <% end %>
 
 <div class="main-card-row1">
+	<div class="card time-limit">
+		<div class="title">Time limit</div>
+		<div class="subline">Set your time limit.</div>
+		<div class="form-group">
+			<div class="time-field">
+				<% if @task.time %>
+				<div class="time" id="set_task_time">
+					<%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? '0' + (@task.time % 60).to_s : (@task.time % 60).to_s %>
+				</div>
+				<% else %>
+				<div class="time" id="set_task_time">1:20</div>
+				<% end %>
+				<i class="fa fa-angle-up up" onclick="timeUp()"></i>
+				<i class="fa fa-angle-down down" onclick="timeDown()"></i>
+			</div>
+		</div>
+	</div>
 	<div class="add-cw-add-rating">
 		<div class="card add-catchword">
 			<% 

@@ -106,7 +106,7 @@
 				}
 				.task-title, .task-subtitle {
                     // width: 12vw;
-                    font-size: 2vh;
+                    // font-size: 2vh;
                     width: 12.7vw;
 					margin: 0 .5vw;
 					height: 3vh;
@@ -399,8 +399,8 @@
 			}
 		}
 		.form-group.title {
-			margin: 1vh 1vw;
-			width: 63vw;
+			margin: 1vh 0;
+			width: 65vw;
 		}
 		.card {
 			padding: 0 1vw;
@@ -416,15 +416,23 @@
 			}
 		}
 		.card.time-limit {
-			position: absolute;
-            left: 1vw; 
-            top: 9vh;
+			// position: absolute;
+            // left: 1vw; 
+            // top: 9vh;
+            position: relative;
+            top: -1.5vh;
             height: 16vh;
             width: 15vh;
+
+            .subline {
+                font-size: 1.5vh;
+            }
+
 			.form-group {
 				margin: 1vh 0;
 				.time-field {
-                    width: 5vw;
+                    // width: 5vw;
+                    width: 10.5vh;
                     border-color: #69DEA9;
                     .down, .up {
                         border-color: #69DEA9;
@@ -446,12 +454,12 @@
             // width: 66vh;
             // height: 43vh;
 
-            position: relative;
-            float: right;
-            right: 3.4vh;
+            // position: relative;
+            // float: right;
+            // right: 3.4vh;
             top: -1.5vh; 
             // left: 10.7vw;
-            width: 66vh;
+            width: 55vh;
             height: 43vh;
 
 			.btn-line {
@@ -647,6 +655,7 @@
             .form-group.fields {
                 .add-cw {
                     margin-right: 1.5vh;
+                    margin-left: 0.8vh;
                 }
             }
 			.form-group {
@@ -747,8 +756,9 @@
 
 			}
 			.info {
-                margin-top: 0.5vh;
-				font-size: 1.5vh;
+                margin-top: 0.3vh;
+                width: 101%;
+				font-size: 1.4vh;
 				font-weight: 500;
             }
             
@@ -780,6 +790,15 @@
                 }
             }
         }
+
+        .catchword {
+            .form-group .sub-cs {
+                position: absolute;
+                right: -0.2vh;
+                top: 5.6vh;
+                width: 19.8vh;
+            }
+        }
         
         .catchword-heading {
             display: flex;
@@ -790,10 +809,11 @@
             }
 
             .form-group {
-                width: 22vh;
+                width: 15vh;
 
                 .sub-cs {
                     left: unset;
+                    width: 17.8vh;
                 }
             }
 
@@ -804,19 +824,13 @@
         }
 
 		.card.add-reaction {
-			// position: absolute;
-			// top: 6.5vh; right: 1vw;
-            // height: 40vh;
-            // width: 38vh;
-
             position: relative;
-            float: right;
+            // float: right;
             top: -1.5vh; 
-            right: 1vw;
             height: 40vh;
-            width: 37vh;
-            min-width: 37vh;
-            // width: 100%;
+            width: 32vh;
+            // min-width: 37vh;
+            min-width: 32vh;
 
             .far {
                 position: relative;
@@ -831,9 +845,9 @@
 
             .ol-text-field {
                 float: none;
-                // width: 31vh;
-                width: 31.7vh;
-                // min-width: 32.5vh;
+                width: 84%;
+                // width: 31.7vh;
+                // width: 27.7vh;
             }
 
             .title {
@@ -850,10 +864,10 @@
             }
 		}
 		.card.add-rating {
-            position: relative;
-            right: 3.4vh;
+            // position: relative;
+            // right: 3.4vh;
             height: 24vh;
-            width: 66vh;
+            width: 55vh;
             .form-group-wrapper {
                 display: flex;
             }
@@ -1403,6 +1417,10 @@ input[type="file"] {
     opacity: 0.2;
 }
 
+.task-name {
+    font-weight: 600;
+}
+
 #content {
 
     #pitchModal {
@@ -1627,13 +1645,15 @@ input[type="file"] {
 .main-card-row1 {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    margin-left: 27.2vh;
+    // justify-content: flex-end;
+    justify-content: space-between;
+    // margin-left: 27.2vh;
 }
 
 .add-cw-add-rating {
     display: flex;
     flex-direction: column;
+    margin: 0 1vh;
 }
 
 #task_title {

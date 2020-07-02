@@ -26,7 +26,7 @@
 					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
 					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
 				</div>
-				<div class="task-subtitle">
+				<div class="task-subtitle task-name">
 					<%= t.task.title&.titleize %>
 					<%# media_type = t.task.task_medium&.media_type&.titleize %>
 					<%#= media_type = media_type.present? ? media_type : t.task.task_type&.titleize %>
@@ -75,7 +75,7 @@
 					<%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
 					<%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
 				</div>
-				<div class="task-subtitle">
+				<div class="task-subtitle task-name">
 					<%= t.task.title&.titleize %>
 				</div>
 				<div class="thumb slide">
@@ -493,7 +493,7 @@
 			success: function (res) {
 				var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
 				window.location.replace(URL);
-				showTaskMedia("<%= @task.task_type %>");
+				// showTaskMedia("<%= @task.task_type %>");
 			}
 		})
 			<% else %>
