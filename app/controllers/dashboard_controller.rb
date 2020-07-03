@@ -204,10 +204,15 @@ class DashboardController < ApplicationController
 	@pitch = @admin.pitches.create()
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
+
   def edit_pitch
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id])
-	@task = @pitch.tasks.find(params[:task_id]) if params[:task_id]
+	if params[:task_id]
+		@task = @pitch.tasks.find(params[:task_id]) 
+	else
+		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
+	end
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
   end
