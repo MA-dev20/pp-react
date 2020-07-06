@@ -1,0 +1,9 @@
+if ('<%= @task_type %>' === 'slide') {
+    $('#selectedSlide').removeClass('hide').show();
+    $('#selectedTask').hide();
+    $('#selectedSlide').html("<%=j render partial: 'dashboard/pitches/new_pdf' %>");
+} else {
+    $('#selectedSlide').hide();
+    $('#selectedTask').removeClass('hide').show();
+    $('#selectedTask').html("<%=j render partial: 'dashboard/pitches/new_task' %>");
+}

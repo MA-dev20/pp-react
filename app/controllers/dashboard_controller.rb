@@ -204,7 +204,7 @@ class DashboardController < ApplicationController
 	@pitch = @admin.pitches.create()
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
-
+  
   def edit_pitch
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id])
@@ -215,6 +215,23 @@ class DashboardController < ApplicationController
 	end
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
+  end
+
+  def select_task
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:selected_task_id])
+	@task_type = @task.task_type
+	@admin = current_user
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
+	respond_to do |format|
+		format.js { render 'select_task'}
+	end
+  end
+
+  def update_values
+	@task = Task.find(params[:selected_task_id])
+	@task.update(params[:type].to_sym => params[:value])
   end
 	
   private

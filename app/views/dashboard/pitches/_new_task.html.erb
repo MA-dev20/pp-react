@@ -1,24 +1,16 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
 <div class="form-group title">
 	<%= f.hidden_field :user_id, value: @admin.id %>
-	<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"' %>
+	<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"', onchange: 'handleTitleChange(event)' %>
 </div>
 <div class="card time-limit hide">
-	<div class="title">Time limit</div>
-	<div class="subline">Set your time limit.</div>
 	<div class="form-group">
 		<div class="time-field">
 			<% if @task.time %>
-			<%= f.hidden_field :time, id: 'task_time', value: @task.time %>
-			<div class="time" id="set_task_time">
-				<%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? '0' + (@task.time % 60).to_s : (@task.time % 60).to_s %>
-			</div>
+			<%= f.hidden_field :time, id: 'task_time', value: @task.time, onchange: 'handleTimeLimit(event)' %>
 			<% else %>
-			<%= f.hidden_field :time, id: 'task_time', value: 80 %>
-			<div class="time" id="set_task_time">1:20</div>
+			<%= f.hidden_field :time, id: 'task_time', value: 80, onchange: 'handleTimeLimit(event)' %>
 			<% end %>
-			<i class="fa fa-angle-up up" onclick="timeUp()"></i>
-			<i class="fa fa-angle-down down" onclick="timeDown()"></i>
 		</div>
 	</div>
 </div>
@@ -349,27 +341,27 @@
 
 		</div>
 		<div class="card add-rating">
-			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"} do |f| %>
+			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"}, remote: true do |f| %>
 			<div class="title">Rating Criteria</div>
 			<div class="subline">You can add up to 4 rating criterias</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
-					<%= f.text_field :rating1, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating1, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'handleRatingChange(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria2.svg'%></div>
-					<%= f.text_field :rating2, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating2, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'handleRatingChange(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 			</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria3.svg'%></div>
-					<%= f.text_field :rating3, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating3, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'handleRatingChange(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/criteria4.svg'%></div>
-					<%= f.text_field :rating4, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'changeInput(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
+					<%= f.text_field :rating4, class: 'form-field rating-field', placeholder: 'Type new rating criteria', onchange: 'handleRatingChange(event)', onfocus: "this.placeholder = ''", onblur: 'looseFocus(event)' %>
 				</div>
 			</div>
 			<% end %>
@@ -446,12 +438,6 @@
 			$('#add_ol_form').show();
 		}
 	}
-
-	$('#add_rating_form').on('keypress', e => {
-		if (e.keyCode == 13) {
-			$('#add_rating_form').submit();
-		}
-	});
 
 	$('.add-cw-img').on('click', e => {
 		$(e.target).closest('form').submit();
@@ -603,19 +589,26 @@
 		}
 	}
 
-	function changeInput(event) {
-		$('#add_rating_form').submit();
+	function handleTitleChange(event) {
+		updateValues(Number($('.selected').attr('id').split('_')[1]), $(event.target).val(), 'title');
+	}
+
+	function handleRatingChange(event) {
+		task_id = $('.selected').attr('id').split('_')[1]
+		type = $(event.target).attr('id').split('_')[1]
+		value = $(event.target).val()
+		if (value) {
+			$(`#task_${task_id} .${type}`).text(value); 
+		} else {
+			$(`#task_${task_id} .${type}`).text('-'); 
+		}
+		updateValues(task_id, value, type);
 	}
 
 	function looseFocus(event) {
 		$(event.target)[0].placeholder = 'Type new rating criteria'
-		// if ($(event.target).val()) {
-		// 	$('#add_rating_form').submit();
-		// }
-		// event.preventDefault();
-		// var formData = new FormData(document.getElementById('add_rl_form'));
-		// commitList('rating', formData);
 	}
+
 	$('#add_rl_form').on('submit', function (e) {
 		e.preventDefault();
 		var formData = new FormData(document.getElementById('add_rl_form'));
@@ -765,12 +758,14 @@
 		}
 	})
 	$('#popup').on('show', function () {
-		cropper = new Cropper(image, {
-			aspectRatio: 1.77,
-		});
+		if (!cropper) {
+			cropper = new Cropper(image, {
+				aspectRatio: 1.77,
+			});
+		}
 	})
 	$('#popup').on('hide', function () {
-		cropper.destroy();
+		// cropper.destroy();
 		cropper = null;
 	})
 
@@ -793,6 +788,9 @@
 			});
 		};
 	})
+	
+
+	
 	function showTaskMedia(type) {
 		$('.btn-line .btn.selected').removeClass('selected')
 		if (type == 'catchword' || type == '') {
@@ -876,6 +874,7 @@
 		if (sec < 10) { sec = '0' + sec }
 		$('#set_task_time').text(min + ':' + sec)
 		$('#task_<%= @task.id %> .thumb .length').text(min + ':' + sec);
+		updateValues(Number($('.selected').attr('id').split('_')[1]), Number(time), 'time');
 	}
 	function timeDown() {
 		var time = parseInt($('#task_time').val());
@@ -886,6 +885,7 @@
 		if (sec < 10) { sec = '0' + sec }
 		$('#set_task_time').text(min + ':' + sec);
 		$('#task_<%= @task.id %> .thumb .length').text(min + ':' + sec);
+		updateValues(Number($('.selected').attr('id').split('_')[1]), Number(time), 'time');
 	}
 
 

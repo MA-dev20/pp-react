@@ -65,6 +65,17 @@ class PitchesController < ApplicationController
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 
+  def select_task
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:task_id])
+	@admin = current_user
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
+	respond_to do |format|
+		format.js { render 'dashboard/select_task'}
+	end
+  end
+
   def delete_media
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])

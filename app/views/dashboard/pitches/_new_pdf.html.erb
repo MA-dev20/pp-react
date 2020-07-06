@@ -1,11 +1,13 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
 <%= f.hidden_field :user_id, value: @admin.id %>
 <div class="form-group title">
-	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen' %>
+	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen', onchange: 'handleTitleChange(event)' %>
 </div>
 <% end %>
-<% if @task.task_medium.image %>
+<% if @task&.task_medium&.image %>
 <div class="slide-preview">
-	<%= image_tag @task.task_medium.image.url %>
+	<% if @task.task_medium&.image&.url %>
+		<%= image_tag @task.task_medium.image.url %>
+	<% end %>
 </div>
 <% end %>

@@ -57,15 +57,12 @@
 				<!-- <div class="title"><%= t.task.title %></div> -->
 				<div class="task-subtitle">Rating criteria:</div>
 				<div class="rating-criteria">
-					<% criteria_count = t.task&.rating_list&.rating_criteria&.count %>
-					<% if t.task.rating_list %>
-					<% t.task.rating_list.rating_criteria.each do |rating| %>
-					<div class="criterium"><%= rating.name %></div>
-					<% end %>
-					<% end %>
-					<% criteria_count = 4 - (criteria_count.present? ? criteria_count : 0) %>
-					<% criteria_count.times do |time| %>
-					<div class="criterium">-</div>
+					<% 4.times do |index| %>
+						<% if t.task["rating#{index+1}"].present? %>
+							<div class="criterium rating<%= index+1 %>"><%= t.task["rating#{index+1}"] %></div>
+						<% else %>
+							<div class="criterium rating<%= index+1 %>">-</div>
+						<% end %>
 					<% end %>
 				</div>
 				<% else %>
@@ -112,14 +109,21 @@
 
 	<div class="card right">
 		<% if @task && @task.task_type == 'slide' %>
-		<%= render partial: 'dashboard/pitches/new_pdf' %>
+		<div id="selectedSlide">
+			<%= render partial: 'dashboard/pitches/new_pdf' %>
+		</div>
+		<div id="selectedTask" class="hide">
+			<%= render partial: 'dashboard/pitches/new_task', locals: { pitch: @pitch, task: @task } %>
+		</div>
 		<% elsif @task %>
-		<%= render partial: 'dashboard/pitches/new_task' %>
+		<div id="selectedSlide" class="hide">
+			<%= render partial: 'dashboard/pitches/new_pdf' %>
+		</div>
+		<div id="selectedTask">
+			<%= render partial: 'dashboard/pitches/new_task', locals: { pitch: @pitch, task: @task } %>
+		</div>
 		<% end %>
-
 		<%= render partial: 'dashboard/pitches/browse_tasks', locals: { pitches: @pitches } %>
-
-		
 	</div>
 
 	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
@@ -166,6 +170,7 @@
 		</div>
 	</div>
 </div>
+
 <script>
 		// $('#loaderModal').show();
 
@@ -312,6 +317,7 @@
 	var field_id = '';
 	var mediaDeleted = false;
 	var cwListId = 0;
+	var cropper = null;
 
 	$('.warning-card-wrapper .btn').unbind().on('click', function () {
 		let response = $(this).attr('data-value') === 'ok';
@@ -384,7 +390,6 @@
 		}
 	}
 
-
 	$('.task-pitch').click(function () {
 		$('.option-modal').hide();
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
@@ -435,7 +440,8 @@
 			processData: false,
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
-				selectTask(res.id);
+				// selectTask(res.id);
+				selectDragDropTask(res.id);
 			},
 		})
 	}
@@ -465,7 +471,7 @@
 			success: function (res) {
 				$('#loaderModal').hide();
 				<% if @pitch.tasks.count != 0 %>
-					selectTask(<%= @pitch.tasks.last.id %>);
+					selectDragDropTask(<%= @pitch.tasks.last.id %>);
 				<% end %>
 			}
 		})
@@ -478,22 +484,70 @@
 	function addTask() {
 		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
+	function selectDragDropTask(task_id) {
+      <% if @task %>
+        var globalForm = new FormData(document.getElementById('new_task_form'));
+        $.ajax({
+            url: '<%= update_task_path(@pitch, @task) %>',
+            type: 'post',
+            cache: false,
+            async: true,
+            contentType: false,
+            processData: false,
+            data: globalForm,
+            beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+            success: function (res) {
+                var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+                window.location.replace(URL);
+                // showTaskMedia("<%= @task.task_type %>");
+            }
+        })
+            <% else %>
+            var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+        window.location.replace(URL);
+      <% end %>
+    }
+
+	function updateValues(task_id, value, type) {
+		$.ajax({
+			url: '<%= dashboard_update_values_path(@pitch, @task) %>',
+			type: 'GET',
+			dataType: "script",
+			data: {
+				selected_task_id: task_id,
+				value: value,
+				type: type
+			},
+			success: function (res) {
+				if (type === 'title') {
+					$(`#task_${task_id} .task-name`).text(value);
+				} else {
+					if (value) {
+						$(`#task_${task_id} .${type}`).text(value); 
+					} else {
+						$(`#task_${task_id} .${type}`).text('-'); 
+					}
+				}
+			}
+		})
+	}
 	function selectTask(task_id) {
 	  <% if @task %>
-		var globalForm = new FormData(document.getElementById('new_task_form'));
 		$.ajax({
-			url: '<%= update_task_path(@pitch, @task) %>',
-			type: 'post',
-			cache: false,
-			async: true,
-			contentType: false,
-			processData: false,
-			data: globalForm,
-			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			url: '<%= dashboard_select_task_path(@pitch, @task) %>',
+			type: 'GET',
+			dataType: "script",
+			data: {
+				selected_task_id: task_id,
+				title: $('#task_title').val()
+			},
 			success: function (res) {
-				var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
-				window.location.replace(URL);
-				// showTaskMedia("<%= @task.task_type %>");
+				$('.left-card').removeClass('selected');
+				$(`#task_${task_id}`).addClass('selected');
+			// 	alert('test');
+			// 	// var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+			// 	// window.location.replace(URL);
+			// 	// showTaskMedia("<%= @task.task_type %>");
 			}
 		})
 			<% else %>
