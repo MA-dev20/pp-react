@@ -39,7 +39,7 @@
 	document.getElementById('ping').volume = 0.5;
 	$(window).keypress(function (e) {
 		if (e.key === ' ' || e.key === 'Spacebar') {
-			window.location.replace('<%= gd_set_state_path('', state: 'slide', slide: @game.current_task + 1) %>');
+			window.location.replace('<%= gd_set_state_path('', state: 'slide', slide: 1) %>');
 		}
 	})
 	<% @game.game_turns.each do |t| %>
