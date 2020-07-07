@@ -1,0 +1,30 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div id="count_channel" data-game-id='<%= @game.id %>'></div>
+<section id="head">
+	<h1>Feedbackrunde</h1>
+</section>
+<section id="middle">
+  <div class="feedback_avatar">
+    <% if @turn.user.avatar? %>
+		<%= image_tag @turn.user.avatar.url %>
+		<% else %>
+		<div class="circle"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+		<% end %>
+  </div>
+  <div class="feedback_comments" id="game_comments">
+    <% @turn.comments.reverse.each do |c| %>
+      <div class="comment">
+        <% if @turn.user.avatar? %>
+    		<%= image_tag @turn.user.avatar.url %>
+    		<% else %>
+    		<div class="circle"><%= @turn.user.fname[0].capitalize %><%= @turn.user.lname[0].capitalize %></div>
+    		<% end %>
+        <div class="text"><%= c.text %></div>
+      </div>
+    <% end %>
+  </div>
+  <div class="use-smartphone fadeInBottom">
+    <%= image_tag "game/illus/smartphone.svg" %>
+      <div class="text big">Feedback am Smartphone</div>
+  </div>
+</section>

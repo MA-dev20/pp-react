@@ -1,0 +1,58 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div class="head">
+	<h1>Das war <%= @turn.user.fname %>'s Pitch</h1>
+	<h3>Lass doch ein Feedback da</h3>
+</div>
+<%= form_for(:comment, url: new_comment_path(@turn), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
+<%= f.hidden_field :time, value: nil %>
+<%= f.hidden_field :user_id, value: @admin.id %>
+<%= f.hidden_field :positive, value: 'neutral' %>
+<div class="middle">
+	<div class="form-group single-line">
+		<%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', maxlength: "30"%>
+		<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
+	</div>
+</div>
+<% end %>
+<div class="bottom">
+	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+	<%= link_to 'Pitch wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
+	<%= link_to 'Feedbackrunde beenden', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
+	<% end %>
+</div>
+
+<script>
+	function submitComment() {
+		$('#comment_form').submit();
+	}
+	function inputSend() {
+		if ($('#comment_text').val() == '') {
+		  $("#comment_submit").css({ opacity: .4 });
+		} else {
+		  $("#comment_submit").css({ opacity: 1 });
+		}
+	}
+	$('#comment_form').submit(function(e) {
+		e.preventDefault();
+		$('#comment_text').removeClass('red');
+		if( $('#comment_text').val().length > 30) {
+			$('#comment_text').addClass('red');
+			$('#comment_text').val('');
+			$('#comment_text').attr('placeholder', 'Bitte nicht mehr als 30 Zeichen!')
+		} else if($('#comment_text').val().length != 0){
+		var form = $(this);
+		var url = "<%= new_comment_path(@turn, site: 'feedback') %>";
+		$.ajax({
+			type: 'post',
+			url: url,
+			data: form.serialize(),
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(data) {
+				$("#comment_text").val('');
+				inputSend();
+
+			}
+		})
+		}
+	})
+</script>
