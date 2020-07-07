@@ -1,6 +1,6 @@
 class PitchesController < ApplicationController
-  #GET pitches/:pitch_id/tasks/:task_id/setOrder/:order
-  def set_order
+  #GET pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order
+  def set_task_order
 	@pitch = Pitch.find(params[:pitch_id])
 	@task_order = TaskOrder.find(params[:task_id])
 	@order = params[:order].to_i
@@ -24,8 +24,16 @@ class PitchesController < ApplicationController
 		to.update(order: i)
 		i = i + 1
 	end
-	render json: {id: @task_order.task_id}
+	@task = Task.find(@task_order.task_id)
+	@task_type = @task.task_type
+	@admin = current_user
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
+	respond_to do |format|
+		format.js { render 'dashboard/set_task_order'}
+	end
   end
+
   def create_task
 	@pitch = Pitch.find(params[:pitch_id])
     @task = @pitch.tasks.create(user: @pitch.user)

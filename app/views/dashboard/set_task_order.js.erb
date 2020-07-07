@@ -1,0 +1,14 @@
+$('#cardList').html("");
+<% @pitch.task_orders.order(:order).each do |t| %>
+    $('#cardList').append("<%=j render partial: 'dashboard/card_list', locals: { t: t } %>");
+<% end %>
+$("#task_<%= @task.id %>").addClass('selected');
+if ('<%= @task.task_type %>' === 'slide') {
+    $('#selectedSlide').removeClass('hide').show();
+    $('#selectedTask').hide();
+    $('#selectedSlide').html("<%=j render partial: 'dashboard/pitches/new_pdf' %>");
+} else {
+    $('#selectedSlide').hide();
+    $('#selectedTask').removeClass('hide').show();
+    $('#selectedTask').html("<%=j render partial: 'dashboard/pitches/new_task' %>");
+}

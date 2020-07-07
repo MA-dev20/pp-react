@@ -1,0 +1,76 @@
+<div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>"
+        id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
+        ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
+        data-id="<%= t.id %>">
+        <div class="task-link" onclick="selectTask(<%= t.task_id %>)"></div>
+        <% if t.task.task_type != "slide" %>
+        <div class="task-title">
+            <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
+            <% if !t.task.valide %>
+            <i class="fas fa-exclamation-triangle"></i>
+            <% end %>
+            <div class="name"><%= t.order %>. Task</div>
+            <!-- <i class="fas fa-circle"></i> -->
+            <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
+        </div>
+        <div class="task-subtitle task-name">
+            <%= t.task.title&.titleize %>
+            <%# media_type = t.task.task_medium&.media_type&.titleize %>
+            <%#= media_type = media_type.present? ? media_type : t.task.task_type&.titleize %>
+        </div>
+        <% if t.task.task_medium && t.task.task_medium.video? %>
+        <% image_url = t.task.task_medium.video.thumb.url %>
+        <% elsif t.task.task_medium && t.task.task_medium.image? %>
+        <% image_url = t.task.task_medium.image.url %>
+        <% else %>
+        <% image_url = nil %>
+        <% end %>
+        <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
+            <% if t.task.task_medium && t.task.task_medium.video? %>
+            <%= image_tag t.task.task_medium.video.thumb.url, class: 'image' %>
+            <% elsif t.task.task_medium && t.task.task_medium.image? %>
+            <%= image_tag t.task.task_medium.image.url, class: 'image' %>
+            <% else %>
+            <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
+            <% end %>
+            <% if t.task.time %>
+            <div class="length">
+                <%= (t.task.time / 60).to_s %>:<%= (t.task.time % 60) < 10 ? '0' + (t.task.time % 60).to_s : (t.task.time % 60).to_s %>
+            </div>
+            <% else %>
+            <div class="length">1:20</div>
+            <% end %>
+        </div>
+        <!-- <div class="title"><%= t.task.title %></div> -->
+        <div class="task-subtitle">Rating criteria:</div>
+        <div class="rating-criteria">
+            <% 4.times do |index| %>
+                <% if t.task["rating#{index+1}"].present? %>
+                    <div class="criterium rating<%= index+1 %>"><%= t.task["rating#{index+1}"] %></div>
+                <% else %>
+                    <div class="criterium rating<%= index+1 %>">-</div>
+                <% end %>
+            <% end %>
+        </div>
+        <% else %>
+        <div class="task-title">
+            <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
+            <div class="name"><%= t.order %>. Slide</div>
+            <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
+        </div>
+        <div class="task-subtitle task-name">
+            <%= t.task.title&.titleize %>
+        </div>
+        <div class="thumb slide">
+            <% if t.task.task_medium && t.task.task_medium.video? %>
+            <%= image_tag t.task.task_medium.video.thumb.url %>
+            <% elsif t.task.task_medium && t.task.task_medium.image? %>
+            <%= image_tag t.task.task_medium.image.url %>
+            <% else %>
+            <%= image_tag 'dash/Image.png' %>
+            <% end %>
+        </div>
+        <% end %>
+    </div>
