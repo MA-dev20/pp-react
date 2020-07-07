@@ -1,13 +1,12 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="head">
-	<h1>Pitch läuft...</h1>
+	<h1>Kopf hoch!</h1>
+	<h3>Die Musik spielt gerade auf dem Hauptbildschirm</h3>
 </div>
 <div class="middle">
-	<% if @admin.avatar? %>
-	  <%= image_tag @admin.avatar.url, class: 'custom-border pulse' %>
-	<% else %>
-	  <div class="circle custom-border pulse"><%= @admin.fname[0].capitalize %><%= @admin.lname[0].capitalize %></div>
-	<% end %>
+		<div class="icon shake">
+			<i class="fas fa-desktop"></i>
+		</div>
 </div>
 <div class="bottom">
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>

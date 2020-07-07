@@ -3,6 +3,7 @@
 <section id="task">
 	<div class="choose">
 		<h3 id="head">Wer soll pitchen?</h3>
+		<h5>Tippe auf den Teilnehmer, der als nächstes pitchen soll!</h5>
 		<div class="circle-left fadeInLeft">
 			<% if @turn1.user.avatar? %>
 			<%= image_tag @turn1.user.avatar.url, id: 'left-img' %>
@@ -57,6 +58,7 @@
                 startDelay: 28000,
                 smartBackspace: false,
                 loop: true,
+								showCursor: false,
             })
     })
 	function countdown(sec) {
@@ -80,6 +82,7 @@
 				$(".use-smartphone").addClass("fadeOut");
 				$('#finger').removeClass('switch');
 				$('#finger').addClass('fadeOut');
+				$('.choose h5').fadeOut(1500);
 				$('.circle-left').animate({left: "+=25vh", opacity: '0.5'}, 2000);
 				$('.circle-right').animate({right: "+=25vh", opacity: '0.5'}, 2000);
 			}

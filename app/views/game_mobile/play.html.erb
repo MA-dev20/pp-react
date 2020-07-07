@@ -48,7 +48,6 @@
 	<% end %>
 </div>
 <script>
-	$('#navbar').append( $('.navbar-links a'));
 	function inputSend() {
 		if ($('#comment_text').val() == '') {
 		  $("#comment_submit").css({ opacity: .4 });
@@ -71,7 +70,7 @@
 		$('#'+id).removeClass('emoji_send');
 	}
 	function submitComment() {
-		$('#comment_form').submit();	
+		$('#comment_form').submit();
 	}
 	$('#comment_form').submit(function(e) {
 		e.preventDefault();
@@ -91,7 +90,7 @@
 			success: function(data) {
 				$("#comment_text").val('');
 				inputSend();
-				
+
 			}
 		})
 		}
@@ -169,7 +168,7 @@
 		$('.head h1').text('Video Upload');
 		$('.head h3').text('Tab nicht schließen!');
 		$('.bottom').hide();
-		var URL = "<%= upload_pitch_url(@turn) %>"; 
+		var URL = "<%= upload_pitch_url(@turn) %>";
 		$.ajax({
 			url: URL,
 			type: 'POST',

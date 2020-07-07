@@ -231,7 +231,7 @@ body {
 				position: absolute;
 				left: 0;
 				bottom: 0;
-				height: 65vh;	
+				height: 65vh;
 			}
 			.qr-code-wrapper {
 				position: absolute;
@@ -350,7 +350,7 @@ body {
 			}
 		}
 		.circle-left {
-			left: calc(50vw - 35vh);		
+			left: calc(50vw - 35vh);
 		}
 		#finger {
 			position: fixed;
@@ -387,6 +387,9 @@ body {
 				font-size: 2.5vh;
 				text-align: center;
 				color: #667093;
+			}
+			.text.big {
+				padding: 7vh 1vh;
 			}
 			img {
 				position: absolute;
@@ -557,6 +560,97 @@ body {
 				}
 			}
 		}
+		.feedback_avatar {
+			position: absolute;
+			top: 5vh;
+			left: 55vw;
+			width: 18vw;
+			height: 80vh;
+			animation: fadeInRight 2s 1;
+			.circle,
+			img {
+				position: absolute;
+				top: 12vh;
+				left: 0;
+				margin: .5vw;
+				height: 17vw;
+				width: 17vw;
+				border-radius: 50%;
+				z-index: 10;
+				text-align: center;
+				line-height: 17vw;
+				font-size: 10vw;
+				background-color: #00232a;
+				color: white;
+				border: .5vw solid rgb(var(--custcolor));
+			}
+		}
+		.feedback_comments {
+			position: absolute;
+			top: 5vw;
+			left: 20vw;
+			width: 30vw;
+			height: 60vh;
+			animation: fadeInTop 2s forwards;
+			.comment {
+				position: relative;
+				width: 20vw;
+				min-height: 3vh;
+				display: flex;
+				margin: 2vh 2vw 0;
+				height: auto;
+				bottom: 0;
+				opacity: 1;
+				overflow: hidden;
+				animation: moveHeightTop 2s;
+				.circle,
+				img {
+					height: 5vh;
+					width: 5vh;
+					border-radius: 50%;
+					margin: 0 .5vh 0 0;
+				}
+				.circle {
+					text-align: center;
+					line-height: 5vh;
+					font-size: 3vh;
+					background-color: #00232a;
+					color: white;
+				}
+				.text-bg {display: none}
+				.text {
+					border-radius: 1vh;
+					border-top-left-radius: 0;
+					width: 15vw;
+					min-height: 3vh;
+					background-color: rgba(var(--custcolor), .2);
+					line-height: 3vh;
+					font-size: 2vh;
+					padding: 1vh;
+				}
+			}
+			.comment:nth-child(6) {
+				.text, img, .circle {
+					opacity: .3 !important;
+				}
+			}
+			.comment:nth-child(7) {
+				.text, img, .circle {
+					opacity: .2 !important;
+				}
+			}
+			.comment:nth-child(8) {
+				.text, img, .circle {
+					opacity: .1 !important;
+				}
+			}
+			.comment:nth-child(9) {
+				.text, img, .circle {
+					opacity: .05 !important;
+				}
+			}
+			.comment:nth-child(n+10) {display: none;}
+		}
 		.ges-rating {
 			position: absolute;
 			top: 5vh;
@@ -620,7 +714,7 @@ body {
 				img {
 					height: 5vh;
 					width: 5vh;
-					border-radius: 50%;	
+					border-radius: 50%;
 					margin: 0 .5vh 0 0;
 				}
 				.circle {
@@ -641,6 +735,7 @@ body {
 					padding: 1vh;
 				}
 			}
+
 		}
 		.bestlist {
 			position: absolute;
@@ -809,7 +904,7 @@ body {
 				img {
 					height: 6vh;
 					width: 6vh;
-					border-radius: 50%;	
+					border-radius: 50%;
 					margin: 0 2vh 0 0;
 					opacity: 0;
 					animation: fadeIn 1s 1 forwards;
@@ -860,7 +955,7 @@ body {
 					opacity: .2 !important;
 				}
 			}
-			.comment:nth-last-child(4) { 
+			.comment:nth-last-child(4) {
 				.text, img, .emoji {
 					opacity: .05 !important;
 				}
@@ -872,7 +967,7 @@ body {
 			width: 100vw;
 			height: 100vh;
 			z-index: 0;
-			
+
 		}
 		.zoom-bg-img {
 			animation: zoomOutMiddle 2s 1 forwards; opacity: 0;
@@ -928,7 +1023,7 @@ body {
 				animation: dot4 15s infinite;
 			}
 		}
-		.head {	
+		.head {
 			.play-logo {
 				position: absolute;
 				left: 0;
@@ -1152,7 +1247,7 @@ body {
 			cursor: default;
 			display: inline-block;
 			height: 15px;
-			user-select: none; 
+			user-select: none;
 			width: 10px;
 		}
 	}
@@ -1175,7 +1270,7 @@ body {
 		90% { opacity: 0;}
 		100% {transform: translate3d(0,120vh,0) rotate3d(0, 1, 2, 180deg); opacity: 1;}
 	}
- 
+
 	@keyframes falling-right {
 		0% {opacity: 1;}
 		10% { opacity: 0;}
@@ -1187,7 +1282,7 @@ body {
 		70% { opacity: 0;}
 		80% { opacity: 1;}
 		90% { opacity: 0;}
-		100% {transform: translate3d(0,120vh,0) rotate3d(0, 1, 2, 180deg); opacity: 0;}  
+		100% {transform: translate3d(0,120vh,0) rotate3d(0, 1, 2, 180deg); opacity: 0;}
 	}
 .pulse {animation: pulse 2s infinite;}
 .pulse-single {animation: pulse 1s 1;}
@@ -1361,6 +1456,9 @@ body {
 }
 @keyframes moveHeight {
 	from { height: 0 }
+}
+@keyframes moveHeightTop {
+	from { display: none; height: 0; top: -50vh}
 }
 @keyframes fadeInBottom {
 	from {

@@ -40,28 +40,27 @@
           <div class="dot"></div>
 				</div>
 			<% elsif @game && @admin && @game.game_turns.find_by(user_id: @admin.id) %>
-        <%= link_to '', gm_logout_path(@game.game_turns.find_by(user_id: @admin.id)), class: 'nav-i fas fa-step-forward', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
+        <%= link_to '', gm_logout_path(@game.game_turns.find_by(user_id: @admin.id)), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
 			<% end %>
 		<% end %>
 	</section>
 	<section id="menu">
     <%= image_tag 'logos/peterpitch.png', class: 'logo' %>
-		<i class="fas fa-times close" onclick="toggleMenu()"></i>
+		<i class="fas fa-times close" onclick="closeMenu()"></i>
 		<% if @task && @task.objection_list && @game.state == 'play' %>
 		<div class="link" onclick="toggleObjections()">Einwände</div>
 		<% end %>
 		<% if @pitch %>
 		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation <i class="fas fa-chevron-right next"></i></div>
 		<% end %>
-		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Spielerliste <i class="fas fa-chevron-right next"></i></div>
+		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Nutzerliste <i class="fas fa-chevron-right next"></i></div>
     <% if @game && @game.state == 'play' %>
     <div class="link end-pitch">
       <i class="fas fa-sign-out-alt"></i>
       Pitch beenden
-      <i class="fas fa-chevron-right next">
+      <i class="fas fa-chevron-right next"></i>
       <%= link_to '', gm_set_state_path('', state: 'rate'), data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
     </div>
-
     <% end %>
     <div class="link end">
       <i class="fas fa-sign-out-alt"></i>
@@ -87,57 +86,61 @@
 	</section>
 	<% if @pitch %>
 	<section id="nav-menu">
-		<div class="heading">Folienübersicht</div>
-		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
-    <div class="back" onclick="toggleNav()">
-      <i class="fas fa-chevron-left"></i>zum Menü
+    <div class="nav">
+      <div class="back" onclick="toggleNav()">
+        <i class="fas fa-chevron-left"></i>zum Menü
+      </div>
+  		<i class="fas fa-times close" onclick="closeMenu()"></i>
+      <div class="heading">Folienübersicht</div>
+  		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
     </div>
-		<i class="fas fa-times close" onclick="toggleNav()"></i>
-		<% @pitch.task_orders.order(:order).each do |t| %>
-		<div class="link <%= @game.current_task == t.order ? 'selected' : '' %>" id="task_<%= t.order %>">
-        <div class="title"><%= t.task.title && t.task.title != '' ? t.task.title : '' %></div>
-	    	<div class="preview">
-          <div class="slide"><%= t.order %></div>
-          <% if @game.game_turns.find_by(task_id: t.task_id) %>
-            <% this_turn = @game.game_turns.find_by(task_id: t.task_id) %>
-            <% if this_turn.user.avatar? %>
-              <div class="user"><%= image_tag this_turn.user.avatar.url %></div>
-            <% else %>
-              <div class="user"><%= this_turn.user.fname[0].capitalize + this_turn.user.lname[0].capitalize %></div>
-            <% end %>
-          <% end %>
-	    		<% if t.task.task_medium && t.task.task_medium.video? %>
-	    		   <%= image_tag t.task.task_medium.video.thumb.url %>
-	    		<% elsif t.task.task_medium && t.task.task_medium.image? %>
-	    		   <%= image_tag t.task.task_medium.image.url %>
-	    		<% else %>
-	    		   <%= image_tag 'fallback/PlaceholderPP.png' %>
-	    		<% end %>
-	    	</div>
+    <div class="content">
 
-        <div class="links" %>
-            <% if t.task.task_type != 'slide' %>
-              <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump' %>
-              <% if @game.game_turns.find_by(task_id: t.task_id) %>
-                <div class="user" onclick="deleteUser(<%= this_turn.id %>)">User entfernen</div>
+      <% @pitch.task_orders.order(:order).each do |t| %>
+  		<div class="link <%= @game.current_task == t.order ? 'selected' : '' %>" id="task_<%= t.order %>">
+          <div class="title"><%= t.task.title && t.task.title != '' ? t.task.title : '' %></div>
+  	    	<div class="preview">
+            <div class="slide"><%= t.order %></div>
+            <% if @game.game_turns.where(task_id: t.task_id).last %>
+              <% this_turn = @game.game_turns.where(task_id: t.task_id).last %>
+              <% if this_turn.user.avatar? %>
+                <div class="user"><%= image_tag this_turn.user.avatar.url %></div>
               <% else %>
-                <a href="?this_task=<%= t.task_id %>" class="user">User auswählen</a>
+                <div class="user"><%= this_turn.user.fname[0].capitalize + this_turn.user.lname[0].capitalize %></div>
               <% end %>
-            <% else %>
-            <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump center' %>
             <% end %>
-        </div>
-		</div>
-		<% end %>
+  	    		<% if t.task.task_medium && t.task.task_medium.video? %>
+  	    		   <%= image_tag t.task.task_medium.video.thumb.url %>
+  	    		<% elsif t.task.task_medium && t.task.task_medium.image? %>
+  	    		   <%= image_tag t.task.task_medium.image.url %>
+  	    		<% else %>
+  	    		   <%= image_tag 'fallback/PlaceholderPP.png' %>
+  	    		<% end %>
+  	    	</div>
+
+          <div class="links" %>
+              <% if t.task.task_type != 'slide' %>
+                <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump' %>
+                <% this_turn = @game.game_turns.where(task_id: t.task_id, played: false).last %>
+                <% if @game.game_turns.where(task_id: t.task_id, played: false).count != 0 && @game.current_turn != this_turn.id %>
+                  <div class="user" onclick="deleteUser(<%= this_turn.id %>)">User entfernen</div>
+                <% else %>
+                  <a href="?this_task=<%= t.task_id %>" class="user">User auswählen</a>
+                <% end %>
+              <% else %>
+              <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump center' %>
+              <% end %>
+          </div>
+  		</div>
+  		<% end %>
+    </div>
 	</section>
   <% if params[:this_task] %>
     <section id="task_user-menu">
-        <div class="heading">Userliste</div>
+        <div class="heading">Nutzerliste</div>
         <div class="subheading">Wer soll diese Task erledigen?</div>
         <div class="back" onclick="toggleTaskUser()"><i class="fas fa-chevron-left"></i>zur Folienübersicht</div>
-        <% @game.game_turns.where(play: true, played: false).each do |t| %>
-        <% this_turn = @game.game_turns.where(played: false, task_id: params[:this_task]).first %>
-        <% if t != this_turn %>
+        <% @game.game_turns.where(play: true, repeat: false).each do |t| %>
         <div class="user">
           <div class="avatar">
             <% if t.user.avatar? %>
@@ -156,14 +159,14 @@
             <% end %>
         </div>
         <% end %>
-        <% end %>
     </section>
   <% end %>
 	<section id="user-menu">
-		<div class="heading">Userliste</div>
-		<div class="subheading">Wer hat noch keine Task?</div>
+		<div class="heading">Nutzerliste</div>
+		<div class="subheading">Nutzer aus Pitchrunde entfernen</div>
+    <i class="fas fa-times close" onclick="closeMenu()"></i>
 		<div class="back" onclick="toggleUser()"><i class="fas fa-chevron-left"></i>zum Menu</div>
-		<% @game.game_turns.where(play: true, task_id: nil).each do |gt| %>
+		<% @game.game_turns.where(play: true, repeat: false).each do |gt| %>
 		<div class="user">
       <div class="avatar">
         <% if gt.user.avatar? %>
@@ -176,7 +179,7 @@
 
 				<%= gt.user.fname + ' ' + gt.user.lname %>
 			</div>
-      <%= link_to '', gm_delete_turn_path(gt),class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+      <%= link_to '', gm_delete_turn_path(gt.id), class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
 		</div>
 		<% end %>
 	</section>
@@ -235,10 +238,19 @@
 	function toggleNav() {
 		$('#menu').toggle();
 		$('#nav-menu').toggle();
+    $('#nav-menu .content').animate({
+      scrollTop: $('#task_<%= @game.current_task %>').offset().top
+    }, 100)
 	}
+  function closeMenu() {
+    $('#nav-menu').hide();
+    $('#menu').hide();
+    $('#user-menu').hide();
+    $('#task_user-menu').hide();;
+  }
   <% if params[:slide] %>
     $('#nav-menu').show();
-    $('#nav-menu').animate({
+    $('#nav-menu .content').animate({
       scrollTop: $('#task_<%= params[:slide] %>').offset().top
     }, 100)
   <% end %>
