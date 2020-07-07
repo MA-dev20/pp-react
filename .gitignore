@@ -1,4 +1,5 @@
 Gemfile.lock
+/tmp
+/public
 log/
-public/uploads/
-tmp
+.*
