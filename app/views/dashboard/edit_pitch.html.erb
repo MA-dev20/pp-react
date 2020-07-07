@@ -510,7 +510,7 @@
 
 	function updateValues(task_id, value, type) {
 		$.ajax({
-			url: '<%= dashboard_update_values_path(@pitch, @task) %>',
+			url: '<%= dashboard_update_values_path(@pitch, task_id: @task.present? ? @task : '') %>',
 			type: 'GET',
 			dataType: "script",
 			data: {
