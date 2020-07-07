@@ -139,8 +139,9 @@
 		$('.modal-blur').toggle();
 	}
 
-	new PerfectScrollbar('#content');
-
+	if (!<%= current_page?(dashboard_pitches_path) %>) {
+		new PerfectScrollbar('#content');
+	}
 
 </script>
 
