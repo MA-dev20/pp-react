@@ -2,11 +2,25 @@ class GamesController < ApplicationController
   before_action :set_user, except: [:email, :create_turn, :create_rating, :name, :record_pitch, :upload_pitch, :rating_user]
   before_action :set_game, only: [:customize, :email, :create_turn, :name, :rating_user]
   def create
-	@game = Game.where(password: game_params[:password], state: 'wait', active: true).first
-	if @game && @game.company != @company
-	  flash[:alert] = 'Das Passwort ist schon vergeben!'
-	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
-	  return
+	@game = Game.where(password: game_params[:password], active: true).last
+	if @game
+	  @games = Game.where(password: game_params[:password], active: true)
+	  @games.each do |g|
+		if g.created_at <= Date.yesterday
+		  g.update(active: false)
+		elsif g.game_ratings.count == 0
+		  g.update(state: 'wait')
+		end
+    if g.active
+      if @g.company == @company
+		    @game = g
+      else
+        flash[:alert] = 'Das Passwort ist schon vergeben!'
+    	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
+    	  return
+      end
+		end
+	  end
 	end
 	@game.update(game_params) if @game
 	@game = @company.games.new(game_params) if !@game
@@ -19,12 +33,12 @@ class GamesController < ApplicationController
 	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
 	end
   end
-	
+
   def rating_user
 	@game.update(game_params)
 	redirect_to gm_game_path
   end
-	
+
   def email
 	@user = User.find_by(email: params[:user][:email])
 	if @user && @user.company == @company && @user.role == 'user'
@@ -51,7 +65,7 @@ class GamesController < ApplicationController
 	  end
 	end
   end
-	
+
   def name
 	@user = User.find(params[:user_id])
 	password = SecureRandom.urlsafe_base64(8)
@@ -60,7 +74,7 @@ class GamesController < ApplicationController
   end
   def create_turn
 	@user = current_game_user
-	@turn = @game.game_turns.find_by(user: @user)
+	@turn = @game.game_turns.where(user: @user, repeat: false).last
 	if @turn && @turn.update(turn_params)
 	  if @user.avatar?
 	    ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
@@ -68,6 +82,7 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
 	  end
 	  redirect_to gm_game_path
+	  return
 	else
 	@turn = @game.game_turns.new(turn_params) if !@turn
 	@turn.user = @user
@@ -81,12 +96,14 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
 	  end
 	  redirect_to gm_game_path
+	  return
 	else
 	  flash[:alert] = 'Konnte nicht beitreten!'
 	  redirect_to gm_join_path
+	  return
 	end
   end
-	
+
   def create_rating
 	@turn = GameTurn.find(params[:turn_id])
 	@game = @turn.game
@@ -104,19 +121,24 @@ class GamesController < ApplicationController
 	end
 	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_turns.where(repeat: false).count - 1)
 	  redirect_to gm_set_state_path('', state: 'rating')
-	else	  
+	else
 	  redirect_to gm_game_path
 	end
   end
-	
+
   def record_pitch
 	@turn = GameTurn.find(params[:turn_id])
+	@game = @turn.game
+	@task = @game.pitch.task_orders.find_by(order: @game.current_task).task
+	if @task.task_type == 'catchword'
+	  @turn.update(catchword: @task.catchword_list.catchwords.sample)
+	end
 	flash[:alert] = 'Konnte Entscheidung nicht speichern!' if !@turn.update(turn_params)
 	@turn.game.update(state: "play")
 	ActionCable.server.broadcast "game_#{@turn.game.id}_channel", game_state: 'changed'
 	redirect_to gm_game_path('', pitch: 'record')
   end
-	
+
   def upload_pitch
 	@turn = GameTurn.find(params[:turn_id])
 	@video = PitchVideo.new(video: params[:file])
@@ -134,7 +156,7 @@ class GamesController < ApplicationController
 	else
 	  @pitch.update(favorite: true)
 	end
-	render json: {favorite: @pitch.favorite}	
+	render json: {favorite: @pitch.favorite}
   end
 
   def destroy_pitch
@@ -142,7 +164,7 @@ class GamesController < ApplicationController
 	flash[:alert] = 'Konnte Video nicht löschen!' if !@video.destroy
 	redirect_to dashboard_video_path
   end
-	
+
   private
 	def game_params
 	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer, :pitch_id)
@@ -153,7 +175,7 @@ class GamesController < ApplicationController
 	def pitch_params
 	  params.require(:pitch).permit(:video)
 	end
-	
+
 	def set_game
 	  @game = Game.find(params[:game_id])
 	  @company = @game.company

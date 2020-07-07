@@ -46,7 +46,7 @@
 	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
 	<div class="text">Gleich gehts los...</div>
 	<% else %>
-	<%= link_to "los geht's!", gm_set_state_path('', state: 'slide', slide: 1), class: 'btn custom-btn' %>
+	<%= link_to "los geht's!", gm_set_slide_path(1), class: 'btn custom-btn' %>
 	<% end %>
 </div>
 <% end %>

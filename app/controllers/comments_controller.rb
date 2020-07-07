@@ -11,21 +11,29 @@ class CommentsController < ApplicationController
 		ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, name: @comment.user.fname[0].capitalize + @comment.user.lname[0].capitalize
 	  end
 	  render json: {comment: @comment.text}
+  elsif params[:site] == 'feedback'
+    @game = @turn.game
+	  if @comment.user.avatar?
+	  	ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, comment_user_avatar: @comment.user.avatar.url, reverse: true
+	  else
+		ActionCable.server.broadcast "count_#{@game.id}_channel", comment: true, comment_text: @comment.text, name: @comment.user.fname[0].capitalize + @comment.user.lname[0].capitalize, reverse: true
+	  end
+	  render json: {comment: @comment.text}
 	else
 	  redirect_to dashboard_pitch_video_path(@turn)
 	end
   end
-	
+
   def update
 	@comment.update(comment_params)
 	redirect_to dashboard_pitch_video_path(@turn)
   end
-	
+
   def destroy
 	@comment.destroy
 	redirect_to dashboard_pitch_video_path(@turn)
   end
-	
+
   private
 	def comment_params
 	  params.require(:comment).permit(:text, :time, :user_id, :positive)

@@ -134,7 +134,7 @@
 				$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %>).toFixed(1));
 				var stroke_arr = Number(<%= 301.59 * (@ges_rating.nil? ? 0 : @ges_rating / 100.0) %>).toFixed(0);
 				$('#ges_rating_svg circle').attr("stroke-dasharray", "" + stroke_arr +" 1000");
-			}, 4000)												   
+			}, 4000)
 		}
 	});
 	<% if @turn_ratings.count == 1 %>
@@ -161,7 +161,7 @@
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
 			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
-			$('#rating2').text(Number(100 * i).toFixed(1))
+			$('#rating2').text(Number(10 * i).toFixed(1))
 			i = i + 0.05;
 		}, 100)
     });
@@ -252,7 +252,7 @@
 			$('#rating3').text(Number(<%= @rating3.rating / 10.0 %> * i).toFixed(1));
 			$('#rating4').text(Number(10 * i).toFixed(1));
 			i = i + 0.05;
-		}, 100)			
+		}, 100)
 	});
 	$('#bar3').on("animationend", function() {
 		clearInterval(MyApp.bar3);
@@ -270,7 +270,7 @@
 	<% end %>
 	$(window).keypress(function (e) {
         if (e.key === ' ' || e.key === 'Spacebar') {
-            window.location.replace('<%= gd_set_state_path('', state: 'slide', slide: @game.current_task + 1) %>');
+            window.location.replace('<%= gd_set_slide_path(@game.current_task + 1) %>');
         };
     });
 </script>

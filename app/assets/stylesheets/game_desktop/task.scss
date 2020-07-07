@@ -9,6 +9,13 @@
 		font-size: 6vh;
 		margin: 0;
 	}
+	h5 {
+		width: 100%;
+		text-align: center;
+		font-size: 2.5vh;
+		margin: 0;
+		color: gray;
+	}
 	.choose {
 		display: none;
 		position: absolute;
@@ -16,8 +23,16 @@
 		left: 5%;
 		width: 90%;
 		height: 90vh;
+		h3#head {margin-top: 5vh;}
+		h5 {
+			margin-top: 1vh;
+			animation-name: fadeInTop;
+			animation-iteration-count: 1;
+			animation-duration: 2s;
+			animation-fill-mode: forwards;
+		}
 		.circle-left, .circle-right {
-			top: 15vh;
+			top: 20vh;
 			width: 50vh; height: 50vh;
 			.circle,
 			img {
@@ -71,7 +86,7 @@
 			height: 20vh;
 			z-index: 1000;
 		}
-		
+
 		.use-smartphone {
 			position: absolute;
 			bottom: 5vh;
@@ -105,7 +120,7 @@
 			margin: 0 !important;
 			animation-duration: 1s !important;
 		}
-		.circle, 
+		.circle,
 		img {
 			position: absolute;
 			top: 22.5vh; left: calc(15vw - 17.5vh);
