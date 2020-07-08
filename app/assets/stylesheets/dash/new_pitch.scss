@@ -1152,6 +1152,17 @@
 
     }
 
+    .video-play-thumb {
+        position: absolute;
+        color: white;
+        font-size: 5vh;
+        left: 0;
+        top: 31%;
+        right: 0;
+        display: flex;
+        justify-content: center;
+    }
+
     .option-modal {
 
         .heading h5 {
