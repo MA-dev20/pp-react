@@ -36,6 +36,7 @@
 <% if @pitch && !@game.present? %>
 <div class="blur">
     <div class="card" id="letspitch">
+        <span class="close">&times;</span>
         <h1>Jetzt Pitch starten!</h1>
         <%= form_for(:game, url: new_game_path) do |f| %>
         <%= f.hidden_field :pitch_id, value: @pitch.id %>
@@ -103,11 +104,16 @@
         $('#letspitch').toggle();
         $('#newteam').toggle();
     }
+
+    $('.close').on('click', function() {
+        $('.blur').hide();
+    })
 </script>
 <% end %>
 <% if @game %>
 <div class="blur">
     <div class="card" id="letspitch">
+        <span class="close">&times;</span>        
         <h3>
             <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
             Pitche nach deinen Regeln
@@ -179,11 +185,20 @@
 </div>
 <script>
     new PerfectScrollbar("#scroll");
+    $('.close').on('click', function() {
+        $('.blur').hide();
+    })
 </script>
 <% end %>
 
 <script>
 
+    $(document).click(function (e) {
+        if ($(e.target).is('.blur')) {
+            $('.blur').hide();
+        }
+
+    });
     var pitches_count = '<%= @pitches&.count %>'
     console.log(pitches_count)
     if (pitches_count !== '') {
