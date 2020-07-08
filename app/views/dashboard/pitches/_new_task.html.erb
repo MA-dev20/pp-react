@@ -843,7 +843,7 @@
 					console.log(percentComplete);
 					if (percentComplete === 100) {
 					}
-					percentComplete = percentComplete === 100 ? 99 : percentComplete;
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 95 + 1)) + 95 : percentComplete;
 					$('.progress-ratio').text(percentComplete+'%')
 				}
 				}, false);
