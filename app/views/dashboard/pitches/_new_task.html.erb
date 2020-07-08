@@ -440,6 +440,7 @@
 	}
 
 	$('.add-cw-img').on('click', e => {
+		// $('#add_ol_form').submit();
 		$(e.target).closest('form').submit();
 	})
 
@@ -827,10 +828,27 @@
 		var globalForm = new FormData(document.getElementById('add_audio_form'));
 		sendMedia(globalForm);
 	})
+
 	function sendMedia(globalForm) {
 		var url = "<%= create_task_media_url(@pitch, task_id: @task&.id) %>";
 		$('#loaderModal').show();
 		$.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? 99 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
 			url: url,
 			type: 'post',
 			cache: false,
