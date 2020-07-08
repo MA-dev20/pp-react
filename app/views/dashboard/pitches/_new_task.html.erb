@@ -831,8 +831,9 @@
 
 	function sendMedia(globalForm) {
 		var url = "<%= create_task_media_url(@pitch, task_id: @task&.id) %>";
+		$('.cancel-upload').css('display', 'block');
 		$('#loaderModal').show();
-		$.ajax({
+		xhr = $.ajax({
 			xhr: function() {
 				var xhr = new window.XMLHttpRequest();
 
@@ -859,6 +860,7 @@
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
 				$('#loaderModal').hide();
+				$('.cancel-upload').css('display', 'none');
 				$('#task_task_medium_id').val(res.id);
 				$('#task_task_type').val(res.type);
 				$('#task_<%= @task.id %> .task-title .category').text(res.type);
@@ -881,6 +883,15 @@
 				globalForm = new FormData();
 			}
 		})
+
+		$('.cancel-upload').on('click', function() {
+		if (xhr !== null) {
+			xhr.abort();
+			xhr = null;
+			$('#loaderModal').hide();
+			$('.cancel-upload').css('display', 'none');
+		}
+	})
 	}
 
 	function timeUp() {
