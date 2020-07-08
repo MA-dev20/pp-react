@@ -23,13 +23,6 @@
                     </div>
                 </div>
                 <div class="hr-line"></div>
-                <div class="video-form">
-                    <label for="">You can also past a link to your video on Youtube or Vimeo</label>
-                    <div class="form-group">
-                        <%= f.text_field :video_path, class: 'form-field', placeholder: 'Youtube/Vimeo link'%>
-                        <%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add' %>
-                    </div>
-                </div>
             </div>
             <div class="right-section">
                 <div class="picture media-option">
@@ -43,20 +36,6 @@
                         <% else %>
                         <%= image_tag 'dash/Image.png', class: 'media-file' %>
                         <% end %>
-                    </div>
-                </div>
-                <div class="hr-line"></div>
-                <div class="video media-option">
-                    <label for="">Pitch video</label>
-                    <label for="pitch_video" class="btn upload">Upload</label>
-                    <%= f.file_field :video, onchange: "loadFile(event, 'video')", accept: 'video/*', class: 'pitch-uploadfile' %>
-                    <div class="preview video-preview" style="<%= 'display: block;'if pitch.video.url.present? %>">
-                        <div class="time"></div>
-                        <div class="remove pitch-file" onclick="removePitchMedia(event, 'video')">remove</div>
-                        <video id="video_tag" src="<%= pitch.video.url if pitch.video.url.present? %>"
-                            onloadedmetadata="loadMetaData(event)"
-                            style="display: <%= pitch.video.url.present? ? 'block' : 'none' %>" type="video/mp4"
-                            controls></video>
                     </div>
                 </div>
                 <div class="hr-line"></div>
