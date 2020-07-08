@@ -23,11 +23,13 @@
         height: 100%; width: calc(100vw - 25vh);
         background-color: rgba(0,0,0,.5);
 		.card#letspitch,
-		.card#warningCard {
+		.card#warningCard,
+		.card#warningCard2 {
             height: 45vh; width: 45vh;
 		}
 		
-		.card#warningCard {
+		.card#warningCard,
+		.card#warningCard2 {
 			text-align: center;
 			padding: 3vh; 
 			height: 30vh;

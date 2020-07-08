@@ -7,8 +7,7 @@
 </section>
 
 <div id="new-pitch-content">
-	<%= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow' %>
-	<label class="warning-msg">Want to leave without saving?</label>
+	<i class="fas fa-arrow-left back-arrow"></i>
 	<div class="card left">
 		<div class="tasks" id="tasksScrollBar">
 			<div id="cardList">
@@ -230,6 +229,17 @@
 	</div>
 </div>
 
+<div class="blur hide warning-card-wrapper2">
+	<div class="card" id="warningCard2">
+		<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+		<h1>Want to leave without saving?</h1>
+		<div class="buttons">
+			<button class="btn reversed cancel-btn" data-value="cancel">Cancel</button>
+			<a class="btn reversed ok-btn" href="<%= dashboard_pitches_path %>">Ok</a>
+		</div>
+	</div>
+</div>
+
 <script>
 
 	var global_event = '';
@@ -241,6 +251,14 @@
 	var cropper = null;
 	var selected_card_id = 0;
 	var xhr = null;
+
+	$('.back-arrow').on('click', function() {
+		$('.warning-card-wrapper2').show();
+	})
+
+	$('.cancel-btn').on('click', function() {
+		$('.warning-card-wrapper2').hide();
+	})
 
 	$('.warning-card-wrapper .btn').unbind().on('click', function () {
 		let response = $(this).attr('data-value') === 'ok';
