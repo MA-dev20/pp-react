@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_26_053604) do
+ActiveRecord::Schema.define(version: 2020_07_08_133305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(version: 2020_06_26_053604) do
     t.bigint "user_id"
     t.string "task_type"
     t.string "title"
-    t.integer "time"
+    t.integer "time", default: 80
     t.bigint "task_medium_id"
     t.integer "task_slide", default: 0
     t.boolean "valide", default: false
