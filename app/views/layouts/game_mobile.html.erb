@@ -200,6 +200,7 @@
 	<section id="user-new">
 		<div class="heading">Nutzer</div>
 		<div class="subheading">Füge einen Nutzer der Pitchrunde hinzu</div>
+		<i class="fas fa-times close" onclick="closeMenu()"></i>
 		<%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
 				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
 				<div class="form-group single-line">
@@ -220,7 +221,9 @@
 				<div class="form-group two-line" id="group_lname">
 					<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
 				</div>
-				<%= f.submit 'speichern', class: 'btn' %>
+				<div class="form-group bottom">
+						<%= f.submit 'speichern', class: 'btn' %>
+				</div>
 			<% end %>
 		</section>
 	<% end %>

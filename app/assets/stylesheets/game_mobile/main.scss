@@ -390,6 +390,9 @@ body {
 			opacity: .4;
 		}
 	}
+	.form-group.bottom {
+		top: auto; bottom: 0;
+	}
 	.form-group.single-line {
 		margin-top: calc(25vh - 20px);
 	}
