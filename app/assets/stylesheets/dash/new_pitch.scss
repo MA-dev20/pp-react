@@ -809,12 +809,6 @@
             // min-width: 37vh;
             min-width: 28%;
 
-            .far {
-                position: relative;
-                top: 1vh;
-                font-size: 2vh;
-            }
-
             .custom-select {
                 margin-top: 1vh;
                 width: 86%;
@@ -916,6 +910,24 @@
             .list-with-words {
                 // background-color: #fafafa;
                 min-height: 4vh; 
+            }
+        }
+
+        .card.add-reaction,
+        .card.add-rating,
+        .card.time-limit {
+            .far {
+                position: relative;
+                cursor: pointer;
+                top: 1vh;
+                font-size: 2vh;
+                color: rgb(var(--btncolor));
+            }
+
+            .far-time {
+                position: absolute;
+                right: 1.5vh;
+                top: 2.3vh;
             }
         }
         

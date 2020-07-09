@@ -22,6 +22,7 @@
 <div class="main-card-row1">
 	<div class="card time-limit">
 		<div class="title">Time limit</div>
+		<i class="far far-time fa-check-square" id="timeCheck" onclick="showTime()"></i>
 		<div class="subline">Set your time limit.</div>
 		<div class="form-group">
 			<div class="time-field">
@@ -436,6 +437,22 @@
 			$('#reactionCheck').addClass('fa-check-square');
 			$('.add-reaction').css('height', '40vh');			
 			$('#add_ol_form').show();
+		}
+	}
+
+	function showTime() {
+		if ($('#timeCheck').hasClass('fa-check-square')) {
+			$('#timeCheck').removeClass('fa-check-square');
+			$('#timeCheck').addClass('fa-square');
+			$('.time-limit').css('height', '6vh');
+			$('.time-limit .subline').hide();
+			$('.time-limit .form-group').hide();
+		} else {
+			$('#timeCheck').removeClass('fa-square');
+			$('#timeCheck').addClass('fa-check-square');
+			$('.time-limit').css('height', '17vh');
+			$('.time-limit .subline').show();
+			$('.time-limit .form-group').show();			
 		}
 	}
 
