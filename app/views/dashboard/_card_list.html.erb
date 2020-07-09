@@ -6,8 +6,12 @@
         <% if t.task.task_type != "slide" %>
         <div class="task-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
-            <% if !t.task.valide %>
-            <i class="fas fa-exclamation-triangle"></i>
+            <% if t.task.title.present? && t.task.task_type.present? %>
+                <% if t.task.task_type == 'catchword' && !t.task&.catchword_list&.catchwords.present? %>
+                    <i class="fas fa-exclamation-triangle"></i>
+                <% end %>
+            <% else %>
+                <i class="fas fa-exclamation-triangle"></i>
             <% end %>
             <div class="name"><%= t.order %>. Task</div>
             <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
