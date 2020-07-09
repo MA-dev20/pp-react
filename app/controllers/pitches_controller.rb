@@ -151,6 +151,19 @@ class PitchesController < ApplicationController
 	end
   end
 
+  def create_task_media_content
+	@pitch = Pitch.find(params[:pitch_id])
+	@task_medium = TaskMedium.create(media_params)
+	# if params[:task_id].present?
+	# 	@task = Task.find(params[:task_id])
+	# 	@task.update(task_medium_id: @task_medium.id)
+	# 	@task.update(task_medium_id: @task_medium.id, task_type: media_params[:media_type])
+	# end
+	# if params[:type] == 'image'
+	# end
+	task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
+  end
+
   def create_task_media
 	@pitch = Pitch.find(params[:pitch_id])
 	@task_medium = TaskMedium.create(media_params)

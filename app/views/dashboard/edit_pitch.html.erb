@@ -29,6 +29,12 @@
 			<%= t.file_field :pdf, accept: '.pdf'%>
 			<%= t.hidden_field :media_type, value: 'pdf' %>
 			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_content_form"} do |t| %>
+				<%#= t.file_field :image, class: 'pdf-image-file-field', accept: 'image/*' %>
+				<input class="pdf-image-file-field" accept="image/*" type="file" name="task_medium[image]">
+				<%= t.hidden_field :media_type, value: 'image' %>
+				<!-- <input type="hidden" name="type" value="image"> -->
+			<% end %>
 			<div class="add-task">
 				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
 			</div>
@@ -394,6 +400,53 @@
 		var globalForm = new FormData(document.getElementById('add_pdf_form'));
 		sendMediaPDF(globalForm);
 	})
+
+	$('.pdf-image').on('click', function () {
+		$('.pdf-image-file-field').click();
+	})
+
+	$('.pdf-image-file-field').on('change', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	function sendMediaPdfContent(globalForm) {
+		var url = "<%= create_task_media_content_path(@pitch) %>";
+		$('#loaderModal').show();
+		$.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#loaderModal').hide();
+				<% if @pitch.tasks.count != 0 %>
+					selectDragDropTask(<%= @pitch.tasks.last.id %>);
+				<% end %>
+			}
+		})
+	}
 
 	function sendMediaPDF(globalForm) {
 		var url = "<%= create_task_media_url(@pitch) %>";
