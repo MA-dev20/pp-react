@@ -41,7 +41,7 @@
           <div class="dot"></div>
 				</div>
 			<% elsif @game && @admin && @game.game_turns.find_by(user_id: @admin.id) %>
-        <%= link_to '', gm_logout_path(@game.game_turns.find_by(user_id: @admin.id)), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
+        <%= link_to '', gm_logout_path(@admin.id), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
 			<% end %>
 		<% end %>
 	</section>
@@ -49,7 +49,7 @@
     <%= image_tag 'logos/peterpitch.png', class: 'logo' %>
 		<i class="fas fa-times close" onclick="closeMenu()"></i>
 		<% if @task && @task.objection_list && @game.state == 'play' %>
-		<div class="link" onclick="toggleObjections()">Einwände</div>
+		<div class="link" onclick="toggleObjections()"><i class="far fa-comment"></i>Einwände<i class="fas fa-chevron-right next"></i></div>
 		<% end %>
 		<% if @pitch %>
 		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation <i class="fas fa-chevron-right next"></i></div>
@@ -70,6 +70,11 @@
       <%= link_to '', gm_set_state_path('', state: 'bestlist'), data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
     </div>
 	</section>
+	<% if @pitch && @game.state != 'play' && @game.state != 'feedback' %>
+	<section id="comment-menu">
+		<i class="far fa-comment" onclick="toggleComment()"></i>
+	</section>
+	<% end %>
 	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
 		<div class="nav">
@@ -78,7 +83,7 @@
 		<div class="objections" id="objection-list">
 
 			<% @task.objection_list.objections.each do |o| %>
-			<span onclick="sendObjection('<%= o %>')"><%= o %></span>
+			<span onclick="sendObjection('<%= o.name %>')"><%= o.name %></span>
 			<% end %>
 		</div>
 	</section>
@@ -142,7 +147,11 @@
     <section id="task_user-menu">
         <div class="heading">Nutzerliste</div>
         <div class="subheading">Wer soll diese Task erledigen?</div>
+				<% if params[:show_task] %>
+				<i class="fas fa-times close" onclick="closeMenu()"></i>
+				<% else %>
         <div class="back" onclick="toggleTaskUser()"><i class="fas fa-chevron-left"></i>zur Folienübersicht</div>
+				<% end %>
         <% @game.game_turns.where(play: true, repeat: false).each do |t| %>
         <div class="user">
           <div class="avatar">
@@ -155,10 +164,11 @@
             <div class="name">
               <%= t.user.fname + ' ' + t.user.lname %>
             </div>
+						<i class="fas fa-chevron-right add-user"></i>
             <% if t.task %>
-            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task]), class: 'fas fa-chevron-right add-user', data: {confirm: 'Der User ist schon einer anderen task zugeornet. Willst du das überschreiben?'} %>
+            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task], show_task: true), data: {confirm: 'Der User ist schon einer anderen task zugeornet. Willst du das überschreiben?'} %>
             <% else %>
-            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task]), class: 'fas fa-chevron-right add-user' %>
+            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task], show_task: true) %>
             <% end %>
         </div>
         <% end %>
@@ -169,6 +179,7 @@
 		<div class="subheading">Nutzer aus Pitchrunde entfernen</div>
     <i class="fas fa-times close" onclick="closeMenu()"></i>
 		<div class="back" onclick="toggleUser()"><i class="fas fa-chevron-left"></i>zum Menu</div>
+		<div class="new-user" onclick="toggleNewUser()"><i class="fas fa-plus"></i>User hinzufügen</div>
 		<% @game.game_turns.where(play: true, repeat: false).each do |gt| %>
 		<div class="user">
       <div class="avatar">
@@ -183,6 +194,43 @@
 				<%= gt.user.fname + ' ' + gt.user.lname %>
 			</div>
       <%= link_to '', gm_delete_turn_path(gt.id), class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+		</div>
+		<% end %>
+	</section>
+	<section id="user-new">
+		<div class="heading">Nutzer</div>
+		<div class="subheading">Füge einen Nutzer der Pitchrunde hinzu</div>
+		<%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
+				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
+				<div class="form-group single-line">
+					<%= f.email_field :email, placeholder: 'E-Mail', class: 'form-field' %>
+					<i class="far fa-paper-plane" id='comment_submit' onclick='submitEmail()'></i>
+				</div>
+		<% end %>
+	</section>
+	<% if params[:email] %>
+		<section id="user-name">
+			<div class="heading">Nutzer</div>
+			<div class="subheading">den Nutzer gibt es noch nicht. Wie heißt er?</div>
+			<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email])), html: {id: 'name_form'}) do |f| %>
+				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
+				<div class="form-group two-line" id="group_fname">
+					<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
+				</div>
+				<div class="form-group two-line" id="group_lname">
+					<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
+				</div>
+				<%= f.submit 'speichern', class: 'btn' %>
+			<% end %>
+		</section>
+	<% end %>
+
+	<section id="comment-popup">
+		<i class="fas fa-times close" onclick="toggleComment()"></i>
+		<%= form_for(:comment, url: new_comment_path(1), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
+		  <div class="form-group">
+			  <%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', id: 'comment_text', maxlength: "30"%>
+				<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
 		</div>
 		<% end %>
 	</section>
@@ -206,6 +254,49 @@
 
 
 <script>
+	function toggleNewUser() {
+		$('#user-new').toggle();
+		$('#user-menu').toggle();
+	}
+	function inputSend() {
+		if ($('#comment_text').val() == '') {
+		  $("#comment_submit").css({ opacity: .4 });
+		} else {
+		  $("#comment_submit").css({ opacity: 1 });
+		}
+	}
+	function toggleComment() {
+		$('#comment-popup').toggle();
+		if ( $('#comment-popup').is(':visible') ) {
+			$('#comment_text').focus();
+		}
+	}
+	function submitComment() {
+		$('#comment_form').submit();
+	}
+	function submitEmail() {
+		$('#email_form').submit();
+	}
+	$('#comment_form').submit(function(e) {
+		e.preventDefault();
+		$('#comment_text').removeClass('red');
+		if( $('#comment_text').val().length > 30) {
+			$('#comment_text').addClass('red');
+			$('#comment_text').val('');
+			$('#comment_text').attr('placeholder', 'Bitte nicht mehr als 30 Zeichen!')
+		} else if($('#comment_text').val().length != 0){
+		$.ajax({
+			type: 'put',
+			url: "<%= gm_send_emoji_url.to_s %>?comment=" + $('#comment_text').val(),
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(data) {
+				$("#comment_text").val('');
+				inputSend();
+				toggleComment();
+			}
+		})
+		}
+	})
   function deleteUser(tID) {
     var url = '/mobile/games/turns/' + tID + '/delete_task';
     $.ajax({
@@ -250,6 +341,7 @@
     $('#menu').hide();
     $('#user-menu').hide();
     $('#task_user-menu').hide();;
+		$('#user-new').hide();
   }
   <% if params[:slide] %>
     $('#nav-menu').show();

@@ -13,7 +13,7 @@ class Game < ApplicationRecord
   after_update do
 	if self.previous_changes["state"]
 	  ActionCable.server.broadcast "game_#{self.id}_channel", game_state: 'changed'
-  elsif self.state != 'rating' && self.previous_changes['current_turn']
+  elsif self.state == 'turn' && self.previous_changes['current_turn']
     ActionCable.server.broadcast "game_#{self.id}_channel", game_state: 'changed'
   elsif self.state == 'choose' && self.previous_changes['current_task']
     ActionCable.server.broadcast "game_#{self.id}_channel", game_state: 'changed'

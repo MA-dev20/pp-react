@@ -39,6 +39,67 @@ body {
 		animation: buzz 1s infinite alternate ease-in-out;
 	}
 }
+.comments {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 30vw;
+	background-color: transparent;
+	z-index: 900;
+	padding-bottom: 2vh;
+	.comment {
+		position: relative;
+		width: 20vw;
+		display: flex;
+		margin: 2vh 2vw 0;
+		height: auto;
+		bottom: 0;
+		opacity: 1;
+		overflow: hidden;
+		animation: moveHeight 1s 1;
+		.circle,
+		img {
+			height: 6vh;
+			width: 6vh;
+			border-radius: 50%;
+			margin: 0 2vh 0 0;
+			opacity: 0;
+			animation: fadeIn 1s 1 forwards;
+		}
+		.circle {
+			background-color: #00232a;
+			color: white;
+			font-size: 3vh;
+			text-align: center;
+			line-height: 6vh;
+		}
+		.text-bg {
+			position: absolute;
+			border-radius: 1vh;
+			border-top-left-radius: 0;
+			width: 15vw;
+			line-height: 4vh;
+			font-size: 3vh;
+			color: white;
+			background-color: white;
+			padding: 1vh;
+			left: 8vh;
+			z-index: 8;
+			animation: moveHeight 1s 1;
+		}
+		.text {
+			border-radius: 1vh;
+			border-top-left-radius: 0;
+			width: 15vw;
+			background-color: rgba(var(--custcolor),.2);
+			line-height: 4vh;
+			font-size: 3vh;
+			padding: 1vh;
+			z-index: 9;
+			animation: moveHeight 1s 1;
+		}
+	}
+}
 #content {
 	position: fixed;
 	height: 100%;
@@ -1140,7 +1201,9 @@ body {
 					background-color: rgb(var(--custcolor));
 					height: 100%;
 					width: 100%;
-					animation: progress var(--soundduration) 1;
+					animation-name: progress;
+					animation-iteration-count: 1;
+					animation-fill-mode: forwards;
 				}
 			}
 			@keyframes progress {

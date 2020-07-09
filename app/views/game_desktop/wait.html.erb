@@ -26,6 +26,7 @@
 
 </section>
 
+
 <section id="skip">Skip mit Leertaste</section>
 
 <%= audio_tag 'game/ping.mp3', autoplay: false, loop: false, id: 'ping' %>
@@ -45,9 +46,9 @@
 	<% @game.game_turns.each do |t| %>
 	var left1 = Math.random() * 80;
 	<% if t.user.avatar? %>
-	var userDIV = '<img src="<%= t.user.avatar %>" style="left:' + left1 +'%;">';
+	var userDIV = '<img src="<%= t.user.avatar %>" style="left:' + left1 +'%;" id="user_<%= t.user_id %>">';
 	<% else %>
-	var userDIV = '<div class="circle" style="left:' + left1 + '%;"><%= t.user.fname[0].capitalize %><%= t.user.lname[0].capitalize %></div>';
+	var userDIV = '<div class="circle" style="left:' + left1 + '%;" id="user_<%= t.user_id %>"><%= t.user.fname[0].capitalize %><%= t.user.lname[0].capitalize %></div>';
 	<% end %>
 	$('#user-rain').append(userDIV);
 	<% end %>

@@ -12,7 +12,7 @@ class GamesController < ApplicationController
 		  g.update(state: 'wait')
 		end
     if g.active
-      if @g.company == @company
+      if g.company == @company
 		    @game = g
       else
         flash[:alert] = 'Das Passwort ist schon vergeben!'
@@ -31,7 +31,7 @@ class GamesController < ApplicationController
 	  redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: params[:game][:pitch_id])
 	else
 	  redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id])
-	end	
+	end
   end
 
   def rating_user
@@ -40,46 +40,76 @@ class GamesController < ApplicationController
   end
 
   def email
-	@user = User.find_by(email: params[:user][:email])
-	if @user && @user.company == @company && @user.role == 'user'
-	  game_user_login @user
-	  redirect_to gm_join_path
-	elsif @user && @user.company == @company && @user.role != 'user'
-	  game_user_login @user
-	  redirect_to gm_join_path
-	elsif @user
-	  flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
-	  redirect_to gm_error_path
-	else
-	  @user = @company.users.new(email: params[:user][:email], role: 'inactive')
-	  @team = @game.team
-	  @teamAll = @game.user.teams.find_by(name: 'all')
-	  if @user.save(validate: false)
-		game_user_login @user
-		@teamAll.users << @user
-		@team.users << @user
-	    redirect_to gm_new_name_path(@user)
-	  else
-		flash[:alert] = 'Konnte dich nicht anlegen!'
-		redirect_to gm_login_path
-	  end
-	end
+	  @user = User.find_by(email: params[:user][:email])
+    if params[:user][:site] == 'admin_game_mobile'
+      if @user
+        @turn = @game.game_turns.where(user: @user, play: true, played: false).first
+        if !@turn
+          @turn = @game.game_turns.create(team: @game.team, user: @user, play: true, played: false)
+          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
+        end
+        redirect_to gm_game_path
+      else
+        @user = @company.users.new(email: params[:user][:email], role: 'inactive')
+        @team = @game.team
+        @teamAll = @game.user.teams.find_by(name: 'all')
+        if @user.save(validate: false)
+      		@teamAll.users << @user
+      		@team.users << @user
+          redirect_to gm_game_path(email: params[:user][:email])
+        else
+          flash[:alert] = 'Konnte dich nicht anlegen!'
+          redirect_to gm_game_path
+        end
+      end
+    elsif @user && @user.company == @company && @user.role == 'user'
+    	game_user_login @user
+    	redirect_to gm_join_path
+    elsif @user && @user.company == @company && @user.role != 'user'
+      game_user_login @user
+      redirect_to gm_join_path
+    elsif @user
+      flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
+      redirect_to gm_error_path
+    else
+      @user = @company.users.new(email: params[:user][:email], role: 'inactive')
+      @team = @game.team
+      @teamAll = @game.user.teams.find_by(name: 'all')
+      if @user.save(validate: false)
+    	  game_user_login @user
+    		@teamAll.users << @user
+    		@team.users << @user
+    	  redirect_to gm_new_name_path(@user)
+    	else
+    		flash[:alert] = 'Konnte dich nicht anlegen!'
+    		redirect_to gm_login_path
+    	end
+    end
   end
 
   def name
-	@user = User.find(params[:user_id])
-	password = SecureRandom.urlsafe_base64(8)
-	@user.update(fname: params[:user][:fname], lname: params[:user][:lname], password: password)
-	redirect_to gm_join_path
+	  @user = User.find(params[:user_id])
+	  password = SecureRandom.urlsafe_base64(8)
+	  @user.update(fname: params[:user][:fname], lname: params[:user][:lname], password: password)
+    if params[:user][:site] == 'admin_game_mobile'
+      @turn = @game.game_turns.where(user: @user, play: true, played: false).first
+      if !@turn
+        @turn = @game.game_turns.create(team: @game.team, user: @user, play: true, played: false)
+        ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
+      end
+      redirect_to gm_game_path
+    else
+	    redirect_to gm_join_path
+    end
   end
   def create_turn
 	@user = current_game_user
 	@turn = @game.game_turns.where(user: @user, repeat: false).last
 	if @turn && @turn.update(turn_params)
 	  if @user.avatar?
-	    ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state
+	    ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
 	  else
-		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
+		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id, user_id: @user.id
 	  end
 	  redirect_to gm_game_path
 	  return
@@ -91,9 +121,9 @@ class GamesController < ApplicationController
 	if @turn.save
 	  @count = @game.game_turns.where(play: true).count
 	  if @user.avatar?
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @count, avatar: @user.avatar.url, state: @game.state
+	  ActionCable.server.broadcast "count_#{@game.id}_channel", count: @count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
 	  else
-		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state
+		ActionCable.server.broadcast "count_#{@game.id}_channel", count: @count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
 	  end
 	  redirect_to gm_game_path
 	  return
