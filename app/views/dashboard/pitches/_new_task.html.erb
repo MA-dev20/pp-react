@@ -645,6 +645,12 @@
 	}
 
 	function handleTitleChange(event) {
+		if ($('.selected .exclamation-triangle').val() === '0') {
+			if ($(event.target).val() !== "")
+				$('.selected .fa-exclamation-triangle').hide();
+			else
+				$('.selected .fa-exclamation-triangle').show();
+		}
 		updateValues(Number($('.selected').attr('id').split('_')[1]), $(event.target).val(), 'title');
 	}
 
