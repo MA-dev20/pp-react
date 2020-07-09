@@ -511,6 +511,7 @@
 			if (isOtherMediaExists()) {
 				$('.warning-card-wrapper').show();
 			} else {
+				// $('#task_medium_image').click();
 				handleImageUpload(e);
 			}
 		}
@@ -525,11 +526,32 @@
 		if (mimeType.split('/')[0] === 'image') {
 			let url_object = URL.createObjectURL(file_data);
 			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
-			$('.left-card.selected img')[0].src = url_object;
-			$(e.currentTarget).siblings('.preview').show();
+			// $('.left-card.selected img')[0].src = url_object;
+			// $(e.currentTarget).siblings('.preview').show();
 			// $(e.currentTarget).hide();
-			$('.image-drop-zone').hide();
-			$('#add_image_form').submit();
+			// $('.image-drop-zone').hide();
+			// $('#add_image_form').submit();
+
+			var image = document.getElementById('media_image');
+			var files = file_input[0].files;
+			var done = function (url) {
+				inputAvatar.value = '';
+				image.src = url;
+				$('#popup').show();
+			};
+			var reader, file, url;
+			if (files && files.length > 0) {
+				file = files[0];
+				if (URL) {
+					done(URL.createObjectURL(file));
+				} else if (FileReader) {
+					reader = new FileReader();
+					reader.onload = function (e) {
+						done(reader.result);
+					}
+					reader.readAsDataURL(file);
+				}
+			}
 		}
 	}
 
@@ -696,7 +718,7 @@
 			$('#task_medium_image').click();
 		}
 	})
-
+	
 	$('#video_upload_btn').on('click', function (e) {
 		field_id = 'task_medium_video';
 		global_method = 'upload';
