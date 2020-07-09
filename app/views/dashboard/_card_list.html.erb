@@ -35,6 +35,8 @@
             <i class="fa fa-play-circle video-play-thumb"></i>
             <% elsif t.task.task_medium && t.task.task_medium.image? %>
             <%= image_tag t.task.task_medium.image.url, class: 'image' %>
+            <% elsif t.task.task_medium && t.task.task_medium.audio? %>
+            <i class="fab fa-itunes-note no-image-icon no-image-audio-icon"></i>
             <% else %>
             <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
             <% end %>
