@@ -342,8 +342,9 @@
 
 		</div>
 		<div class="card add-rating">
+			<i class="far far-rating-criteria fa-check-square" id="ratingCheck" onclick="showRating()"></i>
+			<div class="title">Rating Criteria</div>			
 			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"}, remote: true do |f| %>
-			<div class="title">Rating Criteria</div>
 			<div class="subline">You can add up to 4 rating criterias</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
@@ -453,6 +454,20 @@
 			$('.time-limit').css('height', '17vh');
 			$('.time-limit .subline').show();
 			$('.time-limit .form-group').show();			
+		}
+	}
+
+	function showRating() {
+		if ($('#ratingCheck').hasClass('fa-check-square')) {
+			$('#ratingCheck').removeClass('fa-check-square');
+			$('#ratingCheck').addClass('fa-square');
+			$('.card.add-rating').css('height', '8vh');
+			$('#add_rating_form').hide();
+		} else {
+			$('#ratingCheck').removeClass('fa-square');
+			$('#ratingCheck').addClass('fa-check-square');
+			$('.card.add-rating').css('height', '24vh');
+			$('#add_rating_form').show();
 		}
 	}
 
