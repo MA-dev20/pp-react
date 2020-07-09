@@ -121,16 +121,17 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
+	@task_order.destroy
 	@task_orders = @pitch.task_orders.all.order(:order)
-	if @task.pitches.count == 1 && @task.destroy
-	  flash[:info] = "Task gelöscht!"
-	elsif @task_order.destroy
-	  flash[:info] = 'Task aus Pitch entfernt!'
-	else
-	  flash[:alert] = 'Konnte Task nicht löschen!'
-	  redirect_to dashboard_edit_pitch_path(@pitch)
-	  return
-	end
+	# if @task.pitches.count == 1 && @task.destroy
+	#   flash[:info] = "Task gelöscht!"
+	# elsif @task_order.destroy
+	#   flash[:info] = 'Task aus Pitch entfernt!'
+	# else
+	#   flash[:alert] = 'Konnte Task nicht löschen!'
+	#   redirect_to dashboard_edit_pitch_path(@pitch)
+	#   return
+	# end
 	i = 1
 	@task_orders.each do |to|
 	  to.update(order: i)
