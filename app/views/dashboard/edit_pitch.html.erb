@@ -258,6 +258,18 @@
 	var selected_card_id = 0;
 	var xhr = null;
 
+	$(document).click(function (e) {
+		e.stopPropagation();
+		var container = $(".media-options");
+
+		//check if the clicked area is dropDown or not
+		if (!$(e.target).hasClass('cw')) {
+			if (container.has(e.target).length === 0) {
+				$('.media-options').hide();
+			}
+		}
+	})
+
 	$('.back-arrow').on('click', function() {
 		$('.warning-card-wrapper2').show();
 	})
