@@ -8,8 +8,13 @@
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <% if t.task.task_type.present? %>
                 <% if ((t.task.task_type == 'catchword' && t.task&.catchword_list&.catchwords.present?) || (t.task.task_medium.present? &&  (t.task.task_medium.video.present? || t.task.task_medium.audio.present? || t.task.task_medium.image.present?))) %>
-                    <input type="hidden" class="exclamation-triangle" value="0">
-                    <i class="fas fa-exclamation-triangle" style="display: none"></i>
+                    <% if t.task.title.present? %>    
+                        <input type="hidden" class="exclamation-triangle" value="0">
+                        <i class="fas fa-exclamation-triangle" style="display: none"></i>
+                    <% else %>
+                        <input type="hidden" class="exclamation-triangle" value="0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    <% end %>
                 <% else %>
                     <input type="hidden" class="exclamation-triangle" value="1">
                     <i class="fas fa-exclamation-triangle"></i>
