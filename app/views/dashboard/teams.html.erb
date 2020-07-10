@@ -284,9 +284,9 @@
 				</thead>
 				<tbody>
 					<% @users.where(role: 'inactive').each do |u| %>
-						<tr>
+						<tr class="username-inactive">
 							<td class="img"><%= image_tag u.avatar.url %></td>
-							<td><%= u.fname %> <%= u.lname %></td>
+							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td class="accept"><%= link_to '', make_user_path(u.id), class: 'fas fa-check-circle', method: 'put' %></td>
 							<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
 						</tr>
@@ -340,8 +340,11 @@
         }).hide();
 	})
 
-	$('#searchUsers').keyup(function() {
-		$rows = $('.username');
+	$('#searchUsers').keyup(function(e) {
+		if ($('#user').attr('style') !== '')
+			var $rows = $('.username-inactive');
+		else
+			var $rows = $('.username');
 		var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
 		reg = RegExp(val, 'i'),
 		text;
