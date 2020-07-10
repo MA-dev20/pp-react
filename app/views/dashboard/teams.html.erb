@@ -58,7 +58,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				 	<tr onclick="redirect(<%= @teamAll.id %>)" class="<%= @team && @team == @teamAll || @team.nil? ? 'highlighted' : '' %>">
+				 	<tr onclick="redirect(<%= @teamAll.id %>)" class="teamname <%= @team && @team == @teamAll || @team.nil? ? 'highlighted' : '' %>">
 				 		<td>Alle</td>
 				 		<td><%= @teamAll.users.count %></td>
 				 		<td></td>
@@ -66,7 +66,7 @@
 				 		<td></td>
 				 	</tr>
 					<% @teams.each do |t| %>
-						<tr ondrop="dropTeam(event, <%= t.id %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)" id="team_<%= t.id %>" class="<%= @team && @team == t ? 'highlighted' : '' %>">
+						<tr ondrop="dropTeam(event, <%= t.id %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)" id="team_<%= t.id %>" class="teamname <%= @team && @team == t ? 'highlighted' : '' %>">
 							<td onclick="redirect(<%= t.id %>)"><%= t.name %></td>
 							<td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.count %></td>
 							<td onclick="redirect(<%= t.id %>)"><%= t.ges_rating / 10.0 %></td>
@@ -256,9 +256,9 @@
 				<tbody>
 					<% @users.where.not(role: 'inactive').each do |u| %>
 						<% if params[:edit] == "true" && TeamUser.where(team_id: @team.id, user_id: u.id).count == 0 || params[:edit] != 'true' %>
-						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="<%= @user == u ? 'highlighted' : '' %>">
+						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="username <%= @user == u ? 'highlighted' : '' %>">
 							<td class="img"><%= image_tag u.avatar.url %></td>
-							<td><%= u.fname %> <%= u.lname %></td>
+							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td><%= u.game_turns.count %></td>
 							<td><%= u.ges_rating / 10.0 %></td>
 							<td class='edit'><%= link_to '', dashboard_teams_path('', edit_user: u.id), class: 'far fa-edit' %></td>
@@ -327,6 +327,30 @@
 	</div>
 </div>
 <script>
+
+	$('#searchTeams').keyup(function() {
+		var $rows = $('.teamname');
+		var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+		reg = RegExp(val, 'i'),
+		text;
+
+        $rows.show().filter(function() {
+            text = $(this).children().first().text().replace(/\s+/g, ' ');
+            return !reg.test(text);
+        }).hide();
+	})
+
+	$('#searchUsers').keyup(function() {
+		$rows = $('.username');
+		var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+		reg = RegExp(val, 'i'),
+		text;
+        $rows.show().filter(function() {
+            text = $(this).children('.name').text().replace(/\s+/g, ' ');
+            return !reg.test(text);
+        }).hide();
+	})
+		
 	function redirect(tID) {
 		var URL = "<%= dashboard_teams_path %>"
 		location.replace(URL + '/' + tID);
