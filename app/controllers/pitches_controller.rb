@@ -162,7 +162,8 @@ class PitchesController < ApplicationController
 	# end
 	# if params[:type] == 'image'
 	# end
-	task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
+	@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 
   def create_task_media
