@@ -260,12 +260,26 @@
 
 	$(document).click(function (e) {
 		e.stopPropagation();
-		var container = $(".media-options");
 
 		//check if the clicked area is dropDown or not
-		if (!$(e.target).hasClass('cw')) {
+		if (!$(e.target).hasClass('media-type-options')) {
+			var container = $(".media-options");
 			if (container.has(e.target).length === 0) {
 				$('.media-options').hide();
+			}
+		}
+
+		if (!$(e.target).hasClass('ol')) {
+			var container = $("#ol-options");
+			if (container.has(e.target).length === 0) {
+				$('#ol-options').hide();
+			}
+		}
+
+		if (!$(e.target).hasClass('cw-dropdown')) {
+			var container = $("#cw-options");
+			if (container.has(e.target).length === 0) {
+				$('#cw-options').hide();
 			}
 		}
 	})

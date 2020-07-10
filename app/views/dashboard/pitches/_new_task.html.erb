@@ -47,7 +47,7 @@
 			<div class="catchword-heading catchword">
 				<div class="title">Text, Video oder Bild hinzufügen!</div>
 				<div class="form-group">
-					<div class="cw custom-select" onclick="showOptions()">
+					<div class="cw custom-select media-type-options" onclick="showOptions()">
 						<label><%= media_type.present? ? media_type.titleize : 'Catchword' %></label>
 						<div class="sub-cs media-options">
 							<div class="option catchword-option" onclick="handleOptionClick('catchword', event)">
@@ -79,7 +79,7 @@
 						<img class="add-cw-img"
 							src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
 					</div>
-					<div class="cw custom-select" onclick="openList('catchword')">Catchword
+					<div class="cw custom-select cw-dropdown" onclick="openList('catchword')">Catchword
 						<div class="sub-cs" id="cw-options">
 							<% @cw_lists.each do |list| %>
 							<div class="option" onclick="handleClick('catchword', '<%= list.id %>')">
