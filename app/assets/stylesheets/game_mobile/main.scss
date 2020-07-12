@@ -312,17 +312,35 @@ body {
 	}
 
 }
+#user-name,
+#user-new {
+	overflow: hidden;
+	.back {
+		position: absolute;
+		line-height: 10vw;
+		font-size: 5vw;
+	}
+}
+#task_user-menu,
+#user-menu {
+	overflow: scroll;
+	.back {
+		position: relative;
+		line-height: 5vw;
+		font-size: 4vw;
+	}
+}
 #user-new, #user-menu {display: none}
 #task_user-menu,
 #user-name,
 #user-new,
 #user-menu {
 	position: fixed;
-	top: 0;left: 0;
-	height: 100%;width: 100%;
-	overflow: scroll;
+	top: 0;left: 10%;
+	height: 100%;width: 90%;
 	background-color: rgba(255,255,255,1);
 	z-index: 2000;
+	box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
 	.heading {
 		position: relative;
 		top: 0;left: 0;
@@ -338,27 +356,33 @@ body {
 		border-radius: 50%;
 		margin-bottom: 10vw;
 	}
+	.new-user {
+		position: relative;
+		line-height: 5vw;
+		font-size: 4vw;
+	}
 	.new-user,
 	.back {
-		height: 10vw; width: 96vw;
-		position: relative;
+		height: 10vw; width: calc(100% - 4vw);
 		top: 0; left: 2vw;
-		line-height: 5vw;
 		text-align: left;
-		font-size: 4vw;
 		color: rgb(var(--btncolor));
 		i {margin-right: 2vw;}
+	}
+	form {
+		position: absolute;
+		height: calc(100% - 15vw); width: 100%;
+		top: 15vw; left: 0;
 	}
 	.form-group {
 		position: relative;
 		text-align: center;
 		width: 100%;
-		line-height: 100px;
-		overflow: hidden;
+		line-height: 40px;
 		i.far {
 			position: absolute;
 			right: 10vw;
-			top: 30px;
+			top: 0;
 			margin: 0;
 			height: 40px;
 			line-height: 40px;
@@ -377,12 +401,12 @@ body {
 			font-size: 15px;
 			color: #212529;
 			background-color: white;
-			width: calc(80vw - 10px);
-			margin: 0 10vw;
+			width: calc(80% - 10px);
+			margin: 0 10vw 5px;
 			border: none;
 			border-radius: .8vh;
 			padding: 0 5px;
-			box-shadow: 0 5px 10px rgba(0,0,0,.4);
+			box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
 		}
 		.form-field::placeholder {
 			font-family: 'Nunito', sans-serif  !important;
@@ -391,14 +415,26 @@ body {
 		}
 	}
 	.form-group.bottom {
-		top: auto; bottom: 0;
+		position: absolute;
+		top: auto; bottom: 20px;
+		width: 100%;
+		text-align: center;
+		.btn {
+			display: inline-block;
+			margin: 0;
+		}
 	}
 	.form-group.single-line {
-		margin-top: calc(25vh - 20px);
+		position: absolute;
+		top: calc(50% - 20px - 15vw);
 	}
-	.form-group.two-line:first-child {
-		margin-top: calc(25vh - 50px);
-		margin-bottom: 20px;
+	.form-group#group_fname {
+		position: absolute;
+		top: calc(50% - 50px - 15vw);
+	}
+	.form-group#group_lname {
+		position: absolute;
+		top: calc(50% - 15vw);
 	}
 	.user:last-child {border-bottom: 0px solid rgba(0, 35, 42, .2);}
 	.user {
@@ -430,7 +466,7 @@ body {
 		}
 		.exit-user, .add-user, .remove-user {
 			position: absolute;
-			right: 0; top: 0;
+			left: auto; right: 0; top: 0;
 			height: 10vw; width: 10vw;
 			line-height: 10vw; text-align: center;
 			cursor: pointer;

@@ -200,6 +200,7 @@
 	<section id="user-new">
 		<div class="heading">Nutzer</div>
 		<div class="subheading">Füge einen Nutzer der Pitchrunde hinzu</div>
+		<div class="back" onclick="toggleNewUser()"><i class="fas fa-chevron-left"></i></div>
 		<i class="fas fa-times close" onclick="closeMenu()"></i>
 		<%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
 				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
@@ -213,6 +214,8 @@
 		<section id="user-name">
 			<div class="heading">Nutzer</div>
 			<div class="subheading">den Nutzer gibt es noch nicht. Wie heißt er?</div>
+			<div class="back" onclick="toggleNewUserName()"><i class="fas fa-chevron-left"></i></div>
+			<i class="fas fa-times close" onclick="closeMenu()"></i>
 			<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email])), html: {id: 'name_form'}) do |f| %>
 				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
 				<div class="form-group two-line" id="group_fname">
@@ -246,6 +249,18 @@
 		<div class="text"><%= flash[:alert] %></div>
 	</div>
 	<% end %>
+	<% if flash[:success] %>
+	<div class="flash-alert">
+		<div class="heading"></div>
+		<i class="fas fa-times close" onclick="hideFlash()"></i>
+		<div class="text"><%= flash[:success] %></div>
+	</div>
+	<script type="text/javascript">
+		setTimeout(function() {
+			$('.flash-alert').fadeOut();
+		},3000)
+	</script>
+	<% end %>
 
 <svg viewbox= "0 0 316 316" style="position: absolute; opacity: .3; left: -200px; height: 350px; z-index: 10;">
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
@@ -257,6 +272,10 @@
 
 
 <script>
+	function toggleNewUserName() {
+		$('#user-new').toggle();
+		$('#user-name').toggle();
+	}
 	function toggleNewUser() {
 		$('#user-new').toggle();
 		$('#user-menu').toggle();
@@ -345,6 +364,7 @@
     $('#user-menu').hide();
     $('#task_user-menu').hide();;
 		$('#user-new').hide();
+		$('#user-name').hide();
   }
   <% if params[:slide] %>
     $('#nav-menu').show();

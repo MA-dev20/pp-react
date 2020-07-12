@@ -48,6 +48,7 @@ class GamesController < ApplicationController
           @turn = @game.game_turns.create(team: @game.team, user: @user, play: true, played: false)
           ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
         end
+        flash[:success] = 'Nutzer hinzugefügt!'
         redirect_to gm_game_path
       else
         @user = @company.users.new(email: params[:user][:email], role: 'inactive')
@@ -97,6 +98,7 @@ class GamesController < ApplicationController
         @turn = @game.game_turns.create(team: @game.team, user: @user, play: true, played: false)
         ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_turns.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
       end
+      flash[:success] = 'Nutzer hinzugefügt!'
       redirect_to gm_game_path
     else
 	    redirect_to gm_join_path
