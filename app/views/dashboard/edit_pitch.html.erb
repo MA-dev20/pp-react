@@ -240,8 +240,8 @@
 		<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
 		<h1>Want to leave without saving?</h1>
 		<div class="buttons">
-			<button class="btn reversed cancel-btn" data-value="cancel">Cancel</button>
-			<a class="btn reversed ok-btn" href="<%= dashboard_pitches_path %>">Ok</a>
+			<button class="btn reversed cancel-btn save-pitch" data-value="cancel">Save Pitch</button>
+			<a class="btn reversed ok-btn" href="<%= delete_unsave_pitch_path(@pitch.id) %>">Yes</a>
 		</div>
 	</div>
 </div>
@@ -289,8 +289,9 @@
 		$('.warning-card-wrapper2').show();
 	})
 
-	$('.cancel-btn').on('click', function() {
+	$('.save-pitch').on('click', function() {
 		$('.warning-card-wrapper2').hide();
+		$('.done-btn').click();
 	})
 
 	$('.warning-card-wrapper .btn').unbind().on('click', function () {

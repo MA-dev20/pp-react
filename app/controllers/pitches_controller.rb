@@ -52,7 +52,13 @@ class PitchesController < ApplicationController
 		@pitch.update(destroy_image: 'false', destroy_video: 'false')
 		redirect_to dashboard_pitches_path
 	end
+  end
 
+  def delete_pitch
+	@pitch = Pitch.find(params[:id])
+	@pitch.tasks.destroy_all
+	@pitch.destroy
+	redirect_to dashboard_pitches_path
   end
 	
   def update_task

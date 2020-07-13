@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
   post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'  
 
+  get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
   get 'pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order', to: 'pitches#set_task_order'
   post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
   post 'task/:pitch_id/task_media_content', to: 'pitches#create_task_media_content', as: 'create_task_media_content'
