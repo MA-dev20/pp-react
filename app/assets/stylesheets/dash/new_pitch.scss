@@ -1405,6 +1405,93 @@
     }
 }
 
+#content {
+
+    .pitch-image-preview {
+        top: 2.5vh;
+
+        .preview-img-tag {
+            height: 22vh !important;
+        }
+
+        .pitch-remove-option {
+            margin: 1vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 18vh;
+            height: 5vh;
+            padding: 0 1.5vh;
+            position: absolute;
+            // background: rgba(105, 222, 169, 1);
+            background: rgba(var(--custcolor), 0.7);
+            border-radius: 1vh;
+            z-index: 5555;
+
+            label {
+                position: relative;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: center;
+                width: 15vh;
+                float: left;
+                text-align: left;
+                line-height: 2vh;
+                color: #fff;
+            }
+
+            .remove-img {
+                position: relative;
+                left: 16vh;
+                float: right;
+                color: #FFFFFF;
+                cursor: pointer;
+                font-size: 2vh;
+                text-decoration: none;
+            }
+        }
+
+    }
+
+    #pitchForm {
+
+        .popup {
+            left: calc(50vw - 260px) !important;
+        }
+
+        .pitch-image-drop-zone {
+            height: 22vh !important;
+        }
+
+        .label-btn {
+            top: 29%;
+        }
+
+        .dropzone-text {
+            top: 7.5vh;
+        }
+
+        .pitch-image-upload-btn {
+            width: 6vh !important;
+        }
+
+        .op {
+            opacity: 0.5;
+        }
+
+        .disable-btn {
+            background: rgb(var(--btncolor));
+            color: #fff;
+        }
+
+        .disable-btn:hover {
+            background: rgb(var(--btncolor));
+            color: #fff;
+        }
+    }
+}
+
 .danger {
     border: 0.1vh solid red; 
 }

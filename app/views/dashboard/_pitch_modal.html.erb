@@ -1,10 +1,10 @@
 <div id="pitchModal" class="pitch-modal modal hide">
-    <div class="modal-content">
+    <div class="modal-content pitch-modal-content">
         <span class="close">&times;</span>
         <div class="heading">
             <h1>Headline</h1>
         </div>
-        <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put' do |f| %>
+        <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put', html: {id: 'pitchForm'} do |f| %>
         <%= f.hidden_field :destroy_image, class: 'destroy-image' %>
         <%= f.hidden_field :destroy_video, class: 'destroy-video' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
@@ -13,7 +13,7 @@
                 <div class="pitch-title">
                     <label for="">Pitch</label>
                     <div class="form-group">
-                        <%= f.text_field :title, class: 'form-field', placeholder: 'Pitch title' %>
+                        <%= f.text_field :title, class: "form-field pitch-title", placeholder: 'Pitch title', required: true, onkeyup: 'handleBtnDisable(this)' %>
                     </div>
                 </div>
                 <div class="pitch-description">
@@ -27,23 +27,209 @@
             <div class="right-section">
                 <div class="picture media-option">
                     <label for="">Pitch image</label>
-                    <label for="pitch_image" class="btn upload">Upload</label>
-                    <%= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*', class: 'pitch-uploadfile' %>
-                    <div class="preview image-preview" style="<%= 'display: block;'if pitch.image.url.present? %>">
+                    <!-- <label for="pitch_image" class="btn upload">Upload</label> -->
+                    <%#= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*', class: 'pitch-uploadfile' %>
+                    <!-- <div class="preview image-preview" style="<%= 'display: block;'if pitch.image.url.present? %>">
                         <div class="remove pitch-file" onclick="removePitchMedia(event, 'image')">remove</div>
                         <% if pitch.image.present? %>
-                        <%= image_tag pitch.image.url, class: 'media-file' %>
+                        <%#= image_tag pitch.image.url, class: 'media-file' %>
                         <% else %>
-                        <%= image_tag 'dash/Image.png', class: 'media-file' %>
+                        <%#= image_tag 'dash/Image.png', class: 'media-file' %>
+                        <% end %>
+                    </div> -->
+                    <div class="preview pitch-image-preview"
+                        style="display: <%= pitch.image.url.present? ? 'block' : 'none' %>">
+                        <% if pitch.image.url.present? %>
+                        <div class="pitch-remove-option">
+                            <label><%= File.basename(pitch.image.url) %></label>
+                            <%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+                            <i class="fas fa-trash remove-img"></i>
+                        </div>
+                        <%= image_tag pitch.image.url, class: 'preview-img-tag' %>
+                        <% else %>
+                        <div class="pitch-remove-option">
+                            <label class="image-name"></label>
+                            <i class="fas fa-trash remove-img"></i>
+                        </div>
+                        <img src="" alt="" class="preview-img-tag">
                         <% end %>
                     </div>
+                    <div class="dropzone-container pitch-image-drop-zone"
+                        style="<%= 'display: none;' if pitch.image.url.present? %>">
+                        <label class="dropzone-text">Drag and Drop file from your Computer</label>
+                        <div class="label-btn">
+                            <%= f.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
+                            <%#= t.hidden_field :media_type, value: 'image' %>
+                            <label class="btn reversed upload pitch-image-upload-btn">Upload</label>
+                            <!-- <label class="btn reversed upload image-library" id="">Image library</label> -->
+                        </div>
+                    </div>
                 </div>
-                <div class="hr-line"></div>
+                <div class="popup" id="popupImage">
+                    <div class="img-container">
+                        <%= image_tag '', id: 'pitch_media_image' %>
+                    </div>
+                    <div class="center">
+                        <div class="btn btn-green" id="cropImage">speichern</div>
+                    </div>
+                    <div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+                </div>
+
+                <!-- <div class="hr-line"></div> -->
                 <div class="btn-wrapper">
-                    <%= f.submit 'Save', class: 'submit-btn btn' %>
+                    <% if @pitch.title.present? %>
+                    <%= f.submit 'Save', class: "submit-btn btn" %>
+                    <% else %>
+                    <%= f.submit 'Save', class: "submit-btn btn op disable-btn", 'disabled': 'true' %>
+                    <% end %>
                 </div>
             </div>
         </div>
         <% end %>
     </div>
 </div>
+
+<script>
+
+    // $(document).click(function (e) {
+    //     if (($(e.target).is('.pitch-modal') && $(e.target).closest('.pitch-modal')) || $(e.target).closest('#cardList').length) {
+    //         $('#pitchModal').hide();
+    //     }
+    // });
+
+    $('.pitch-image-upload-btn').on('click', function (e) {
+        $('#pitch_image').click();
+    })
+
+    $('.remove-img').on('click', function() {
+        $('.pitch-image-preview').hide();
+        $('.pitch-image-drop-zone').show();
+        $('.destroy-image').val('true');
+		pitchCropper = null;
+    })
+
+    function handleBtnDisable(e) {
+        if ($(e).val() === '') {
+            $('.submit-btn').prop('disabled', true);
+            $('.submit-btn').addClass('op disable-btn');
+        } else {
+            $('.submit-btn').prop('disabled', false);
+            $('.submit-btn').removeClass('op disable-btn');
+        }
+    }
+    
+    var imageDropZone = $('.pitch-image-drop-zone')
+	imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	imageDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	imageDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+    })
+    
+    imageDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {		
+            handlePitchImageUpload(e);
+		}
+	});
+
+    var pitchImage = document.getElementById('pitch_image');
+    var previewImage = document.getElementById('pitch_media_image');
+    pitchImage.addEventListener('change', function (e) {
+        var files = e.target.files;
+		var done = function (url) {
+			// pitchImage.value = '';
+            previewImage.src = url;
+			$('#popupImage').show();
+		};
+		var reader, file, url;
+		if (files && files.length > 0) {
+			file = files[0];
+			if (URL) {
+				done(URL.createObjectURL(file));
+			} else if (FileReader) {
+				reader = new FileReader();
+				reader.onload = function (e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+    })
+    
+	function handlePitchImageUpload(e) {
+		let file_input = $(e.currentTarget).find('#pitch_image');
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'image') {
+			let url_object = URL.createObjectURL(file_data);
+			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
+
+			var previewImage = document.getElementById('pitch_media_image');
+			var files = file_input[0].files;
+			var done = function (url) {
+				previewImage.src = url;
+				$('#popupImage').show();
+			};
+			var reader, file, url;
+			if (files && files.length > 0) {
+				file = files[0];
+				if (URL) {
+                    done(URL.createObjectURL(file));
+                    console.log('pppsdfsfdsdf')
+                    console.log(URL.createObjectURL(file))
+				} else if (FileReader) {
+					reader = new FileReader();
+					reader.onload = function (e) {
+						done(reader.result);
+					}
+					reader.readAsDataURL(file);
+				}
+			}
+		}
+    }
+    
+    $('#popupImage').on('show', function () {
+		if (!pitchCropper) {
+			pitchCropper = new Cropper(previewImage, {
+				aspectRatio: 1.77,
+			});
+		}
+	})
+	$('#popupImage').on('hide', function () {
+		pitchCropper.destroy();
+		// pitchCropper = null;
+	})
+
+	$('#cropImage').on('click', function () {
+		var initialURL, pitchCanvas;
+		if (pitchCropper) {
+			pitchCanvas = pitchCropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			pitchCanvas.toBlob(function (blob) {
+				var date = new Date().getTime();
+                var file = new window.File([blob], 'image_' + date + '.jpg', { type: 'image/jpg' });
+                $('.pitch-image-preview img').attr('src', URL.createObjectURL(file));
+                $('.pitch-image-preview').css('display', 'block');
+                $('.pitch-image-preview .image-name').text($('#pitch_image').val().split('\\').pop());
+                $('.pitch-remove-option').show();
+                $('.pitch-image-drop-zone').hide();
+				// var formData = new FormData();
+				// formData.append("task_medium[media_type]", 'image');
+				// formData.append("task_medium[image]", file);
+				$('#popupImage').hide();
+				// sendMedia(formData);
+			});
+		};
+	})
+	
+
+</script>
