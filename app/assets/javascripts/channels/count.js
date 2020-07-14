@@ -91,7 +91,15 @@ jQuery(document).ready(function() {
 				  } else {
 					  userDiv = '<div class="comment"><div class="circle">'+data['name']+'</div><div class="emoji">'+data["emoji_icon"]+'</div>'
 				  }
-					$('#game_comments').append(userDiv);
+					if (data['reverse'] == true) {
+						$('#game_comments').prepend(userDiv);
+					} else {
+							$('#game_comments').append(userDiv);
+					}
+					if (data['hide'] == true) {
+						$('#game_comments').fadeIn(1000);
+						App.commentHideTimer.restart();
+					}
 			  }
 		  }
 		});

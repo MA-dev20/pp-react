@@ -42,7 +42,7 @@ class GamesController < ApplicationController
   def email
 	  @user = User.find_by(email: params[:user][:email])
     if params[:user][:site] == 'admin_game_mobile'
-      if @user
+      if @user && @user.fname && @user.lname
         @turn = @game.game_turns.where(user: @user, play: true, played: false).first
         if !@turn
           @turn = @game.game_turns.create(team: @game.team, user: @user, play: true, played: false)
@@ -50,6 +50,8 @@ class GamesController < ApplicationController
         end
         flash[:success] = 'Nutzer hinzugefügt!'
         redirect_to gm_game_path
+      elsif @user
+        redirect_to gm_game_path(email: params[:user][:email])
       else
         @user = @company.users.new(email: params[:user][:email], role: 'inactive')
         @team = @game.team
@@ -63,15 +65,22 @@ class GamesController < ApplicationController
           redirect_to gm_game_path
         end
       end
-    elsif @user && @user.company == @company && @user.role == 'user'
-    	game_user_login @user
-    	redirect_to gm_join_path
-    elsif @user && @user.company == @company && @user.role != 'user'
-      game_user_login @user
-      redirect_to gm_join_path
+    elsif @user && @user.fname && @user.lname
+      if @user.company == @company
+        game_user_login @user
+        redirect_to gm_join_path
+      else
+        flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
+        redirect_to gm_error_path
+      end
     elsif @user
-      flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
-      redirect_to gm_error_path
+      if @user.company == @company
+        game_user_login @user
+        redirect_to gm_new_name_path(@user)
+      else
+        flash[:alert] = 'Du gehörst nicht zum Unternehmen das gerade spielt!'
+        redirect_to gm_error_path
+      end
     else
       @user = @company.users.new(email: params[:user][:email], role: 'inactive')
       @team = @game.team

@@ -1,17 +1,22 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="head" id="task-head">
-	<h1>Die Aufgabe!</h1>
+
   <% if @admin.role != 'user' && @admin.role != 'inactive' %>
-  <h3>Wähle einen User aus oder warte bis der Countdown abgelaufen ist!</h3>
+	<h1>Nutzerauswahl</h1>
+  <h3>Anstelle des Votings kannst du hier selbst einen Nutzer bestimmen!</h3>
   <% else %>
+	<h1>Die Aufgabe!</h1>
 	<h3>Lies dir die Aufgabe aufmerksam durch!</h3>
   <% end %>
 </div>
 <% if @admin.role != 'user' && @admin.role != 'inactive' %>
-<div class="voting">
-  <%= link_to 'Zufall', gm_set_state_path(state: 'turn'), class: 'btn inverted' %>
-  <div class="btn" id="voting-btn" onclick="chooseVoting()">Voting</div>
-  <%= link_to 'Wähle User', gm_game_path(this_task: @game.current_task, show_task: true), class: 'btn inverted' %>
+<div class="middle">
+	<div class="circle">
+		?
+	</div>
+</div>
+<div class="bottom">
+  <%= link_to 'Wähle User', gm_game_path(this_task: @game.current_task, show_task: true), class: 'btn' %>
 </div>
 <% else %>
 <div class="middle" id="task-middle">

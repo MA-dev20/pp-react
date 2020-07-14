@@ -45,46 +45,51 @@
 			<% end %>
 		<% end %>
 	</section>
-	<section id="menu">
-    <%= image_tag 'logos/peterpitch.png', class: 'logo' %>
-		<i class="fas fa-times close" onclick="closeMenu()"></i>
-		<% if @task && @task.objection_list && @game.state == 'play' %>
-		<div class="link" onclick="toggleObjections()"><i class="far fa-comment"></i>Einwände<i class="fas fa-chevron-right next"></i></div>
-		<% end %>
-		<% if @pitch %>
-		<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation <i class="fas fa-chevron-right next"></i></div>
-		<% end %>
-		<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Nutzerliste <i class="fas fa-chevron-right next"></i></div>
-    <% if @game && @game.state == 'play' %>
-    <div class="link end-pitch">
-      <i class="fas fa-sign-out-alt"></i>
-      Pitch beenden
-      <i class="fas fa-chevron-right next"></i>
-      <%= link_to '', gm_set_state_path('', state: 'rate'), data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
-    </div>
-    <% end %>
-    <div class="link end">
-      <i class="fas fa-sign-out-alt"></i>
-      Pitchrunde beenden
-      <i class="fas fa-chevron-right next"></i>
-      <%= link_to '', gm_set_state_path('', state: 'bestlist'), data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
-    </div>
-	</section>
-	<% if @pitch && @game.state != 'play' && @game.state != 'feedback' %>
+	<% if @pitch && @game.state != 'play' && @game.state != 'feedback' && @game.state != 'rate' %>
 	<section id="comment-menu">
 		<i class="far fa-comment" onclick="toggleComment()"></i>
 	</section>
 	<% end %>
+	<section id="menu">
+		<div class="nav">
+			<%= image_tag 'logos/peterpitch.png', class: 'logo' %>
+			<i class="fas fa-times close" onclick="closeMenu()"></i>
+		</div>
+		<div class="content">
+			<% if @task && @task.objection_list && @game.state == 'play' %>
+				<div class="link" onclick="toggleObjections()"><i class="far fa-comment"></i>Einwände<i class="fas fa-chevron-right next"></i></div>
+			<% end %>
+			<% if @pitch %>
+				<div class="link" onclick="toggleNav()"><i class="fas fa-photo-video"></i>Foliennavigation <i class="fas fa-chevron-right next"></i></div>
+			<% end %>
+			<div class="link" onclick="toggleUser()"><i class="fas fa-users"></i>Nutzerliste <i class="fas fa-chevron-right next"></i></div>
+			<% if @game && @game.state == 'play' %>
+		    <div class="link end-pitch">
+					<i class="fas fa-sign-out-alt"></i>Pitch beenden<i class="fas fa-chevron-right next"></i>
+					<%= link_to '', gm_set_state_path('', state: 'rate'), data: {confirm: "Bist du sicher, dass du den Pitch beenden möchtest?"} %>
+		    </div>
+	    <% end %>
+			<div class="link end">
+	      <i class="fas fa-sign-out-alt"></i>Pitchrunde beenden<i class="fas fa-chevron-right next"></i>
+	      <%= link_to '', gm_set_state_path('', state: 'bestlist'), data: {confirm: "Bist du sicher, dass du direct zur Bestenliste möchtest?"} %>
+	    </div>
+		</div>
+	</section>
+
 	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
 		<div class="nav">
-			<i class="fas fa-times" onclick="toggleObjections()"></i>
+			<i class="fas fa-times close" onclick="toggleObjections()"></i>
 		</div>
-		<div class="objections" id="objection-list">
-
-			<% @task.objection_list.objections.each do |o| %>
-			<span onclick="sendObjection('<%= o.name %>')"><%= o.name %></span>
-			<% end %>
+		<div class="content">
+			<div class="heading">Einwände</div>
+  		<div class="subheading">Überasche den Nutzer mit einem Einwand!</div>
+				<% @task.objection_list.objections.each do |o| %>
+				<div class="user" onclick="sendObjection('<%= o.name %>')">
+					<div class="objection"><%= o.name %></div>
+					<i class="fas fa-chevron-right add-user"></i>
+				</div>
+				<% end %>
 		</div>
 	</section>
 	<% end %>
@@ -99,11 +104,11 @@
         <i class="fas fa-chevron-left"></i>zum Menü
       </div>
   		<i class="fas fa-times close" onclick="closeMenu()"></i>
-      <div class="heading">Folienübersicht</div>
-  		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
+
     </div>
     <div class="content">
-
+			<div class="heading">Folienübersicht</div>
+  		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
       <% @pitch.task_orders.order(:order).each do |t| %>
   		<div class="link <%= @game.current_task == t.order ? 'selected' : '' %>" id="task_<%= t.order %>">
           <div class="title"><%= t.task.title && t.task.title != '' ? t.task.title : '' %></div>
@@ -130,7 +135,7 @@
               <% if t.task.task_type != 'slide' %>
                 <%= link_to 'zur Folie', gm_set_slide_path(t.order), class: 'jump' %>
                 <% this_turn = @game.game_turns.where(task_id: t.task_id, played: false).last %>
-                <% if @game.game_turns.where(task_id: t.task_id, played: false).count != 0 && @game.current_turn != this_turn.id %>
+                <% if this_turn && @game.current_turn != this_turn.id %>
                   <div class="user" onclick="deleteUser(<%= this_turn.id %>)">User entfernen</div>
                 <% else %>
                   <a href="?this_task=<%= t.task_id %>" class="user">User auswählen</a>
@@ -145,14 +150,26 @@
 	</section>
   <% if params[:this_task] %>
     <section id="task_user-menu">
-        <div class="heading">Nutzerliste</div>
-        <div class="subheading">Wer soll diese Task erledigen?</div>
-				<% if params[:show_task] %>
+			<div class="nav">
 				<i class="fas fa-times close" onclick="closeMenu()"></i>
-				<% else %>
+				<% if !params[:show_task] %>
         <div class="back" onclick="toggleTaskUser()"><i class="fas fa-chevron-left"></i>zur Folienübersicht</div>
 				<% end %>
-        <% @game.game_turns.where(play: true, repeat: false).each do |t| %>
+
+			</div>
+			<div class="content">
+				<div class="heading">Nutzerliste</div>
+        <div class="subheading">Wer soll diese Task erledigen?</div>
+				<% if params[:show_task] %>
+					<div class="user" style="color: #69DEA9">
+						<div class="avatar">
+							<i class="fas fa-random"></i>
+						</div>
+						<div class="name">Nutzer zufällig auswählen!</div>
+						<%= link_to '', gm_set_state_path(state: 'turn') %>
+					</div>
+				<% end %>
+				<% @game.game_turns.where(play: true, repeat: false).each do |t| %>
         <div class="user">
           <div class="avatar">
             <% if t.user.avatar? %>
@@ -165,80 +182,123 @@
               <%= t.user.fname + ' ' + t.user.lname %>
             </div>
 						<i class="fas fa-chevron-right add-user"></i>
-            <% if t.task %>
-            <%= link_to '', gm_set_task_user_path(t.id, params[:this_task], show_task: true), data: {confirm: 'Der User ist schon einer anderen task zugeornet. Willst du das überschreiben?'} %>
-            <% else %>
             <%= link_to '', gm_set_task_user_path(t.id, params[:this_task], show_task: true) %>
-            <% end %>
         </div>
         <% end %>
+			</div>
     </section>
   <% end %>
 	<section id="user-menu">
-		<div class="heading">Nutzerliste</div>
-		<div class="subheading">Nutzer aus Pitchrunde entfernen</div>
-    <i class="fas fa-times close" onclick="closeMenu()"></i>
-		<div class="back" onclick="toggleUser()"><i class="fas fa-chevron-left"></i>zum Menu</div>
-		<div class="new-user" onclick="toggleNewUser()"><i class="fas fa-plus"></i>User hinzufügen</div>
-		<% @game.game_turns.where(play: true, repeat: false).each do |gt| %>
-		<div class="user">
-      <div class="avatar">
-        <% if gt.user.avatar? %>
-          <%= image_tag gt.user.avatar.url %>
-        <% else %>
-          <div class="circle"><%= gt.user.fname[0].capitalize + gt.user.lname[0].capitalize %></div>
-        <% end %>
-      </div>
-			<div class="name">
+		<div class="nav">
 
-				<%= gt.user.fname + ' ' + gt.user.lname %>
-			</div>
-      <%= link_to '', gm_delete_turn_path(gt.id), class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+	    <i class="fas fa-times close" onclick="closeMenu()"></i>
+			<div class="back" onclick="toggleUser()"><i class="fas fa-chevron-left"></i>zum Menu</div>
 		</div>
-		<% end %>
+		<div class="content">
+			<div class="heading">Nutzerliste</div>
+			<div class="subheading">Nutzer aus Pitchrunde entfernen</div>
+			<div class="user" onclick="toggleNewUser()">
+					<div class="avatar">
+						<%= image_tag 'dash/icons/circle-plus-green.svg', style: 'background-color: white; border-color: transparent'%>
+					</div>
+					<div class="name" style="color: #69DEA9; font-size: 3vw;">
+						User hinzufügen
+					</div>
+			</div>
+			<% @game.game_turns.where(play: true, repeat: false).each do |gt| %>
+			<div class="user">
+	      <div class="avatar">
+	        <% if gt.user.avatar? %>
+	          <%= image_tag gt.user.avatar.url %>
+	        <% else %>
+	          <div class="circle"><%= gt.user.fname[0].capitalize + gt.user.lname[0].capitalize %></div>
+	        <% end %>
+	      </div>
+				<div class="name">
+
+					<%= gt.user.fname + ' ' + gt.user.lname %>
+				</div>
+	      <%= link_to '', gm_delete_turn_path(gt.id), class: 'fas fa-sign-out-alt exit-user', data: {confirm: "Bist du sicher, dass du den User aud dem Spiel entfernen möchtest?"} %>
+			</div>
+			<% end %>
+		</div>
 	</section>
 	<section id="user-new">
-		<div class="heading">Nutzer</div>
-		<div class="subheading">Füge einen Nutzer der Pitchrunde hinzu</div>
-		<div class="back" onclick="toggleNewUser()"><i class="fas fa-chevron-left"></i></div>
-		<i class="fas fa-times close" onclick="closeMenu()"></i>
+		<div class="nav">
+			<div class="back" onclick="toggleNewUser()"><i class="fas fa-chevron-left"></i>Nutzerliste</div>
+			<i class="fas fa-times close" onclick="closeMenu()"></i>
+		</div>
+		<div class="content">
+			<div class="heading">Nutzer</div>
+			<div class="subheading">Füge einen Nutzer der Pitchrunde hinzu</div>
+		</div>
+
+
 		<%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
 				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
 				<div class="form-group single-line">
-					<%= f.email_field :email, placeholder: 'E-Mail', class: 'form-field' %>
-					<i class="far fa-paper-plane" id='comment_submit' onclick='submitEmail()'></i>
+					<%= f.email_field :email, placeholder: 'E-Mail', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', id: 'email_text' %>
+					<i class="far fa-paper-plane" id='email_submit' onclick='submitEmail()'></i>
 				</div>
 		<% end %>
 	</section>
 	<% if params[:email] %>
 		<section id="user-name">
-			<div class="heading">Nutzer</div>
-			<div class="subheading">den Nutzer gibt es noch nicht. Wie heißt er?</div>
-			<div class="back" onclick="toggleNewUserName()"><i class="fas fa-chevron-left"></i></div>
-			<i class="fas fa-times close" onclick="closeMenu()"></i>
-			<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email])), html: {id: 'name_form'}) do |f| %>
-				<%= f.hidden_field :site, value: 'admin_game_mobile' %>
-				<div class="form-group two-line" id="group_fname">
-					<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
-				</div>
-				<div class="form-group two-line" id="group_lname">
-					<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
-				</div>
-				<div class="form-group bottom">
-						<%= f.submit 'speichern', class: 'btn' %>
-				</div>
-			<% end %>
+			<div class="nav">
+				<div class="back" onclick="toggleNewUserName()"><i class="fas fa-chevron-left"></i>Nutzer hinzufügen</div>
+				<i class="fas fa-times close" onclick="closeMenu()"></i>
+			</div>
+			<div class="content">
+				<div class="heading">Nutzer</div>
+				<div class="subheading">den Nutzer gibt es noch nicht. Wie heißt er?</div>
+				<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email])), html: {id: 'name_form'}) do |f| %>
+					<%= f.hidden_field :site, value: 'admin_game_mobile' %>
+					<div class="form-group two-line" id="group_fname">
+						<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
+					</div>
+					<div class="form-group two-line" id="group_lname">
+						<%= f.text_field :lname, placeholder: 'Nachname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>
+					</div>
+					<div class="form-group bottom">
+							<%= f.submit 'speichern', class: 'btn' %>
+					</div>
+				<% end %>
+			</div>
 		</section>
 	<% end %>
 
 	<section id="comment-popup">
-		<i class="fas fa-times close" onclick="toggleComment()"></i>
-		<%= form_for(:comment, url: new_comment_path(1), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
-		  <div class="form-group">
-			  <%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', id: 'comment_text', maxlength: "30"%>
-				<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
+		<div class="nav">
+
+			<i class="fas fa-times close" onclick="toggleComment()"></i>
 		</div>
-		<% end %>
+		<div class="content">
+			<div class="heading">Kommentar abgeben</div>
+  		<div class="subheading">Drücke auf einen Smiley oder tippe einen Kommentar ein.</div>
+			<div class="emojis">
+				<div class="emoji" id='emoji_1' onanimationend="emojiEnd('emoji_1')" onclick="sendEmoji('&#x1f680;', 'emoji_1')">&#x1f680;</div>
+				<div class="emoji" id='emoji_2' onanimationend="emojiEnd('emoji_2')" onclick="sendEmoji('&#x1f4aa;', 'emoji_2')">&#x1f4aa;</div>
+				<div class="emoji" id='emoji_3' onanimationend="emojiEnd('emoji_3')" onclick="sendEmoji('&#x1f60e;', 'emoji_3')">&#x1f60e;</div>
+				<div class="emoji" id='emoji_4' onanimationend="emojiEnd('emoji_4')" onclick="sendEmoji('&#x1f43a;', 'emoji_4')">&#x1f43a;</div>
+				<div class="emoji" id='emoji_5' onanimationend="emojiEnd('emoji_5')" onclick="sendEmoji('&#x1F910;', 'emoji_5')">&#x1F910;</div>
+				<div class="emoji" id='emoji_6' onanimationend="emojiEnd('emoji_6')" onclick="sendEmoji('&#x1f393;', 'emoji_6')">&#x1f393;</div>
+				<div class="emoji" id='emoji_7' onanimationend="emojiEnd('emoji_7')" onclick="sendEmoji('&#x1f44c;', 'emoji_7')">&#x1f44c;</div>
+				<div class="emoji" id='emoji_8' onanimationend="emojiEnd('emoji_8')" onclick="sendEmoji('&#x1f634;', 'emoji_8')">&#x1f634;</div>
+				<div class="emoji" id='emoji_9' onanimationend="emojiEnd('emoji_9')" onclick="sendEmoji('&#x1f929;', 'emoji_9')">&#x1f929;</div>
+				<div class="emoji" id='emoji_10' onanimationend="emojiEnd('emoji_10')" onclick="sendEmoji('&#x1f37e;', 'emoji_10')">&#x1f37e;</div>
+				<div class="emoji" id='emoji_11' onanimationend="emojiEnd('emoji_11')" onclick="sendEmoji('&#x1f9e0;', 'emoji_11')">&#x1f9e0;</div>
+				<div class="emoji" id='emoji_12' onanimationend="emojiEnd('emoji_12')" onclick="sendEmoji('&#x1f4b8;', 'emoji_12')">&#x1f4b8;</div>
+			</div>
+			<%= form_for(:comment, url: new_comment_path(1), html: {id: "comment_form", autocomplete: 'off'}) do |f| %>
+			  <div class="form-group">
+					<div class="max-size">Max 30 Zeichen</div>
+				  <%= f.text_field :text, placeholder: 'Feedback hier eingeben...', oninput: "inputSend()", onblur: 'inputSend()', class: 'form-field', id: 'comment_text', maxlength: "35"%>
+					<i class="far fa-paper-plane" id='comment_submit' onclick='submitComment()'></i>
+			</div>
+			<% end %>
+		</div>
+
+
 	</section>
 	<% end %>
 
@@ -258,7 +318,7 @@
 	<script type="text/javascript">
 		setTimeout(function() {
 			$('.flash-alert').fadeOut();
-		},3000)
+		},1000)
 	</script>
 	<% end %>
 
@@ -282,9 +342,14 @@
 	}
 	function inputSend() {
 		if ($('#comment_text').val() == '') {
-		  $("#comment_submit").css({ opacity: .4 });
+		  $("#comment_submit").css({opacity: .4});
 		} else {
-		  $("#comment_submit").css({ opacity: 1 });
+		  $("#comment_submit").css({opacity: 1});
+		}
+		if ($('#email_text').val() == '') {
+			$("#email_submit").css({opacity: .4});
+		} else {
+			$("#email_submit").css({opacity: 1});
 		}
 	}
 	function toggleComment() {
@@ -304,7 +369,8 @@
 		$('#comment_text').removeClass('red');
 		if( $('#comment_text').val().length > 30) {
 			$('#comment_text').addClass('red');
-			$('#comment_text').val('');
+			var comment_value = $("#comment_text").val();
+			$("#comment_text").val(comment_value.substring(0,30));
 			$('#comment_text').attr('placeholder', 'Bitte nicht mehr als 30 Zeichen!')
 		} else if($('#comment_text').val().length != 0){
 		$.ajax({
@@ -319,6 +385,20 @@
 		})
 		}
 	})
+	function sendEmoji(emoji, id) {
+		$('#'+id).addClass('emoji_send');
+		$.ajax({
+			url: "<%= gm_send_emoji_url.to_s %>?emoji_comment=" + emoji,
+			type: 'put',
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		});
+	}
+	function emojiEnd(id) {
+		$('#'+id).removeClass('emoji_send');
+	}
   function deleteUser(tID) {
     var url = '/mobile/games/turns/' + tID + '/delete_task';
     $.ajax({

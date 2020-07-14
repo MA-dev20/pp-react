@@ -44,6 +44,7 @@ body {
 	bottom: 0;
 	left: 0;
 	width: 30vw;
+	max-height: 50vh;
 	background-color: transparent;
 	z-index: 900;
 	padding-bottom: 2vh;
@@ -91,12 +92,20 @@ body {
 			border-radius: 1vh;
 			border-top-left-radius: 0;
 			width: 15vw;
-			background-color: rgba(var(--custcolor),.2);
+			background-color: rgba(var(--custcolor),.3);
 			line-height: 4vh;
 			font-size: 3vh;
 			padding: 1vh;
 			z-index: 9;
 			animation: moveHeight 1s 1;
+		}
+		.emoji {
+			border-radius: 50%;
+			font-size: 8vh;
+			line-height: 10vh;
+			margin-top: -1vh;
+			animation: moveHeight 1s 1;
+			z-index: 9;
 		}
 	}
 }

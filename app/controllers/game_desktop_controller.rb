@@ -186,17 +186,23 @@ class GameDesktopController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
-	    @turn = GameTurn.find_by(id: @game.current_turn)
+      @turn = GameTurn.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
         @task = @pitch.task_orders.find_by(order: @game.current_task).task if !@task
-	      if !@task.rating_list
-		      @turn.update(ges_rating: nil, played: true)
+        if @task.rating1 || @task.rating2 || @task.rating3 || @task.rating4
+          if @task.rating1 == '' && @task.rating2 == '' && @task.rating3 == '' && @task.rating4 == ''
+            @turn.update(ges_rating: nil, played: true)
+  		      redirect_to gd_set_state_path(state: 'feedback')
+  		      return
+          elsif @game.state != 'rate'
+            @game.update(state: 'rate')
+          end
+        else
+          @turn.update(ges_rating: nil, played: true)
 		      redirect_to gd_set_state_path(state: 'feedback')
 		      return
-		    elsif @game.state != "rate"
-		      @game.update(state: 'rate')
-		    end
+        end
 		    redirect_to gd_game_path
 	      return
 	    else

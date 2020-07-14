@@ -7,22 +7,73 @@
 		<%= image_tag 'game/illus/smartphone.svg', class: 'smart' %>
 		<div class="rate">
 		<h3>Jetzt bewerten!</h3>
-		<% @task.rating_list.rating_criteria.each do |rc| %>
-			<div class="form-group">
-				<label for="" id="label_<%= rc.name %>"><%= rc.name %></label>
-				<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
-			</div>
-			<script>
-				if($('#label_<%= rc.name %>').text().length > 24) {
-					$('#label_<%= rc.name %>').css('font-size', '14px');
-				}
-				if($('#label_<%= rc.name %>').text().length > 27) {
-					$('#label_<%= rc.name %>').css('font-size', '12px');
-				}
-				if($('#label_<%= rc.name %>').text().length > 33) {
-					$('#label_<%= rc.name %>').css('font-size', '10px');
-				}
-			</script>
+		<% if @task.rating1 && @task.rating1 != '' %>
+		<div class="form-group">
+			<label for="" id="label_<%= @task.rating1 %>"><%= @task.rating1 %></label>
+			<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
+		</div>
+		<script>
+			if($('#label_<%= @task.rating1 %>').text().length > 24) {
+				$('#label_<%= @task.rating1 %>').css('font-size', '14px');
+			}
+			if($('#label_<%= @task.rating1 %>').text().length > 27) {
+				$('#label_<%= @task.rating1 %>').css('font-size', '12px');
+			}
+			if($('#label_<%= @task.rating1 %>').text().length > 33) {
+				$('#label_<%= @task.rating1 %>').css('font-size', '10px');
+			}
+		</script>
+		<% end %>
+		<% if @task.rating2 && @task.rating2 != '' %>
+		<div class="form-group">
+			<label for="" id="label_<%= @task.rating2 %>"><%= @task.rating2 %></label>
+			<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
+		</div>
+		<script>
+			if($('#label_<%= @task.rating2 %>').text().length > 24) {
+				$('#label_<%= @task.rating2 %>').css('font-size', '14px');
+			}
+			if($('#label_<%= @task.rating2 %>').text().length > 27) {
+				$('#label_<%= @task.rating2 %>').css('font-size', '12px');
+			}
+			if($('#label_<%= @task.rating2 %>').text().length > 33) {
+				$('#label_<%= @task.rating2 %>').css('font-size', '10px');
+			}
+		</script>
+		<% end %>
+		<% if @task.rating3 && @task.rating3 != '' %>
+		<div class="form-group">
+			<label for="" id="label_<%= @task.rating3 %>"><%= @task.rating3 %></label>
+			<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
+		</div>
+		<script>
+			if($('#label_<%= @task.rating3 %>').text().length > 24) {
+				$('#label_<%= @task.rating3 %>').css('font-size', '14px');
+			}
+			if($('#label_<%= @task.rating3 %>').text().length > 27) {
+				$('#label_<%= @task.rating3 %>').css('font-size', '12px');
+			}
+			if($('#label_<%= @task.rating3 %>').text().length > 33) {
+				$('#label_<%= @task.rating3 %>').css('font-size', '10px');
+			}
+		</script>
+		<% end %>
+		<% if @task.rating4 && @task.rating4 != '' %>
+		<div class="form-group">
+			<label for="" id="label_<%= @task.rating4 %>"><%= @task.rating4 %></label>
+			<input type="range", min= 0, max= 100, value="<%= Random.rand(100)%>">
+		</div>
+		<script>
+			if($('#label_<%= @task.rating4 %>').text().length > 24) {
+				$('#label_<%= @task.rating4 %>').css('font-size', '14px');
+			}
+			if($('#label_<%= @task.rating4 %>').text().length > 27) {
+				$('#label_<%= @task.rating4 %>').css('font-size', '12px');
+			}
+			if($('#label_<%= @task.rating4 %>').text().length > 33) {
+				$('#label_<%= @task.rating4 %>').css('font-size', '10px');
+			}
+		</script>
 		<% end %>
 		</div>
 		<%= image_tag 'game/illus/finger.svg', class: 'hand' %>

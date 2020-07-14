@@ -118,13 +118,19 @@ class GameMobileController < ApplicationController
   	  else
   		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
   	  end
+    elsif params[:emoji_comment]
+      if @admin.avatar?
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], user_avatar: @admin.avatar.url, reverse: true
+  	  else
+        ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
+  	  end
     end
   end
 
   def repeat_turn
 	@turn = GameTurn.find(@game.current_turn)
-    @game.game_turns.where(user: @turn.user).each do |t|
-        t.update(played: false, play: false, repeat: true)
+    @game.game_turns.where(task: @turn.task, user: @turn.user).each do |t|
+        t.update(played: true, play: false, repeat: true)
     end
 	@new_turn = GameTurn.create(game: @game, user: @turn.user, team: @turn.team, task: @turn.task, play: true, played: false)
 	redirect_to gm_set_state_path('', state: 'turn')
@@ -241,7 +247,7 @@ class GameMobileController < ApplicationController
 		      @turns = @game.game_turns.where(play: true, repeat: false)
 		      @turns.each do |t|
 			      @turn = GameTurn.create(game: @game, user: t.user, team: t.team, play: true, played: false)
-			      t.update(played: false, play: false, repeat: true)
+			      t.update(play: false, repeat: true)
 		      end
           @turns = @game.game_turns.playable.where(task_id: nil).all
           if @turns.count == 1
@@ -349,13 +355,19 @@ class GameMobileController < ApplicationController
 	    if @turn
 	      @task = @turn.task
         @task = @pitch.task_orders.find_by(order: @game.current_task).task if !@task
-	      if !@task.rating_list
-		      @turn.update(ges_rating: nil, played: true)
+        if @task.rating1 || @task.rating2 || @task.rating3 || @task.rating4
+          if @task.rating1 == '' && @task.rating2 == '' && @task.rating3 == '' && @task.rating4 == ''
+            @turn.update(ges_rating: nil, played: true)
+  		      redirect_to gm_set_state_path(state: 'feedback')
+  		      return
+          elsif @game.state != 'rate'
+            @game.update(state: 'rate')
+          end
+        else
+          @turn.update(ges_rating: nil, played: true)
 		      redirect_to gm_set_state_path(state: 'feedback')
 		      return
-		    elsif @game.state != "rate"
-		      @game.update(state: 'rate')
-		    end
+        end
 		    redirect_to gm_game_path
 	      return
 	    else
@@ -369,7 +381,7 @@ class GameMobileController < ApplicationController
         if @turns.count != 1 && @turns.find_by(ges_rating: @turns.maximum("ges_rating")) != @turn
           @bestturn = @turns.find_by(ges_rating: @turns.maximum("ges_rating"))
           @bestturn.update(play: true)
-          @turn.update(play: false)
+          @turn.update(play: false, played: true)
         end
         if @turn.game_turn_ratings.count == 0
           @turn.update(ges_rating: nil, played: true)
