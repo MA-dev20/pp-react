@@ -72,7 +72,7 @@
 					class="link <%= current_page?(dashboard_path) || @pitch && current_page?(dashboard_pitches_path) || @game && current_page?(dashboard_customize_game_path(@game)) ? 'active' : '' %>">
 					<i class="fas fa-gamepad"></i>
 					<div class="text">Let's Pitch</div>
-					<a class="navbar-link" href="javascript:void(0)"></a>
+					<a class="navbar-link" data-href="<%= dashboard_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_path %>
 				</div>
 				<% end %>
@@ -81,7 +81,7 @@
 					class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
 					<i class="fas fa-user-friends"></i>
 					<div class="text">Nutzer</div>
-					<a class="navbar-link" href="javascript:void(0)"></a>
+					<a class="navbar-link" data-href="<%= dashboard_teams_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_teams_path %>
 				</div>
 				<% end %>
@@ -89,7 +89,7 @@
 				<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
 					<div class="text">Customize</div>
-					<a class="navbar-link" href="javascript:void(0)"></a>
+					<a class="navbar-link" data-href="<%= dashboard_customize_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_customize_path %>
 				</div>
 				<% end %>
@@ -97,14 +97,14 @@
 					d>
 					<i class="fab fa-youtube"></i>
 					<div class="text">Video Tool</div>
-					<a class="navbar-link" href="javascript:void(0)"></a>
+					<a class="navbar-link" data-href="<%= dashboard_video_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_video_path %>
 				</div>
 				<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>"
 					d>
 					<i class="fab fa-youtube"></i>
 					<div class="text">Pitches</div>
-					<a class="navbar-link" href="javascript:void(0)"></a>
+					<a class="navbar-link" data-href="<%= dashboard_pitches_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_pitches_path %>
 				</div>
 			<% else %>

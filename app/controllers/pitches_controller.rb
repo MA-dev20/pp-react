@@ -59,7 +59,12 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:id])
 	@pitch.task_orders.destroy_all
 	@pitch.destroy
-	redirect_to dashboard_pitches_path
+	# redirect_to dashboard_pitches_path
+	if params[:url].present?
+		render json: { url: params[:url] }
+	else
+		render json: { url: dashboard_pitches_path }
+	end 
   end
 	
   def update_task
