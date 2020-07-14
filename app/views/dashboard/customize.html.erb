@@ -1,4 +1,4 @@
-<div class="left small">
+<div class="left customize-left small">
 	<div class="card" id="catchwords" style="<%= @CL ? 'display:none' : '' %>">
 		<h3>Catchwords <i class="fas fa-plus-circle add" onclick="toggleCatchword()"></i></h3>
 		<div class="karten" id="CWkarten">
@@ -175,7 +175,181 @@
 		<%= f.submit 'speichern!', class: 'btn btn-green' %>
 		<% end %>
 	</div>
-	<div class="card" id="scores" style="<%= @RL ? 'display:none' : '' %>">
+	<div class="card" id="objections" style="<%= @OL ? 'display:none' : '' %>">
+		<h3>Einwände <i class="fas fa-plus-circle add" onclick="toggleObjection()"></i></h3>
+		<div class="karten" id="OLkarten">
+		<% @OLs.each do |o| %>
+		<div class="karte" onclick="redirect('OL', '<%= o.id %>')">
+			<div class="name"><%= o.name %></div>
+			<div class="count"><%= o.objections.count %></div>
+			<%= image_tag o.image_url, class: 'image' %>
+		</div>
+		<% end %>
+		</div>
+	</div>
+	<div class="card" id="newObjection" style="display: none">
+		<h3><i class="fas fa-arrow-left back" onclick="toggleObjection()"></i>Einwandliste hinzufügen</h3>
+		<%= form_for(:list, url: new_list_path) do |f| %>
+		<%= f.hidden_field :type, value: 'objection' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<%= f.submit 'speichern!', class: 'btn btn-green' %>
+		<% end %>
+	</div>
+	<% if @OL %>
+	<div class="card" id="editObjection">
+		<h3><i class="fas fa-arrow-left back" onclick="redirect('none', 'o')"></i>Liste bearbeiten</h3>
+		<%= link_to '', delete_list_path('objection', @OL), class: 'far fa-trash-alt deleteList' %>
+		<%= form_for(:list, url: edit_list_path(@OL)) do |f| %>
+		<%= f.hidden_field :type, value: 'objection' %>
+		<div class="form-group">
+			<label for="">Listenname</label>
+			<%= f.text_field :name, value: @OL.name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<%= form_for(:entry, url: list_add_entry_path(@OL, type: 'objection')) do |f| %>
+		<div class="form-group">
+			<label for="">Einwand hinzufügen</label>
+			<%= f.text_field :name, class: 'form-field' %>
+		</div>
+		<% end %>
+		<div class="form-group" style="border-bottom: 1px solid gray; margin-bottom: 0">
+			<label for="">Einwände</label>
+		</div>
+		<div class="table edit" id="edit-objection">
+		<table>
+			<tbody>
+			<% @OL.objections.each do |o| %>
+				<tr id="objection_<%= o.id %>">
+					<td><%= o.name %></td>
+					<td><i class="fas fa-microphone record" onclick="recordAudio(<%= o.id %>)"></i></td>
+					<td>
+						<% if o.sound? %>
+							<i class="far fa-play-circle play" onclick="playAudio(<%= o.id %>)"></i>
+							<%= audio_tag o.sound.url, id: 'objectionSound' + o.id.to_s, onended: 'endedAudio('+o.id.to_s+')' %>
+						<% else %>
+							<i class="far fa-play-circle play disabled"></i>
+						<% end %>
+					</td>
+					<td><i class="far fa-trash-alt delete" onclick="deleteObjection(<%= o.id %>)"></i></td>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<script>
+		new PerfectScrollbar('#editObjection');
+		var stream, form, globalForm,recorder, audio, timer;
+			globalForm = new FormData();
+			var processing= false;
+			audio = new Audio();
+		
+		function recordAudio(id) {
+			if (!processing) {
+				$('#objection_' + id + ' .record').removeClass("fas");
+				$('#objection_' + id + ' .record').removeClass("fa-microphone");
+				$('#objection_' + id + ' .record').addClass("far");
+				$('#objection_' + id + ' .record').addClass("fa-pause-circle");
+				requestAudio(id);
+				processing = true;
+			} else {
+				stopRecording(id)
+			}
+		}
+		function requestAudio(id) {
+			var seconds = 10;
+			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+				navigator.mediaDevices.getUserMedia({audio: true}).then(function(str) {
+					stream = str;
+					recorder = new MediaRecorder(stream);
+					let chunks = [];
+					recorder.ondataavailable = function(e) {
+						seconds -= 1;
+						chunks.push(e.data);
+						if (recorder.state == 'inactive') {
+							const blob = new Blob(chunks, {type: 'audio/webm'});
+							var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							globalForm.append('file', file);
+							sendAudio(id, globalForm);
+							processing = false;
+						}
+					};
+					recorder.start(1000);
+					timer = setTimeout(() => {
+						stopRecording(id)
+					}, 11000);
+				})
+			} else {
+				alert('Konnte Aufnahme nicht starten!')
+			}
+		}
+		function stopRecording(id) {
+			clearTimeout(timer);
+			if (recorder.state != 'inactive') {
+				recorder.stop()
+			}
+			$('#objection_' + id + ' .record').addClass("fas");
+			$('#objection_' + id + ' .record').addClass("fa-microphone");
+			$('#objection_' + id + ' .record').removeClass("far");
+			$('#objection_' + id + ' .record').removeClass("fa-pause-circle");
+			stream.getTracks()[0].stop()
+		}
+		function sendAudio(id, globalForm) {
+			var url = "/objections/record/";
+			$.ajax({
+				url: url + id,
+				type: "put",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: globalForm,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function(res) {
+					globalForm = new FormData();
+					window.location.reload();
+				}
+			})
+		}
+		function playAudio(id) {
+			var wordSound = document.getElementById('objectionSound'+ id);
+			if($('#objection_'+ id + ' .play').hasClass('fa-play-circle')) {
+				$('#objection_'+ id + ' .play').removeClass('fa-play-circle');
+				$('#objection_'+ id + ' .play').addClass('fa-pause-circle');
+				wordSound.play();
+			} else {
+				$('#objection_'+ id + ' .play').removeClass('fa-pause-circle');
+				$('#objection_'+ id + ' .play').addClass('fa-play-circle');
+				wordSound.pause();
+			}	
+		}
+		function endedAudio(id) {
+			var sound = document.getElementById('objectionSound' + id);
+			sound.load();
+			$('#objection_'+ id + ' .play').removeClass('fa-pause-circle');
+			$('#objection_'+ id + ' .play').addClass('fa-play-circle');
+		}
+		function deleteObjection(id) {
+			var url = '/delete/objection/<%= @OL.id %>/' + id;
+			$.ajax({
+				url: url,
+				type: 'get',
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function (res) {
+					window.location.reload();
+				}
+			})
+		}
+	</script>
+	<% end %>
+	<!-- <div class="card" id="scores" style="<%= @RL ? 'display:none' : '' %>">
 		<h3>Bewertungen <i class="fas fa-plus-circle add" onclick="toggleScore()"></i></h3>
 		<div class="karten" id="SLkarten">
 		<% @RLs.each do |s| %>
@@ -186,8 +360,8 @@
 		</div>
 		<% end %>
 		</div>
-	</div>
-	<div class="card" id="newScore" style="display: none">
+	</div> -->
+	<!-- <div class="card" id="newScore" style="display: none">
 		<h3><i class="fas fa-arrow-left back" onclick="toggleScore()"></i>Score List hinzufügen</h3>
 		<%= form_for(:list, url: new_list_path) do |f| %>
 		<%= f.hidden_field :type, value: 'rating' %>
@@ -248,10 +422,10 @@
 			})
 		}
 	</script>
-	<% end %>
+	<% end %> -->
 </div>
-<div class="right small">
-	<div class="card" id="objections" style="<%= @OL ? 'display:none' : '' %>">
+<!-- <div class="right small"> -->
+	<!-- <div class="card" id="objections" style="<%= @OL ? 'display:none' : '' %>">
 		<h3>Einwände <i class="fas fa-plus-circle add" onclick="toggleObjection()"></i></h3>
 		<div class="karten" id="OLkarten">
 		<% @OLs.each do |o| %>
@@ -424,8 +598,8 @@
 			})
 		}
 	</script>
-	<% end %>
-	<div class="card">
+	<% end %> -->
+	<!-- <div class="card">
 		<h3>Wortwahl</h3>
 		<div class="choose" id="wordChoosen" onclick="toggleWordOptions()">Do say</div>
 		<div class="options" id="wordOptions">
@@ -470,8 +644,8 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
-</div>
+	</div> -->
+<!-- </div> -->
 <script>
 	
 	function toggleCatchword() {

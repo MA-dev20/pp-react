@@ -607,6 +607,7 @@ body {
 		#createUser, #createTeam {display: none;}
 	}
 	.left {right: calc(50% + 3vh);}
+	.customize-left { right: calc(50% + -24vh); }
 	.right {left: calc(50% + 3vh);}
 	.small {
 		top: 0;
