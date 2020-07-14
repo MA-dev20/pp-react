@@ -1,13 +1,21 @@
 <section id="new-pitch-navbar">
 	<h1>Pitch erstellen</h1>
 	<div class="btn-group">
-		<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+		<% if @pitch.title.present? %>
+			<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+		<% else %>
+			<a href="javascript:void(0)" class="btn reversed exit-btn">Exit</a>
+		<% end %>
 		<button class="btn done-btn open-modal" data-modal="pitch-modal">Done</button>
 	</div>
 </section>
 
 <div id="new-pitch-content">
-	<i class="fas fa-arrow-left back-arrow"></i>
+	<% if @pitch.title.present? %>
+		<%= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow-icon' %>
+	<% else %>
+		<i class="fas fa-arrow-left back-arrow"></i>
+	<% end %>
 	<div class="card left">
 		<div class="tasks" id="tasksScrollBar">
 			<div id="cardList">
@@ -283,6 +291,20 @@
 				$('#cw-options').hide();
 			}
 		}
+
+		if ($(e.target).is('.navbar-link'))  {
+			$('.warning-card-wrapper2').show();
+		}
+	})
+
+	// $(document).on('click', function(e) {
+	// 	if ($(e.target).is('.navbar-link'))  {
+	// 		$('.warning-card-wrapper2').show();
+	// 	}
+	// })
+
+	$('.exit-btn').on('click', function() {
+		$('.warning-card-wrapper2').show();
 	})
 
 	$('.back-arrow').on('click', function() {
