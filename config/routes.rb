@@ -44,6 +44,8 @@ Rails.application.routes.draw do
   get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
   get 'pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order', to: 'pitches#set_task_order'
   post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
+  post 'pitches/:id/pitch_media', to: 'pitches#create_pitch_media', as: 'create_pitch_media'
+  get 'pitches/:id/pitch_media', to: 'pitches#destroy_pitch_media', as: 'destroy_pitch_media'
   post 'task/:pitch_id/task_media_content', to: 'pitches#create_task_media_content', as: 'create_task_media_content'
   post 'task/:pitch_id/video_url', to: 'pitches#update_video_url', as: 'update_video_url'
   get 'pitches/:pitch_id/task/new', to: 'pitches#create_task', as: 'create_task'

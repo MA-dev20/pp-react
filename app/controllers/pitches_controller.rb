@@ -42,14 +42,15 @@ class PitchesController < ApplicationController
 
   def update_pitch
 	@pitch = Pitch.find(params[:id])
-	if pitch_params[:destroy_image] == "true"
-		@pitch.remove_image!
-	end
-	if pitch_params[:destroy_video] == "true"
-		@pitch.remove_video!
-	end
-	if @pitch.update(pitch_params)
-		@pitch.update(destroy_image: 'false', destroy_video: 'false')
+	# if pitch_params[:destroy_image] == "true"
+	# 	@pitch.remove_image!
+	# end
+	# if pitch_params[:destroy_video] == "true"
+	# 	@pitch.remove_video!
+	# end
+	# if @pitch.update(pitch_params)
+	if @pitch.update(title: params[:pitch][:title], description: params[:pitch][:description], user_id: params[:pitch][:user_id])
+		# @pitch.update(destroy_image: 'false', destroy_video: 'false')
 		redirect_to dashboard_pitches_path
 	end
   end
@@ -170,6 +171,17 @@ class PitchesController < ApplicationController
 	# end
 	@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  end
+
+  def create_pitch_media
+	@pitch = Pitch.find(params[:id])
+	@pitch.update(pitch_params)
+  end
+
+  def destroy_pitch_media
+	@pitch = Pitch.find(params[:id])
+	@pitch.remove_image!
+	@pitch.save
   end
 
   def create_task_media

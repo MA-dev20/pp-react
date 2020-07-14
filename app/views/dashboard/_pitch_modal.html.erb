@@ -5,8 +5,8 @@
             <h1>Headline</h1>
         </div>
         <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put', html: {id: 'pitchForm'} do |f| %>
-        <%= f.hidden_field :destroy_image, class: 'destroy-image' %>
-        <%= f.hidden_field :destroy_video, class: 'destroy-video' %>
+        <%#= f.hidden_field :destroy_image, class: 'destroy-image' %>
+        <%#= f.hidden_field :destroy_video, class: 'destroy-video' %>
         <%= f.hidden_field :user_id, value: @admin.id %>
         <div class="inner-content">
             <div class="left-section">
@@ -27,16 +27,7 @@
             <div class="right-section">
                 <div class="picture media-option">
                     <label for="">Pitch image</label>
-                    <!-- <label for="pitch_image" class="btn upload">Upload</label> -->
                     <%#= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*', class: 'pitch-uploadfile' %>
-                    <!-- <div class="preview image-preview" style="<%= 'display: block;'if pitch.image.url.present? %>">
-                        <div class="remove pitch-file" onclick="removePitchMedia(event, 'image')">remove</div>
-                        <% if pitch.image.present? %>
-                        <%#= image_tag pitch.image.url, class: 'media-file' %>
-                        <% else %>
-                        <%#= image_tag 'dash/Image.png', class: 'media-file' %>
-                        <% end %>
-                    </div> -->
                     <div class="preview pitch-image-preview"
                         style="display: <%= pitch.image.url.present? ? 'block' : 'none' %>">
                         <% if pitch.image.url.present? %>
@@ -105,8 +96,15 @@
         $('.pitch-image-preview').hide();
         $('.pitch-image-drop-zone').show();
         $('.destroy-image').val('true');
-		pitchCropper = null;
-    })
+        pitchCropper = null;
+		var url = "<%= destroy_pitch_media_url(@pitch) %>";
+        $.ajax({
+			url: url,
+			type: 'get',
+			success: function (res) {
+			}
+		})
+	})
 
     function handleBtnDisable(e) {
         if ($(e).val() === '') {
@@ -222,14 +220,60 @@
                 $('.pitch-image-preview .image-name').text($('#pitch_image').val().split('\\').pop());
                 $('.pitch-remove-option').show();
                 $('.pitch-image-drop-zone').hide();
-				// var formData = new FormData();
-				// formData.append("task_medium[media_type]", 'image');
-				// formData.append("task_medium[image]", file);
+				var pitchFormData = new FormData();
+				pitchFormData.append("pitch[image]", file);
 				$('#popupImage').hide();
-				// sendMedia(formData);
+				sendMedia(pitchFormData);
 			});
 		};
+    })
+    
+    function sendMedia(pitchForm) {
+		var url = "<%= create_pitch_media_url(@pitch) %>";
+		$('.cancel-upload').css('display', 'block');
+		$('#loaderModal').show();
+		xhr = $.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 95 + 1)) + 95 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: pitchForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#loaderModal').hide();
+				$('.cancel-upload').css('display', 'none');
+				
+				pitchForm = new FormData();
+			}
+		})
+
+		$('.cancel-upload').on('click', function() {
+		if (xhr !== null) {
+			xhr.abort();
+			xhr = null;
+			$('#loaderModal').hide();
+			$('.cancel-upload').css('display', 'none');
+		}
 	})
+	}
+
 	
 
 </script>
