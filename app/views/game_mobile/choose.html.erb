@@ -1,17 +1,10 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
-<div class="head" id="task-head">
-	<h1>Die Aufgabe!</h1>
-	<h3>Lies dir die Aufgabe aufmerksam durch!</h3>
-</div>
-<div class="head" id="choose-head" style="display: none">
-	
+<div class="head" id="choose-head">
+
 	<h1>Wer soll pitchen?</h1>
 	<h3>Tippe auf den Teilnehmer, der <br> als nächstes pitchen soll!</h3>
 </div>
-<div class="middle" id="task-middle">
-	<div class="card"><%= @task.title %></div>
-</div>
-<div class="middle" id="choose-middle" style="display: none">
+<div class="middle" id="choose-middle">
 	<div class="circle-left">
 		<% if @turn1.user.avatar? %>
 			<%= link_to image_tag(@turn1.user.avatar.url), gm_choosen_path('', turn: @turn1.id), class: 'custom-border', id: "left-img" %>
@@ -27,11 +20,3 @@
 		<% end %>
 	</div>
 </div>
-<script>
-	setTimeout(function() {
-		$('#task-head').fadeOut(500);
-		$('#task-middle').fadeOut(500);
-		$('#choose-head').show();
-		$('#choose-middle').show();
-	}, 14500)
-</script>

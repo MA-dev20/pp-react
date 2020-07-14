@@ -40,7 +40,51 @@
 		</div>
 		<%= yield %>
 	</section>
-	
+  <% if @pitch && @game.state != 'play' && @game.state != 'feedback' %>
+  <div id="count_channel" data-game-id='<%= @game.id %>'></div>
+  <section class='comments' id="game_comments" style="display: none;">
+  </section>
+  <script>
+    App.commentHideTimer = startCommentHideTimer();
+  	App.commentHideTimer.pause();
+    function startCommentHideTimer() {
+  		commentTimer = 0;
+  		var setTimer = setInterval(function() {
+  			commentTimer++;
+        console.log(commentTimer);
+  			if (commentTimer > 10) {
+          clearInterval(setTimer);
+          $('#game_comments').fadeOut(1000);
+          commentTimer = NaN;
+          console.log(commentTimer);
+        }
+  		}, 1000)
+  		var pause = function() { clearInterval(setTimer) };
+  		var restart = function() {
+        clearInterval(setTimer);
+  			commentTimer = 0;
+  			setTimer = setInterval(function() {
+  				commentTimer++;
+          console.log(commentTimer);
+          if (commentTimer > 10) {
+            clearInterval(setTimer);
+            $('#game_comments').fadeOut(1000);
+            commentTimer = NaN;
+            console.log(commentTimer);
+          }
+  			}, 1000)
+  		}
+  		var stop = function() {
+  			clearInterval(setTimer);
+  			commentTimer = NaN;
+        console.log(commentTimer);
+  			$('#game_comments').fadeOut(1000);
+  		}
+  		return {pause: pause , restart: restart, stop: stop }
+  	}
+  </script>
+  <% end %>
+
 <svg viewbox= "0 0 316 316" style="display: none">
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
 </svg>

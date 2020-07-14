@@ -52,7 +52,7 @@ class GameDesktopController < ApplicationController
 	    redirect_to gd_set_state_path(state: 'slide')
 		return
 	  else
-		redirect_to gd_set_state_path(state: 'choose')
+		redirect_to gd_set_state_path(state: 'show_task')
 		return
 	  end
 	else
@@ -67,6 +67,45 @@ class GameDesktopController < ApplicationController
 	  elsif params[:state] == 'slide'
 	    @game.update(state: 'slide')
 	    redirect_to gd_game_path
+    elsif params[:state] == 'show_task'
+      @task = @pitch.task_orders.find_by(order: @game.current_task).task
+      @turn = GameTurn.find_by(id: @game.current_turn)
+      if @turn && !@turn.played && @turn.play
+		    redirect_to gd_set_state_path(state: 'turn')
+		    return
+      elsif @game.game_turns.find_by(task: @task, played: false)
+        redirect_to gd_set_state_path(state: 'turn')
+  		  return
+      else
+		    @turns = @game.game_turns.playable.where(task_id: nil).all
+		    if @turns.count == 0
+		      @turns = @game.game_turns.where(play: true, repeat: false)
+		      @turns.each do |t|
+			      @turn = GameTurn.create(game: @game, user: t.user, team: t.team, play: true, played: false)
+			      t.update(played: false, play: false, repeat: true)
+		      end
+          @turns = @game.game_turns.playable.where(task_id: nil).all
+          if @turns.count == 1
+            redirect_to gd_set_state_path(state: 'turn')
+  		      return
+          else
+            @turns = @game.game_turns.playable.sample(2)
+  	        @task = @pitch.task_orders.find_by(order: @game.current_task)
+            @game.update(state: "show_task", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'show_task'
+  		      redirect_to gd_game_path
+  	        return
+          end
+		    elsif @turns.count == 1
+		      redirect_to gd_set_state_path(state: 'turn')
+		      return
+		    else
+          @turns = @game.game_turns.playable.sample(2)
+	        @task = @pitch.task_orders.find_by(order: @game.current_task)
+          @game.update(state: "show_task", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'choose'
+		      redirect_to gd_game_path
+	        return
+	      end
+	    end
     elsif params[:state] == 'choose'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
       @turn = GameTurn.find_by(id: @game.current_turn)
@@ -147,17 +186,23 @@ class GameDesktopController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
-	    @turn = GameTurn.find_by(id: @game.current_turn)
+      @turn = GameTurn.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
         @task = @pitch.task_orders.find_by(order: @game.current_task).task if !@task
-	      if !@task.rating_list
-		      @turn.update(ges_rating: nil, played: true)
+        if @task.rating1 || @task.rating2 || @task.rating3 || @task.rating4
+          if @task.rating1 == '' && @task.rating2 == '' && @task.rating3 == '' && @task.rating4 == ''
+            @turn.update(ges_rating: nil, played: true)
+  		      redirect_to gd_set_state_path(state: 'feedback')
+  		      return
+          elsif @game.state != 'rate'
+            @game.update(state: 'rate')
+          end
+        else
+          @turn.update(ges_rating: nil, played: true)
 		      redirect_to gd_set_state_path(state: 'feedback')
 		      return
-		    elsif @game.state != "rate"
-		      @game.update(state: 'rate')
-		    end
+        end
 		    redirect_to gd_game_path
 	      return
 	    else

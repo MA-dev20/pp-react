@@ -28,3 +28,16 @@
       <div class="text big">Feedback am Smartphone</div>
   </div>
 </section>
+<section id="skip">
+	Beenden mit Leertaste
+</section>
+<script type="text/javascript">
+	function redirect() {
+		window.location.replace('<%= gd_set_slide_path(@game.current_task + 1) %>');
+	}
+  $(window).keypress(function (e) {
+		if (e.key === ' ' || e.key === 'Spacebar') {
+			redirect();
+		}
+	})
+</script>

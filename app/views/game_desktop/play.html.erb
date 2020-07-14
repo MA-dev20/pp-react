@@ -40,11 +40,6 @@
 	<i class="fas fa-music"></i>
 	<%= audio_tag @task.task_medium.audio.url, id: 'task_sound' %>
 	<div class="progress"><div class="bar"></div></div>
-	<style>
-		:root {
-	  		--soundduration: <%= @task.task_medium.duration.round(1).to_s + 's' %>;
-		}
-	</style>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
 <% else %>
@@ -110,6 +105,10 @@
 		MyApp.timer.resume();
 	})
 	<% elsif @task.task_medium && @task.task_medium.audio? %>
+	var audio = document.getElementById('task_sound')
+	audio.onplay = function() {
+		$('#play .sound .progress .bar').css('animation-duration', audio.duration + 's')
+	}
 	$('#task_sound').on('ended', function() {
 		$('#play .sound').fadeOut(10);
 		$('#task').fadeIn(100);

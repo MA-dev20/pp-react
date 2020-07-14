@@ -1,0 +1,37 @@
+<div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<div id="count_channel" data-game-id='<%= @game.id %>'></div>
+<section id="task">
+	<div class="timer-left fadeInLeft">15s</div>
+	<div class="task">
+		<h3>Die Aufgabe</h3>
+		<div class="card fadeInRight">
+			<%= @task.title %>
+		</div>
+	</div>
+</section>
+<section id="skip">
+	Beenden mit Leertaste
+</section>
+<script type="text/javascript">
+  countdown(15);
+  function countdown(sec) {
+		setInterval(function() {
+			sec--;
+			if(sec > 0) {
+				$(".timer-left").text(sec + 's');
+			}
+			if(sec <= 1) {
+				$(".timer-left").text('1s');
+				redirect();
+			}
+		}, 1000)
+	}
+  function redirect() {
+		window.location.replace('<%= gd_set_state_path(state: 'choose') %>');
+	}
+  $(window).keypress(function (e) {
+		if (e.key === ' ' || e.key === 'Spacebar') {
+			redirect();
+		}
+	})
+</script>

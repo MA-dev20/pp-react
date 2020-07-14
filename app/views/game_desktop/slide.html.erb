@@ -2,6 +2,9 @@
 <div id="video-bg">
 	<%= image_tag @task.task_medium.image.url, id: 'video'%>
 </div>
+<section id="skip">
+	Beenden mit Leertaste
+</section>
 <script>
 	$('#navbar').hide();
 	$(window).keypress(function (e) {

@@ -24,7 +24,7 @@
 					<tbody>
 						<% @team.users.where.not(role: "inactive").each do |u| %>
 						<tr>
-							<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/wolf.png' %></td>
+							<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/icons/wolf.png' %></td>
 							<td><%= u.fname %> <%= u.lname %></td>
 							<td class="remove active"><%= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %></td>
 						</tr>
@@ -111,7 +111,7 @@
 		<%= form_for(:user, url: edit_user_path(@user, site: 'dashboard_teams')) do |f| %>
 			<div class="form-group avatar">
 				<label for="user_avatar">
-					<%= image_tag @user.avatar? ? @user.avatar.url : 'dash/wolf.png', id: 'avatar' %>
+					<%= image_tag @user.avatar? ? @user.avatar.url : 'dash/icons/wolf.png', id: 'avatar' %>
 					<div class="hover">
 						<i class="fas fa-plus"></i>
 					</div>
@@ -164,7 +164,7 @@
 	})(jQuery);
 	var inputAvatar = document.getElementById('user_avatar');
 	var image = document.getElementById('user_image');
-	
+
 	inputAvatar.addEventListener('change', function(e) {
 		var files = e.target.files;
 		var done = function(url) {
@@ -188,7 +188,7 @@
 	})
 	$('#popup').on('show', function() {
 		cropper = new Cropper(image, {
-			aspectRatio: 1,	
+			aspectRatio: 1,
 		});
 	})
 	$('#popup').on('hide', function() {
@@ -231,16 +231,16 @@
 				$('#popup').hide();
 			}
 		})
-		
+
 	}
 	</script>
 	<% else %>
-	
+
 	<div class="card" id="user" style="<%= @user ? 'display: none' : '' %>">
 		<h3>Nutzer
 			<span id="inactiveuser" onclick="toggleInUser()">Inactive User</span>
 		</h3>
-		
+
 		<div class="table" id="users-table">
 			<table>
 				<thead>
@@ -392,7 +392,7 @@
 			success: function(res) {
 				$('#team_' + tID + ' #count').text(res.count);
 				$('#teams-table .highlighted').each(function() {
-					$( this ).removeClass('highlighted')	
+					$( this ).removeClass('highlighted')
 				});
 				<% if @team %>
 				$('#team_' + <%= @team.id %> + '').addClass('highlighted');

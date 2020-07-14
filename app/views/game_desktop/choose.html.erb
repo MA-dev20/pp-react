@@ -24,13 +24,16 @@
     		<div class="text">Wähle am Smartphone</div>
 		</div>
 	</div>
-	<div class="timer-left fadeInLeft">15s</div>
+	<div class="timer-left">15s</div>
 	<div class="task">
 		<h3>Die Aufgabe</h3>
-		<div class="card fadeInRight">
+		<div class="card">
 			<%= @task.title %>
 		</div>
 	</div>
+</section>
+<section id="skip">
+	Beenden mit Leertaste
 </section>
 <%= audio_tag(choose_sound, autoplay: true, id: 'theme') %>
 <%= audio_tag("game/ping_choosen.mp3", id: 'ping') %>
@@ -48,14 +51,14 @@
 		$('#finger').removeClass('fadeInLeft');
 		$('#finger').addClass('switch');
 	})
-	countdown(30);
+	countdown(16);
 	document.addEventListener('DOMContentLoaded', function() {
             var typed = new Typed('#head', {
                 strings: ['Wer soll pitchen?'],
                 typeSpeed: 10,
                 backSpeed: 80,
                 backDelay: 0,
-                startDelay: 28000,
+                startDelay: 14000,
                 smartBackspace: false,
                 loop: true,
 								showCursor: false,

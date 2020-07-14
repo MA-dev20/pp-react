@@ -16,17 +16,24 @@ jQuery(document).ready(function() {
 			  if (data['state'] == 'wait') {
 				  if( $('#count-reload').length > 0 ) {
 				  	window.location.reload();
-			  	  } else {
-					  $('#count').text(data['count']);
-					  document.getElementById('ping').play();
-					  var left1 = Math.random() * 80;
-					  var userDiv;
-					  if (data['avatar']) {
-					    userDIV = '<img src="'+data['avatar']+'" style="left:' + left1 +'%;">';
-					  } else {
-						userDIV = '<div class="circle" style="left:' + left1 + '%;">'+data['name']+'</div>';
-					  }
-					  $('#user-rain').append(userDIV);
+			  	} else {
+					 	$('#count').text(data['count']);
+						if (data['remove'] == true) {
+							$('#user_'+data['user_id']).remove();
+						} else {
+					  	document.getElementById('ping').play();
+					  	var left1 = Math.random() * 80;
+					  	var userDiv;
+					  	if (data['avatar']) {
+					    	userDIV = '<img src="'+data['avatar']+'" style="left:' + left1 +'%;" id="user_'+data['user_id']+'">';
+					  	} else {
+								userDIV = '<div class="circle" style="left:' + left1 + '%;" id="user_'+data['user_id']+'">'+data['name']+'</div>';
+					  	}
+							if ($('#user_' + data['user_id']).length > 0) {
+								$('#user_'+data['user_id']).remove();
+							}
+					  	$('#user-rain').append(userDIV);
+						}
 				  }
 			  }
 			  if (data['choose'] == true) {
@@ -72,6 +79,10 @@ jQuery(document).ready(function() {
 					} else {
 							$('#game_comments').append(userDiv);
 					}
+					if (data['hide'] == true) {
+						$('#game_comments').fadeIn(1000);
+						App.commentHideTimer.restart();
+					}
 			  }
 			  if (data["emoji"] == true) {
 				  var userDiv;
@@ -80,7 +91,15 @@ jQuery(document).ready(function() {
 				  } else {
 					  userDiv = '<div class="comment"><div class="circle">'+data['name']+'</div><div class="emoji">'+data["emoji_icon"]+'</div>'
 				  }
-					$('#game_comments').append(userDiv);
+					if (data['reverse'] == true) {
+						$('#game_comments').prepend(userDiv);
+					} else {
+							$('#game_comments').append(userDiv);
+					}
+					if (data['hide'] == true) {
+						$('#game_comments').fadeIn(1000);
+						App.commentHideTimer.restart();
+					}
 			  }
 		  }
 		});
