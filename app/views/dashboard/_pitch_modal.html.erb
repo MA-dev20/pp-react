@@ -87,7 +87,7 @@
     //         $('#pitchModal').hide();
     //     }
     // });
-
+    
     $('.pitch-image-upload-btn').on('click', function (e) {
         $('#pitch_image').click();
     })
@@ -157,6 +157,22 @@
 			}
 		}
     })
+
+    function showImagePopup() {
+		$('#popupImage').show();
+	}
+	function hideImagePopup() {
+		$('#popupImage').hide();
+	}
+	(function ($) {
+		$.each(['show', 'hide'], function (i, ev) {
+			var el = $.fn[ev];
+			$.fn[ev] = function () {
+				this.trigger(ev);
+				return el.apply(this, arguments);
+			};
+		});
+	})(jQuery);
     
 	function handlePitchImageUpload(e) {
 		let file_input = $(e.currentTarget).find('#pitch_image');
@@ -179,7 +195,6 @@
 				file = files[0];
 				if (URL) {
                     done(URL.createObjectURL(file));
-                    console.log('pppsdfsfdsdf')
                     console.log(URL.createObjectURL(file))
 				} else if (FileReader) {
 					reader = new FileReader();
@@ -223,12 +238,12 @@
 				var pitchFormData = new FormData();
 				pitchFormData.append("pitch[image]", file);
 				$('#popupImage').hide();
-				sendMedia(pitchFormData);
+				sendPitchMedia(pitchFormData);
 			});
 		};
     })
     
-    function sendMedia(pitchForm) {
+    function sendPitchMedia(pitchForm) {
 		var url = "<%= create_pitch_media_url(@pitch) %>";
 		$('.cancel-upload').css('display', 'block');
 		$('#loaderModal').show();
