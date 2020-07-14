@@ -293,6 +293,7 @@
 		}
 
 		if ($(e.target).is('.navbar-link'))  {
+			$('#pitchModal').hide();
 			$('.warning-card-wrapper2').show();
 		}
 	})
@@ -304,10 +305,12 @@
 	// })
 
 	$('.exit-btn').on('click', function() {
+		$('#pitchModal').hide();
 		$('.warning-card-wrapper2').show();
 	})
 
 	$('.back-arrow').on('click', function() {
+		$('#pitchModal').hide();
 		$('.warning-card-wrapper2').show();
 	})
 

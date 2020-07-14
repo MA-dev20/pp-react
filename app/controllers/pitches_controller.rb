@@ -57,7 +57,7 @@ class PitchesController < ApplicationController
 
   def delete_pitch
 	@pitch = Pitch.find(params[:id])
-	@pitch.tasks.destroy_all
+	@pitch.task_orders.destroy_all
 	@pitch.destroy
 	redirect_to dashboard_pitches_path
   end
