@@ -28,7 +28,7 @@
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
         </div>
         <div class="task-subtitle task-name">
-            <%= t.task.title&.titleize %>
+            <%= t.task.title %>
             <%# media_type = t.task.task_medium&.media_type&.titleize %>
             <%#= media_type = media_type.present? ? media_type : t.task.task_type&.titleize %>
         </div>
@@ -76,7 +76,7 @@
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
         </div>
         <div class="task-subtitle task-name">
-            <%= t.task.title&.titleize %>
+            <%= t.task.title %>
         </div>
         <div class="thumb slide">
             <% if t.task.task_medium && t.task.task_medium.video? %>
