@@ -233,14 +233,19 @@ class PitchesController < ApplicationController
 		@list = CatchwordList.create(name: "task_list")
 		@task.update(catchword_list_id: @list.id)		  
 	  end
-	  if params[:list][:name] && params[:list][:name] != ''
-	  	@entry = @company.catchwords.find_by(name: params[:list][:name])
-	  	@entry = @company.catchwords.create(name: params[:list][:name]) if @entry.nil?
-	  	@list.catchwords << @entry if @list.catchwords.find_by(name: params[:list][:name]).nil?
+	  if (params[:list][:name] && params[:list][:name] != '') || (params["list-name"].present? && params["list-name"] != '')
+		@list_name = params[:list][:name] || params["list-name"]		  
+		@entry = @company.catchwords.find_by(name: @list_name)
+	  	@entry = @company.catchwords.create(name: @list_name) if @entry.nil?
+	  	@list.catchwords << @entry if @list.catchwords.find_by(name: @list_name).nil?
 	  elsif params[:list][:list_id]
 		@cw = CatchwordList.find(params[:list][:list_id])
 		@cw.catchwords.each do |entry|
-		  @list.catchwords << entry if @list.catchwords.find_by(name: entry.name).nil?
+		  if @list.catchwords.find_by(name: entry.name).nil?
+			dup_entry = entry.dup
+			dup_entry.save
+			@list.catchwords << dup_entry
+		  end
 		end
 	  end
 	  @task.update(task_type: 'catchword')
@@ -251,14 +256,20 @@ class PitchesController < ApplicationController
 	    @list = ObjectionList.create(name: 'task_list')
 		@task.update(objection_list_id: @list.id)
 	  end
-	  if params[:list][:name] && params[:list][:name] != ''
-	  	@entry = @company.objections.find_by(name: params[:list][:name])
-	  	@entry = @company.objections.create(name: params[:list][:name]) if @entry.nil?
-	  	@list.objections << @entry if @list.objections.find_by(name: params[:list][:name]).nil?
+	  if (params[:list][:name] && params[:list][:name] != '') || (params["list-name"].present? && params["list-name"] != '')
+		@list_name = params[:list][:name] || params["list-name"]
+		@entry = @company.objections.find_by(name: @list_name)
+	  	@entry = @company.objections.create(name: @list_name) if @entry.nil?
+	  	@list.objections << @entry if @list.objections.find_by(name: @list_name).nil?
 	  elsif params[:list][:list_id]
 		@ol = ObjectionList.find(params[:list][:list_id])
 		@ol.objections.each do |entry|
-		@list.objections << entry if @list.objections.find_by(name: params[:list][:name]).nil?
+		if @list.objections.find_by(name: entry.name).nil?
+			dup_entry = entry.dup
+			dup_entry.save
+			@list.objections << dup_entry
+			# @list.objections << entry 
+		end
 		end
 	  end
 	elsif params[:type] == 'rating'
