@@ -95,9 +95,9 @@
 			</div>
 			<div class="comment-form">
 				<div class="time">0:00</div>
-				<div class="negative" onclick="setMood('negative')"><div class="circle"><div class="dot"></div></div>Negativ</div>
-				<div class="neutral active" onclick="setMood('neutral')"><div class="circle"><div class="dot"></div></div>Neutral</div>
-				<div class="positive" onclick="setMood('positve')"><div class="circle"><div class="dot"></div></div>Positiv</div>
+				<div class="negative" onclick="setMood('negative')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Negativ</labe></div>
+				<div class="neutral active" onclick="setMood('neutral')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Neutral</labe></div>
+				<div class="positive" onclick="setMood('positve')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Positiv</labe></div>
 				<div class="form-group">
 				<%= form_for(:comment, url: new_comment_path(@turn)) do |f| %>
 					<%= f.hidden_field :positive, value: 'neutral' %>
