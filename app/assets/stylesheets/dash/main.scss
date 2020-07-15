@@ -1355,13 +1355,20 @@ body {
 		}
 	}
 	.pitch-video {
+		// position: fixed;
+		// top: 20vh; left: 25vw;
+		// height: 60vh; width: 60vw;
 		position: fixed;
-		top: 20vh; left: 25vw;
-		height: 60vh; width: 60vw;
+		top: 15vh;
+		left: 19vw;
+		height: 72vh;
+		width: 70vw;
 		.left, .right {
 			float: left; position: relative;
 			top: 0; left: 0;
-			height: 55vh; width: 20vw;
+			// height: 55vh; width: 20vw;
+			height: 67vh;
+			width: 21vw;
 			margin: 2.5vh 0; padding: 0;
 			h3 {
 				line-height: 2.5vh; font-size: 2vh; font-weight: bold; text-align: left;
@@ -1437,7 +1444,8 @@ body {
 				position: absolute;
 				bottom: 0;
 				.card {
-					height: 20vh;
+					// height: 20vh;
+					height: 52vh;
 					.comment {
 						margin: 0 1vh;
 						width: calc(100% - 2vh);
@@ -1463,6 +1471,7 @@ body {
 								float: left;
 								height: 2vh; width: 2vh;
 								margin-right: 1vh;
+								margin-top: 1vh;
 								border-radius: 50%;
 							}
 							.dot.positive {background-color: #0ba653;}
@@ -1521,6 +1530,7 @@ body {
 			}
 			.own-ratings,
 			.ratings {
+				margin-top: 5vh;
 				position: relative;
 				width: 100%;
 				height: 20vh;
@@ -1600,21 +1610,31 @@ body {
 				}
 			}
 		}
+		.right {
+			width: 22vw;
+		}
 		.middle {
 			float: left; position: relative;
-			height: 55vh; width: 16vw;
+			// height: 55vh; width: 16vw;
+			height: 67vh;
+    		width: 23vw;
 			margin: 2.5vh 2vw; padding: 0;
 			box-shadow: 0px 0.2vh 1vh 0 rgba(172,172,172,0.5);
 			video {
 				margin: 1vh .5vw 0 .5vw;
-				height: 45vh; width: 15vw;
+				// height: 45vh; width: 15vw;
+				height: 57vh;
+    			width: 22vw;
 				background-color: black;
 				border-radius: 1vh;
 			}
 			.progress {
 				position: absolute;
-				top: 47.5vh;
-				height: 2vh; width: 15vw;
+				// top: 47.5vh;
+				// height: 2vh; width: 15vw;
+				top: 59.5vh;
+				height: 2vh;
+				width: 22vw;
 				margin: 0 .5vw;
 				z-index: 1000;
 				.progress-bar {
@@ -1636,13 +1656,19 @@ body {
 			}
 			.controls {
 				position: absolute;
-				top: 48vh;
+				// top: 48vh;
+				// margin: 0 .5vw;
+				// height: 6vh; width: 15vw;
+				top: 60vh;
 				margin: 0 .5vw;
-				height: 6vh; width: 15vw;
+				height: 6vh;
+				width: 22vw;
 				z-index: 100;
 				.play, .pause {
 					position: absolute;
-					left: calc(7.5vw - 2vh); bottom: 0;
+					// left: calc(7.5vw - 2vh);
+					left: calc(7.5vw - -7vh); 
+					bottom: 0;
 					height: 4vh; width: 4vh;
 					color: rgba(var(--btncolor), .8);
 					text-align: center; line-height: 4vh;
@@ -1653,7 +1679,9 @@ body {
 				.pause {display: none;}
 				.stop {
 					position: absolute;
-					right: calc(8vw + 2vh); bottom: 0;
+					// right: calc(8vw + 2vh);
+					right: calc(8vw + 11vh); 
+					bottom: 0;
 					height: 3vh; width: 3vh;
 					color: rgba(var(--btncolor), .8);
 					line-height: 3vh; text-align: center;

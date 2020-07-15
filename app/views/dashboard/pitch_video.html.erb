@@ -6,47 +6,6 @@
 			<%= @turn.user.fname %> <%= @turn.user.lname %> - <%= @turn.created_at.strftime("%d.%m.%y") %>
 		</div>
 		<%= link_to '', delete_pitch_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
-		<div class="do-and-dont">
-			<h5>Do say &amp; Don't say</h5>
-			<div class="card">
-				<div class="do">
-					<h5>Do say</h5>
-					<div class="count"><%= @video.do_words %></div>
-				</div>
-				<div class="dont">
-					<h5>Don't say</h5>
-					<div class="count"><%= @video.dont_words %></div>
-				</div>
-				<div class="speed">
-					<h5>Sprechrate</h5>
-					<div class="count"><%= @video.words_count == 0 ? 0 : (@video.words_count / @video.duration) * 60 %></div>
-					<div class="unit">Worte / Minute</div>
-				</div>
-			</div>
-		</div>
-		<div class="transcript">
-			<h5>Transcript</h5>
-			<div class="card">
-				<div class="coming-soon">coming soon...</div>
-			</div>
-			
-		</div>
-	</div>
-	<div class="middle card">
-		<%= video_tag @video.video.url, id: 'pitch-video' %>
-		<div class="progress">
-			<div class="progress-bar" onclick="setProgress(event)" onmousemove="setProgressMove(event)" id="progress-bar"><div class="bar" id="progress"></div></div>
-			<div class="time">0:00/<%= (@video.duration / 60).to_s %>:<%= @video.duration % 60 < 10 ? '0' + (@video.duration % 60).to_s : (@video.duration % 60).to_s %></div>
-		</div>
-		<div class="controls">
-			<div class="play" onclick="playVideo()"><i class="fas fa-play-circle"></i></div>
-			<div class="pause" onclick="pauseVideo()"><i class="fas fa-pause-circle"></i></div>
-			<div class="stop" onclick="stopVideo()"><i class="fas fa-stop-circle"></i></div>
-			<div class="mute" onclick="muteVideo()"><i class="fas fa-volume-up"></i></div>
-			<div class="muted" onclick="unmuteVideo()"><i class="fas fa-volume-mute"></i></div>
-		</div>
-	</div>
-	<div class="right">
 		<% if @ratings.count != 0 %>
 		<div class="ratings">
 			<% @ratings.each do |r| %>
@@ -97,6 +56,22 @@
 			</div>
 		</div>
 		<% end %>
+	</div>
+	<div class="middle card">
+		<%= video_tag @video.video.url, id: 'pitch-video' %>
+		<div class="progress">
+			<div class="progress-bar" onclick="setProgress(event)" onmousemove="setProgressMove(event)" id="progress-bar"><div class="bar" id="progress"></div></div>
+			<div class="time">0:00/<%= (@video.duration / 60).to_s %>:<%= @video.duration % 60 < 10 ? '0' + (@video.duration % 60).to_s : (@video.duration % 60).to_s %></div>
+		</div>
+		<div class="controls">
+			<div class="play" onclick="playVideo()"><i class="fas fa-play-circle"></i></div>
+			<div class="pause" onclick="pauseVideo()"><i class="fas fa-pause-circle"></i></div>
+			<div class="stop" onclick="stopVideo()"><i class="fas fa-stop-circle"></i></div>
+			<div class="mute" onclick="muteVideo()"><i class="fas fa-volume-up"></i></div>
+			<div class="muted" onclick="unmuteVideo()"><i class="fas fa-volume-mute"></i></div>
+		</div>
+	</div>
+	<div class="right">
 		<div class="comments">
 			<h5>Kommentare</h5>
 			<div class="card" id="comment-card">
