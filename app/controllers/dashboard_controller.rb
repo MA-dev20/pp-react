@@ -179,7 +179,7 @@ class DashboardController < ApplicationController
 		  seconds = t.pitch_video.duration % 60
 		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
 		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
-		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t&.task&.title, user: t.user, rating: rating}
+		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating}
 	  	end
 	  end
 	end

@@ -12,7 +12,7 @@
 				<div class="play"><i class="fas fa-play"></i></div>
 				</div>
 			</div>
-			<div class="word"><%= p[:word].name %></div>
+			<div class="word"><%= p[:title] %></div>
 			<div class="heart" onclick="favPitch(<%= p[:id] %>)"><i id="fav_<%= p[:id] %>" class="<%= p[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
 			<div class="user">
 				<%= image_tag p[:user].avatar.url %>
