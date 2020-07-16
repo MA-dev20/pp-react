@@ -1647,6 +1647,11 @@ input[type="file"] {
         }
     }
 
+    .video-frame {
+        height: 28vh;
+        width: 100%;
+    }
+
     .dropzone-container {
         height: 28vh;
         width: 100%;
@@ -1729,6 +1734,10 @@ input[type="file"] {
             }
         }
     }
+}
+
+.add-video-link {
+    cursor: pointer;
 }
 
 .back-arrow-icon,

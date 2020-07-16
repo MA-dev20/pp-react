@@ -247,34 +247,37 @@
 			</div>
 
 			<div class="video media-option">
-				<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_video_form"} do |t| %>
+				<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: "add_video_form", onkeydown: 'videoLinkClicked(this)'} do |t| %>
 				<div class="title">Video</div>
-				<!-- <div class="subline">Upload an Video to your pitch</div> -->
-				<!-- <label for="task_medium_video" class="btn upload" id="video_upload_btn">Upload</label> -->
 				<%#= t.file_field :video %>
 				<%#= t.hidden_field :media_type, value: 'video' %>
 				<div class="preview video-preview"
-					style="display: <%= @task.task_medium && @task.task_medium.video? ? 'block' : 'none' %>">
-					<% if @task.task_medium && @task.task_medium.video? %>
-					<!-- <div class="time">
-					<%= (@task.task_medium.duration / 60).to_s %>:<%= (@task.task_medium.duration % 60) < 10 ? '0' + (@task.task_medium.duration % 60).to_s : (@task.task_medium.duration % 60).to_s %>
-				</div> -->
-					<!-- <div class="remove" onclick="removeMedia(event, 'video')">remove</div> -->
-					<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
-					<div class="remove-option">
-						<label><%= File.basename(@task.task_medium.video.url) %></label>
-						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
-					</div>
-					<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
+					style="display: <%= (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) ? 'block' : 'none' %>">
+					<% if @task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?) %>
+						<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
+						<% if @task.task_medium.video_url_id.present? %>
+							<div class="remove-option">
+								<label><%= @task.task_medium.video_title %></label>
+								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+							</div>
+							<% if @task.task_medium.video_url_type == 'youtube' %>
+							<iframe class="video-frame" width="420" height="170" src="https://www.youtube.com/embed/<%= @task.task_medium.video_url_id %>"></iframe>
+							<% else %>
+							<iframe class="video-frame" width="420" height="170" src="https://player.vimeo.com/video/<%= @task.task_medium.video_url_id %>"></iframe>
+							<% end %>
+						<% elsif @task.task_medium.video.present? %>
+							<div class="remove-option">
+								<label><%= File.basename(@task.task_medium.video.url) %></label>
+								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+							</div>
+							<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
+						<% end %>
 					<% else %>
-					<div class="time"></div>
-					<video class="video-tag" src="" controls></video>
-					<!-- <iframe width="420" height="345" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-				</iframe> -->
+						<video class="video-tag" src="" controls></video>
 					<% end %>
 				</div>
 				<div class="dropzone-container video-drop-zone"
-					style="<%= 'display: none;' if @task.task_medium && @task.task_medium.video? %>">
+					style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
 					<label class="dropzone-text">Drag and Drop file from your Computer</label>
 					<div class="label-btn">
 						<%= t.file_field :video, accept: 'video/*', class: 'video-field' %>
@@ -287,7 +290,10 @@
 						<div class="video-form">
 							<label for="">You can also past a link to your video on Youtube or Vimeo</label>
 							<div class="form-group">
-								<input type="text" class="form-field" id="videoLink" placeholder="Youtube/Vimeo link">
+								<!-- <input type="text" class="form-field" name="videoLink" id="videoLink" placeholder="Youtube/Vimeo link" onkeypress="return event.key != 'Enter';"> -->
+								<input type="text" class="form-field" name="videoLink" id="videoLink" placeholder="Youtube/Vimeo link" onkeypress="videoLinkClicked(event)">
+								<input type="hidden" name="videoLinkImage" id="videoLinkImage">
+								<input type="hidden" name="videoLinkTitle" id="videoLinkTitle">
 								<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add add-video-link' %>
 							</div>
 						</div>
@@ -427,7 +433,177 @@
 </div>
 
 <script>
+	
 
+	function processVimeoVideo(url) {
+		var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/;
+		var parseUrl = regExp.exec(url);
+		if (parseUrl){
+			$('#loaderModal').show();
+			$.ajax({
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+
+					xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var percentComplete = evt.loaded / evt.total;
+						percentComplete = parseInt(percentComplete * 100);
+						console.log(percentComplete);
+						if (percentComplete === 100) {
+						}
+						percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+						$('.progress-ratio').text(percentComplete+'%')
+					}
+					}, false);
+					return xhr;
+				},
+				type:'GET',
+				url: 'http://vimeo.com/api/v2/video/' + parseUrl[5]  + '.json',
+				jsonp: 'callback',
+				dataType: 'jsonp',
+				success: function(data){
+					$('#loaderModal').hide();
+					$('#videoLinkTitle').val(data[0].title);
+					$('#videoLinkImage').val(data[0].thumbnail_large);
+					$('#add_video_form').submit();
+				}
+			});
+		}
+		else{
+			alert("not a valid vimeo url");
+		}
+	}
+
+	function processYoutubeVideo(url) {
+		var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+		var match = url.match(regExp);
+		match = (match&&match[7].length==11) ? match[7] : false;
+		if (match) {
+			var yt_api_key = "AIzaSyCu1Qe60bzpczIvPHzfEr2O_zUgIOcpspE";
+			var yt_video_id = match;
+			var yt_snippet_endpoint = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + yt_video_id + "&key=" + yt_api_key;
+			$('#loaderModal').show();
+			$.ajax({
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+
+					xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var percentComplete = evt.loaded / evt.total;
+						percentComplete = parseInt(percentComplete * 100);
+						console.log(percentComplete);
+						if (percentComplete === 100) {
+						}
+						percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+						$('.progress-ratio').text(percentComplete+'%')
+					}
+					}, false);
+					return xhr;
+				},
+				type:'GET',
+				url: yt_snippet_endpoint,
+				jsonp: 'callback',
+				dataType: 'jsonp',
+				success: function(data){
+					$('#loaderModal').hide();
+					var title = data["items"][0]['snippet']['title'];
+					var image = data["items"][0]['snippet']['thumbnails']["default"]["url"];
+					$('#videoLinkTitle').val(title);
+					$('#videoLinkImage').val(image);
+					$('#add_video_form').submit();
+				}
+			});
+			// var jqxhr = $.getJSON(yt_snippet_endpoint)
+			// .done(function(data) {
+			// 	debugger
+			// 	console.log("second success callback");
+			// 	var title = data["items"][0]['snippet']['title'];
+			// 	var image = data["items"][0]['snippet']['thumbnails']["default"]["url"];
+			// 	$('#videoLinkTitle').val(title);
+			// 	$('#videoLinkImage').val(image);
+			// 	$('#add_video_form').submit();
+			// })
+			// .fail(function() {
+			// 	console.log("error, see network tab for response details");
+			// });
+		} else {
+			alert("not a valid youtube url");
+		}
+	}
+
+	function handleVideoLinkClicked(e) {
+		if (e.target === undefined)
+			url = e;
+		else
+			url = $(e.target).val();
+		if (url.indexOf('youtube.com') !== -1)
+		{
+			processYoutubeVideo(url);
+		}
+		else if (url.indexOf('vimeo.com') !== -1)
+		{
+			processVimeoVideo(url);
+		}
+		else
+		{
+			alert("not a valid url");
+		}
+	}
+
+	function videoLinkClicked(e) {
+		if(e.keyCode === 13) {
+			if ($(e.target).val()) {
+				global_method = 'videoUrl'
+				global_event = e;
+				if (isOtherMediaExists()) {
+					$('.warning-card-wrapper').show();
+				} else {
+					$('.warning-card-wrapper').hide();	
+					url = $(e.target).val();
+					if (url.indexOf('youtube.com') !== -1)
+					{
+						processYoutubeVideo(url);
+					}
+					else if (url.indexOf('vimeo.com') !== -1)
+					{
+						processVimeoVideo(url);
+					}
+					else
+					{
+						alert("not a valid url");
+					}
+				}
+			}
+			e.preventDefault();
+			return false;
+		}
+	}
+
+	$('.add-video-link').on('click', function() {
+		if ($('#videoLink').val()) {
+			global_method = 'videoUrl'
+			global_event = $('#videoLink').val();
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				$('.warning-card-wrapper').hide();	
+				url = $('#videoLink').val();
+				if (url.indexOf('youtube.com') !== -1)
+				{
+					processYoutubeVideo(url);
+				}
+				else if (url.indexOf('vimeo.com') !== -1)
+				{
+					processVimeoVideo(url);
+				}
+				else
+				{
+					alert("not a valid url");
+				}
+			}
+		}
+	})
+    
 	function showReactions() {
 		if ($('#reactionCheck').hasClass('fa-check-square')) {
 			$('#reactionCheck').removeClass('fa-check-square');
@@ -748,17 +924,17 @@
 		}
 	})
 
-	$('.add-video-link').on('click', function (e) {
-		field_id = 'video_url';
-		global_method = 'url';
-		if (isOtherMediaExists()) {
-			$('.warning-card-wrapper').show();
-		} else {
-			$('.warning-card-wrapper').hide();
-			updateVideoUrl();
-			// $('#task_medium_video').click();
-		}
-	})
+	// $('.add-video-link').on('click', function (e) {
+	// 	field_id = 'video_url';
+	// 	global_method = 'url';
+	// 	if (isOtherMediaExists()) {
+	// 		$('.warning-card-wrapper').show();
+	// 	} else {
+	// 		$('.warning-card-wrapper').hide();
+	// 		updateVideoUrl();
+	// 		// $('#task_medium_video').click();
+	// 	}
+	// })
 
 	function updateVideoUrl() {
 		var url = "<%= update_video_url_url(@pitch, task_id: @task&.id) %>";

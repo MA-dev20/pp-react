@@ -40,8 +40,12 @@
         <% image_url = nil %>
         <% end %>
         <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
-            <% if t.task.task_medium && t.task.task_medium.video? %>
+            <% if (t.task.task_medium && (@task.task_medium.video? || t.task.task_medium.video_url_id?)) %>
+            <% if t.task.task_medium.video_url_id? %>
+            <%= image_tag t.task.task_medium.video_img, class: 'image' %>
+            <% else %>
             <%= image_tag t.task.task_medium.video.thumb.url, class: 'image' %>
+            <% end %>
             <i class="fa fa-play-circle video-play-thumb"></i>
             <% elsif t.task.task_medium && t.task.task_medium.image? %>
             <%= image_tag t.task.task_medium.image.url, class: 'image' %>

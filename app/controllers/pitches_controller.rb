@@ -201,9 +201,27 @@ class PitchesController < ApplicationController
 	#   render json: {id: @task_medium.id, type: @task_medium.media_type, preview: @task_medium.audio.url, title: @task_medium.audio.identifier}
 	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	elsif @task_medium.media_type == 'video'
-	  min = @task_medium.duration / 60
-	  sec = @task_medium.duration % 60
-	  sec = '0' + sec.to_s if sec < 10
+	  if params[:videoLink].present?
+		url = params[:videoLink]
+		if params[:videoLink].include?('youtube.com')
+			id = ''
+			url = url.gsub(/(>|<)/i,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
+			if url[2] != nil
+				id = url[2].split(/[^0-9a-z_\-]/i)
+				id = id[0];
+			else
+				id = url;
+			end
+			@task_medium.update(video_url_id: id, video_url_type: 'youtube', video_img: params[:videoLinkImage], video_title: params[:videoLinkTitle])
+		else
+			id = url.split('/').last
+			@task_medium.update(video_url_id: id, video_url_type: 'vimeo', video_img: params[:videoLinkImage], video_title: params[:videoLinkTitle])
+		end
+	  else
+	  	min = @task_medium.duration / 60
+	  	sec = @task_medium.duration % 60
+	  	sec = '0' + sec.to_s if sec < 10
+	  end
 	#   render json: {id: @task_medium.id, preview: @task_medium.video.url, thumb: @task_medium.video.thumb.url, type: @task_medium.media_type, duration: min.to_s + ':' + sec.to_s}
 	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
 	elsif @task_medium.media_type == 'image'

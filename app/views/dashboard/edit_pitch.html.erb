@@ -361,6 +361,8 @@
 				submitCwForm();
 			else if (global_method === 'catchwordList')
 				sendList('catchword', cwListId);
+			else if (global_method === 'videoUrl')
+				handleVideoLinkClicked(global_event);
 		}
 		field_id, global_event, global_method, global_file = '';
 		cwListId = 0;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_08_133305) do
+ActiveRecord::Schema.define(version: 2020_07_16_102643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,6 +320,10 @@ ActiveRecord::Schema.define(version: 2020_07_08_133305) do
     t.string "media_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "video_url_id"
+    t.string "video_url_type"
+    t.string "video_img"
+    t.string "video_title"
   end
 
   create_table "task_orders", force: :cascade do |t|
