@@ -86,6 +86,7 @@
             <div class="thumb slide">
                 <% if t.task.task_medium && t.task.task_medium.video? %>
                 <%= image_tag t.task.task_medium.video.thumb.url %>
+                <i class="fa fa-play-circle video-play-thumb"></i>
                 <% elsif t.task.task_medium && t.task.task_medium.image? %>
                 <%= image_tag t.task.task_medium.image.url %>
                 <% else %>

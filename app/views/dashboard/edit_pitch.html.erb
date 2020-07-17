@@ -41,7 +41,13 @@
 				<%#= t.file_field :image, class: 'pdf-image-file-field', accept: 'image/*' %>
 				<input class="pdf-image-file-field" accept="image/*" type="file" name="task_medium[image]">
 				<%= t.hidden_field :media_type, value: 'image' %>
-				<!-- <input type="hidden" name="type" value="image"> -->
+				<input type="hidden" name="pdf_type" value="image">
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_video_form"} do |t| %>
+				<%#= t.file_field :video, class: 'pdf-video-file-field', accept: 'video/*' %>
+				<input class="pdf-video-file-field" accept="video/*" type="file" name="task_medium[video]">
+				<%= t.hidden_field :media_type, value: 'video' %>
+				<input type="hidden" name="pdf_type" value="video">
 			<% end %>
 			<div class="add-task">
 				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
@@ -522,7 +528,6 @@
 	})
 
 	$('.pdf-image').on('click', function () {
-		// $('.pdf-image-file-field').click();
 		$('.option-modal').hide();
 		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
 		sendMediaPdfContent(globalForm);
@@ -531,6 +536,12 @@
 	$('.pdf-image-file-field').on('change', function () {
 		$('.option-modal').hide();
 		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	$('.pdf-video').on('click', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_video_form'));
 		sendMediaPdfContent(globalForm);
 	})
 

@@ -176,7 +176,8 @@ class PitchesController < ApplicationController
 		end
 	else
 		@task_medium = TaskMedium.create(media_params)
-		@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
+		pdf_type = params[:pdf_type] || 'image'
+		@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true, pdf_type: pdf_type)
 	end
 	# if params[:task_id].present?
 	# 	@task = Task.find(params[:task_id])

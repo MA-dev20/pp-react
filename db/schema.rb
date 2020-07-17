@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_16_102643) do
+ActiveRecord::Schema.define(version: 2020_07_17_133924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -356,6 +356,7 @@ ActiveRecord::Schema.define(version: 2020_07_16_102643) do
     t.string "rating2"
     t.string "rating3"
     t.string "rating4"
+    t.string "pdf_type", default: "image"
     t.index ["catchword_list_id"], name: "index_tasks_on_catchword_list_id"
     t.index ["company_id"], name: "index_tasks_on_company_id"
     t.index ["department_id"], name: "index_tasks_on_department_id"
