@@ -82,14 +82,20 @@
         <div class="task-subtitle task-name">
             <%= t.task.title %>
         </div>
-        <div class="thumb slide">
-            <% if t.task.task_medium && t.task.task_medium.video? %>
-            <%= image_tag t.task.task_medium.video.thumb.url %>
-            <% elsif t.task.task_medium && t.task.task_medium.image? %>
-            <%= image_tag t.task.task_medium.image.url %>
-            <% else %>
-            <%= image_tag 'dash/Image.png' %>
-            <% end %>
-        </div>
+        <% if t.task.task_medium && (t.task.task_medium.image? || t.task.task_medium.video?) %>
+            <div class="thumb slide">
+                <% if t.task.task_medium && t.task.task_medium.video? %>
+                <%= image_tag t.task.task_medium.video.thumb.url %>
+                <% elsif t.task.task_medium && t.task.task_medium.image? %>
+                <%= image_tag t.task.task_medium.image.url %>
+                <% else %>
+                <%= image_tag 'dash/Image.png' %>
+                <% end %>
+            </div>
+        <% else %>
+            <div class="thumb thumb-border slide">
+                <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
+            </div>
+        <% end %>
         <% end %>
     </div>
