@@ -166,7 +166,18 @@ class PitchesController < ApplicationController
 
   def create_task_media_content
 	@pitch = Pitch.find(params[:pitch_id])
-	@task_medium = TaskMedium.create(media_params)
+	if params[:task_id].present?
+		@task = @pitch.tasks.find(params[:task_id])
+		if params[:task_medium_id].present?
+			@task.task_medium.update(media_params)
+		else
+			@task_medium = TaskMedium.create(media_params)
+			@task.update(task_medium: @task_medium)
+		end
+	else
+		@task_medium = TaskMedium.create(media_params)
+		@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
+	end
 	# if params[:task_id].present?
 	# 	@task = Task.find(params[:task_id])
 	# 	@task.update(task_medium_id: @task_medium.id)
@@ -174,7 +185,6 @@ class PitchesController < ApplicationController
 	# end
 	# if params[:type] == 'image'
 	# end
-	@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true)
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 

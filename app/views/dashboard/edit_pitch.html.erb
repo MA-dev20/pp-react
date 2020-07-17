@@ -370,6 +370,49 @@
 		return false;
 	})
 
+	function handleImageUpload(e) {
+		let file_input = $(e.currentTarget).find('.image-fileinput');
+		file_input[0].files = global_file;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'image') {
+			let url_object = URL.createObjectURL(file_data);
+			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
+			// $('.left-card.selected img')[0].src = url_object;
+			// $(e.currentTarget).siblings('.preview').show();
+			// $(e.currentTarget).hide();
+			// $('.image-drop-zone').hide();
+			// $('#add_image_form').submit();
+
+			var image = document.getElementById('media_image');
+			var files = file_input[0].files;
+			var done = function (url) {
+				inputAvatar.value = '';
+				image.src = url;
+				$('#popup').show();
+			};
+			var reader, file, url;
+			if (files && files.length > 0) {
+				file = files[0];
+				if (URL) {
+					done(URL.createObjectURL(file));
+				} else if (FileReader) {
+					reader = new FileReader();
+					reader.onload = function (e) {
+						done(reader.result);
+					}
+					reader.readAsDataURL(file);
+				}
+			}
+		}
+	}
+
+
+
+
+
+	
 	function loadFile(e, type = '') {
 		const id = $(e.target).attr('id');
 		let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
@@ -479,7 +522,10 @@
 	})
 
 	$('.pdf-image').on('click', function () {
-		$('.pdf-image-file-field').click();
+		// $('.pdf-image-file-field').click();
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
+		sendMediaPdfContent(globalForm);
 	})
 
 	$('.pdf-image-file-field').on('change', function () {

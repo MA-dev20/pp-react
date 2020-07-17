@@ -4,10 +4,230 @@
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen', onchange: 'handleTitleChange(event)' %>
 </div>
 <% end %>
-<% if @task&.task_medium&.image %>
 <div class="slide-preview">
+<% if @task&.task_medium&.image %>
 	<% if @task.task_medium&.image&.url %>
+		<div class="remove-option">
+			<label><%= File.basename(@task.task_medium.image.url) %></label>
+			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+		</div>
 		<%= image_tag @task.task_medium.image.url %>
+	<% else %>
+		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_audio_form'} do |t| %>
+		<div class="dropzone-container pdf-image-drop-zone">
+			<label class="dropzone-text">Drag and Drop file from your Computer</label>
+			<div class="label-btn">
+				<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
+				<%= t.hidden_field :media_type, value: 'image' %>
+				<label class="btn reversed upload" id="pdf_image_upload_btn">Upload from Computer</label>
+				<label class="btn reversed upload image-library" id="">Image library</label>
+			</div>
+		</div>
+		<% end %>
 	<% end %>
-</div>
+<% else %>
+<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_audio_form'} do |t| %>
+	<div class="dropzone-container pdf-image-drop-zone">
+		<label class="dropzone-text">Drag and Drop file from your Computer</label>
+		<div class="label-btn">
+			<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
+			<%= t.hidden_field :media_type, value: 'image' %>
+			<label class="btn reversed upload" id="pdf_image_upload_btn">Upload from Computer</label>
+			<label class="btn reversed upload image-library" id="">Image library</label>
+		</div>
+	</div>
 <% end %>
+<% end %>
+</div>
+<div class="popup" id="popupImage">
+	<div class="img-container">
+		<%= image_tag '', id: 'media_image' %>
+	</div>
+	<div class="center">
+		<div class="btn btn-green" id="cropImage">speichern</div>
+	</div>
+	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+</div>
+<script>
+
+	// Image upload and drag, drop
+
+	$('#pdf_image_upload_btn').on('click', function (e) {		
+		$('#task_medium_image').click();
+	})
+
+	var pdfImageDropZone = $('.pdf-image-drop-zone')
+	pdfImageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	pdfImageDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	pdfImageDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	pdfImageDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
+			// global_method = 'imageDragDrop'
+			// global_event = e;
+			// global_file = e.originalEvent.dataTransfer.files;
+			handlePdfImageUpload(e);
+		}
+	});
+
+	function handlePdfImageUpload(e) {
+		let file_input = $(e.currentTarget).find('.image-fileinput');
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'image') {
+			let url_object = URL.createObjectURL(file_data);
+			var image = document.getElementById('media_image');
+			var files = file_input[0].files;
+			var done = function (url) {
+				pdfInputAvatar.value = '';
+				image.src = url;
+				$('#popupImage').show();
+			};
+			var reader, file, url;
+			if (files && files.length > 0) {
+				file = files[0];
+				if (URL) {
+					done(URL.createObjectURL(file));
+				} else if (FileReader) {
+					reader = new FileReader();
+					reader.onload = function (e) {
+						done(reader.result);
+					}
+					reader.readAsDataURL(file);
+				}
+			}
+		}
+	}
+
+
+	// Show Crop image Popup
+	function showPopup() {
+		$('#popupImage').show();
+	}
+	function hidePopup() {
+		$('#popupImage').hide();
+	}
+	(function ($) {
+		$.each(['show', 'hide'], function (i, ev) {
+			var el = $.fn[ev];
+			$.fn[ev] = function () {
+				this.trigger(ev);
+				return el.apply(this, arguments);
+			};
+		});
+	})(jQuery);
+
+	var pdfInputAvatar = document.getElementById('task_medium_image');
+	var pdfImage = document.getElementById('media_image');
+	pdfInputAvatar.addEventListener('change', function (e) {
+		var files = e.target.files;
+		var done = function (url) {
+			pdfInputAvatar.value = '';
+			pdfImage.src = url;
+			$('#popupImage').show();
+		};
+		var reader, file, url;
+		if (files && files.length > 0) {
+			file = files[0];
+			if (URL) {
+				done(URL.createObjectURL(file));
+			} else if (FileReader) {
+				reader = new FileReader();
+				reader.onload = function (e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+	})
+	$('#popupImage').on('show', function () {
+		if (!cropper) {
+			cropper = new Cropper(pdfImage, {
+				aspectRatio: 1.77,
+			});
+		}
+	})
+	$('#popupImage').on('hide', function () {
+		// cropper.destroy();
+		cropper = null;
+	})
+
+	$('#cropImage').on('click', function () {
+		var initialURL, canvas;
+		if (cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			canvas.toBlob(function (blob) {
+				var date = new Date().getTime();
+				var file = new window.File([blob], 'image_' + date + '.jpg', { type: 'image/jpg' });
+				var formData = new FormData();
+				formData.append("task_medium[media_type]", 'image');
+				formData.append("task_medium[image]", file);
+				$('#popupImage').hide();
+				sendPdfMedia(formData);
+			});
+		};
+	})
+
+
+	// Upload Media
+	function sendPdfMedia(globalForm) {
+		var url = "<%= create_task_media_content_path(@pitch, task_id: @task&.id, task_medium_id: @task&.task_medium&.id) %>";
+		$('.cancel-upload').css('display', 'block');
+		$('#loaderModal').show();
+		xhr = $.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 95 + 1)) + 95 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#loaderModal').hide();
+				$('.cancel-upload').css('display', 'none');
+				globalForm = new FormData();
+			}
+		})
+
+		$('.cancel-upload').on('click', function() {
+		if (xhr !== null) {
+			xhr.abort();
+			xhr = null;
+			$('#loaderModal').hide();
+			$('.cancel-upload').css('display', 'none');
+		}
+	})
+	}
+
+
+</script>
