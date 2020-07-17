@@ -14,9 +14,14 @@
 	</div>
 </div>
 <% end %>
-<div class="bottom">
+<div class="bottom big">
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
 	<%= link_to 'Pitch wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
+	<% if @pitch.task_orders.find_by(order: @game.current_task + 1) %>
 	<%= link_to 'Feedbackrunde beenden', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
+	<% else %>
+	<%= link_to 'Zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
+	<%= link_to 'Pitchrunde beenden!', gm_set_state_path(state: 'ended'), class: 'btn'%>
+	<% end %>
 	<% end %>
 </div>

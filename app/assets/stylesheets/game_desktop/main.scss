@@ -101,7 +101,7 @@ body {
 		}
 		.emoji {
 			border-radius: 50%;
-			font-size: 8vh;
+			font-size: 7vh;
 			line-height: 10vh;
 			margin-top: -1vh;
 			animation: moveHeight 1s 1;
@@ -115,6 +115,18 @@ body {
 	width: 100%;
 	background-color: #f4faff;
 	color: #0e0e0e;
+	.addTime {
+		position: absolute;
+		display: none;
+		top: 0; left: 0;
+		height: 100%; width: 100%;
+		line-height: 100vh;
+		text-align: center;
+		font-size: 30vh;
+		color: rgb(var(--custcolor));
+		z-index: 2000;
+		background-color: rgba(255,255,255,.8);
+	}
 	#timeroverlay {
 		position: fixed;
 		top: 0; left: 0;
@@ -1142,7 +1154,7 @@ body {
 				background-color: #00232a;
 				color: white;
 				line-height: 19vh;
-				font-size: 12vh;
+				font-size: 11vh;
 				text-align: center;
 			}
 		}

@@ -55,7 +55,8 @@
 				.circle,
 				img {
 					position: absolute;
-					top: 16.5vh; left: 16.5vh;
+					top: 0; left: 0;
+					margin: 16.5vh;
 					width: 15vh; height: 15vh;
 					border: .5vh solid rgb(var(--custcolor));
 					border-radius: 50%;

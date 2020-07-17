@@ -5,16 +5,16 @@
 <section id="middle">
 <div class="bestlist">
 	<div class="first">
-		<% if @turns.count > 0 %>
+		<% if @game_users.count > 0 %>
 			<% if @game.show_ratings == 'all' %>
-			<div class="rating"><%= @turns.first.ges_rating / 10.0 %></div>
+				<div class="rating"><%= @game_users.first.best_rating != 0 ? @game_users.first.best_rating / 10.0 : '-' %></div>
 			<% elsif @game.show_ratings == 'one' && @turns.first.ratings.where(user: @rat_user).count != 0 %>
-			<div class="rating"><%= @turns.first.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
+				<div class="rating"><%= @turns.first.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
 			<% end %>
-			<% if @turns.first.user.avatar? %>
-				<%= image_tag @turns.first.user.avatar.url, class: 'avatar' %>
+			<% if @game_users.first.user.avatar? %>
+				<%= image_tag @game_users.first.user.avatar.url, class: 'avatar' %>
 			<% else %>
-				<div class="circle avatar"><%= @turns.first.user.fname[0].capitalize %><%= @turns.first.user.lname[0].capitalize %></div>
+				<div class="circle avatar"><%= @game_users.first.user.fname[0].capitalize %><%= @game_users.first.user.lname[0].capitalize %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 255 205" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,16 +24,16 @@
 		<div class="rang">1</div>
 	</div>
 	<div class="second">
-		<% if @turns.count > 1 %>
+		<% if @game_users.count > 1 %>
 			<% if @game.show_ratings == 'all' %>
-			<div class="rating"><%= @turns.second.ges_rating / 10.0 %></div>
+				<div class="rating"><%= @game_users.second.best_rating != 0 ? @game_users.second.best_rating / 10.0 : '-' %></div>
 			<% elsif @game.show_ratings == 'one' && @turns.second.ratings.where(user: @rat_user).count != 0 %>
-			<div class="rating"><%= @turns.second.ratings.where(user: @rat_user).average(:rating).round  / 10.0 %></div>
+				<div class="rating"><%= @turns.second.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
 			<% end %>
-			<% if @turns.second.user.avatar? %>
-				<%= image_tag @turns.second.user.avatar.url, class: 'avatar' %>
+			<% if @game_users.second.user.avatar? %>
+				<%= image_tag @game_users.second.user.avatar.url, class: 'avatar' %>
 			<% else %>
-				<div class="circle avatar"><%= @turns.second.user.fname[0].capitalize %><%= @turns.second.user.lname[0].capitalize %></div>
+				<div class="circle avatar"><%= @game_users.second.user.fname[0].capitalize %><%= @game_users.second.user.lname[0].capitalize %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 189 133" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,16 +44,16 @@
 		<div class="rang">2</div>
 	</div>
 	<div class="third">
-		<% if @turns.count > 2 %>
+		<% if @game_users.count > 2 %>
 			<% if @game.show_ratings == 'all' %>
-			<div class="rating"><%= @turns.third.ges_rating / 10.0 %></div>
+				<div class="rating"><%= @game_users.third.best_rating != 0 ? @game_users.third.best_rating / 10.0 : '-' %></div>
 			<% elsif @game.show_ratings == 'one' && @turns.third.ratings.where(user: @rat_user).count != 0 %>
-			<div class="rating"><%= @turns.third.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
+				<div class="rating"><%= @turns.third.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
 			<% end %>
-			<% if @turns.third.user.avatar? %>
-				<%= image_tag @turns.third.user.avatar.url, class: 'avatar' %>
+			<% if @game_users.third.user.avatar? %>
+				<%= image_tag @game_users.third.user.avatar.url, class: 'avatar' %>
 			<% else %>
-				<div class="circle avatar"><%= @turns.third.user.fname[0].capitalize %><%= @turns.third.user.lname[0].capitalize %></div>
+				<div class="circle avatar"><%= @game_users.third.user.fname[0].capitalize %><%= @game_users.third.user.lname[0].capitalize %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 179 81" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">

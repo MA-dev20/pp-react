@@ -9,7 +9,7 @@
 <section id="middle">
 	<div id="left">
 		<div class="count" id="count">
-			<%= @game.game_turns.playable.count %>
+			<%= @game.game_users.where(play: true).count %>
 		</div>
 	</div>
 	<div id="center">
@@ -43,7 +43,7 @@
 			window.location.replace('<%= gd_set_slide_path(1) %>');
 		}
 	})
-	<% @game.game_turns.each do |t| %>
+	<% @game.game_users.where(play: true).each do |t| %>
 	var left1 = Math.random() * 80;
 	<% if t.user.avatar? %>
 	var userDIV = '<img src="<%= t.user.avatar %>" style="left:' + left1 +'%;" id="user_<%= t.user_id %>">';

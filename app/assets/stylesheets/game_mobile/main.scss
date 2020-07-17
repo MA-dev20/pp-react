@@ -63,15 +63,13 @@ body {
 		}
 	}
 }
-.flash-alert {
-	.close {
-		position: absolute;
-		top: 0;right: 0;
-		height: 9vw; width: 9vw;
-		text-align: center;
-		line-height: 9vw; font-size: 8vw;
-		color: rgba(0,0,0,.4)
-	}
+.close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 10px;
+	height: 25px;
+	color: rgba(0, 0, 0, .5);
 }
 #menu,
 #objections-menu,
@@ -80,7 +78,8 @@ body {
 #user-name,
 #user-new,
 #task_user-menu,
-#user-menu {
+#user-menu,
+#bestlist-menu {
 	display: none;
 	position: fixed;
 	top: 0;left: 10%;
@@ -107,14 +106,6 @@ body {
 			i {margin: 0 2vw;}
 		}
 
-	}
-	.close {
-		position: absolute;
-		top: 0;right: 0;
-		height: 9vw; width: 9vw;
-		text-align: center;
-		line-height: 9vw; font-size: 8vw;
-		color: rgba(0,0,0,.4)
 	}
 	.content {
 		position: absolute;;
@@ -168,54 +159,69 @@ body {
 			width: 100%;
 			text-align: center;
 			border-bottom: 1px solid rgba(0,0,0,.5);
-			margin-bottom: 2vw;
 			.preview {
 				position: relative;
 				width: 75vw;
-				height: calc(45vw + 2px);
+				height: 42vw;
 				margin: 0 calc(50% - 37.5vw);
 				img {
 					width: 75vw;
 					height: 42vw;
 					border: 1px solid rgba(0,0,0,.2);
 				}
+				.is_task {
+					position: absolute;
+					top: 1vw; left: -5vw;
+					height: 8vw; line-height: 8vw;
+					padding: 0 2vw; border-radius: 4vw;
+					line-height: 8vw; font-size: 3vw;
+					color: white; background-color: rgba(var(--custcolor), .9);
+				}
 				.user, .slide {
 					position: absolute;
-					height: 10vw; width: 10vw;
-					line-height: 10vw;
-					font-size: 5vw;
+					height: 8vw; width: 8vw;
+					line-height: 8vw;
+					padding: 0;
+					font-size: 3vw;
 					border-radius: 50%;
 					box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
 					z-index: 2010;
 					color: white;
+					left: -4vw;
 					img {
-						height: 10vw; width: 10vw; border-radius: 50%;
+						height: 8vw; width: 8vw; border-radius: 50%;
 					}
+
 				}
 				.slide {
-					top: 0;
-					left: -5vw;
-					background-color: rgba(var(--custcolor));
+					top: 1vw;
+					background-color: rgba(var(--custcolor), .9);
 				}
 				.user {
 					top: auto;
 					bottom: 0;
-					left: -5vw;
 					background-color: #00232a;
-					font-size: 6vw;
+					font-size: 4vw;
 					font-weight: bold;
+					margin-bottom: 0;
 				}
 			}
 			.title {
 				position: relative;
 				top: 0;left: 0;
-				width: 100%;
-				line-height: 10vw; font-size: 4vw;
+				height: 5vw;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				width: calc(100% - 6vw);
+				line-height: 5vw; font-size: 4vw;
 				text-align: center;
+				padding: 3vw;
 			}
 			.links {
 				position: relative;
 				height: 50px; width: 100%;
+				margin: 2vw 0;
 				.jump {
 					right: 5vw;
 				}
@@ -226,6 +232,7 @@ body {
 					left: 5vw;
 					background-color: white;
 					color: rgba(var(--btncolor));
+					padding: 0;
 				}
 				.user, a {
 					position: absolute;
@@ -242,32 +249,41 @@ body {
 		}
 		.user {
 			position: relative;
-			height: 10vw; width: 100%;
+			padding: 5px 0;
+			height: auto; width: 100%;
 			top: 0;left: 0;
-			line-height: 10vw;
+			height: 30px;
 			border-top: 0px solid rgba(0, 35, 42, .2);
-			margin-bottom: 2vw;
 			.avatar {
 				position: absolute;;
-				left: 2vw; top: 0;
-				height: 8vw;width: 8vw;
-				margin: 1vw;
-				i {line-height: 8vw; width: 8vw; text-align: center;}
-				.circle, img {
+				left: 0;
+				margin: 0 10px;
+				height: 30px;width: 30px;
+				svg, .circle, img {
 					height: 100%; width: 100%;
 					border-radius: 50%;
-					background-color: #00232a; color: white;
-					line-height: 8vw; font-size: 5vw;
+					color: white;
+					line-height: 30px; font-size: 16px;
 					text-align: center;
 				}
+				.circle {background-color: #00232a;}
 			}
 			.objection {
 				left: 2vw; top: 0;
 				width: 81vw;
 			}
 			.name {
-				left: 13vw; top: 0;
-				width: 70vw;
+				left: 50px; top: 0;
+				width: calc(100% - 100px);
+			}
+			.rating {
+				position: absolute;
+				left: auto; right: 0; top: 0;
+				height: 30px; width: 50px;
+				line-height: 30px; text-align: center;
+				cursor: pointer;
+				text-decoration: none;
+				font-size: 20px;
 			}
 			.objection,
 			.name {
@@ -290,6 +306,13 @@ body {
 			.exit-user {
 				color: rgba(0,0,0,.2);
 				font-size: 5vw;
+			}
+			.next {
+				position: absolute;
+				display: inline-block;
+				right: 0;
+				margin: 0 10px;
+				height: 30px;
 			}
 			a {
 				position: absolute;
@@ -468,24 +491,66 @@ body {
 		line-height: 5vw;
 	}
 }
+.addTime {
+	position: absolute;
+	bottom: 70px;
+	right: 10px;
+	text-align: center;
+	height: 60px;
+	width: 280px;
+	z-index: 2000;
+	.time {
+		position: absolute;
+		right: 10px;
+		top: 0;
+		line-height: 60px;
+		height: 60px; width: 60px;
+		font-size: 30px;
+		border-radius: 50%;
+		color: white; background-color: rgb(var(--custcolor));
+		box-shadow: 0 0 1.5rem rgba(0,0,0,.30);
+	}
+	#add10s {left: 0px;}
+	#add20s {left: 70px;}
+	#add30s {left: 140px;}
+	#add10s, #add20s, #add30s {
+		display: none;
+		position: absolute;
+		top: 5px;
+		line-height: 50px;
+		height: 50px; width: 50px;
+		border-radius: 50%;
+		color: white; background-color: rgb(var(--custcolor));
+		box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.30);
+		a {
+			position: absolute;;
+			height: 100%; width: 100%;
+			left: 0; top: 0;
+		}
+	}
+}
 #menu {
 	.link {
-		i {
-			padding-right: 4vw;
-			padding-left: 4vw;
-			color: rgb(var(--custcolor));
+		padding: 5px 50px;
+		width: calc(100% - 100px) !important;
+		top: calc(25% - 40px);
+		line-height: 30px;
+		color: #0e0e0e; font-weight: 100;
+		font-size: 15px; text-align: left !important;
+		border-bottom: none !important;
+		.icon {
+			display: inline-block;
+			position: absolute;
+			left: 0;
+			height: 30px;
+			margin: 0 10px;
 		}
-		top: calc(25% - 10vw);
-		height: 10vw;
-		line-height: 10vw; font-size: 5vw;
-		text-align: left !important;
-		color: #0e0e0e;
-		font-weight: 100;
-		border-color: transparent !important;
-		i.next {
-			float: right;
-			line-height: 10vw;
-			font-size: 4vw;
+		.next {
+			position: absolute;
+			display: inline-block;
+			right: 0;
+			margin: 0 10px;
+			height: 30px;
 		}
 		a{
 			position: absolute;
@@ -496,7 +561,7 @@ body {
 	.link.end-pitch {
 		position: absolute;
 		top: auto;
-		bottom: 10vw;
+		bottom: 40px;
 	}
 	.link.end {
 		position: absolute;
@@ -927,6 +992,12 @@ body {
 		text-align: center;
 		line-height: 50px;
 	}
+	.bottom.big {
+		height: 135px;
+		.btn:last-child {
+			margin-top: 1vh;
+		}
+	}
 	.bottom {
 		position: fixed;
 		bottom: 0;
@@ -1034,16 +1105,6 @@ body {
 	background-color: white;
 	border-radius: 15px;
 	color: black;
-	.close {
-		position: absolute;
-		right: 0;
-		top: 0;
-		line-height: 30px;
-		text-align: center;
-		width: 30px;
-		font-size: 20px;
-		color: rgba(0, 0, 0, .5);
-	}
 	h1 {
 		text-align: center;
 	}
@@ -1055,6 +1116,25 @@ body {
 .shake {
 	animation: shake 1s cubic-bezier(.36,.07,.19,.97) both infinite;
   transform: translate3d(0, 0, 0);
+}
+
+.svg-icons {
+	display: none;
+}
+#slidesIcon,
+#usersIcon,
+#statsIcon,
+#endPitchIcon,
+#nextIcon,
+#endTurnIcon,
+#addIcon {
+	.st2{fill:none;stroke: rgb(var(--custcolor));stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st5{fill:none;stroke:rgb(var(--custcolor));stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st6{fill: rgb(var(--custcolor));}
+	.st7{fill: rgb(var(--btncolor))}
+	.st9{fill:none;stroke:rgb(var(--custcolor));stroke-width:9;stroke-linecap:round;stroke-miterlimit:10;}
+	.st43{fill:none;stroke:rgb(var(--custcolor));stroke-width:2;stroke-linecap:round;stroke-miterlimit:10;}
+	.st44{fill:none;stroke:white;stroke-width:7;stroke-linecap:round;stroke-miterlimit:10;}
 }
 @keyframes shake {
 	10%, 90% {

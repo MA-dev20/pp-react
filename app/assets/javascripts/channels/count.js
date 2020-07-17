@@ -67,6 +67,17 @@ jQuery(document).ready(function() {
 				  $('#content').prepend(userDiv);
 				  startObjectionTimer();
 			  }
+				if ( data["addTime"] == true ) {
+					if(data["time"] == 10) {
+							MyApp.timer.add10();
+					}
+					if(data["time"] == 20) {
+							MyApp.timer.add20();
+					}
+					if(data["time"] == 30) {
+							MyApp.timer.add30();
+					}
+				}
 			  if (data['comment'] == true) {
 				  var userDiv;
 				  if(data['comment_user_avatar']) {
