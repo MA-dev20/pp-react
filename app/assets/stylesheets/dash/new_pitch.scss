@@ -1823,6 +1823,12 @@ input[type="file"] {
 // Loading Part
 
 #content {
+    .popup {
+        .close {
+            top: 1vh;
+        }
+    }
+    
     #loaderModal {
         .modal-content {
             background: transparent;

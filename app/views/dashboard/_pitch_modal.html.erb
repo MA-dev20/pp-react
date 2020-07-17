@@ -57,13 +57,13 @@
                     </div>
                 </div>
                 <div class="popup" id="popupImage">
+					<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
                     <div class="img-container">
                         <%= image_tag '', id: 'pitch_media_image' %>
                     </div>
                     <div class="center">
                         <div class="btn btn-green" id="cropImage">speichern</div>
                     </div>
-                    <div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
                 </div>
 
                 <!-- <div class="hr-line"></div> -->
@@ -116,19 +116,19 @@
         }
     }
     
-    var imageDropZone = $('.pitch-image-drop-zone')
-	imageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+    var pitchImageDropZone = $('.pitch-image-drop-zone')
+	pitchImageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 	})
-	imageDropZone.on('dragover dragenter', function () {
+	pitchImageDropZone.on('dragover dragenter', function () {
 		$(this).addClass('is-dragover');
 	})
-	imageDropZone.on('dragleave dragend drop', function () {
+	pitchImageDropZone.on('dragleave dragend drop', function () {
 		$(this).removeClass('is-dragover');
     })
     
-    imageDropZone.on('drop', function (e) {
+    pitchImageDropZone.on('drop', function (e) {
 		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {		
             handlePitchImageUpload(e);
 		}

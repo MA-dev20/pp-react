@@ -237,13 +237,14 @@
 				<% end %>
 			</div>
 			<div class="popup" id="popup">
+				<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+
 				<div class="img-container">
 					<%= image_tag '', id: 'media_image' %>
 				</div>
 				<div class="center">
 					<div class="btn btn-green" id="crop">speichern</div>
 				</div>
-				<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
 			</div>
 
 			<div class="video media-option">

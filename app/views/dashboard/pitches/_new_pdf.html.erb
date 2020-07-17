@@ -17,7 +17,7 @@
 		<div class="dropzone-container pdf-image-drop-zone">
 			<label class="dropzone-text">Drag and Drop file from your Computer</label>
 			<div class="label-btn">
-				<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
+				<%= t.file_field :image, class: 'pdf-image-fileinput', id: 'pdf_task_medium_image', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
 				<label class="btn reversed upload" id="pdf_image_upload_btn">Upload from Computer</label>
 				<label class="btn reversed upload image-library" id="">Image library</label>
@@ -30,7 +30,7 @@
 	<div class="dropzone-container pdf-image-drop-zone">
 		<label class="dropzone-text">Drag and Drop file from your Computer</label>
 		<div class="label-btn">
-			<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
+			<%= t.file_field :image, class: 'pdf-image-fileinput', id: 'pdf_task_medium_image', accept: 'image/*' %>
 			<%= t.hidden_field :media_type, value: 'image' %>
 			<label class="btn reversed upload" id="pdf_image_upload_btn">Upload from Computer</label>
 			<label class="btn reversed upload image-library" id="">Image library</label>
@@ -39,21 +39,21 @@
 <% end %>
 <% end %>
 </div>
-<div class="popup" id="popupImage">
+<div class="popup" id="popupPdfImage">
+	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
 	<div class="img-container">
-		<%= image_tag '', id: 'media_image' %>
+		<%= image_tag '', id: 'pdf_media_image' %>
 	</div>
 	<div class="center">
-		<div class="btn btn-green" id="cropImage">speichern</div>
+		<div class="btn btn-green" id="cropPdfImage">speichern</div>
 	</div>
-	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
 </div>
 <script>
 
 	// Image upload and drag, drop
 
 	$('#pdf_image_upload_btn').on('click', function (e) {		
-		$('#task_medium_image').click();
+		$('#pdf_task_medium_image').click();
 	})
 
 	var pdfImageDropZone = $('.pdf-image-drop-zone')
@@ -78,19 +78,19 @@
 	});
 
 	function handlePdfImageUpload(e) {
-		let file_input = $(e.currentTarget).find('.image-fileinput');
+		let file_input = $(e.currentTarget).find('.pdf-image-fileinput');
 		file_input[0].files = e.originalEvent.dataTransfer.files;
 		let file_name = $(file_input).val().split('\\').pop();
 		let file_data = $(file_input)[0].files[0];
 		let mimeType = file_data['type'];
 		if (mimeType.split('/')[0] === 'image') {
 			let url_object = URL.createObjectURL(file_data);
-			var image = document.getElementById('media_image');
+			var image = document.getElementById('pdf_media_image');
 			var files = file_input[0].files;
 			var done = function (url) {
 				pdfInputAvatar.value = '';
 				image.src = url;
-				$('#popupImage').show();
+				$('#popupPdfImage').show();
 			};
 			var reader, file, url;
 			if (files && files.length > 0) {
@@ -111,10 +111,10 @@
 
 	// Show Crop image Popup
 	function showPopup() {
-		$('#popupImage').show();
+		$('#popupPdfImage').show();
 	}
 	function hidePopup() {
-		$('#popupImage').hide();
+		$('#popupPdfImage').hide();
 	}
 	(function ($) {
 		$.each(['show', 'hide'], function (i, ev) {
@@ -126,14 +126,14 @@
 		});
 	})(jQuery);
 
-	var pdfInputAvatar = document.getElementById('task_medium_image');
-	var pdfImage = document.getElementById('media_image');
+	var pdfInputAvatar = document.getElementById('pdf_task_medium_image');
+	var pdfImage = document.getElementById('pdf_media_image');
 	pdfInputAvatar.addEventListener('change', function (e) {
 		var files = e.target.files;
 		var done = function (url) {
 			pdfInputAvatar.value = '';
 			pdfImage.src = url;
-			$('#popupImage').show();
+			$('#popupPdfImage').show();
 		};
 		var reader, file, url;
 		if (files && files.length > 0) {
@@ -149,19 +149,19 @@
 			}
 		}
 	})
-	$('#popupImage').on('show', function () {
+	$('#popupPdfImage').on('show', function () {
 		if (!cropper) {
 			cropper = new Cropper(pdfImage, {
 				aspectRatio: 1.77,
 			});
 		}
 	})
-	$('#popupImage').on('hide', function () {
+	$('#popupPdfImage').on('hide', function () {
 		// cropper.destroy();
 		cropper = null;
 	})
 
-	$('#cropImage').on('click', function () {
+	$('#cropPdfImage').on('click', function () {
 		var initialURL, canvas;
 		if (cropper) {
 			canvas = cropper.getCroppedCanvas({
@@ -175,7 +175,7 @@
 				var formData = new FormData();
 				formData.append("task_medium[media_type]", 'image');
 				formData.append("task_medium[image]", file);
-				$('#popupImage').hide();
+				$('#popupPdfImage').hide();
 				sendPdfMedia(formData);
 			});
 		};
