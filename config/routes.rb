@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
 
   put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
-  post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'  
+  post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'
 
   get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
   get 'pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order', to: 'pitches#set_task_order'
@@ -99,6 +99,7 @@ Rails.application.routes.draw do
   get 'mobile/games/turns/:turn_id/logout', to: 'game_mobile#logout', as: 'gm_logout'
   get 'mobile/games/turns/:turn_id/task/:task_id', to: 'game_mobile#set_task_user', as: 'gm_set_task_user'
 
+  get 'mobile/game/addTime', to: 'game_mobile#add_time', as: 'gm_add_time'
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   put 'mobile/game/set_timer', to: 'game_mobile#set_timer', as: 'gm_set_timer'
@@ -124,7 +125,7 @@ Rails.application.routes.draw do
   post 'games/:game_id/customize', to: 'games#customize', as: 'customize_game'
   post 'games/:game_id/email', to: 'games#email', as: 'email_game'
   post 'games/:game_id/users/:user_id/name', to: 'games#name', as: 'name_game'
-  post 'games/:game_id/turns/:user_id/new', to: 'games#create_turn', as: 'new_turn'
+  post 'games/:game_id/users/:user_id/new', to: 'games#create_game_user', as: 'new_game_user'
   post 'games/turns/:turn_id/ratings/new', to: 'games#create_rating', as: 'new_rating'
   post 'games/turns/:turn_id/record_pitch', to: 'games#record_pitch', as: 'turn_record'
   post 'games/turns/:turn_id/upload_pitch', to: 'games#upload_pitch', as: 'upload_pitch'

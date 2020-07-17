@@ -30,6 +30,7 @@ class GameMobileController < ApplicationController
 	@turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
 	@turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	@task = @pitch.task_orders.find_by(order: @game.current_task).task if @game.current_task != 0 && !@game.current_task.nil?
+  @turn = @game.game_turns.find_by(task: @task) if !@turn
 	render @state
   end
 
@@ -128,7 +129,8 @@ class GameMobileController < ApplicationController
   end
 
   def repeat_turn
-	@turn = GameTurn.find(@game.current_turn)
+	@turn = @game.game_turns.find_by(id: @game.current_turn) if @game.current_turn
+  @turn = @game.game_turns.find_by(task_id: @game.current_task) if !@turn
     @game.game_turns.where(task: @turn.task, user: @turn.user).each do |t|
         t.update(played: true, play: false, repeat: true)
     end
@@ -137,18 +139,17 @@ class GameMobileController < ApplicationController
   end
 
   def delete_turn
-	@turn = GameTurn.find(params[:turn_id])
-  @user = @turn.user
+  @game_user = @game.game_users.find_by(id: params[:turn_id])
+  @user = @game_user.user
   @turns = @game.game_turns.where(user: @user)
   @turns.each do |t|
-    if t.played || t.id == @game.current_turn
-      t.update(repeat: true)
-    else
+    if !t.played
       t.destroy
     end
   end
+  @game_user.destroy
   if @game.state == 'wait'
-    ActionCable.server.broadcast "count_#{@game.id}_channel", remove: true, count: @game.game_turns.where(play: true).count, user_id: @user.id, state: @game.state
+    ActionCable.server.broadcast "count_#{@game.id}_channel", remove: true, count: @game.game_users.where(play: true).count, user_id: @user.id, state: @game.state
   end
 	redirect_to gm_game_path
   end
@@ -158,11 +159,7 @@ class GameMobileController < ApplicationController
     @task = @turn.task
     @order = @pitch.task_orders.find_by(task_id: @task.id)
     if @turn != @game.current_turn
-      if @turn.repeat
-        @turn.destroy
-      else
-        @turn.update(task: nil)
-      end
+      @turn.destroy if !@turn.played
       render json: {order: @order.order, task: @task.id}
     else
       flash[:alert] = 'Bitte warte bis der aktuelle Pitch beendet ist!'
@@ -171,30 +168,14 @@ class GameMobileController < ApplicationController
   end
   def set_task_user
     @task = @pitch.tasks.find(params[:task_id])
-    @turn = GameTurn.find_by(id: params[:turn_id])
-    if @game.game_turns.where(task: @task, user: @turn.user, play: true, played: false).count == 0
-      @turns = @game.game_turns.where(task: @task, play: true, played: false)
-      @turns.each do |t|
-        if t.repeat
-          t.destroy
-        else
-          t.update(task: nil)
-        end
-      end
-      if @turn.task
-        @new_turn = @game.game_turns.create(user: @turn.user, team: @turn.team, task: @task, play: true, played: false, repeat: true)
-        if @game.current_task == @pitch.task_orders.find_by(task: @task).order
-          @game.update(current_turn: @new_turn.id, state: 'turn')
-        end
-      elsif !@turn.task
-        @turn.update(task: @task)
-        if @game.current_task == @pitch.task_orders.find_by(task: @task).order
-          @game.update(current_turn: @turn.id, state: 'turn')
-        end
-      end
-    else
-      @turn = @game.game_turns.where(task: @task, user: @turn.user, play: true, played: false).first
-      @game.update(current_turn: @turn.id, state: 'turn') if @game.current_task == @pitch.task_orders.find_by(task: @task).order
+    @user = User.find_by(id: params[:turn_id])
+    @turns = @game.game_turns.where(task: @task, played: false)
+    @turns.each do |t|
+      t.destroy
+    end
+    @turn = @game.game_turns.create(user: @user, team: @game.team, task: @task, play: true, played: false)
+    if @game.current_task == @pitch.task_orders.find_by(task: @task).order
+        @game.update(current_turn: @turn.id, state: 'turn')
     end
     if params[:show_task]
       redirect_to gm_game_path
@@ -207,7 +188,7 @@ class GameMobileController < ApplicationController
 
   def set_slide
 	@task_order = @pitch.task_orders.find_by(order: params[:slide])
-	if @task_order
+	if @task_order && @game.current_task != params[:slide]
 	  @game.update(current_task: params[:slide])
 	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
 		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
@@ -234,107 +215,68 @@ class GameMobileController < ApplicationController
 	    redirect_to gm_game_path
     elsif params[:state] == 'show_task'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      @turn = GameTurn.find_by(id: @game.current_turn)
-      if @turn && !@turn.played && @turn.play
+      @turn = @game.game_turns.where(task: @task, played: false).first
+      if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
 		    redirect_to gm_set_state_path(state: 'turn')
 		    return
-      elsif @game.game_turns.find_by(task: @task, played: false)
-        redirect_to gm_set_state_path(state: 'turn')
-  		  return
+      elsif @game.state != 'show_task'
+		    @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
+        @users = @game_users.where(turn_count: @game_users.first.turn_count).all
+        if @users.count == 1 && @game_users.count >= 2
+          @users = @game_users.first(2)
+        elsif @users.count == 1
+          redirect_to gm_set_state_path(state: 'turn')
+          return
+        else
+          @users = @users.sample(2)
+        end
+        @turn1 = @game.game_turns.where(user: @users.first.user, task: @task, played: false).first
+        @turn2 = @game.game_turns.where(user: @users.second.user, task: @task, played: false).first
+        @turn1 = @game.game_turns.create(user: @users.first.user, task: @task, team: @game.team, played: false) if !@turn1
+        @turn2 = @game.game_turns.create(user: @users.second.user, task: @task, team: @game.team, played: false) if !@turn2
+        @game.update(state: "show_task", turn1: @turn1.id, turn2: @turn2.id, current_turn: nil) if @game.state != 'show_task'
+        redirect_to gm_game_path
+        return
       else
-		    @turns = @game.game_turns.playable.where(task_id: nil).all
-		    if @turns.count == 0
-		      @turns = @game.game_turns.where(play: true, repeat: false)
-		      @turns.each do |t|
-			      @turn = GameTurn.create(game: @game, user: t.user, team: t.team, play: true, played: false)
-			      t.update(play: false, repeat: true)
-		      end
-          @turns = @game.game_turns.playable.where(task_id: nil).all
-          if @turns.count == 1
-            redirect_to gm_set_state_path(state: 'turn')
-  		      return
-          else
-            @turns = @game.game_turns.playable.sample(2)
-  	        @task = @pitch.task_orders.find_by(order: @game.current_task)
-            @game.update(state: "show_task", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'show_task'
-  		      redirect_to gm_game_path
-  	        return
-          end
-		    elsif @turns.count == 1
-		      redirect_to gm_set_state_path(state: 'turn')
-		      return
-		    else
-          @turns = @game.game_turns.playable.sample(2)
-	        @task = @pitch.task_orders.find_by(order: @game.current_task)
-          @game.update(state: "show_task", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'choose'
-		      redirect_to gm_game_path
-	        return
-	      end
+        redirect_to gm_game_path
+        return
 	    end
     elsif params[:state] == 'choose'
-      @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      @turn = GameTurn.find_by(id: @game.current_turn)
-	    if @turn && !@turn.played && @turn.play
-		    redirect_to gm_set_state_path(state: 'turn')
-		    return
-      elsif @game.game_turns.find_by(task: @task, played: false)
-        redirect_to gm_set_state_path(state: 'turn')
-  		  return
-      else
-		    @turns = @game.game_turns.playable.where(task_id: nil).all
-		    if @turns.count == 0
-		      @turns = @game.game_turns.where(play: true, repeat: false)
-		      @turns.each do |t|
-			      @turn = GameTurn.create(game: @game, user: t.user, team: t.team, play: true, played: false)
-			      t.update(played: false, play: false, repeat: true)
-		      end
-          @turns = @game.game_turns.playable.where(task_id: nil).all
-          if @turns.count == 1
-            redirect_to gm_set_state_path(state: 'turn')
-  		      return
-          else
-            @turns = @game.game_turns.playable.sample(2)
-  	        @task = @pitch.task_orders.find_by(order: @game.current_task)
-            @game.update(state: "choose", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'choose'
-  		      redirect_to gm_game_path
-  	        return
-          end
-		    elsif @turns.count == 1
-		      redirect_to gm_set_state_path(state: 'turn')
-		      return
-		    else
-          @turns = @game.game_turns.playable.sample(2)
-	        @task = @pitch.task_orders.find_by(order: @game.current_task)
-          @game.update(state: "choose", turn1: @turns.first.id, turn2: @turns.last.id, current_turn: nil) if @game.state != 'choose'
-		      redirect_to gm_game_path
-	        return
-	      end
-	    end
+      @game.update(state: 'choose') if @game.state != 'choose'
+      redirect_to gm_game_path
+	    return
     elsif params[:state] == 'turn'
-      @turns = @game.game_turns.playable.where(task_id: nil).all
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      @turn = @game.game_turns.where(task: @task, play: true, played: false).first
-	    @turn = GameTurn.find_by(id: @game.current_turn) if !@turn
-	    if @turn && !@turn.played && @turn.play && @game.state != 'turn'
-        @cur_turn = @turn
-	    elsif @game.state != 'turn' && (@pitch.skip_elections || @turns.count == 1)
-		    @cur_turn = @turns.first
-      elsif @game.state == 'choose' || @game.state == 'show_task'
-		    @turn1 = GameTurn.find_by(id: @game.turn1)
-		    @turn2 = GameTurn.find_by(id: @game.turn2)
-		    if @turn1.counter > @turn2.counter
-			    @cur_turn = @turn1
-		    else
-          @cur_turn = @turn2
-		    end
-	    end
-      if @cur_turn && @game.state != 'turn'
-        if @cur_turn.task
-          @new_turn = @game.game_turns.create(user: @cur_turn.user, team: @cur_turn.team, task: @task, play: true, played: false, repeat: true)
-          @game.update(state: 'turn', current_turn: @new_turn.id)
+      if @game.turn1 && @game.turn2
+        @turn1 = GameTurn.find_by(id: @game.turn1)
+        @turn2 = GameTurn.find_by(id: @game.turn2)
+        if @turn1.counter > @turn2.counter
+			    @turn = @turn1
+          @turn2.destroy
+		    elsif  @turn1.counter < @turn2.counter
+          @turn = @turn2
+          @turn1.destroy
         else
-          @cur_turn.update(task: @task)
-          @game.update(state: 'turn', current_turn: @cur_turn.id)
+          @user1 = @game.game_users.find_by(user: @turn1.user)
+          @user2 = @game.game_users.find_by(user: @turn2.user)
+          if @user1.turn_count < @user2.turn_count
+            @turn = @turn1
+            @turn2.destroy
+          else
+            @turn = @turn2
+            @turn1.destroy
+          end
+		    end
+        @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
+      else
+        @turn = @game.game_turns.where(task: @task, played: false).last
+        if @turn
+          @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+        else
+          @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
+          @user = @game_users.where(turn_count: @game_users.first.turn_count).sample
+          @turn = @game.game_turns.create(user: @user.user, team: @game.team, played: false)
+          @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
         end
       end
       redirect_to gm_game_path
@@ -348,85 +290,90 @@ class GameMobileController < ApplicationController
       redirect_to gm_game_path
 	    return
     elsif params[:state] == 'feedback'
+      @turn = @game.game_turns.find_by(id: @game.current_turn)
+      @game_user = @game.game_users.find_by(user: @turn.user)
+      @turn.update(ges_rating: nil, played: true)
+      @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gm_game_path
     elsif params[:state] == 'rate'
-	    @turn = GameTurn.find_by(id: @game.current_turn)
+      @turn = @game.game_turns.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
         @task = @pitch.task_orders.find_by(order: @game.current_task).task if !@task
-        if @task.rating1 || @task.rating2 || @task.rating3 || @task.rating4
-          if @task.rating1 == '' && @task.rating2 == '' && @task.rating3 == '' && @task.rating4 == ''
-            @turn.update(ges_rating: nil, played: true)
-  		      redirect_to gm_set_state_path(state: 'feedback')
-  		      return
-          elsif @game.state != 'rate'
-            @game.update(state: 'rate')
-          end
+        if ( @task.rating1 && @task.rating1 != '' ) || ( @task.rating2 && @task.rating2 != '' ) || ( @task.rating3 && @task.rating3 != '' ) || ( @task.rating4 && @task.rating4 != '' )
+          @turn = @game.game_turns.find_by(id: @game.current_turn)
+          @game_user = @game.game_users.find_by(user: @turn.user)
+          @turn.update(played: true)
+          @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
+          @game.update(state: 'rate')
         else
-          @turn.update(ges_rating: nil, played: true)
 		      redirect_to gm_set_state_path(state: 'feedback')
 		      return
         end
 		    redirect_to gm_game_path
 	      return
 	    else
-		    redirect_to gm_game_path
+		    redirect_to gm_set_slide_path(@game.current_task + 1)
 		    return
 	    end
     elsif params[:state] == 'rating'
       @turn = GameTurn.find_by(id: @game.current_turn)
       if @turn
-        @turns = @game.game_turns.where(user_id: @turn.user_id)
-        if @turns.count != 1 && @turns.find_by(ges_rating: @turns.maximum("ges_rating")) != @turn
-          @bestturn = @turns.find_by(ges_rating: @turns.maximum("ges_rating"))
-          @bestturn.update(play: true)
-          @turn.update(play: false, played: true)
-        end
         if @turn.game_turn_ratings.count == 0
-          @turn.update(ges_rating: nil, played: true)
-          redirect_to gm_set_slide_path(@game.current_task + 1)
-          return
-        elsif @pitch.show_ratings == 'none'
-          @turn.update(played: true)
-          redirect_to gm_set_slide_path(@game.current_task + 1)
-          return
-        elsif @pitch.show_ratings == 'one' && @turn_ratings.count == 0
-          @turn.update(played: true)
-          redirect_to gm_set_slide_path(@game.current_task + 1)
-          return
-        elsif  @game.state != 'rating'
-          @user = @turn.user
-          @turn.game_turn_ratings.each do |tr|
-            @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
-            new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating).round
-            if @rating
-              old_rating = @rating.rating
-              @rating.update(rating: new_rating, change: new_rating - old_rating)
+          redirect_to gm_set_state_path(state: 'feedback')
+		      return
+        else
+          @turns = @game.game_turns.where(user: @turn.user)
+          @game_user = @game.game_users.find_by(user: @turn.user)
+          if @turns.count > 0 && @turns.find_by(ges_rating: @turns.maximum("ges_rating"))
+            if @turns.maximum("ges_rating") != nil
+              @game_user.update(best_rating: @turns.maximum("ges_rating"))
             else
-              @user.user_ratings.create(rating_criterium: tr.rating_criterium, rating: new_rating, change: new_rating)
+              @game_user.update(best_rating: 0)
             end
           end
-          new_rating = @user.user_ratings.average(:rating).round
-          old_rating = @user.ges_rating
-          @user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
-          @turn.update(played: true)
-          @game.update(state: 'rating')
+          if @pitch.show_ratings == 'none'
+            redirect_to gm_set_state_path(state: 'feedback')
+  		      return
+          elsif @pitch.show_ratings == 'one' && @turn_ratings.count == 0
+            @turn.update(played: true)
+            redirect_to gm_set_slide_path(@game.current_task + 1)
+            return
+          elsif  @game.state != 'rating'
+            @user = @turn.user
+            @turn.game_turn_ratings.each do |tr|
+              @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
+              new_rating = @user.game_turn_ratings.where(rating_criterium: tr.rating_criterium).average(:rating).round
+              if @rating
+                old_rating = @rating.rating
+                @rating.update(rating: new_rating, change: new_rating - old_rating)
+              else
+                @user.user_ratings.create(rating_criterium: tr.rating_criterium, rating: new_rating, change: new_rating)
+              end
+            end
+            new_rating = @user.user_ratings.average(:rating).round
+            old_rating = @user.ges_rating
+            @user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
+            @turn.update(played: true)
+            @game.update(state: 'rating')
+          end
         end
       end
       redirect_to gm_game_path
       return
     elsif params[:state] == 'bestlist'
       if @game.state != 'bestlist'
-        @game.game_turns.playable.each do |gt|
+        @game.game_turns.where(played: false).each do |gt|
           gt.update(ges_rating: nil)
         end
-        @turns = @game.game_turns.where(play: true).all
-        @turns = @turns.where.not(ges_rating: nil).order(ges_rating: :desc)
+        @users = @game.game_users.where(play: true).order(best_rating: :desc).all
         place = 1
-        @turns.each do |t|
-          t.update(place: place)
-          place += 1
+        @users.each do |t|
+          if t.best_rating && t.best_rating != 0
+            t.update(place: place)
+            place += 1
+          end
         end
         @game.update(state: 'bestlist', active: false)
       end
@@ -434,7 +381,7 @@ class GameMobileController < ApplicationController
       return
     elsif params[:state] == 'repeat'
       if @game.state != 'repeat' && @game.state != 'wait'
-        @game.update(state: 'repeat')
+        @game.update(state: 'repeat', active: false)
 		    game_old = @game
 		    temp = Game.where(password: @game.password, state: 'wait', active: true).first
 		    temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
@@ -442,7 +389,7 @@ class GameMobileController < ApplicationController
 	    redirect_to gm_game_path
 	    return
     elsif params[:state] == 'ended'
-	    @game.update(state: 'ended') if @game.state != "ended"
+	    @game.update(state: 'ended', active: false) if @game.state != "ended"
 	    redirect_to gm_game_path
 	    return
 	  end
@@ -455,6 +402,12 @@ class GameMobileController < ApplicationController
 	else
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: params[:objection], objection_sound: ""
 	end
+  end
+
+  def add_time
+    @time = params[:time]
+    ActionCable.server.broadcast "count_#{@game.id}_channel", addTime: true, time: @time
+    redirect_to gm_game_path
   end
 
   private
@@ -473,7 +426,7 @@ class GameMobileController < ApplicationController
 		@game = current_game
 		if game_user_logged_in? && @state != 'repeat'
 		  @admin = current_game_user
-		  if @game.game_turns.where(user: @admin, repeat: false).count == 0
+		  if !@game.game_users.find_by(user: @admin)
 			  game_logout
 	  	  game_user_logout
 		  	flash[:alert] = 'Du wurdest ausgeloggt!'

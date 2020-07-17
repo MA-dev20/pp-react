@@ -31,6 +31,12 @@
 	<div class="dot"></div>
 	<div class="dot"></div>
 </div>
+<div class="addTime">
+	<div id="add10s">+10s<%= link_to '', gm_add_time_path(time: 10) %></div>
+	<div id="add20s">+20s<%= link_to '', gm_add_time_path(time: 20) %></div>
+	<div id="add30s">+30s<%= link_to '', gm_add_time_path(time: 30) %></div>
+	<div class="time" onclick="showTime()"><i class="fas fa-stopwatch"></i></div>
+</div>
 <div class="bottom">
 	 <% if @turn.record_pitch && @admin.role != 'user' && @admin.role != 'inactive' && params[:pitch] == 'record' %>
 	 	<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
@@ -48,6 +54,11 @@
 	<% end %>
 </div>
 <script>
+	function showTime() {
+		$('#add10s').toggle();
+		$('#add20s').toggle();
+		$('#add30s').toggle();
+	}
 	function inputSend() {
 		if ($('#comment_text').val() == '') {
 		  $("#comment_submit").css({ opacity: .4 });

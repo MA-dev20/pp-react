@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2020_07_17_133924) do
 
   # These are extensions that must be enabled in order to support this database
@@ -148,6 +149,20 @@ ActiveRecord::Schema.define(version: 2020_07_17_133924) do
     t.index ["task_id"], name: "index_game_turns_on_task_id"
     t.index ["team_id"], name: "index_game_turns_on_team_id"
     t.index ["user_id"], name: "index_game_turns_on_user_id"
+  end
+
+  create_table "game_users", force: :cascade do |t|
+    t.bigint "game_id"
+    t.bigint "user_id"
+    t.integer "turn_count", default: 0
+    t.boolean "play", default: true
+    t.boolean "active", default: true
+    t.integer "best_rating", default: 0
+    t.integer "place"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_game_users_on_game_id"
+    t.index ["user_id"], name: "index_game_users_on_user_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -481,6 +496,8 @@ ActiveRecord::Schema.define(version: 2020_07_17_133924) do
   add_foreign_key "game_turns", "games"
   add_foreign_key "game_turns", "tasks"
   add_foreign_key "game_turns", "users"
+  add_foreign_key "game_users", "games"
+  add_foreign_key "game_users", "users"
   add_foreign_key "games", "companies"
   add_foreign_key "games", "pitches"
   add_foreign_key "games", "rating_lists"

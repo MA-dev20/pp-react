@@ -55,6 +55,8 @@
 <div class="comments" id="game_comments">
 </div>
 
+<div class="addTime" id='addTime'>
+</div>
 <svg class="background-img zoom-bg-img" preserveAspectRatio="none" viewBox="0 0 750 500" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <path opacity="0.5" d="M95.5 66.9L33.9 0H16.3L95.5 66.9ZM0 93.7V106.1L66.9 112.3L0 93.7ZM626.4 67.5L659.5 0H644.9L626.4 67.5ZM0 481.5V500H7.6L117.4 374.8L0 481.5ZM106.4 43.2L94.6 0H85.3L106.4 43.2ZM721.4 0L637.3 91.2L745.4 0H721.4ZM128.2 414.7L58.9 500H77.3L128.2 414.7ZM750 470.4L636.8 367.5L750 496.6V470.4ZM659.1 108.2L750 62.4V44.7L659.1 108.2ZM605.1 432.7L613.2 500H629.6L605.1 432.7ZM149.1 440L127.3 500H141.9L149.1 440ZM626 407.4L681.2 500H701.2L626 407.4Z" fill="rgb(var(--custcolor))"/>
 <rect x="20" y="148" width="65" height="61" fill="url(#pattern0)"/>
@@ -119,12 +121,13 @@
 	beginTimer();
 	MyApp.timer = startTimer(<%= @task.time %>, document.getElementById("game_timer"));
 	MyApp.timer.pause();
+
 	function beginTimer() {
 		var seconds = 4;
 		document.getElementById('countdown').play();
 		var beginTimer = setInterval(function() {
 			$('#begintimer').text(seconds);
-			if (seconds == 0) {
+			if (seconds <= 0) {
 				$('#timeroverlay').hide();
 				clearInterval(beginTimer);
 				<% if @catchword %>
@@ -227,7 +230,31 @@
 				}
 			}, 1000);
 		}
-		return {pause: pause , resume: resume }
+		var add10 = function() {
+			timer = timer + 10;
+			$('#addTime').text('+10s');
+			$('#addTime').fadeIn();
+			setTimeout(function() {
+				$('#addTime').fadeOut();
+			},1500);
+		}
+		var add20 = function() {
+			timer = timer + 20;
+			$('#addTime').text('+20s');
+			$('#addTime').fadeIn();
+			setTimeout(function() {
+				$('#addTime').fadeOut();
+			},1500);
+		}
+		var add30 = function() {
+			timer = timer + 30;
+			$('#addTime').text('+30s');
+			$('#addTime').fadeIn();
+			setTimeout(function() {
+				$('#addTime').fadeOut();
+			},1500);
+		}
+		return {pause: pause , resume: resume, add10: add10, add20: add20, add30: add30 }
 	};
 	function startObjectionTimer() {
 		if( $('.objection:first-child .text').text().length < 10 ) {

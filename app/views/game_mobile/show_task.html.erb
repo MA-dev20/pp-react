@@ -16,7 +16,7 @@
 	</div>
 </div>
 <div class="bottom">
-  <%= link_to 'Wähle User', gm_game_path(this_task: @game.current_task, show_task: true), class: 'btn' %>
+  <%= link_to 'Wähle User', gm_game_path(this_task: @pitch.task_orders.find_by(order: @game.current_task).task, show_task: true), class: 'btn' %>
 </div>
 <% else %>
 <div class="middle" id="task-middle">
