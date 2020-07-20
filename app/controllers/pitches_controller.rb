@@ -164,31 +164,6 @@ class PitchesController < ApplicationController
 	end
   end
 
-  def create_task_media_content
-	@pitch = Pitch.find(params[:pitch_id])
-	if params[:task_id].present?
-		@task = @pitch.tasks.find(params[:task_id])
-		if params[:task_medium_id].present?
-			@task.task_medium.update(media_params)
-		else
-			@task_medium = TaskMedium.create(media_params)
-			@task.update(task_medium: @task_medium)
-		end
-	else
-		@task_medium = TaskMedium.create(media_params)
-		pdf_type = params[:pdf_type] || 'image'
-		@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true, pdf_type: pdf_type)
-	end
-	# if params[:task_id].present?
-	# 	@task = Task.find(params[:task_id])
-	# 	@task.update(task_medium_id: @task_medium.id)
-	# 	@task.update(task_medium_id: @task_medium.id, task_type: media_params[:media_type])
-	# end
-	# if params[:type] == 'image'
-	# end
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
-  end
-
   def create_pitch_media
 	@pitch = Pitch.find(params[:id])
 	@pitch.update(pitch_params)
@@ -249,6 +224,43 @@ class PitchesController < ApplicationController
 	  end
       render json: {id: @task_medium.id, preview: @task_medium.pdf.url, type: @task_medium.media_type}
     end
+  end
+
+  def create_task_media_content
+	@pitch = Pitch.find(params[:pitch_id])
+	if params[:task_id].present?
+		@task = @pitch.tasks.find(params[:task_id])
+		if params[:task_medium_id].present?
+			@task.task_medium.update(media_params)
+		else
+			@task_medium = TaskMedium.create(media_params)
+			@task.update(task_medium: @task_medium)
+		end
+		if @task.pdf_type == 'video'
+			if params[:videoLink].present?
+				url = params[:videoLink]
+				if params[:videoLink].include?('youtube.com')
+					id = ''
+					url = url.gsub(/(>|<)/i,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
+					if url[2] != nil
+						id = url[2].split(/[^0-9a-z_\-]/i)
+						id = id[0];
+					else
+						id = url;
+					end
+					@task.task_medium.update(video_url_id: id, video_url_type: 'youtube', video_img: params[:videoLinkImage], video_title: params[:videoLinkTitle])
+				else
+					id = url.split('/').last
+					@task.task_medium.update(video_url_id: id, video_url_type: 'vimeo', video_img: params[:videoLinkImage], video_title: params[:videoLinkTitle])
+				end
+			end
+		end
+	else
+		@task_medium = TaskMedium.create(media_params)
+		pdf_type = params[:pdf_type] || 'image'
+		@task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true, pdf_type: pdf_type)
+	end
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 	
   def create_task_list

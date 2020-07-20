@@ -73,7 +73,7 @@
             <% end %>
         </div>
         <% else %>
-        <div class="task-title">
+        <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <div class="name"><%= t.order %>. Slide</div>
             <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
@@ -82,10 +82,13 @@
         <div class="task-subtitle task-name">
             <%= t.task.title %>
         </div>
-        <% if t.task.task_medium && (t.task.task_medium.image? || t.task.task_medium.video?) %>
+        <% if t.task.task_medium && (t.task.task_medium.image? || t.task.task_medium.video? || t.task.task_medium.video_url_id?) %>
             <div class="thumb slide">
                 <% if t.task.task_medium && t.task.task_medium.video? %>
                 <%= image_tag t.task.task_medium.video.thumb.url %>
+                <i class="fa fa-play-circle video-play-thumb"></i>
+                <% elsif t.task.task_medium.video_url_id? %>
+                <%= image_tag t.task.task_medium.video_img, class: 'image' %>
                 <i class="fa fa-play-circle video-play-thumb"></i>
                 <% elsif t.task.task_medium && t.task.task_medium.image? %>
                 <%= image_tag t.task.task_medium.image.url %>
