@@ -514,19 +514,6 @@
 					$('#add_video_form').submit();
 				}
 			});
-			// var jqxhr = $.getJSON(yt_snippet_endpoint)
-			// .done(function(data) {
-			// 	debugger
-			// 	console.log("second success callback");
-			// 	var title = data["items"][0]['snippet']['title'];
-			// 	var image = data["items"][0]['snippet']['thumbnails']["default"]["url"];
-			// 	$('#videoLinkTitle').val(title);
-			// 	$('#videoLinkImage').val(image);
-			// 	$('#add_video_form').submit();
-			// })
-			// .fail(function() {
-			// 	console.log("error, see network tab for response details");
-			// });
 		} else {
 			alert("not a valid youtube url");
 		}
@@ -1014,7 +1001,8 @@
 		}
 	})
 	$('#popup').on('hide', function () {
-		// cropper.destroy();
+		if (cropper)
+			cropper.destroy();
 		cropper = null;
 	})
 
