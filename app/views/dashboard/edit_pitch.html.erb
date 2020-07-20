@@ -486,13 +486,17 @@
 	})
 
 	$('.open-modal').click(function (e) {
-		// $('#new_pitch_form').show();
+		if (!$(`.${$(this).data("modal")}`).is(':visible'))
+			$('.audio-play-div').css('display', 'none');
+		else
+			$('.audio-play-div').show();
 		$('.remove-option').hide();
 		$('.sub-cs').hide();
 		$(`.${$(this).data("modal")}`).toggle();
 	})
 
 	$('.close').click(function () {
+		$('.audio-play-div').show();
 		$('.remove-option').show();
 		$('.modal').hide()
 	})
@@ -559,6 +563,7 @@
 	})
 
 	$('.pdf-audio').on('click', function () {
+		// $('.pdf-audio-play-div').show();
 		$('.option-modal').hide();
 		var globalForm = new FormData(document.getElementById('add_pdf_audio_form'));
 		sendMediaPdfContent(globalForm);

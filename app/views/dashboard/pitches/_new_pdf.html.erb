@@ -89,7 +89,7 @@
 			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 		</div>
 		<div class="preview audio-preview">
-		<div class="audio-play-div">
+		<div class="pdf-audio-play-div">
 			<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
 			<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
 			<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
