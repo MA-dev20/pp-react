@@ -4,14 +4,14 @@
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen', onchange: 'handleTitleChange(event)' %>
 </div>
 <% end %>
-<div class="slide-preview">
+<div class="slide-preview <%= (@task.task_medium && @task.task_medium.audio.url.present?) ? 'audio-slide-preview' : '' %>">
 <% if @task.pdf_type == 'image' %>
 	<% if @task.task_medium&.image&.url %>
-		<div class="remove-option">
+		<div class="remove-option image-remove-option">
 			<label><%= File.basename(@task.task_medium.image.url) %></label>
 			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 		</div>
-		<%= image_tag @task.task_medium.image.url %>
+		<%= image_tag @task.task_medium.image.url, class: 'pdf-image-tag' %>
 	<% else %>
 		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_image_form'} do |t| %>
 		<div class="dropzone-container pdf-image-drop-zone">
@@ -31,36 +31,89 @@
 			<label><%= File.basename(@task.task_medium.video.url) %></label>
 			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 		</div>
-		<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
+		<%= video_tag @task.task_medium.video.url, controls: true, class: 'pdf-video-tag' %>
 	<% else %>
-		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_video_content_form'} do |t| %>
-		<div class="dropzone-container pdf-video-drop-zone">
+		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_video_content_form', onkeydown: 'pdfVideoLinkClicked(this)'} do |t| %>
+		<div class="preview video-preview"
+			style="display: <%= (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) ? 'block' : 'none' %>">
+			<% if @task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?) %>
+				<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'remove' %>
+				<% if @task.task_medium.video_url_id.present? %>
+					<div class="remove-option video-remove-option">
+						<label><%= @task.task_medium.video_title %></label>
+						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+					</div>
+					<% if @task.task_medium.video_url_type == 'youtube' %>
+					<iframe class="video-frame" width="420" height="170" src="https://www.youtube.com/embed/<%= @task.task_medium.video_url_id %>"></iframe>
+					<% else %>
+					<iframe class="video-frame" width="420" height="170" src="https://player.vimeo.com/video/<%= @task.task_medium.video_url_id %>"></iframe>
+					<% end %>
+				<% elsif @task.task_medium.video.present? %>
+					<div class="remove-option video-remove-option">
+						<label><%= File.basename(@task.task_medium.video.url) %></label>
+						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+					</div>
+					<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
+				<% end %>
+			<% else %>
+				<video class="pdf-video-tag" src="" controls></video>
+			<% end %>
+		</div>
+		<div class="dropzone-container pdf-video-drop-zone" 
+		style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
 			<label class="dropzone-text">Drag and Drop file from your Computer</label>
 			<div class="label-btn">
-				<%= t.file_field :video, accept: 'video/*', class: 'video-field', id: 'pdf_task_medium_video' %>
+				<%= t.file_field :video, accept: 'video/*', class: 'pdf-video-field', id: 'pdf_task_medium_video' %>
 				<%= t.hidden_field :media_type, value: 'video' %>
 				<div class="btn-wrapper">
 					<label class="btn reversed upload" id="pdf_video_upload_btn">Upload from computer</label>
-					<div class="btn reversed upload open-modal record-video">Record</div>
+					<div class="btn reversed upload record-video record-pdf-video">Record</div>
 				</div>
 				<div class="video-form">
 					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
 					<div class="form-group">
-						<input type="text" class="form-field" name="videoLink" id="videoLink" placeholder="Youtube/Vimeo link" onkeypress="videoLinkClicked(event)">
-						<!-- <input type="hidden" name="videoLinkImage" id="videoLinkImage"> -->
-						<!-- <input type="hidden" name="videoLinkTitle" id="videoLinkTitle"> -->
+						<input type="text" class="form-field" name="videoLink" id="pdfVideoLink" placeholder="Youtube/Vimeo link" onkeypress="pdfVideoLinkClicked(event)">
+						<input type="hidden" name="videoLinkImage" id="pdfVideoLinkImage">
+						<input type="hidden" name="videoLinkTitle" id="pdfVideoLinkTitle">
 						<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add pdf-add-video-link' %>
 					</div>
 				</div>
 			</div>
 		</div>
 		<% end %>
-	<% end %>	
+	<% end %>
+<% elsif @task.pdf_type == 'audio' %>
+	<% if @task.task_medium&.audio&.url %>
+		<div class="remove-option image-remove-option">
+			<label><%= File.basename(@task.task_medium.audio.url) %></label>
+			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+		</div>
+		<div class="preview audio-preview">
+		<div class="pdf-audio-play-div">
+			<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playPdfAudio()' %>
+			<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playPdfAudio()"></i>
+			<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pausePdfAudio()"></i>
+		</div>
+		<%= audio_tag @task.task_medium.audio.url, id: 'pdf-task-audio', class: 'audio-tag', onended: 'stopPdfAudio()' %>
+		</div>
+	<% else %>
+	<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_audio_content_form'} do |t| %>
+	<div class="dropzone-container pdf-audio-drop-zone">
+		<label class="dropzone-text">Drag and Drop file from your Computer</label>
+		<div class="label-btn">
+			<%= t.file_field :audio, accept: '.mp3,.wav', class: 'pdf-audio-field', id: 'pdf_task_medium_audio' %>
+			<%= t.hidden_field :media_type, value: 'audio' %>
+			<label class="btn reversed upload" id="pdf_audio_upload_btn">Upload from computer</label>
+			<div class="btn reversed record-audio">Record</div>
+		</div>
+	</div>
+	<% end %>
+	<% end %>
 <% end %>
 </div>
 
 <div class="popup" id="popupPdfImage">
-	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+	<div class="close" onclick="hidePdfPopup()"><i class="fas fa-times"></i></div>
 	<div class="img-container">
 		<%= image_tag '', id: 'pdf_media_image' %>
 	</div>
@@ -71,6 +124,107 @@
 
 
 <script>
+
+	// Audio upload and drag, drop
+
+	var pdfAudioDropZone = $('.pdf-audio-drop-zone')
+	pdfAudioDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	pdfAudioDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	pdfAudioDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	pdfAudioDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
+			handlePdfAudioUpload(e);
+		}
+	});
+
+	function handlePdfAudioUpload(e) {
+		let file_input = $(e.currentTarget).find('.pdf-audio-field');
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'audio') {
+			let url_object = URL.createObjectURL(file_data);
+			$('.pdf-audio-drop-zone').addClass('is-dragover');
+			$('#add_pdf_audio_content_form').submit();
+		}
+	}
+
+	$('#pdf_audio_upload_btn').on('click', function (e) {
+		$('#pdf_task_medium_audio').click();
+	})
+
+	$('#pdf_task_medium_audio').on('change', function () {
+		var globalForm = new FormData(document.getElementById('add_pdf_audio_content_form'));
+		sendPdfMedia(globalForm);		
+	})
+
+
+	var pdfAudioChunks;
+	var audioRecording = false;
+	$('.record-audio').on('click', function (e) {
+		if (audioRecording) {
+			$(e.target).text('Uploading...');
+			if (audio_rec.state === 'recording')
+				audio_rec.stop();
+			audioRecording = false;
+		} else {
+			navigator.mediaDevices.getUserMedia({ audio: true })
+				.then(stream => {
+					pdfAudioChunks = [];
+					audioRecording = true;
+					$(e.target).text('Recording...');
+					audio_rec = new MediaRecorder(stream);
+					audio_rec.ondataavailable = e => {
+						pdfAudioChunks.push(e.data);
+						if (audio_rec.state === "inactive") {
+							stream.getTracks().forEach(track => track.stop())
+							let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
+							audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+							var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							pdfAudioGlobalForm = new FormData();
+							pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
+							pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+							sendPdfMedia(pdfAudioGlobalForm);
+						}
+					}
+					audio_rec.start();
+				})
+				.catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+		}
+	})
+
+	function playPdfAudio() {
+		if ($('.pdf-audio-play-div .play-audio').hasClass('audio-play-circle')) {
+			document.getElementById('pdf-task-audio').play();
+			$('.pdf-audio-play-div .audio-play-circle').hide();
+			$('.pdf-audio-play-div .audio-pause-circle').show();
+		}
+	}
+
+	function pausePdfAudio() {
+		if ($('.pdf-audio-play-div .pause-audio').hasClass('audio-pause-circle')) {
+			document.getElementById('pdf-task-audio').pause();
+			$('.pdf-audio-play-div .audio-pause-circle').hide();
+			$('.pdf-audio-play-div .audio-play-circle').show();
+		} 
+	}
+
+	function stopPdfAudio() {
+		$('.pdf-audio-play-div .audio-play-circle').show();
+		$('.pdf-audio-play-div .audio-pause-circle').hide();
+	}
+
+	// End Audio upload and drag, drop
+
 
 	// Image upload and drag, drop
 
@@ -92,9 +246,6 @@
 
 	pdfImageDropZone.on('drop', function (e) {
 		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
-			// global_method = 'imageDragDrop'
-			// global_event = e;
-			// global_file = e.originalEvent.dataTransfer.files;
 			handlePdfImageUpload(e);
 		}
 	});
@@ -132,10 +283,10 @@
 
 
 	// Show Crop image Popup
-	function showPopup() {
+	function showPdfPopup() {
 		$('#popupPdfImage').show();
 	}
-	function hidePopup() {
+	function hidePdfPopup() {
 		$('#popupPdfImage').hide();
 	}
 	(function ($) {
@@ -172,21 +323,22 @@
 		}
 	})
 	$('#popupPdfImage').on('show', function () {
-		if (!cropper) {
-			cropper = new Cropper(pdfImage, {
+		if (!pdfCropper) {
+			pdfCropper = new Cropper(pdfImage, {
 				aspectRatio: 1.77,
 			});
 		}
 	})
 	$('#popupPdfImage').on('hide', function () {
-		// cropper.destroy();
-		cropper = null;
+		if (pdfCropper)
+			pdfCropper.destroy();
+		pdfCropper = null;
 	})
 
 	$('#cropPdfImage').on('click', function () {
 		var initialURL, canvas;
-		if (cropper) {
-			canvas = cropper.getCroppedCanvas({
+		if (pdfCropper) {
+			canvas = pdfCropper.getCroppedCanvas({
 				fillColor: "white",
 				width: 500,
 				height: 500,
@@ -202,9 +354,14 @@
 			});
 		};
 	})
+	// End Image upload and drag, drop
 
 
-	// Video upload
+	// Video upload and drag, drop
+
+	$('.record-pdf-video').on('click', function() {
+		$('#videoModal').show();
+	})
 
 	$('#pdf_video_upload_btn').on('click', function (e) {
 		$('#pdf_task_medium_video').click();
@@ -214,6 +371,192 @@
 		var globalForm = new FormData(document.getElementById('add_pdf_video_content_form'));
 		sendPdfMedia(globalForm);
 	})
+
+	var pdfVideoDropZone = $('.pdf-video-drop-zone')
+	pdfVideoDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	
+	pdfVideoDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+
+	pdfVideoDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	pdfVideoDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
+			handlePdfVideoUpload(e);
+		}
+	});
+
+	function handlePdfVideoUpload(e) {
+		let file_input = $(e.currentTarget).find('.pdf-video-field');
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'video') {
+			let url_object = URL.createObjectURL(file_data);
+			let $preview = $(e.currentTarget).siblings('.preview')
+			$preview.find('.pdf-video-tag')[0].src = url_object;
+			// let taskId = $(e.target).closest('.task-fields').attr('id');
+			// removeOtherMedia('video', taskId, false);
+			// $preview.find('.video-id').val('');
+			$preview.show();
+			$(e.currentTarget).hide();
+			$('#add_pdf_video_content_form').submit();
+		}
+	}
+
+
+	// Youtube/Vimeo video upload
+
+	function handlePdfVideoLinkClicked(e) {
+		if (e.target === undefined)
+			url = e;
+		else
+			url = $(e.target).val();
+		if (url.indexOf('youtube.com') !== -1)
+		{
+			processYoutubeVideo(url);
+		}
+		else if (url.indexOf('vimeo.com') !== -1)
+		{
+			processVimeoVideo(url);
+		}
+		else
+		{
+			alert("not a valid url");
+		}
+	}
+
+	function processPdfYoutubeVideo(url) {
+		var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+		var match = url.match(regExp);
+		match = (match&&match[7].length==11) ? match[7] : false;
+		if (match) {
+			var yt_api_key = "AIzaSyCu1Qe60bzpczIvPHzfEr2O_zUgIOcpspE";
+			var yt_video_id = match;
+			var yt_snippet_endpoint = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + yt_video_id + "&key=" + yt_api_key;
+			$('#loaderModal').show();
+			$.ajax({
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+
+					xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var percentComplete = evt.loaded / evt.total;
+						percentComplete = parseInt(percentComplete * 100);
+						console.log(percentComplete);
+						if (percentComplete === 100) {
+						}
+						percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+						$('.progress-ratio').text(percentComplete+'%')
+					}
+					}, false);
+					return xhr;
+				},
+				type:'GET',
+				url: yt_snippet_endpoint,
+				jsonp: 'callback',
+				dataType: 'jsonp',
+				success: function(data){
+					$('#loaderModal').hide();
+					var title = data["items"][0]['snippet']['title'];
+					var image = data["items"][0]['snippet']['thumbnails']["default"]["url"];
+					$('#pdfVideoLinkTitle').val(title);
+					$('#pdfVideoLinkImage').val(image);
+					$('#add_pdf_video_content_form').submit();
+				}
+			});
+		} else {
+			alert("not a valid youtube url");
+		}
+	}
+
+	function processPdfVimeoVideo(url) {
+		var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/;
+		var parseUrl = regExp.exec(url);
+		if (parseUrl){
+			$('#loaderModal').show();
+			$.ajax({
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+
+					xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var percentComplete = evt.loaded / evt.total;
+						percentComplete = parseInt(percentComplete * 100);
+						console.log(percentComplete);
+						if (percentComplete === 100) {
+						}
+						percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+						$('.progress-ratio').text(percentComplete+'%')
+					}
+					}, false);
+					return xhr;
+				},
+				type:'GET',
+				url: 'https://vimeo.com/api/v2/video/' + parseUrl[5]  + '.json',
+				jsonp: 'callback',
+				dataType: 'jsonp',
+				success: function(data){
+					$('#loaderModal').hide();
+					$('#pdfVideoLinkTitle').val(data[0].title);
+					$('#pdfVideoLinkImage').val(data[0].thumbnail_large);
+					$('#add_pdf_video_content_form').submit();					
+				}
+			});
+		}
+		else{
+			alert("not a valid vimeo url");
+		}
+	}
+
+	function pdfVideoLinkClicked(e) {
+		if(e.keyCode === 13) {
+			if ($(e.target).val()) {
+				url = $(e.target).val();
+				if (url.indexOf('youtube.com') !== -1)
+				{
+					processPdfYoutubeVideo(url);
+				}
+				else if (url.indexOf('vimeo.com') !== -1)
+				{
+					processPdfVimeoVideo(url);
+				}
+				else
+				{
+					alert("not a valid url");
+				}
+			}
+			e.preventDefault();
+			return false;
+		}
+	}
+
+	$('.pdf-add-video-link').on('click', function() {
+		if ($('#pdfVideoLink').val()) {
+			url = $('#pdfVideoLink').val();
+			if (url.indexOf('youtube.com') !== -1)
+			{
+				processPdfYoutubeVideo(url);
+			}
+			else if (url.indexOf('vimeo.com') !== -1)
+			{
+				processPdfVimeoVideo(url);
+			}
+			else
+			{
+				alert("not a valid url");
+			}
+		}
+	})
+
+	// End Video upload and drag, drop
 
 
 	// Upload Media

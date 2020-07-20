@@ -215,8 +215,9 @@
 		}
 	})
 	$('#popupImage').on('hide', function () {
-		pitchCropper.destroy();
-		// pitchCropper = null;
+		if (pitchCropper)
+			pitchCropper.destroy();
+		pitchCropper = null;
 	})
 
 	$('#cropImage').on('click', function () {

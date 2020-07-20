@@ -38,16 +38,19 @@
 			<%= t.hidden_field :media_type, value: 'pdf' %>
 			<% end %>
 			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_content_form"} do |t| %>
-				<%#= t.file_field :image, class: 'pdf-image-file-field', accept: 'image/*' %>
 				<input class="pdf-image-file-field" accept="image/*" type="file" name="task_medium[image]">
 				<%= t.hidden_field :media_type, value: 'image' %>
 				<input type="hidden" name="pdf_type" value="image">
 			<% end %>
 			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_video_form"} do |t| %>
-				<%#= t.file_field :video, class: 'pdf-video-file-field', accept: 'video/*' %>
 				<input class="pdf-video-file-field" accept="video/*" type="file" name="task_medium[video]">
 				<%= t.hidden_field :media_type, value: 'video' %>
 				<input type="hidden" name="pdf_type" value="video">
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_audio_form"} do |t| %>
+				<input class="pdf-video-file-field" accept="audio/*" type="file" name="task_medium[audio]">
+				<%= t.hidden_field :media_type, value: 'audio' %>
+				<input type="hidden" name="pdf_type" value="audio">
 			<% end %>
 			<div class="add-task">
 				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
@@ -186,7 +189,10 @@
 				var globalForm = new FormData();
 				globalForm.append('task_medium[video]', file);
 				globalForm.append('task_medium[media_type]', 'video');
-				sendMedia(globalForm);
+				if ($('.selected .slide-title').length)
+					sendPdfMedia(globalForm);
+				else
+					sendMedia(globalForm);
 			}
 		});
 		document.getElementById('stopVideo').addEventListener('click', function () {
@@ -204,7 +210,10 @@
 					var globalForm = new FormData();
 					globalForm.append('task_medium[video]', file);
 					globalForm.append('task_medium[media_type]', 'video');
-					sendMedia(globalForm);
+					if ($('.selected .slide-title').length)
+						sendPdfMedia(globalForm);
+					else
+						sendMedia(globalForm);
 				}
 			} else {
 				$('#videoModal').hide()
@@ -271,6 +280,7 @@
 	var cwListId = 0;
 	var cropper = null;
 	var pitchCropper = null;
+	var pdfCropper = null;
 	var selected_card_id = 0;
 	var xhr = null;
 	var nav_url = null;
@@ -312,6 +322,7 @@
 	// 		$('.warning-card-wrapper2').show();
 	// 	}
 	// })
+
 
 	$('.yes-btn').on('click', function() {
 		$('#pitchModal').hide();
@@ -475,13 +486,17 @@
 	})
 
 	$('.open-modal').click(function (e) {
-		// $('#new_pitch_form').show();
+		if (!$(`.${$(this).data("modal")}`).is(':visible'))
+			$('.audio-play-div').css('display', 'none');
+		else
+			$('.audio-play-div').show();
 		$('.remove-option').hide();
 		$('.sub-cs').hide();
 		$(`.${$(this).data("modal")}`).toggle();
 	})
 
 	$('.close').click(function () {
+		$('.audio-play-div').show();
 		$('.remove-option').show();
 		$('.modal').hide()
 	})
@@ -517,6 +532,8 @@
 		})
 	}
 
+	// Options modal
+
 	$('.import-PDF').on('click', function () {
 		$('#task_medium_pdf').click();
 	})
@@ -542,6 +559,13 @@
 	$('.pdf-video').on('click', function () {
 		$('.option-modal').hide();
 		var globalForm = new FormData(document.getElementById('add_pdf_video_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	$('.pdf-audio').on('click', function () {
+		// $('.pdf-audio-play-div').show();
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_audio_form'));
 		sendMediaPdfContent(globalForm);
 	})
 
@@ -618,6 +642,8 @@
 			}
 		})
 	}
+
+	// End Options modal
 
 	new PerfectScrollbar('#tasksScrollBar');
 	

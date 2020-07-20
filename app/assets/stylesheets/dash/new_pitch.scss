@@ -1895,6 +1895,13 @@ input[type="file"] {
                 position: unset !important;
             }
 
+            .pdf-image-tag {
+                margin-top: 0;
+                height: 70vh;
+                width: 100%;
+                border-radius: 1vh;
+            }
+
             .remove-option {
                 // left: 28vh;
                 // top: 13vh;
@@ -1930,6 +1937,11 @@ input[type="file"] {
                     color: #fff;
                     text-decoration: none;
                 }
+            }
+
+            .image-remove-option {
+                left: 8vh;
+                top: 10.5vh;
             }
 
             .pdf-video-drop-zone {
@@ -1970,6 +1982,7 @@ input[type="file"] {
                     justify-content: center;
                 }
                 .pdf-add-video-link {
+                    cursor: pointer;
                     width: 4vh;
                     margin-left: 1vh;
                     border: none;
@@ -1988,11 +2001,47 @@ input[type="file"] {
                 top: 11vh;
             }
 
-            .video-tag {
+            .pdf-video-tag {
+                height: 70vh;
+                width: 98%;
+                position: relative;
+                border-radius: 0;
+            }
+
+            .video-frame {
                 height: 70vh;
                 width: 100%;
-                position: relative;
-                border-radius: 1vh;
+            }
+        }
+
+        .audio-slide-preview {
+            background: #69DEA9;
+            border-radius: 1vh;
+
+            .audio-preview {
+                height: 70vh;
+                width: 60vw;
+            }
+
+            .pdf-audio-play-div {
+                i {
+                    cursor: pointer;
+                    width: 8vh;
+                    position: absolute;
+                    margin: auto;
+                    top: 30vh;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: auto;
+                    font-size: 8vh;
+                    line-height: 28vh;
+                    color: #fff;
+                }
+
+                .pause-audio {
+                    display: none;
+                }
             }
         }
     }

@@ -306,14 +306,11 @@
 			<div class="audio media-option">
 				<%= form_for :task_medium, url: create_task_media_path(@pitch, task_id: @task.id), html: {id: 'add_audio_form'} do |t| %>
 				<div class="title">Audio</div>
-				<!-- <div class="subline">Upload an audio file to your pitch</div> -->
-				<!-- <label for="task_medium_audio" class="btn upload">Upload</label> -->
 				<%= t.file_field :audio %>
 				<%= t.hidden_field :media_type, value: 'audio' %>
 				<div class="preview audio-preview"
 					style="display: <%= @task.task_medium && @task.task_medium.audio? ? 'block' : 'none' %>">
 					<% if @task.task_medium && @task.task_medium.audio? %>
-					<!-- <div class="audio-title"><%= @task.task_medium.audio.identifier %></div> -->
 					<div class="remove-option remove-option-audio">
 						<label><%= File.basename(@task.task_medium.audio.url) %></label>
 						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
@@ -322,7 +319,6 @@
 						<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
 						<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
 						<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
-						<!-- <i class="fas fa-play-circle play-audio" onclick="playAudio()"></i> -->
 					</div>
 					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>
 					<%#= link_to "remove", delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'remove' %>
@@ -514,19 +510,6 @@
 					$('#add_video_form').submit();
 				}
 			});
-			// var jqxhr = $.getJSON(yt_snippet_endpoint)
-			// .done(function(data) {
-			// 	debugger
-			// 	console.log("second success callback");
-			// 	var title = data["items"][0]['snippet']['title'];
-			// 	var image = data["items"][0]['snippet']['thumbnails']["default"]["url"];
-			// 	$('#videoLinkTitle').val(title);
-			// 	$('#videoLinkImage').val(image);
-			// 	$('#add_video_form').submit();
-			// })
-			// .fail(function() {
-			// 	console.log("error, see network tab for response details");
-			// });
 		} else {
 			alert("not a valid youtube url");
 		}
@@ -1014,7 +997,8 @@
 		}
 	})
 	$('#popup').on('hide', function () {
-		// cropper.destroy();
+		if (cropper)
+			cropper.destroy();
 		cropper = null;
 	})
 
@@ -1185,9 +1169,9 @@
 				recording = false;
 			} else {
 				// This will prompt for permission if not allowed earlier	
-				let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
-				let $dropZone = $(e.currentTarget).closest('.dropzone-container');
-				var recordedAudio = $preview.find('audio')[0];
+				// let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
+				// let $dropZone = $(e.currentTarget).closest('.dropzone-container');
+				// var recordedAudio = $preview.find('audio')[0];
 				navigator.mediaDevices.getUserMedia({ audio: true })
 					.then(stream => {
 						audioChunks = [];
@@ -1202,8 +1186,8 @@
 								// $dropZone.siblings('input[type="file"]').val('')
 
 								let blob = new Blob(audioChunks, { type: 'audio/x-mpeg-3' });
-								recordedAudio.src = URL.createObjectURL(blob);
-								recordedAudio.controls = true;
+								// recordedAudio.src = URL.createObjectURL(blob);
+								// recordedAudio.controls = true;
 
 								blob = new Blob(audioChunks, { type: 'audio/webm' });
 								var file = new window.File([blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
