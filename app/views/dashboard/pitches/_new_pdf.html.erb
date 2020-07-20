@@ -90,11 +90,11 @@
 		</div>
 		<div class="preview audio-preview">
 		<div class="pdf-audio-play-div">
-			<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
-			<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
-			<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
+			<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playPdfAudio()' %>
+			<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playPdfAudio()"></i>
+			<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pausePdfAudio()"></i>
 		</div>
-		<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>
+		<%= audio_tag @task.task_medium.audio.url, id: 'pdf-task-audio', class: 'audio-tag', onended: 'stopPdfAudio()' %>
 		</div>
 	<% else %>
 	<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_audio_content_form'} do |t| %>
@@ -202,6 +202,26 @@
 		}
 	})
 
+	function playPdfAudio() {
+		if ($('.pdf-audio-play-div .play-audio').hasClass('audio-play-circle')) {
+			document.getElementById('pdf-task-audio').play();
+			$('.pdf-audio-play-div .audio-play-circle').hide();
+			$('.pdf-audio-play-div .audio-pause-circle').show();
+		}
+	}
+
+	function pausePdfAudio() {
+		if ($('.pdf-audio-play-div .pause-audio').hasClass('audio-pause-circle')) {
+			document.getElementById('pdf-task-audio').pause();
+			$('.pdf-audio-play-div .audio-pause-circle').hide();
+			$('.pdf-audio-play-div .audio-play-circle').show();
+		} 
+	}
+
+	function stopPdfAudio() {
+		$('.pdf-audio-play-div .audio-play-circle').show();
+		$('.pdf-audio-play-div .audio-pause-circle').hide();
+	}
 
 	// End Audio upload and drag, drop
 
