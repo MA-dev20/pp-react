@@ -2,4 +2,4 @@ Gemfile.lock
 /tmp
 /public
 log/
-.*
+.*db/schema.rb
