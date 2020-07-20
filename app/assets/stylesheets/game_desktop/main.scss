@@ -541,19 +541,19 @@ body {
 		}
 		.ratings {
 			position: absolute;
-			display: flex;
 			top: 5vh;
 			left: 0;
 			height: 70vh;
 			align-content: center;
 			width: 50vw;
 			animation: fadeInLeft 2s 1;
+			text-align: center;
 			.rating-cat {
-				position: relative;
 				top: 0;
 				height: 100%;
-				width: 12.5vw;
+				width: 12vw;
 				text-align: center;
+				display: inline-block;
 				.rating {
 					color: #00232a;
 					font-size: 3vh;

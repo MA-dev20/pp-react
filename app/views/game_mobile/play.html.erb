@@ -32,9 +32,9 @@
 	<div class="dot"></div>
 </div>
 <div class="addTime">
-	<div id="add10s">+10s<%= link_to '', gm_add_time_path(time: 10) %></div>
-	<div id="add20s">+20s<%= link_to '', gm_add_time_path(time: 20) %></div>
-	<div id="add30s">+30s<%= link_to '', gm_add_time_path(time: 30) %></div>
+	<div id="add10s" onclick="addTime(10)">+10s</div>
+	<div id="add20s" onclick="addTime(20)">+20s</div>
+	<div id="add30s" onclick="addTime(30)">+30s</div>
 	<div class="time" onclick="showTime()"><i class="fas fa-stopwatch"></i></div>
 </div>
 <div class="bottom">
@@ -54,6 +54,20 @@
 	<% end %>
 </div>
 <script>
+	function addTime(time) {
+		var URL = "<%= gm_add_time_path %>?time=" + time;
+		$.ajax({
+			url: URL,
+			type: "put",
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(data) {
+				showTime();
+			}
+		})
+	}
 	function showTime() {
 		$('#add10s').toggle();
 		$('#add20s').toggle();

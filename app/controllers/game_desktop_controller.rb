@@ -43,40 +43,46 @@ class GameDesktopController < ApplicationController
   end
 
   def set_slide
-  @task_order = @pitch.task_orders.find_by(order: params[:slide])
-  if @task_order && @game.current_task != params[:slide]
-    @game.update(current_task: params[:slide])
-    if @game.state == 'slide' && @task_order.task.task_type == 'slide'
-    ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-    redirect_to gd_game_path
-    return
-    elsif @task_order.task.task_type == 'slide'
-      redirect_to gd_set_state_path(state: 'slide')
-    return
-    else
-    redirect_to gd_set_state_path(state: 'show_task')
-    return
-    end
+	@task_order = @pitch.task_orders.find_by(order: params[:slide])
+  if @task_order.task.valide
+  	if @task_order && @game.current_task != params[:slide]
+  	  @game.update(current_task: params[:slide])
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
+  		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+  		redirect_to gd_game_path
+  		return
+  	  elsif @task_order.task.task_type == 'slide'
+  	    redirect_to gd_set_state_path(state: 'slide')
+  		return
+  	  else
+  		redirect_to gd_set_state_path(state: 'show_task')
+  		return
+  	  end
+  	else
+  	  redirect_to gd_set_state_path(state: 'bestlist')
+      return
+  	end
   else
-    redirect_to gd_set_state_path(state: 'bestlist')
+    redirect_to gd_set_slide_path(@game.current_task + 1)
+    return
   end
   end
   def set_state
     if params[:state] == 'wait'
       @game.update(state: "wait") if @game.state != 'wait'
       redirect_to gd_game_path
-      return
-    elsif params[:state] == 'slide'
-      @game.update(state: 'slide')
-      redirect_to gd_game_path
+	    return
+	  elsif params[:state] == 'slide'
+	    @game.update(state: 'slide')
+	    redirect_to gd_game_path
     elsif params[:state] == 'show_task'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
       @turn = @game.game_turns.where(task: @task, played: false).first
       if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
-        redirect_to gd_set_state_path(state: 'turn')
-        return
+		    redirect_to gd_set_state_path(state: 'turn')
+		    return
       elsif @game.state != 'show_task'
-        @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
+		    @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
         @users = @game_users.where(turn_count: @game_users.first.turn_count).all
         if @users.count == 1 && @game_users.count >= 2
           @users = @game_users.first(2)
@@ -96,23 +102,33 @@ class GameDesktopController < ApplicationController
       else
         redirect_to gd_game_path
         return
-      end
+	    end
     elsif params[:state] == 'choose'
       @game.update(state: 'choose') if @game.state != 'choose'
       redirect_to gd_game_path
-      return
+	    return
     elsif params[:state] == 'turn'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
       if @game.turn1 && @game.turn2
         @turn1 = GameTurn.find_by(id: @game.turn1)
         @turn2 = GameTurn.find_by(id: @game.turn2)
         if @turn1.counter > @turn2.counter
-          @turn = @turn1
+			    @turn = @turn1
           @turn2.destroy
-        else
+		    elsif  @turn1.counter < @turn2.counter
           @turn = @turn2
           @turn1.destroy
-        end
+        else
+          @user1 = @game.game_users.find_by(user: @turn1.user)
+          @user2 = @game.game_users.find_by(user: @turn2.user)
+          if @user1.turn_count < @user2.turn_count
+            @turn = @turn1
+            @turn2.destroy
+          else
+            @turn = @turn2
+            @turn1.destroy
+          end
+		    end
         @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
       else
         @turn = @game.game_turns.where(task: @task, played: false).last
@@ -126,49 +142,49 @@ class GameDesktopController < ApplicationController
         end
       end
       redirect_to gd_game_path
-      return
+	    return
     elsif params[:state] == 'play'
-      @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      if @task.task_type == 'catchword'
-        @turn.update(catchword: @task.catchword_list.catchwords.sample)
-      end
+	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
+	    if @task.task_type == 'catchword'
+		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
+	    end
       @game.update(state: 'play', turn1: nil, turn2: nil) if @game.state != 'play'
       redirect_to gd_game_path
-      return
+	    return
     elsif params[:state] == 'feedback'
       @turn = @game.game_turns.find_by(id: @game.current_turn)
       @game_user = @game.game_users.find_by(user: @turn.user)
       @turn.update(ges_rating: nil, played: true)
-      @game_user.update(turn_count: @game_user.turn_count + 1)
-      @game.update(state: 'feedback', current_turn: nil) if @game.state != 'feedback'
+      @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
+      @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
       @turn = @game.game_turns.find_by(id: @game.current_turn)
-      if @turn
-        @task = @turn.task
+	    if @turn
+	      @task = @turn.task
         @task = @pitch.task_orders.find_by(order: @game.current_task).task if !@task
         if ( @task.rating1 && @task.rating1 != '' ) || ( @task.rating2 && @task.rating2 != '' ) || ( @task.rating3 && @task.rating3 != '' ) || ( @task.rating4 && @task.rating4 != '' )
           @turn = @game.game_turns.find_by(id: @game.current_turn)
           @game_user = @game.game_users.find_by(user: @turn.user)
           @turn.update(played: true)
-          @game_user.update(turn_count: @game_user.turn_count + 1)
+          @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
           @game.update(state: 'rate')
         else
-          redirect_to gd_set_state_path(state: 'feedback')
-          return
+		      redirect_to gd_set_state_path(state: 'feedback')
+		      return
         end
-        redirect_to gd_game_path
-        return
-      else
-        redirect_to gd_set_slide_path(@game.current_task + 1)
-        return
-      end
+		    redirect_to gd_game_path
+	      return
+	    else
+		    redirect_to gd_set_slide_path(@game.current_task + 1)
+		    return
+	    end
     elsif params[:state] == 'rating'
       @turn = GameTurn.find_by(id: @game.current_turn)
       if @turn
         if @turn.game_turn_ratings.count == 0
           redirect_to gd_set_state_path(state: 'feedback')
-          return
+		      return
         else
           @turns = @game.game_turns.where(user: @turn.user)
           @game_user = @game.game_users.find_by(user: @turn.user)
@@ -181,7 +197,7 @@ class GameDesktopController < ApplicationController
           end
           if @pitch.show_ratings == 'none'
             redirect_to gd_set_state_path(state: 'feedback')
-            return
+  		      return
           elsif @pitch.show_ratings == 'one' && @turn_ratings.count == 0
             @turn.update(played: true)
             redirect_to gd_set_slide_path(@game.current_task + 1)
@@ -227,18 +243,18 @@ class GameDesktopController < ApplicationController
       return
     elsif params[:state] == 'repeat'
       if @game.state != 'repeat' && @game.state != 'wait'
-        @game.update(state: 'repeat')
-        game_old = @game
-        temp = Game.where(password: @game.password, state: 'wait', active: true).first
-        temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
+        @game.update(state: 'repeat', active: false)
+		    game_old = @game
+		    temp = Game.where(password: @game.password, state: 'wait', active: true).first
+		    temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
       end
-      redirect_to gd_game_path
-      return
+	    redirect_to gd_game_path
+	    return
     elsif params[:state] == 'ended'
-      @game.update(state: 'ended') if @game.state != "ended"
-      redirect_to gd_game_path
-      return
-    end
+	    @game.update(state: 'ended', active: false) if @game.state != "ended"
+	    redirect_to gd_game_path
+	    return
+	  end
   end
   private
 	def check_game
