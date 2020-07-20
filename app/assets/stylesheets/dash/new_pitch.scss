@@ -1940,7 +1940,7 @@ input[type="file"] {
             }
 
             .image-remove-option {
-                left: 8vh;
+                left: 6vh;
                 top: 10.5vh;
             }
 
@@ -2011,6 +2011,37 @@ input[type="file"] {
             .video-frame {
                 height: 70vh;
                 width: 100%;
+            }
+        }
+
+        .audio-slide-preview {
+            background: #69DEA9;
+            border-radius: 1vh;
+
+            .audio-preview {
+                height: 70vh;
+                width: 60vw;
+            }
+
+            .audio-play-div {
+                i {
+                    cursor: pointer;
+                    width: 8vh;
+                    position: absolute;
+                    margin: auto;
+                    top: 30vh;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: auto;
+                    font-size: 8vh;
+                    line-height: 28vh;
+                    color: #fff;
+                }
+
+                .pause-audio {
+                    display: none;
+                }
             }
         }
     }

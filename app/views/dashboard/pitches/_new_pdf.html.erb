@@ -4,7 +4,7 @@
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen', onchange: 'handleTitleChange(event)' %>
 </div>
 <% end %>
-<div class="slide-preview">
+<div class="slide-preview <%= (@task.task_medium && @task.task_medium.audio.url.present?) ? 'audio-slide-preview' : '' %>">
 <% if @task.pdf_type == 'image' %>
 	<% if @task.task_medium&.image&.url %>
 		<div class="remove-option image-remove-option">
@@ -81,7 +81,34 @@
 			</div>
 		</div>
 		<% end %>
-	<% end %>	
+	<% end %>
+<% elsif @task.pdf_type == 'audio' %>
+	<% if @task.task_medium&.audio&.url %>
+		<div class="remove-option image-remove-option">
+			<label><%= File.basename(@task.task_medium.audio.url) %></label>
+			<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+		</div>
+		<div class="preview audio-preview">
+		<div class="audio-play-div">
+			<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
+			<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
+			<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
+		</div>
+		<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>
+		</div>
+	<% else %>
+	<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_audio_content_form'} do |t| %>
+	<div class="dropzone-container pdf-audio-drop-zone">
+		<label class="dropzone-text">Drag and Drop file from your Computer</label>
+		<div class="label-btn">
+			<%= t.file_field :audio, accept: '.mp3,.wav', class: 'pdf-audio-field', id: 'pdf_task_medium_audio' %>
+			<%= t.hidden_field :media_type, value: 'audio' %>
+			<label class="btn reversed upload" id="pdf_audio_upload_btn">Upload from computer</label>
+			<div class="btn reversed record-audio">Record</div>
+		</div>
+	</div>
+	<% end %>
+	<% end %>
 <% end %>
 </div>
 
@@ -97,6 +124,122 @@
 
 
 <script>
+
+	// Audio upload and drag, drop
+
+	var pdfAudioDropZone = $('.pdf-audio-drop-zone')
+	pdfAudioDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	pdfAudioDropZone.on('dragover dragenter', function () {
+		$(this).addClass('is-dragover');
+	})
+	pdfAudioDropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('is-dragover');
+	})
+
+	pdfAudioDropZone.on('drop', function (e) {
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
+			handlePdfAudioUpload(e);
+		}
+	});
+
+	function handlePdfAudioUpload(e) {
+		let file_input = $(e.currentTarget).find('.pdf-audio-field');
+		file_input[0].files = e.originalEvent.dataTransfer.files;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'audio') {
+			let url_object = URL.createObjectURL(file_data);
+			$('.pdf-audio-drop-zone').addClass('is-dragover');
+			$('#add_pdf_audio_content_form').submit();
+		}
+	}
+
+	$('#pdf_audio_upload_btn').on('click', function (e) {
+		$('#pdf_task_medium_audio').click();
+	})
+
+	$('#pdf_task_medium_audio').on('change', function () {
+		var globalForm = new FormData(document.getElementById('add_pdf_audio_content_form'));
+		sendPdfMedia(globalForm);		
+	})
+
+
+	// var pdfAudioChunks;
+	// var audioRecording = false;
+	// $('.record-audio').on('click', function (e) {
+	// 	if (audioRecording) {
+	// 		$(e.target).text('Uploading...');
+	// 		if (audio_rec.state === 'Recording')
+	// 			audio_rec.stop();
+	// 		audioRecording = false;
+	// 		audio_rec.ondataavailable = e => {
+	// 			debugger
+	// 					pdfAudioChunks.push(e.data);
+	// 					if (audio_rec.state === "inactive") {
+	// 						stream.getTracks().forEach(track => track.stop())
+
+	// 						let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
+	// 						// recordedAudio.src = URL.createObjectURL(blob);
+	// 						// recordedAudio.controls = true;
+
+	// 						audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+	// 						var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+	// 						debugger
+	// 						pdfAudioGlobalForm = new FormData();
+	// 						pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
+	// 						pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+	// 						// sendMedia(pdfAudioGlobalForm);
+	// 						sendPdfMedia(pdfAudioGlobalForm);
+	// 						// mediaDeleted = false;
+	// 					}
+	// 				}
+	// 	} else {
+	// 		// This will prompt for permission if not allowed earlier	
+	// 		// let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
+	// 		// let $dropZone = $(e.currentTarget).closest('.dropzone-container');
+	// 		// var recordedAudio = $preview.find('audio')[0];
+	// 		navigator.mediaDevices.getUserMedia({ audio: true })
+	// 			.then(stream => {
+	// 				debugger
+	// 				pdfAudioChunks = [];
+	// 				audioRecording = true;
+	// 				$(e.target).text('Recording...');
+	// 				audio_rec = new MediaRecorder(stream);
+	// 				audio_rec.ondataavailable = e => {
+	// 					pdfAudioChunks.push(e.data);
+	// 					if (audio_rec.state === "inactive") {
+	// 						stream.getTracks().forEach(track => track.stop())
+
+	// 						let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
+	// 						// recordedAudio.src = URL.createObjectURL(blob);
+	// 						// recordedAudio.controls = true;
+
+	// 						audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+	// 						var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+	// 						debugger
+	// 						pdfAudioGlobalForm = new FormData();
+	// 						pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
+	// 						pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+	// 						// sendMedia(pdfAudioGlobalForm);
+	// 						sendPdfMedia(pdfAudioGlobalForm);
+	// 						// mediaDeleted = false;
+	// 					}
+	// 				}
+	// 				audio_rec.start();
+	// 			})
+	// 			.catch(function (err) { 
+	// 				debugger
+	// 				alert('Kann Audio nicht aufnehmen!') });
+	// 	}
+	// })
+
+
+	// End Audio upload and drag, drop
+
 
 	// Image upload and drag, drop
 
@@ -228,7 +371,7 @@
 	})
 	// End Image upload and drag, drop
 
-	
+
 	// Video upload and drag, drop
 
 	$('.record-pdf-video').on('click', function() {
