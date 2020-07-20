@@ -168,74 +168,39 @@
 	})
 
 
-	// var pdfAudioChunks;
-	// var audioRecording = false;
-	// $('.record-audio').on('click', function (e) {
-	// 	if (audioRecording) {
-	// 		$(e.target).text('Uploading...');
-	// 		if (audio_rec.state === 'Recording')
-	// 			audio_rec.stop();
-	// 		audioRecording = false;
-	// 		audio_rec.ondataavailable = e => {
-	// 			debugger
-	// 					pdfAudioChunks.push(e.data);
-	// 					if (audio_rec.state === "inactive") {
-	// 						stream.getTracks().forEach(track => track.stop())
-
-	// 						let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
-	// 						// recordedAudio.src = URL.createObjectURL(blob);
-	// 						// recordedAudio.controls = true;
-
-	// 						audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
-	// 						var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-	// 						debugger
-	// 						pdfAudioGlobalForm = new FormData();
-	// 						pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
-	// 						pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
-	// 						// sendMedia(pdfAudioGlobalForm);
-	// 						sendPdfMedia(pdfAudioGlobalForm);
-	// 						// mediaDeleted = false;
-	// 					}
-	// 				}
-	// 	} else {
-	// 		// This will prompt for permission if not allowed earlier	
-	// 		// let $preview = $(e.currentTarget).closest('.dropzone-container').siblings('.preview');
-	// 		// let $dropZone = $(e.currentTarget).closest('.dropzone-container');
-	// 		// var recordedAudio = $preview.find('audio')[0];
-	// 		navigator.mediaDevices.getUserMedia({ audio: true })
-	// 			.then(stream => {
-	// 				debugger
-	// 				pdfAudioChunks = [];
-	// 				audioRecording = true;
-	// 				$(e.target).text('Recording...');
-	// 				audio_rec = new MediaRecorder(stream);
-	// 				audio_rec.ondataavailable = e => {
-	// 					pdfAudioChunks.push(e.data);
-	// 					if (audio_rec.state === "inactive") {
-	// 						stream.getTracks().forEach(track => track.stop())
-
-	// 						let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
-	// 						// recordedAudio.src = URL.createObjectURL(blob);
-	// 						// recordedAudio.controls = true;
-
-	// 						audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
-	// 						var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-	// 						debugger
-	// 						pdfAudioGlobalForm = new FormData();
-	// 						pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
-	// 						pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
-	// 						// sendMedia(pdfAudioGlobalForm);
-	// 						sendPdfMedia(pdfAudioGlobalForm);
-	// 						// mediaDeleted = false;
-	// 					}
-	// 				}
-	// 				audio_rec.start();
-	// 			})
-	// 			.catch(function (err) { 
-	// 				debugger
-	// 				alert('Kann Audio nicht aufnehmen!') });
-	// 	}
-	// })
+	var pdfAudioChunks;
+	var audioRecording = false;
+	$('.record-audio').on('click', function (e) {
+		if (audioRecording) {
+			$(e.target).text('Uploading...');
+			if (audio_rec.state === 'recording')
+				audio_rec.stop();
+			audioRecording = false;
+		} else {
+			navigator.mediaDevices.getUserMedia({ audio: true })
+				.then(stream => {
+					pdfAudioChunks = [];
+					audioRecording = true;
+					$(e.target).text('Recording...');
+					audio_rec = new MediaRecorder(stream);
+					audio_rec.ondataavailable = e => {
+						pdfAudioChunks.push(e.data);
+						if (audio_rec.state === "inactive") {
+							stream.getTracks().forEach(track => track.stop())
+							let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
+							audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+							var audio_file = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+							pdfAudioGlobalForm = new FormData();
+							pdfAudioGlobalForm.append('task_medium[audio]', audio_file);
+							pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+							sendPdfMedia(pdfAudioGlobalForm);
+						}
+					}
+					audio_rec.start();
+				})
+				.catch(function (err) { alert('Kann Audio nicht aufnehmen!') });
+		}
+	})
 
 
 	// End Audio upload and drag, drop
