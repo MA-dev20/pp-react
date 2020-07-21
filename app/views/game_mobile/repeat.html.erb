@@ -14,7 +14,7 @@
 	<span class="circle-add" id="avatar-img">+</span>
 	<% end %>
 	</label>
-<%= form_for(:turn, url: new_turn_path(@game, @admin)) do |f| %>	
+<%= form_for(:game_user, url: new_game_user_path(@game, @admin)) do |f| %>
 	<div class="switch reverse">
 		<%= f.check_box :play, checked: true, id: 'turn_play' %>
 		<label for="turn_play">

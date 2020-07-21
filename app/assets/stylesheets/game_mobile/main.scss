@@ -51,8 +51,8 @@ body {
 		position: absolute;
 		display: block;
 		top: 0; right: 0;
-		height: 30px; width: 15px;
-		margin: 10px 2px;
+		height: 25px; width: 25px;
+		margin: 7.5px 2px;
 		cursor: pointer;
 		.dot {
 			position: relative;
@@ -82,8 +82,9 @@ body {
 #bestlist-menu {
 	display: none;
 	position: fixed;
-	top: 0;left: 10%;
+	top: 0;right: 0;
 	height: 100%;width: 90%;
+	max-width: 540px;
 	background-color: rgba(255,255,255,1);
 	z-index: 2000;
 	box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
@@ -268,14 +269,6 @@ body {
 				}
 				.circle {background-color: #00232a;}
 			}
-			.objection {
-				left: 2vw; top: 0;
-				width: 81vw;
-			}
-			.name {
-				left: 50px; top: 0;
-				width: calc(100% - 100px);
-			}
 			.rating {
 				position: absolute;
 				left: auto; right: 0; top: 0;
@@ -288,9 +281,11 @@ body {
 			.objection,
 			.name {
 				position: absolute;
-				width: 70vw;
+				left: 50px; top: 0;
+				height: 40px;
+				width: calc(100% - 100px);
 				overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-				line-height: 10vw; font-size: 4vw;
+				line-height: 40px; font-size: 20px;
 				text-align: left;
 			}
 			.exit-user, .add-user, .remove-user {
@@ -410,7 +405,7 @@ body {
 		line-height: 40px;
 		i.far {
 			position: absolute;
-			right: 10vw;
+			right: 10%;
 			top: 0;
 			margin: 0;
 			height: 40px;
@@ -432,7 +427,7 @@ body {
 			color: #212529;
 			background-color: white;
 			width: calc(80% - 10px);
-			margin: 0 10vw 5px;
+			margin: 0 10% 5px;
 			border: none;
 			border-radius: .8vh;
 			padding: 0 5px;
@@ -469,26 +464,26 @@ body {
 }
 .flash-alert {
 	position: absolute;
-	top: calc(50vh - 15vw);
-	margin: 10vw; width: 80vw;
-	height: 20vw;
+	top: calc(50vh - 50px);
+	left: calc(50% - 150px);
+	margin: 0 auto; width: 300px;
+	height: 100px;
 	background-color: white;
-	border-radius: 2vw;
+	border-radius: 20px;
 	z-index: 2000;
 	.heading {
-		height: 10vw;
+		min-height: 40px;
 		width: 100%;
-		font-size: 5vw;
-		line-height: 10vw;
+		font-size: 30px;
+		line-height: 40px;
 		text-align: center;
 	}
 	.text {
-		height: 5vw;
-		width: 70vw;
-		margin: 0 5vw;
+		width: 280px;
+		margin: 0 10px;
 		text-align: center;
-		font-size: 3vw;
-		line-height: 5vw;
+		font-size: 16px;
+		line-height: 30px;
 	}
 }
 .addTime {
@@ -572,9 +567,10 @@ body {
 #content {
 	position: fixed;
 	top: 0;
-	left: 0;
+	margin: 0 auto;
 	height: 100%;
 	width: 100%;
+	max-width: 600px;
 	color: gray;
 	animation-name: fadeIn;
 	animation-duration: .5s;
@@ -590,13 +586,13 @@ body {
 		width: 100%;
 		text-align: center;
 		h1 {
-			margin: 0 5vw 0;
-			width: 90vw;
+			margin: 0 auto;
+			width: 90%;
 			font-size: 25px;
 		}
 		h3 {
-			margin: 1vh 5vw 0;
-			width: 90vw;
+			margin: 1vh auto 0;
+			width: 90%;
 			font-size: 15px;
 			font-weight: normal;
 		}
@@ -814,7 +810,7 @@ body {
 			line-height: 40px;
 			i.far {
 				position: absolute;
-				right: 10vw;
+				right: 10%;
 				top: 0;
 				margin: 0;
 				height: 40px;
@@ -828,27 +824,27 @@ body {
 			}
 			.rangeVal {
 				float: right;
-				margin-right: 10vw;
-				font-size: 3vh;
-				line-height: 5vh;
+				margin-right: 10%;
+				font-size: 15px;
+				line-height: 20px;
 			}
 			.rangeLabel {
 				float: left;
-				margin-left: 10vw;
-				max-width: calc(80vw - 6.5vh);
-				font-size: 3vh;
+				margin-left: 10%;
+				max-width: calc(80% - 40px);
+				font-size: 15px;
 				text-align: left;
-				line-height: 5vh;
-				height: 5vh;
+				line-height: 20px;
+				height: 20px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
 			.rangeslider {
 				float: left;
-				margin: 15px 10vw;
+				margin: 15px 10%;
 				height: 10px;
-				width: 80vw;
+				width: 80%;
 			}
 			.rangeslider__fill {
 				background-image: linear-gradient(to right, #ff6b6c 0%, #fefbc6 50%, #1ddaaf 100%);
@@ -893,8 +889,8 @@ body {
 				font-size: 15px;
 				color: #212529;
 				background-color: white;
-				width: calc(80vw - 10px);
-				margin: 0 10vw;
+				width: calc(80% - 10px);
+				margin: 0 auto;
 				border: none;
 				border-radius: .8vh;
 				padding: 0 5px;
@@ -999,7 +995,7 @@ body {
 		}
 	}
 	.bottom {
-		position: fixed;
+		position: absolute;
 		bottom: 0;
 		height: 90px;
 		width: 100%;
@@ -1031,7 +1027,7 @@ body {
 				font-size: 15px;
 				color: #212529;
 				background-color: white;
-				width: 100%;
+				width: 80%;
 				margin: 0;
 				border: none;
 				padding: 0 1vh 0 1vh;
@@ -1070,11 +1066,150 @@ body {
 		}
 	}
 }
+@media (min-width: 600px) {
+	#content {
+		left: calc(50% - 300px);
+		.middle {
+			.circle,
+			img {
+				width: 300px; height: 300px;
+				top: calc(50% - 155px);
+				left: auto;
+				border-width: 5px;
+				line-height: 300px;
+				font-size: 200px;
+				margin: 0 auto;
+			}
+			.circle-left, .circle-right {
+				img, .circle {
+					top: calc(50% - 155px);
+					width: 250px; height: 250px;
+					font-size: 180px;
+					margin: 0 auto;
+					line-height: 250px;
+					border: 10px solid rgb(var(--custcolor));
+				}
+			}
+			#avatar-svg {
+				height: 310px; width: 310px;
+				top: calc(50% - 155px); left: calc(50% - 155px);
+			}
+			#avatar-img {
+				height: 300px; width: 300px;
+				top: calc(50% - 150px); left: calc(50% - 150px);
+			}
+			.emojis {
+				top: calc(50% - 84px);
+				left: 18px;
+				width: 504px;
+				margin: 0 48px;
+				height: 168px;
+				.emoji {
+					height: 76px; width: 76px;
+					line-height: 76px; font-size: 60px;
+					margin: 4px;
+				}
+			}
+			.form-group {
+				.rangeslider__fill {
+					background-size: 540px auto;
+				}
+			}
+		}
+	}
+	#comment-menu {
+		bottom: 50px; right: 50px;
+		height: 100px; width: 100px;
+		line-height: 100px;
+	}
+	#menu .nav .logo {
+		height: 70px;
+		margin: 10px;
+	}
+	#objections-menu,
+	#user-name,
+	#user-new,
+	#comment-popup,
+	#task_user-menu,
+	#bestlist-menu,
+	#user-menu,
+	#nav-menu {
+		.nav {
+			height: 50px;
+			.back {
+				line-height: 50px;
+				font-size: 18px;
+				i {margin: 0 5px}
+			}
+		}
+		.content {
+			top: 50px;
+			height: calc(100% - 50px);
+			.heading {
+				line-height: 54px;
+				font-size: 32px;
+				height: 54px
+			}
+			.subheading {
+				height: 27px;
+				line-height: 27px;
+				font-size: 16px;
+				margin-bottom: 30px;
+			}
+			.emojis {
+				top: calc(50% - 84px);
+				left: 18px;
+				width: 504px;
+				height: 168px;
+				.emoji {
+					height: 76px; width: 76px;
+					line-height: 76px; font-size: 60px;
+					margin: 4px;
+				}
+			}
+			.link {
+				.title {
+					height: 27px; line-height: 27px;
+					width: 500px; padding: 20px;
+					font-size: 20px;
+				}
+				.preview {
+					width: 490px; margin: 0 25px;
+					height: 275px;
+					.slide {
+						top: 5px; left: -24px;
+						height: 48px; width: 48px;
+						line-height: 48px; font-size: 18px;
+					}
+					.is_task {
+						top: 5px; left: -24px;
+						height: 48px;
+						line-height: 48px; font-size: 18px;
+					}
+					img {width: 490px; height: 275px;}
+				}
+				.links {
+					.jump {
+						right: 30px;
+						width: 210px;
+					}
+					.user {
+						left: 30px;
+						width: 210px;
+					}
+					.jump.center {
+						right: 159px;
+					}
+				}
+			}
+		}
+	}
+}
 .btn {
 	display: inline-block;
 	box-sizing: border-box;
 	height: 35px;
-	min-width: 80vw;
+	min-width: 80%;
 	line-height: 35px;
 	font-size: 15px;
 	border-radius: 17.5px;
@@ -1121,6 +1256,7 @@ body {
 .svg-icons {
 	display: none;
 }
+#menuIcon,
 #slidesIcon,
 #usersIcon,
 #statsIcon,

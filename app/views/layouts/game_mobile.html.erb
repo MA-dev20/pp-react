@@ -35,11 +35,7 @@
 		<% else %>
 		<%= @game.team.name %>
 			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' %>
-				<div class="menu" onclick="toggleMenu()">
-					<div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
-				</div>
+				<svg class="menu" onclick="toggleMenu()" viewbox="0 0 144 144"><use xlink:href="#menuIcon" /></svg>
 			<% elsif @game && @admin && @game.game_users.find_by(user_id: @admin.id) %>
         <%= link_to '', gm_logout_path(@admin.id), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
 			<% end %>
@@ -129,6 +125,7 @@
 			<div class="heading">Folienübersicht</div>
   		<div class="subheading">wähle eine Folie oder weise User einer Aufgabe zu!</div>
       <% @pitch.task_orders.order(:order).each do |t| %>
+			<% if t.task.valide %>
   		<div class="link <%= @game.current_task == t.order ? 'selected' : '' %>" id="task_<%= t.order %>">
           <div class="title"><%= t.task.title && t.task.title != '' ? t.task.title : '' %></div>
   	    	<div class="preview">
@@ -169,6 +166,7 @@
               <% end %>
           </div>
   		</div>
+			<% end %>
   		<% end %>
     </div>
 	</section>
@@ -205,7 +203,7 @@
             <div class="name">
               <%= t.user.fname + ' ' + t.user.lname %>
             </div>
-						<i class="fas fa-chevron-right add-user"></i>
+						<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
             <%= link_to '', gm_set_task_user_path(t.user_id, params[:this_task], show_task: true) %>
         </div>
         <% end %>
@@ -224,7 +222,7 @@
 					<div class="avatar">
 						<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
 					</div>
-					<div class="name" style="color: #69DEA9; font-size: 3vw;">
+					<div class="name" style="color: rgb(var(--btncolor)); font-size: 15px;">
 						User hinzufügen
 					</div>
 			</div>
@@ -321,8 +319,7 @@
 
 	<section id="comment-popup">
 		<div class="nav">
-
-			<i class="fas fa-times close" onclick="toggleComment()"></i>
+			<%= image_tag 'icons/close.svg', class: 'close', onclick: 'toggleComment()' %>
 		</div>
 		<div class="content">
 			<div class="heading">Kommentar abgeben</div>
@@ -357,14 +354,12 @@
 	<% if flash[:alert] %>
 	<div class="flash-alert">
 		<div class="heading">Fehler!</div>
-		<i class="fas fa-times close" onclick="hideFlash()"></i>
 		<div class="text"><%= flash[:alert] %></div>
 	</div>
 	<% end %>
 	<% if flash[:success] %>
 	<div class="flash-alert">
 		<div class="heading"></div>
-		<i class="fas fa-times close" onclick="hideFlash()"></i>
 		<div class="text"><%= flash[:success] %></div>
 	</div>
 	<script type="text/javascript">
@@ -384,6 +379,11 @@
 
 <div class="svg-icons">
 	<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 144 144" xml:space="preserve">
+		<g id="menuIcon">
+			<line class="st2" x1="42.3" y1="12.5" x2="102.7" y2="12.5"/>
+			<line class="st2" x1="41.3" y1="70.8" x2="101.7" y2="70.8"/>
+			<line class="st2" x1="42" y1="131.5" x2="102.4" y2="131.5"/>
+		</g>
 		<g id="addIcon">
 			<g><circle class="st7" cx="72" cy="72" r="69.6"/></g>
 			<g>

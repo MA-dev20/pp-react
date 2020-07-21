@@ -67,7 +67,7 @@ class PitchesController < ApplicationController
 		# render json: { url: dashboard_pitches_path }
 	end 
   end
-	
+
   def update_task
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
@@ -121,7 +121,7 @@ class PitchesController < ApplicationController
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
-	
+
   def copy_task
 	@task = Task.find(params[:task_id])
 	@pitch = Pitch.find(params[:pitch_id])
@@ -129,7 +129,7 @@ class PitchesController < ApplicationController
 	@new_task.update(@task.attributes.except("id", "created_at", "updated_at"))
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id)
   end
-	
+
   def delete_task
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
@@ -263,7 +263,7 @@ class PitchesController < ApplicationController
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
-	
+
   def create_task_list
 	@task = Task.find(params[:task_id])
 	@pitch = @task.pitches.first
@@ -273,10 +273,10 @@ class PitchesController < ApplicationController
 	    @list = @task.catchword_list
 	  else
 		@list = CatchwordList.create(name: "task_list")
-		@task.update(catchword_list_id: @list.id)		  
+		@task.update(catchword_list_id: @list.id)
 	  end
 	  if (params[:list][:name] && params[:list][:name] != '') || (params["list-name"].present? && params["list-name"] != '')
-		@list_name = params[:list][:name] || params["list-name"]		  
+		@list_name = params[:list][:name] || params["list-name"]
 		@entry = @company.catchwords.find_by(name: @list_name)
 	  	@entry = @company.catchwords.create(name: @list_name) if @entry.nil?
 	  	@list.catchwords << @entry if @list.catchwords.find_by(name: @list_name).nil?
@@ -310,7 +310,7 @@ class PitchesController < ApplicationController
 			dup_entry = entry.dup
 			dup_entry.save
 			@list.objections << dup_entry
-			# @list.objections << entry 
+			# @list.objections << entry
 		end
 		end
 	  end
@@ -348,7 +348,7 @@ class PitchesController < ApplicationController
 		@list = RatingList.create(name: "task_list")
 		@task.update(rating_list_id: @list.id)
 	end
-	
+
 	# Not allowed same values
 	duplicate_values = false
 	ratings = task_params.to_h.values
@@ -375,7 +375,7 @@ class PitchesController < ApplicationController
 				unless @task[rating].present?
 					@list.rating_criteria.create(name: task_params[rating])
 				end
-			elsif @task[rating].present? 
+			elsif @task[rating].present?
 				@list.rating_criteria.find_by(name: @task[rating]).destroy
 			end
 		end
@@ -391,7 +391,7 @@ class PitchesController < ApplicationController
 
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
-	
+
   private
   	def pitch_params
 		params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :skip_rating_timer, :destroy_image, :destroy_video, :user_id)

@@ -1,15 +1,26 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
+<% if @task.task_medium.media_type == 'image' %>
 <div id="video-bg">
 	<%= image_tag @task.task_medium.image.url, id: 'video'%>
 </div>
+<% elsif @task.task_medium.media_type == 'video' %>
+<div id="video-bg">
+	<%= video_tag @task.task_medium.video.url, id: 'video' , autoplay: true %>
+	<%= video_tag @task.task_medium.video.url, id: 'video-blur' , autoplay: true %>
+</div>
+<% end %>
 <section id="skip">
 	Skip mit Leertaste
 </section>
 <script>
 	$('#navbar').hide();
+
 	$(window).keypress(function (e) {
         if (e.key === ' ' || e.key === 'Spacebar') {
-            window.location.replace('<%= gd_set_slide_path(@game.current_task + 1) %>');
+            redirect();
         };
     })
+	 function redirect() {
+		 window.location.replace('<%= gd_set_slide_path(@game.current_task + 1) %>');
+	 }
 </script>

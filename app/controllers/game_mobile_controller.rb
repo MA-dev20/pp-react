@@ -139,19 +139,22 @@ class GameMobileController < ApplicationController
   end
 
   def delete_turn
-  @game_user = @game.game_users.find_by(id: params[:turn_id])
-  @user = @game_user.user
-  @turns = @game.game_turns.where(user: @user)
-  @turns.each do |t|
-    if !t.played
-      t.destroy
+    @game_user = @game.game_users.find_by(id: params[:turn_id])
+    if @game_user
+      @user = @game_user.user
+      @turns = @game.game_turns.where(user: @user)
+      @turns.each do |t|
+        if !t.played
+          t.destroy
+        end
+      end
+      @game_user.destroy
+      if @game.state == 'wait'
+        ActionCable.server.broadcast "count_#{@game.id}_channel", remove: true, count: @game.game_users.where(play: true).count, user_id: @user.id, state: @game.state
+      end
     end
-  end
-  @game_user.destroy
-  if @game.state == 'wait'
-    ActionCable.server.broadcast "count_#{@game.id}_channel", remove: true, count: @game.game_users.where(play: true).count, user_id: @user.id, state: @game.state
-  end
-	redirect_to gm_game_path
+    flash[:success] = 'Nutzer entfernt!'
+	  redirect_to gm_game_path
   end
 
   def delete_task_user
@@ -187,23 +190,35 @@ class GameMobileController < ApplicationController
   end
 
   def set_slide
-	@task_order = @pitch.task_orders.find_by(order: params[:slide])
-	if @task_order && @game.current_task != params[:slide]
-	  @game.update(current_task: params[:slide])
-	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
-		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-		redirect_to gm_game_path
-		return
-	  elsif @task_order.task.task_type == 'slide'
-	    redirect_to gm_set_state_path(state: 'slide')
-		return
-	  else
-		redirect_to gm_set_state_path(state: 'show_task')
-		return
-	  end
-	else
-	  redirect_to gm_set_state_path(state: 'bestlist')
-	end
+	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
+    if @task_order
+      while @task_order && !@task_order.task.valide
+        @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
+      end
+    else
+      redirect_to gm_set_state_path(state: 'bestlist')
+      return
+    end
+  	if @task_order && @game.current_task != @task_order.order
+  	  @game.update(current_task: @task_order.order)
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
+  		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+  		redirect_to gm_game_path
+  		return
+  	  elsif @task_order.task.task_type == 'slide'
+  	    redirect_to gm_set_state_path(state: 'slide')
+  		return
+  	  else
+  		redirect_to gm_set_state_path(state: 'show_task')
+  		return
+  	  end
+  	elsif @task_order
+      redirect_to gm_game_path
+      return
+    else
+      redirect_to gm_set_state_path(state: 'bestlist')
+      return
+    end
   end
   def set_state
     if params[:state] == 'wait'
@@ -407,7 +422,7 @@ class GameMobileController < ApplicationController
   def add_time
     @time = params[:time]
     ActionCable.server.broadcast "count_#{@game.id}_channel", addTime: true, time: @time
-    redirect_to gm_game_path
+    render json: {time: @time}
   end
 
   private

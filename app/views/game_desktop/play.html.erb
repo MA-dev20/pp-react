@@ -282,11 +282,9 @@
 			if ($('#objection_sound').length > 0) {
 				document.getElementById('objection_sound').play();
 				$('#objection_sound').on('ended', function() {
-					var seconds = parseInt(15 % 60, 10), secs;
+					$('#objection_bar').addClass('active');
 					var objectionTimer = setInterval(function() {
 						seconds--;
-						secs = seconds < 10 ? '0' + seconds : seconds;
-						$('.otimer').text('00:' + secs);
 						if (seconds == 3) {
 							document.getElementById('o_end').play();
 						}
@@ -302,6 +300,7 @@
 			} else {
 				setTimeout(function() {
 				var seconds = parseInt(15 % 60, 10), secs;
+				$('#objection_bar').addClass('active');
 				var objectionTimer = setInterval(function() {
 					seconds--;
 					secs = seconds < 10 ? '0' + seconds : seconds;

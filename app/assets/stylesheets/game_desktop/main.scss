@@ -176,23 +176,29 @@ body {
 			width: 100%;
 			margin-top: 30vh;
 		}
-		.otimer {
+		.oprogress {
 			position: absolute;
-			bottom: 0;
-			left: 40vw;
-			width: 20vw;
-			height: 16vh;
-			line-height: 16vh;
-			font-weight: bold;
-			text-align: center;
-			border-top-left-radius: 20px;
-			border-top-right-radius: 20px;
-			color: rgb(var(--custcolor));
-			font-size: 10vh;
+			bottom: 10vh; left: 20vw;
+			width: 60vw;	height: 50px;
+			border-radius: 20px;
 			z-index: 1010;
 			box-shadow: 0 5px 10px rgba(0,0,0,.4);
 			background-color: white;
 			animation: fadeInBottom 1s 1;
+			overflow: hidden;
+			.bar {
+				position: absolute;
+				left: 0; top: 0;
+				width: 100%; height: 50px;
+				border-radius: 20px;
+				background-color: rgb(var(--custcolor));
+			}
+			.bar.active {
+				animation-name: progress;
+				animation-duration: 15s;
+				animation-timing-function: linear;
+				animation-fill-mode: forwards;
+			}
 		}
 	}
 	#background-images {
@@ -541,19 +547,19 @@ body {
 		}
 		.ratings {
 			position: absolute;
-			display: flex;
 			top: 5vh;
 			left: 0;
 			height: 70vh;
 			align-content: center;
 			width: 50vw;
 			animation: fadeInLeft 2s 1;
+			text-align: center;
 			.rating-cat {
-				position: relative;
 				top: 0;
 				height: 100%;
-				width: 12.5vw;
+				width: 12vw;
 				text-align: center;
+				display: inline-block;
 				.rating {
 					color: #00232a;
 					font-size: 3vh;
