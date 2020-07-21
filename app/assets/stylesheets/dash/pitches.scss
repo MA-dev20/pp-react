@@ -192,3 +192,19 @@
 		}
 	}
 }
+
+#content .card#pitches {
+	.card .buttons {
+		left: .15vw;
+
+		.btn {
+			padding: 0 0.4vh;
+			font-weight: bold;
+		}
+
+		.btn.reversed {
+			margin-left: 0.5vh;
+		}
+	}
+
+}
