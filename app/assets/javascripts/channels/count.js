@@ -60,7 +60,7 @@ jQuery(document).ready(function() {
 				  }
 			  }
 			  if (data['objection'] == true) {
-				  var userDiv = '<div class="objection"><div class="text" >'+data['objection_text']+'</div><div class="otimer">00:15</div></div>';
+				  var userDiv = '<div class="objection"><div class="text" >'+data['objection_text']+'</div><div class="oprogress"><div class="bar" id="objection_bar"></div></div></div>';
 				  if(data['objection_sound'] != "") {
 					  userDiv += '<audio src="'+data['objection_sound']+'" id="objection_sound" />'
 				  }

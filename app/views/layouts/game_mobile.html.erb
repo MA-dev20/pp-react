@@ -319,8 +319,7 @@
 
 	<section id="comment-popup">
 		<div class="nav">
-
-			<i class="fas fa-times close" onclick="toggleComment()"></i>
+			<%= image_tag 'icons/close.svg', class: 'close', onclick: 'toggleComment()' %>
 		</div>
 		<div class="content">
 			<div class="heading">Kommentar abgeben</div>
@@ -355,14 +354,12 @@
 	<% if flash[:alert] %>
 	<div class="flash-alert">
 		<div class="heading">Fehler!</div>
-		<i class="fas fa-times close" onclick="hideFlash()"></i>
 		<div class="text"><%= flash[:alert] %></div>
 	</div>
 	<% end %>
 	<% if flash[:success] %>
 	<div class="flash-alert">
 		<div class="heading"></div>
-		<i class="fas fa-times close" onclick="hideFlash()"></i>
 		<div class="text"><%= flash[:success] %></div>
 	</div>
 	<script type="text/javascript">
