@@ -58,6 +58,9 @@ class PitchesController < ApplicationController
   def delete_pitch
 	@pitch = Pitch.find(params[:id])
 	@pitch.task_orders.destroy_all
+	if Game.find_by(pitch_id: params[:id])
+		Game.where(pitch_id: params[:id]).update(pitch_id: nil)
+	end
 	@pitch.destroy
 	# redirect_to dashboard_pitches_path
 	if params[:url].present?
