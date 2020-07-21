@@ -65,9 +65,10 @@ class PitchesController < ApplicationController
 	# redirect_to dashboard_pitches_path
 	if params[:url].present?
 		render json: { url: params[:url] }
+	elsif params[:url] == ''
+		render json: { url: dashboard_pitches_path }
 	else
 		redirect_to dashboard_pitches_path
-		# render json: { url: dashboard_pitches_path }
 	end 
   end
 
