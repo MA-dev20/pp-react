@@ -23,7 +23,11 @@
                 <input type="hidden" class="exclamation-triangle" value="2">
                 <i class="fas fa-exclamation-triangle"></i>
             <% end %>
-            <div class="name"><%= t.order %>. Task</div>
+            <% if t.task.task_medium.present? %>
+                <div class="name"><%= t.order %>. Task - <%= t.task.task_medium.media_type.titleize %></div>
+            <% else %>
+                <div class="name"><%= t.order %>. Task</div>
+            <% end %>
             <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
         </div>
