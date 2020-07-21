@@ -43,29 +43,38 @@ class GameDesktopController < ApplicationController
   end
 
   def set_slide
-	@task_order = @pitch.task_orders.find_by(order: params[:slide])
-  if @task_order.task.valide
-  	if @task_order && @game.current_task != params[:slide]
-  	  @game.update(current_task: params[:slide])
-  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
-  		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-  		redirect_to gd_game_path
-  		return
-  	  elsif @task_order.task.task_type == 'slide'
-  	    redirect_to gd_set_state_path(state: 'slide')
-  		return
-  	  else
-  		redirect_to gd_set_state_path(state: 'show_task')
-  		return
-  	  end
-  	else
-  	  redirect_to gd_set_state_path(state: 'bestlist')
+	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
+    if @task_order
+      while @task_order && !@task_order.task.valide
+        @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
+      end
+    else
+      redirect_to gd_set_state_path(state: 'bestlist')
       return
-  	end
-  else
-    redirect_to gd_set_slide_path(@game.current_task + 1)
-    return
-  end
+    end
+  	if @task_order
+  	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+    		redirect_to gd_game_path
+    		return
+      elsif @task_order.task.task_type == 'slide' && @game.state != slide
+    	  redirect_to gd_set_state_path(state: 'slide')
+    		return
+    	elsif @game.state != 'show_task'
+    		redirect_to gd_set_state_path(state: 'show_task')
+    		return
+      else
+        redirect_to gd_game_path
+    		return
+      end
+  	elsif @task_order
+      redirect_to gd_game_path
+      return
+    else
+      redirect_to gd_set_state_path(state: 'bestlist')
+      return
+    end
   end
   def set_state
     if params[:state] == 'wait'
@@ -109,31 +118,31 @@ class GameDesktopController < ApplicationController
 	    return
     elsif params[:state] == 'turn'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      if @game.turn1 && @game.turn2
-        @turn1 = GameTurn.find_by(id: @game.turn1)
-        @turn2 = GameTurn.find_by(id: @game.turn2)
-        if @turn1.counter > @turn2.counter
-			    @turn = @turn1
-          @turn2.destroy
-		    elsif  @turn1.counter < @turn2.counter
-          @turn = @turn2
-          @turn1.destroy
-        else
-          @user1 = @game.game_users.find_by(user: @turn1.user)
-          @user2 = @game.game_users.find_by(user: @turn2.user)
-          if @user1.turn_count < @user2.turn_count
-            @turn = @turn1
+      @turn = @game.game_turns.where(task: @task, played: false).first
+      if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
+        @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+      else
+        @turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
+        @turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
+        if @turn1 && @turn2
+          if @turn1.counter > @turn2.counter
+			      @turn = @turn1
             @turn2.destroy
-          else
+		      elsif @turn1.counter < @turn2.counter
             @turn = @turn2
             @turn1.destroy
-          end
-		    end
-        @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
-      else
-        @turn = @game.game_turns.where(task: @task, played: false).last
-        if @turn
-          @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+          else
+            @user1 = @game.game_users.find_by(user: @turn1.user)
+            @user2 = @game.game_users.find_by(user: @turn2.user)
+            if @user1.turn_count < @user2.turn_count
+              @turn = @turn1
+              @turn2.destroy
+            else
+              @turn = @turn2
+              @turn1.destroy
+            end
+		      end
+          @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
         else
           @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
           @user = @game_users.where(turn_count: @game_users.first.turn_count).sample

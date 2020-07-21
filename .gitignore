@@ -3,3 +3,5 @@ Gemfile.lock
 /public
 log/
 .*db/schema.rb
+Gemfile
+config/database.yml

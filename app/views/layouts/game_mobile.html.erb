@@ -102,7 +102,7 @@
 				<% @task.objection_list.objections.each do |o| %>
 				<div class="user" onclick="sendObjection('<%= o.name %>')">
 					<div class="objection"><%= o.name %></div>
-					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+					<svg class="next_objection" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
 				</div>
 				<% end %>
 		</div>
@@ -185,9 +185,9 @@
 				<% if params[:show_task] %>
 					<div class="user" style="color: #69DEA9">
 						<div class="avatar">
-							<i class="fas fa-random"></i>
+							<i class="fas fa-random" style="color: rgb(var(--btncolor))" ></i>
 						</div>
-						<div class="name">Nutzer zufällig auswählen!</div>
+						<div class="name" style="color: rgb(var(--btncolor)); font-size: 15px;">Nutzer zufällig auswählen!</div>
 						<%= link_to '', gm_set_state_path(state: 'turn') %>
 					</div>
 				<% end %>
