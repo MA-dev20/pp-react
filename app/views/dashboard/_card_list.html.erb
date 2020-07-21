@@ -54,7 +54,7 @@
             <% elsif t.task.task_medium && t.task.task_medium.image? %>
             <%= image_tag t.task.task_medium.image.url, class: 'image' %>
             <% elsif t.task.task_medium && t.task.task_medium.audio? %>
-            <i class="fab fa-itunes-note no-image-icon no-image-audio-icon"></i>
+            <%= image_tag 'dash/audio.png', class: 'no-image-icon no-image-audio-icon' %>
             <% else %>
             <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
             <% end %>
@@ -103,7 +103,7 @@
         <% else %>
             <div class="thumb thumb-border slide">
                 <% if t.task.task_medium && t.task.task_medium.audio? %>
-                    <i class="fab fa-itunes-note no-image-icon no-image-audio-icon"></i>
+                    <%= image_tag 'dash/audio.png', class: 'no-pdf-image-icon' %>
                 <% elsif t.task.pdf_type == 'image' %>
                     <%= image_tag 'dash/image-icon.png', class: 'no-pdf-image-icon' %>
                 <% elsif t.task.pdf_type == 'video' %>
