@@ -599,9 +599,9 @@
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
 				$('#loaderModal').hide();
-				<% if @pitch.tasks.count != 0 %>
-					selectDragDropTask(<%= @pitch.tasks.last.id %>);
-				<% end %>
+				// <% if @pitch.tasks.count != 0 %>
+				// 	selectDragDropTask(<%= @pitch.tasks.last.id %>);
+				// <% end %>
 			}
 		})
 	}
@@ -636,9 +636,11 @@
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
 				$('#loaderModal').hide();
-				<% if @pitch.tasks.count != 0 %>
-					selectDragDropTask(<%= @pitch.tasks.last.id %>);
-				<% end %>
+				// <% if @pitch.tasks.count != 0 %>
+				// 	selectDragDropTask(<%= @pitch.tasks.last.id %>);
+				// <% end %>
+				// $(`#task_${res.task_id}`).addClass('selected');
+				// selectTask(res.task_id);
 			}
 		})
 	}
@@ -710,7 +712,7 @@
 			success: function (res) {
 				$('.left-card').removeClass('selected');
 				$(`#task_${task_id}`).addClass('selected');
-			// 	alert('test');
+				// alert('test');
 			// 	// var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
 			// 	// window.location.replace(URL);
 			// 	// showTaskMedia("<%= @task.task_type %>");

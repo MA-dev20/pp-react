@@ -227,7 +227,9 @@ class PitchesController < ApplicationController
 		File.delete(img)
 		task = @pitch.tasks.create(user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
 	  end
-      render json: {id: @task_medium.id, preview: @task_medium.pdf.url, type: @task_medium.media_type}
+	  @task = @pitch.tasks.last
+	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+    #   render json: {id: @task_medium.id, preview: @task_medium.pdf.url, type: @task_medium.media_type, task_id: @pitch.tasks.last.id}
     end
   end
 
