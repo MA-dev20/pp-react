@@ -14,6 +14,7 @@
                 <% else %>
                 <%= image_tag 'dash/pitch_placeholder.png', class: 'pitch-placeholder-img' %>
                 <% end %>
+                <%= link_to '', delete_unsave_pitch_path(pitch), class: 'fas fa-trash remove remove-pitch remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
             </div>
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">

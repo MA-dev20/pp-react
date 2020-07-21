@@ -1879,6 +1879,14 @@ input[type="file"] {
     border-radius: 5px;
 }
 
+.remove-pitch {
+    position: absolute;
+    text-decoration: none;
+    right: 2vh;
+    top: 2vh;
+    color: #fff;
+}
+
 #content {
     .card.right {
         .slide-preview {
