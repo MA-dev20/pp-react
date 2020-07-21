@@ -69,10 +69,14 @@
 <section id="skip">
 	Beenden mit Leertaste
 </section>
+<% if @game.game_sound %>
 <%= audio_tag bestlist_sound, id: 'theme' %>
 <script>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('theme').play();
+</script>
+<% end %>
+<script>
 	setTimeout(function() {
 		confetti();
 	}, 8000);

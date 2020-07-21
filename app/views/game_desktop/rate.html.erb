@@ -85,7 +85,9 @@
 <section id="skip">
 	Skip mit Leertaste
 </section>
+<% if @game.game_sound %>
 <%= audio_tag(rate_sound, autoplay: true, id: "theme") %>
+<% end %>
 <script>
 	<% if @game.skip_rating_timer %>
 		$('#rate_timer').hide();
@@ -108,7 +110,9 @@
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'rating') %>');
 	}
+	<% if @game.game_sound %>
 	document.getElementById('theme').volume = 0.2;
+	<% end %>
 	$(window).keypress(function (e) {
         if (e.key === ' ' || e.key === 'Spacebar') {
             redirect();

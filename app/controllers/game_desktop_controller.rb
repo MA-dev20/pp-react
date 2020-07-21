@@ -14,20 +14,19 @@ class GameDesktopController < ApplicationController
 	@order = @pitch.task_orders
 	@turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
 	@turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
-	@turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	@task = @pitch.task_orders.find_by(order: @game.current_task).task if @game.current_task != 0 && !@game.current_task.nil?
   @turn = @game.game_turns.find_by(task: @task) if !@turn
-	if @turn && @pitch.show_ratings == 'all'
+	if @turn && @game.show_ratings == 'all'
 	  @turn_ratings = @turn.game_turn_ratings.all
 	  @ges_rating = @turn.ges_rating
-	elsif @turn && @pitch.show_ratings == 'one'
+	elsif @turn && @game.show_ratings == 'one'
 	  @rat_user = @game.rating_user
 	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
 	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
 	end
-	@turns = @game.game_turns.where(play: true).where.not(ges_rating: nil).order(ges_rating: :desc)
+	@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
   @game_users = @game.game_users.where(play: true).order(best_rating: :desc)
-	if @pitch.show_ratings == 'one'
+	if @game.show_ratings == 'one'
 	  @rat_user = @game.rating_user
 	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
 	end
@@ -43,6 +42,10 @@ class GameDesktopController < ApplicationController
   end
 
   def set_slide
+    if @game.game_users.count == 0
+      redirect_to gd_set_state_path(state: 'ended')
+      return
+    end
 	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
     if @task_order
       while @task_order && !@task_order.task.valide
@@ -153,6 +156,7 @@ class GameDesktopController < ApplicationController
       redirect_to gd_game_path
 	    return
     elsif params[:state] == 'play'
+      @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
 	    if @task.task_type == 'catchword'
 		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
@@ -168,6 +172,10 @@ class GameDesktopController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
+      if @game.show_ratings == 'skip' || @game.show_ratings == 'none'
+        redirect_to gd_set_state_path(state: "feedback")
+        return
+      end
       @turn = @game.game_turns.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
@@ -287,6 +295,7 @@ class GameDesktopController < ApplicationController
 	end
 	def check_state
 	  @state = @game.state
+    @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	  if @state == 'repeat'
 		temp = Game.where(password: @game.password, state: 'wait', active: true).first
 		game_login temp

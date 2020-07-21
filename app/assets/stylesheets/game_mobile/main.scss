@@ -71,6 +71,7 @@ body {
 	height: 25px;
 	color: rgba(0, 0, 0, .5);
 }
+#rating-menu,
 #menu,
 #objections-menu,
 #comment-popup,
@@ -310,6 +311,9 @@ body {
 				right: 0;
 				margin: 0 10px;
 				height: 30px;
+				.far {
+					color: rgb(var(--btncolor));
+				}
 			}
 			.next_objection {
 				position: absolute;
@@ -325,8 +329,28 @@ body {
 			}
 		}
 		.user:last-child {border-bottom: 0px solid rgba(0, 35, 42, .2);}
-		.objection {
-
+		.user#toggle_rating_skip,
+		.user#toggle_rating {
+			margin-left: 10px;
+			.toggle {
+				position: absolute;
+				display: inline-block;
+				right: 0;
+				margin: 0 10px;
+				height: 20px;
+				border-radius: 10px;
+				width: 40px;
+				background-color: rgba(0,0,0,.2);
+				border: 1px solid rgb(var(--btncolor));
+				.dot {
+					position: absolute;
+					height: 20px; width: 20px;
+					border-radius: 50%;
+					background-color: rgb(var(--btncolor));
+				}
+				.dot.on {left: 0; right: auto}
+				.dot.off {left: auto; right: 0}
+			}
 		}
 	}
 }
@@ -1138,6 +1162,7 @@ body {
 		height: 70px;
 		margin: 10px;
 	}
+	#rating-menu,
 	#objections-menu,
 	#user-name,
 	#user-new,

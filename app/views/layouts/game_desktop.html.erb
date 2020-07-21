@@ -20,7 +20,7 @@
 <body>
 	<section id="navbar">
 		<%= image_tag 'logos/peterpitch.png', class: 'logo' %>
-		<% if @game.state == 'rating' && @game.show_ratings == 'one' %>
+		<% if @game.state == 'rating' && @game.show_ratings == 'one' || @game.state == 'bestlist' && @game.show_ratings == 'one'%>
 		Bewertung von: <%= User.find(@game.rating_user).fname %> <%= User.find(@game.rating_user).lname %>
 		<% else %>
 		- <%= @game.team.name %> -

@@ -88,12 +88,15 @@
 <section id="skip">
 	Skip mit Leertaste
 </section>
+<% if @game.game_sound %>
 <%= audio_tag 'game/rating/rating_bar.mp3', id: 'ratingBarSound' %>
 <%= audio_tag 'game/rating/swoosh.mp3', id: 'swoosh' %>
 <%= audio_tag 'game/rating/party.wav', id: 'party' %>
 <%= audio_tag 'game/rating/theme.wav', loop: true, id: 'theme' %>
 <%= audio_tag(rating_sound, id: 'VOrating') %>
+<% end %>
 <script>
+	<% if @game.game_sound %>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('party').volume = 0.2;
 	document.getElementById('VOrating').volume = 0.2;
@@ -124,11 +127,14 @@
 			}, 13000);
 		}
 	});
+	<% end %>
 	<% if @turn_ratings.count == 1 %>
 	$('#rating1').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		<% if @game.game_sound %>
 		document.getElementById('ratingBarSound').play();
+		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
 			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
@@ -157,7 +163,9 @@
 	$('#rating2').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		<% if @game.game_sound %>
 		document.getElementById('ratingBarSound').play();
+		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
 			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
@@ -197,7 +205,9 @@
 	$('#rating3').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		<% if @game.game_sound %>
 		document.getElementById('ratingBarSound').play();
+		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
 			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
@@ -249,7 +259,9 @@
 	$('#rating4').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		<% if @game.game_sound %>
 		document.getElementById('ratingBarSound').play();
+		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
 			$('#rating1').text(Number(<%= @rating1.rating / 10.0 %> * i).toFixed(1));
