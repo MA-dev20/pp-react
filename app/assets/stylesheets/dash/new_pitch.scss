@@ -330,6 +330,63 @@
 		}
     }
 
+    .card.left {
+        width: 13.55vw;
+        left: 3.5vw;
+        .tasks {
+            .card {
+                a {
+                    cursor: pointer;
+                }
+                width: 12vw;
+                height: 22vh;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                margin-bottom: 1vh;
+                margin-left: 0.5vh;
+
+                .task-link {
+                    position: absolute;
+                    top: 3.6vh;
+                    left: 0;
+                    height: 17.8vh;
+                    width: 11.8vw;
+                    z-index: 10;
+                }
+
+                .task-title,
+                .task-subtitle {
+                    width: 10.8vw;
+                }
+
+                .task-title .select-task-link {
+                    width: 19vh;
+                }
+
+                .thumb {
+                    width: 10.8vw;
+                    height: 13.5vh;
+                }
+
+                .thumb.slide {
+                    height: 67%;
+
+                    .no-pdf-image-icon {
+                        top: 30%;
+                    }
+
+                    .video-play-thumb {
+                        top: 34%;
+                    }
+                }
+            }
+
+            .card.selected {
+                width: 12.2vw;
+            }
+        }
+    }
+
     .pitch-tasks-list {
         position: relative;
         height: 61vh;
@@ -1760,7 +1817,7 @@ input[type="file"] {
     text-decoration: none;
     font-size: 2.7vh;
     position: absolute;
-    left: 5vh;
+    left: 8vh;
     top: 1.5vh;
 }
 
