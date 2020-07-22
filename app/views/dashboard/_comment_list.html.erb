@@ -1,0 +1,17 @@
+<% @comments.each do |c| %>
+    <% if c.time < @video.duration %>
+    <div class="comment">
+        <div class="user">
+            <% cmin = (c.time / 60) < 10 ? '0' + (c.time / 60).round.to_s : (c.time / 60).round.to_s %>
+            <% csec = (c.time % 60) < 10 ? '0' + (c.time % 60).round.to_s : (c.time % 60).round.to_s %>
+            <% cTime = cmin + ':' + csec %> 
+            <%= image_tag c.user.avatar.url %>
+            <%= c.user.fname %> <%= c.user.lname %> - <%= cTime %>
+            <%= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
+        </div>
+        <div class="comment" onclick="jumpTo(<%= c.time %>)">
+            <div class="dot <%= c.positive %>"></div><%= c.text %>
+        </div>
+    </div>
+    <% end %>
+<% end %>

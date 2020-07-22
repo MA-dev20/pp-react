@@ -76,23 +76,7 @@
 		<div class="comments">
 			<h5>Kommentare</h5>
 			<div class="card" id="comment-card">
-				<% @comments.each do |c| %>
-					<% if c.time < @video.duration %>
-					<div class="comment">
-						<div class="user">
-							<% cmin = (c.time / 60) < 10 ? '0' + (c.time / 60).round.to_s : (c.time / 60).round.to_s %>
-							<% csec = (c.time % 60) < 10 ? '0' + (c.time % 60).round.to_s : (c.time % 60).round.to_s %>
-							<% cTime = cmin + ':' + csec %> 
-							<%= image_tag c.user.avatar.url %>
-							<%= c.user.fname %> <%= c.user.lname %> - <%= cTime %>
-							<%= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
-						</div>
-						<div class="comment" onclick="jumpTo(<%= c.time %>)">
-							<div class="dot <%= c.positive %>"></div><%= c.text %>
-						</div>
-					</div>
-					<% end %>
-				<% end %>
+				<%= render 'comment_list' %>
 			</div>
 			<div class="comment-form">
 				<div class="time">0:00</div>
@@ -100,7 +84,7 @@
 				<div class="neutral active" onclick="setMood('neutral')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Neutral</labe></div>
 				<div class="positive" onclick="setMood('positve')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Positiv</labe></div>
 				<div class="form-group">
-				<%= form_for(:comment, url: new_comment_path(@turn), remote: true) do |f| %>
+				<%= form_for(:comment, url: add_comment_path(@turn), remote: true) do |f| %>
 					<%= f.hidden_field :positive, value: 'neutral' %>
 					<%= f.hidden_field :user_id, value: @admin.id %>
 					<%= f.hidden_field :time, value: 0, class: 'form-field' %>

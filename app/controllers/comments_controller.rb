@@ -27,6 +27,15 @@ class CommentsController < ApplicationController
 	end
   end
 
+  def add_comment
+	@comment = @turn.comments.create(comment_params)
+	@comments = @turn.comments.where.not(time: nil).order(:time)
+	respond_to do |format|
+		format.html { redirect_to dashboard_pitch_video_path(@turn)}
+		format.js { render }
+	end
+  end
+
   def update
 	@comment.update(comment_params)
 	redirect_to dashboard_pitch_video_path(@turn)

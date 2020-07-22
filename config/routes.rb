@@ -168,6 +168,7 @@ Rails.application.routes.draw do
 
   #Comments
   post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'
+  post 'turns/:turn_id/comments/new', to: 'comments#add_comment', as: 'add_comment'
   post 'turns/:turn_id/comments/:comment_id/update', to: 'comments#update', as: 'update_comment'
   get 'turns/:turn_id/comments/:comment_id/destroy', to: 'comments#destroy', as: 'destroy_comment'
 
