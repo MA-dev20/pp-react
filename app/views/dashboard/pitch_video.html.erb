@@ -1,6 +1,6 @@
 <div class="card pitch-video">
 	<div class="left">
-		<h3><%= @turn&.task&.title %></h3>
+		<h3 class="pitch-video-title"><%= @turn&.task&.title %></h3>
 		<div class="user">
 			<%= image_tag @turn.user.avatar.url %>
 			<%= @turn.user.fname %> <%= @turn.user.lname %> - <%= @turn.created_at.strftime("%d.%m.%y") %>
@@ -8,6 +8,7 @@
 		<%= link_to '', delete_pitch_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
 		<% if @ratings.count != 0 %>
 		<div class="ratings">
+			<p class="rating-heading">Rating</p>
 			<% @ratings.each do |r| %>
 				<div class="rating">
 					<div class="name"><%= r.rating_criterium.name %></div>
