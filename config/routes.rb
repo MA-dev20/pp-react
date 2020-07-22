@@ -58,6 +58,8 @@ Rails.application.routes.draw do
   post 'pitches/:pitch_id/tasks/:task_id/create_ratings', to: 'pitches#create_ratings', as: 'create_ratings'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
+  get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
+
 
 
 

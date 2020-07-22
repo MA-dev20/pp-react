@@ -140,21 +140,35 @@ class PitchesController < ApplicationController
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
 	@task_order.destroy
 	@task_orders = @pitch.task_orders.all.order(:order)
-	# if @task.pitches.count == 1 && @task.destroy
-	#   flash[:info] = "Task gelöscht!"
-	# elsif @task_order.destroy
-	#   flash[:info] = 'Task aus Pitch entfernt!'
-	# else
-	#   flash[:alert] = 'Konnte Task nicht löschen!'
-	#   redirect_to dashboard_edit_pitch_path(@pitch)
-	#   return
-	# end
+
 	i = 1
 	@task_orders.each do |to|
 	  to.update(order: i)
 	  i = i + 1
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch)
+  end
+
+  def delete_task_card
+	@pitch = Pitch.find(params[:pitch_id])
+	@task = Task.find(params[:selected_task_id])
+	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
+	@task_order.destroy
+	@task_orders = @pitch.task_orders.all.order(:order)
+	@task = @pitch.tasks.first
+	
+	i = 1
+	@task_orders.each do |to|
+	  to.update(order: i)
+	  i = i + 1
+	end
+
+	@admin = current_user
+	@cw_lists = @admin.catchword_lists
+	@ol_list = @admin.objection_lists
+	respond_to do |format|
+		format.js { render 'dashboard/delete_task_card'}
+	end
   end
 
   def customize

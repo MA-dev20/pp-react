@@ -1,0 +1,11 @@
+if ('<%= @task.task_type %>' === 'slide') {
+    $('#selectedSlide').removeClass('hide').show();
+    $('#selectedTask').hide();
+    $('#selectedSlide').html("<%=j render partial: 'dashboard/pitches/new_pdf' %>");
+    $('#cardList').html("<%=j render partial: 'dashboard/card_list' %>");
+} else {
+    $('#selectedSlide').hide();
+    $('#selectedTask').removeClass('hide').show();
+    $('#selectedTask').html("<%=j render partial: 'dashboard/pitches/new_task' %>");
+    $('#cardList').html("<%=j render partial: 'dashboard/card_list' %>");
+}

@@ -1,3 +1,4 @@
+<% @pitch.task_orders.order(:order).each do |t| %>
 <div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>"
         id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
         ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
@@ -28,7 +29,8 @@
             <% else %>
                 <div class="name"><%= t.order %>. Task</div>
             <% end %>
-            <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.id %>)"></a>
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
         </div>
         <div class="task-subtitle task-name">
@@ -80,7 +82,8 @@
         <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
-            <%= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.id %>)"></a>            
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
         </div>
         <div class="task-subtitle task-name">
@@ -115,3 +118,9 @@
         <% end %>
         <% end %>
     </div>
+    <% end %>
+    <% if @pitch.tasks.count == 0 %>
+    <div class="form-group add-first-task">
+        <button class="btn" onclick="addTask()">Add first task</button>
+    </div>
+    <% end %>

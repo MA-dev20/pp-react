@@ -19,14 +19,7 @@
 	<div class="card left">
 		<div class="tasks" id="tasksScrollBar">
 			<div id="cardList">
-				<% @pitch.task_orders.order(:order).each do |t| %>
-				<%= render partial: 'card_list', locals: { t: t } %>
-				<% end %>
-				<% if @pitch.tasks.count == 0 %>
-				<div class="form-group add-first-task">
-					<button class="btn" onclick="addTask()">Add first task</button>
-				</div>
-				<% end %>
+				<%= render partial: 'card_list' %>
 			</div>
 			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_pdf_form"} do |t| %>
 			<div class="menu-box">
@@ -696,6 +689,19 @@
 						$(`#task_${task_id} .${type}`).text('-'); 
 					}
 				}
+			}
+		})
+	}
+	
+	function deleteTask(task_id) {
+		$.ajax({
+			url: '<%= delete_task_card_path(@pitch) %>',
+			type: 'GET',
+			dataType: "script",
+			data: {
+				selected_task_id: task_id,
+			},
+			success: function (res) {
 			}
 		})
 	}
