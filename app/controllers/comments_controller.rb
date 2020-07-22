@@ -20,7 +20,10 @@ class CommentsController < ApplicationController
 	  end
 	  render json: {comment: @comment.text}
 	else
-	  redirect_to dashboard_pitch_video_path(@turn)
+		respond_to do |format|
+			format.html { redirect_to dashboard_pitch_video_path(@turn)}
+			format.js { render }
+		end
 	end
   end
 

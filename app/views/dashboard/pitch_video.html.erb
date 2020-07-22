@@ -100,7 +100,7 @@
 				<div class="neutral active" onclick="setMood('neutral')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Neutral</labe></div>
 				<div class="positive" onclick="setMood('positve')"><div class="circle"><div class="dot"></div></div><labe class="comment-label">Positiv</labe></div>
 				<div class="form-group">
-				<%= form_for(:comment, url: new_comment_path(@turn)) do |f| %>
+				<%= form_for(:comment, url: new_comment_path(@turn), remote: true) do |f| %>
 					<%= f.hidden_field :positive, value: 'neutral' %>
 					<%= f.hidden_field :user_id, value: @admin.id %>
 					<%= f.hidden_field :time, value: 0, class: 'form-field' %>
