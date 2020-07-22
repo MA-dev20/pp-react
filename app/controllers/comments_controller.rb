@@ -29,6 +29,9 @@ class CommentsController < ApplicationController
 
   def add_comment
 	@comment = @turn.comments.create(comment_params)
+	@ratings = @turn.game_turn_ratings
+	@own_ratings = @turn.ratings.where(user: @admin).all
+	@video = @turn.pitch_video
 	@comments = @turn.comments.where.not(time: nil).order(:time)
 	respond_to do |format|
 		format.html { redirect_to dashboard_pitch_video_path(@turn)}
