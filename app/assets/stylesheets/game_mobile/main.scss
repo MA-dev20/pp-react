@@ -644,6 +644,7 @@ body {
 		bottom: 0;
 	}
 }
+.noanim {animation: none !important;}
 #content {
 	position: fixed;
 	top: 0;
@@ -660,6 +661,7 @@ body {
 	.head#choose-head {
 		animation: fadeIn .5s 1 forwards;
 	}
+
 	.head {
 		position: absolute;
 		margin-top: calc(5vh + 40px);

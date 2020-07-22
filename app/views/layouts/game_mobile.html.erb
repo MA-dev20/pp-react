@@ -168,7 +168,7 @@
 		</div>
 	</section>
 	<% end %>
-	<section id="content">
+	<section id="content" class="<%= params[:this_task] && params[:show_task] ? 'noanim' : '' %>">
 		<%= yield %>
 	</section>
 
