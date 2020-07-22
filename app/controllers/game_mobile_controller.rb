@@ -195,38 +195,36 @@ class GameMobileController < ApplicationController
       while @task_order && !@task_order.task.valide
         @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
       end
+      if @task_order
+    	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+    	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+      		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+      		redirect_to gm_game_path
+      		return
+        elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
+      	  redirect_to gm_set_state_path(state: 'slide')
+      		return
+      	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
+      		redirect_to gm_set_state_path(state: 'show_task')
+      		return
+        else
+          redirect_to gm_game_path
+      		return
+        end
+    	else
+        if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+          redirect_to gm_set_state_path(state: 'bestlist')
+          return
+        else
+          redirect_to gm_set_state_path(state: 'ended')
+          return
+        end
+      end
     else
       redirect_to gm_set_state_path(state: 'bestlist')
       return
     end
-  	if @task_order
-  	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
-  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
-    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-    		redirect_to gm_game_path
-    		return
-      elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
-    	  redirect_to gm_set_state_path(state: 'slide')
-    		return
-    	elsif @game.state != 'show_task'
-    		redirect_to gm_set_state_path(state: 'show_task')
-    		return
-      else
-        redirect_to gm_game_path
-    		return
-      end
-  	elsif @task_order
-      redirect_to gm_game_path
-      return
-    else
-      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
-        redirect_to gm_set_state_path(state: 'bestlist')
-        return
-      else
-        redirect_to gm_set_state_path(state: 'ended')
-        return
-      end
-    end
+
   end
   def set_state
     if params[:state] == 'wait'
@@ -234,7 +232,7 @@ class GameMobileController < ApplicationController
       redirect_to gm_game_path
 	    return
 	  elsif params[:state] == 'slide'
-	    @game.update(state: 'slide')
+	    @game.update(state: 'slide') if @game.state != 'slide'
 	    redirect_to gm_game_path
     elsif params[:state] == 'show_task'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
