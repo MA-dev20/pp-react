@@ -20,25 +20,16 @@
 <section id="skip">
 	Skip mit Leertaste
 </section>
+<% if @game.game_sound %>
 <%= audio_tag(turn_sound, autoplay: true, id: 'theme') %>
 <script>
 	document.getElementById('theme').volume = 0.2;
+</script>
+<% end %>
+<script>
 	$(window).keypress(function (e) {
-        if (e.key === ' ' || e.key === 'Spacebar') {
-            window.location.replace('<%= gd_set_state_path('', state: 'play') %>');
-        };
-    })
-	<% if @turn1 && @turn1 == @turn %>
-		$("#head").addClass("delay2");
-		$('.circle-right').addClass('fadeOut');
-		$('.circle-left').addClass('moveMiddleLeft');
-		window.setTimeout(function() {$('.circle-left img').addClass('pulse');}, 2000);
-		window.setTimeout(function() {$('.circle-left .circle').addClass('pulse');}, 2000);
-	<% elsif @turn2 && @turn2 == @turn %>
-		$("#head").addClass("delay2");
-		$('.circle-left').addClass('fadeOut');
-		$('.circle-right').addClass('moveMiddleRight');
-		window.setTimeout(function() {$('.circle-right img').addClass('pulse');}, 2000);
-		window.setTimeout(function() {$('.circle-right .circle').addClass('pulse');}, 2000);
-	<% end %>
+      if (e.key === ' ' || e.key === 'Spacebar') {
+          window.location.replace('<%= gd_set_state_path('', state: 'play') %>');
+      };
+  })
 </script>

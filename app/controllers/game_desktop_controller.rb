@@ -14,23 +14,44 @@ class GameDesktopController < ApplicationController
 	@order = @pitch.task_orders
 	@turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
 	@turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
-	@turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	@task = @pitch.task_orders.find_by(order: @game.current_task).task if @game.current_task != 0 && !@game.current_task.nil?
   @turn = @game.game_turns.find_by(task: @task) if !@turn
-	if @turn && @pitch.show_ratings == 'all'
+	if @turn && @game.show_ratings == 'all'
 	  @turn_ratings = @turn.game_turn_ratings.all
 	  @ges_rating = @turn.ges_rating
-	elsif @turn && @pitch.show_ratings == 'one'
+	elsif @turn && @game.show_ratings == 'one'
 	  @rat_user = @game.rating_user
 	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
 	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
 	end
-	@turns = @game.game_turns.where(play: true).where.not(ges_rating: nil).order(ges_rating: :desc)
+	@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
   @game_users = @game.game_users.where(play: true).order(best_rating: :desc)
-	if @pitch.show_ratings == 'one'
+	if @game.show_ratings == 'one'
 	  @rat_user = @game.rating_user
 	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
 	end
+  if @game.state == 'bestlist' && @game.show_ratings == 'one'
+    @ratings = [];
+    @game.game_users.each do |u|
+      if u.user_id != @game.rating_user
+        @turns = @game.game_turns.where(user_id: u.user_id)
+        @best_rating = 0
+        @turns.each do |t|
+          this_rating = t.ratings.where(user_id: @game.rating_user).average(:rating) if t.ratings.where(user_id: @game.rating_user).count != 0
+          this_rating = 0 if t.ratings.where(user_id: @game.rating_user).count == 0
+          if this_rating  > @best_rating
+            @best_rating = this_rating
+          end
+        end
+        if u.user.avatar?
+          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, avatar: u.user.avatar.url}
+        else
+          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, name: u.user.fname[0].capitalize + u.user.lname[0].capitalize}
+        end
+      end
+    end
+    @ratings = @ratings.sort_by{|e| -e[:rating]}
+  end
 	render @state
   end
 
@@ -43,29 +64,47 @@ class GameDesktopController < ApplicationController
   end
 
   def set_slide
-	@task_order = @pitch.task_orders.find_by(order: params[:slide])
-  if @task_order.task.valide
-  	if @task_order && @game.current_task != params[:slide]
-  	  @game.update(current_task: params[:slide])
-  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
-  		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-  		redirect_to gd_game_path
-  		return
-  	  elsif @task_order.task.task_type == 'slide'
-  	    redirect_to gd_set_state_path(state: 'slide')
-  		return
-  	  else
-  		redirect_to gd_set_state_path(state: 'show_task')
-  		return
-  	  end
-  	else
-  	  redirect_to gd_set_state_path(state: 'bestlist')
+    if @game.game_users.count == 0
+      redirect_to gd_set_state_path(state: 'ended')
       return
-  	end
-  else
-    redirect_to gd_set_slide_path(@game.current_task + 1)
-    return
-  end
+    end
+	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
+    if @task_order
+      while @task_order && !@task_order.task.valide
+        @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
+      end
+    else
+      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+        redirect_to gd_set_state_path(state: 'bestlist')
+        return
+      else
+        redirect_to gd_set_state_path(state: 'ended')
+        return
+      end
+    end
+  	if @task_order
+  	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+    		redirect_to gd_game_path
+    		return
+      elsif @task_order.task.task_type == 'slide' && @game.state != slide
+    	  redirect_to gd_set_state_path(state: 'slide')
+    		return
+    	elsif @game.state != 'show_task'
+    		redirect_to gd_set_state_path(state: 'show_task')
+    		return
+      else
+        redirect_to gd_game_path
+    		return
+      end
+  	elsif @task_order
+      redirect_to gd_game_path
+      return
+    else
+      redirect_to gd_set_state_path(state: 'bestlist')
+      return
+    end
   end
   def set_state
     if params[:state] == 'wait'
@@ -109,31 +148,31 @@ class GameDesktopController < ApplicationController
 	    return
     elsif params[:state] == 'turn'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      if @game.turn1 && @game.turn2
-        @turn1 = GameTurn.find_by(id: @game.turn1)
-        @turn2 = GameTurn.find_by(id: @game.turn2)
-        if @turn1.counter > @turn2.counter
-			    @turn = @turn1
-          @turn2.destroy
-		    elsif  @turn1.counter < @turn2.counter
-          @turn = @turn2
-          @turn1.destroy
-        else
-          @user1 = @game.game_users.find_by(user: @turn1.user)
-          @user2 = @game.game_users.find_by(user: @turn2.user)
-          if @user1.turn_count < @user2.turn_count
-            @turn = @turn1
+      @turn = @game.game_turns.where(task: @task, played: false).first
+      if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
+        @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+      else
+        @turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
+        @turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
+        if @turn1 && @turn2
+          if @turn1.counter > @turn2.counter
+			      @turn = @turn1
             @turn2.destroy
-          else
+		      elsif @turn1.counter < @turn2.counter
             @turn = @turn2
             @turn1.destroy
-          end
-		    end
-        @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
-      else
-        @turn = @game.game_turns.where(task: @task, played: false).last
-        if @turn
-          @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+          else
+            @user1 = @game.game_users.find_by(user: @turn1.user)
+            @user2 = @game.game_users.find_by(user: @turn2.user)
+            if @user1.turn_count < @user2.turn_count
+              @turn = @turn1
+              @turn2.destroy
+            else
+              @turn = @turn2
+              @turn1.destroy
+            end
+		      end
+          @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
         else
           @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
           @user = @game_users.where(turn_count: @game_users.first.turn_count).sample
@@ -144,6 +183,7 @@ class GameDesktopController < ApplicationController
       redirect_to gd_game_path
 	    return
     elsif params[:state] == 'play'
+      @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
 	    if @task.task_type == 'catchword'
 		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
@@ -159,6 +199,10 @@ class GameDesktopController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
+      if @game.show_ratings == 'skip' || @game.show_ratings == 'none'
+        redirect_to gd_set_state_path(state: "feedback")
+        return
+      end
       @turn = @game.game_turns.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
@@ -278,6 +322,7 @@ class GameDesktopController < ApplicationController
 	end
 	def check_state
 	  @state = @game.state
+    @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	  if @state == 'repeat'
 		temp = Game.where(password: @game.password, state: 'wait', active: true).first
 		game_login temp

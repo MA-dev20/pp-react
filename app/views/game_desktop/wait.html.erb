@@ -29,15 +29,23 @@
 
 <section id="skip">Skip mit Leertaste</section>
 
+
 <%= audio_tag 'game/ping.mp3', autoplay: false, loop: false, id: 'ping' %>
+
+<% if @game.game_sound %>
 <%= audio_tag 'game/ringdoor.mp3', autoplay: false, loop: false, id: 'ring' %>
 <%= audio_tag(wait_sound, autoplay: true, loop: false, id: 'theme') %>
-
-
 <script>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('ring').volume = 0.5;
 	document.getElementById('ping').volume = 0.5;
+<% else %>
+<script>
+	document.getElementById('ping').volume = 0.0;
+<% end %>
+</script>
+
+<script>
 	$(window).keypress(function (e) {
 		if (e.key === ' ' || e.key === 'Spacebar') {
 			window.location.replace('<%= gd_set_slide_path(1) %>');

@@ -199,25 +199,33 @@ class GameMobileController < ApplicationController
       redirect_to gm_set_state_path(state: 'bestlist')
       return
     end
-  	if @task_order && @game.current_task != @task_order.order
-  	  @game.update(current_task: @task_order.order)
-  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide'
-  		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-  		redirect_to gm_game_path
-  		return
-  	  elsif @task_order.task.task_type == 'slide'
-  	    redirect_to gm_set_state_path(state: 'slide')
-  		return
-  	  else
-  		redirect_to gm_set_state_path(state: 'show_task')
-  		return
-  	  end
+  	if @task_order
+  	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+    		redirect_to gm_game_path
+    		return
+      elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
+    	  redirect_to gm_set_state_path(state: 'slide')
+    		return
+    	elsif @game.state != 'show_task'
+    		redirect_to gm_set_state_path(state: 'show_task')
+    		return
+      else
+        redirect_to gm_game_path
+    		return
+      end
   	elsif @task_order
       redirect_to gm_game_path
       return
     else
-      redirect_to gm_set_state_path(state: 'bestlist')
-      return
+      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+        redirect_to gm_set_state_path(state: 'bestlist')
+        return
+      else
+        redirect_to gm_set_state_path(state: 'ended')
+        return
+      end
     end
   end
   def set_state
@@ -262,31 +270,31 @@ class GameMobileController < ApplicationController
 	    return
     elsif params[:state] == 'turn'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
-      if @game.turn1 && @game.turn2
-        @turn1 = GameTurn.find_by(id: @game.turn1)
-        @turn2 = GameTurn.find_by(id: @game.turn2)
-        if @turn1.counter > @turn2.counter
-			    @turn = @turn1
-          @turn2.destroy
-		    elsif  @turn1.counter < @turn2.counter
-          @turn = @turn2
-          @turn1.destroy
-        else
-          @user1 = @game.game_users.find_by(user: @turn1.user)
-          @user2 = @game.game_users.find_by(user: @turn2.user)
-          if @user1.turn_count < @user2.turn_count
-            @turn = @turn1
+      @turn = @game.game_turns.where(task: @task, played: false).first
+      if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
+        @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+      else
+        @turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
+        @turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
+        if @turn1 && @turn2
+          if @turn1.counter > @turn2.counter
+			      @turn = @turn1
             @turn2.destroy
-          else
+		      elsif @turn1.counter < @turn2.counter
             @turn = @turn2
             @turn1.destroy
-          end
-		    end
-        @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
-      else
-        @turn = @game.game_turns.where(task: @task, played: false).last
-        if @turn
-          @game.update(state: 'turn', current_turn: @turn.id) if @game.state != 'turn'
+          else
+            @user1 = @game.game_users.find_by(user: @turn1.user)
+            @user2 = @game.game_users.find_by(user: @turn2.user)
+            if @user1.turn_count < @user2.turn_count
+              @turn = @turn1
+              @turn2.destroy
+            else
+              @turn = @turn2
+              @turn1.destroy
+            end
+		      end
+          @game.update(state: 'turn', current_turn: @turn.id, turn1: nil, turn2: nil) if @game.state != 'turn'
         else
           @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
           @user = @game_users.where(turn_count: @game_users.first.turn_count).sample
@@ -297,6 +305,7 @@ class GameMobileController < ApplicationController
       redirect_to gm_game_path
 	    return
     elsif params[:state] == 'play'
+      @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
 	    if @task.task_type == 'catchword'
 		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
@@ -307,11 +316,17 @@ class GameMobileController < ApplicationController
     elsif params[:state] == 'feedback'
       @turn = @game.game_turns.find_by(id: @game.current_turn)
       @game_user = @game.game_users.find_by(user: @turn.user)
-      @turn.update(ges_rating: nil, played: true)
+      if @turn.game_turn_ratings.count == 0
+        @turn.update(ges_rating: nil, played: true)
+      end
       @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gm_game_path
     elsif params[:state] == 'rate'
+      if @game.show_ratings == 'none'
+        redirect_to gm_set_state_path(state: "feedback")
+        return
+      end
       @turn = @game.game_turns.find_by(id: @game.current_turn)
 	    if @turn
 	      @task = @turn.task
@@ -348,14 +363,7 @@ class GameMobileController < ApplicationController
               @game_user.update(best_rating: 0)
             end
           end
-          if @pitch.show_ratings == 'none'
-            redirect_to gm_set_state_path(state: 'feedback')
-  		      return
-          elsif @pitch.show_ratings == 'one' && @turn_ratings.count == 0
-            @turn.update(played: true)
-            redirect_to gm_set_slide_path(@game.current_task + 1)
-            return
-          elsif  @game.state != 'rating'
+          if @game.state != 'rating'
             @user = @turn.user
             @turn.game_turn_ratings.each do |tr|
               @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
@@ -371,7 +379,12 @@ class GameMobileController < ApplicationController
             old_rating = @user.ges_rating
             @user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
             @turn.update(played: true)
-            @game.update(state: 'rating')
+            if @game.show_ratings == 'skip' || @game.show_ratings == 'one' && @turn.user_id == @game.rating_user
+              redirect_to gm_set_state_path(state: 'feedback')
+    		      return
+            else
+              @game.update(state: 'rating')
+            end
           end
         end
       end

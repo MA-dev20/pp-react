@@ -213,9 +213,28 @@ class GamesController < ApplicationController
 	redirect_to dashboard_video_path
   end
 
+  def customize_game
+    @game = Game.find(params[:game_id])
+    if @game.update(game_params)
+      if params[:json] == "true"
+        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer}
+      else
+        game_login @game
+        redirect_to gd_join_path(@game)
+      end
+    else
+      flash[:alert] = 'Konnte Spiel nicht speichern!'
+      if params[:json] == "true"
+        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer}
+      else
+        redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: @pitch.id)
+      end
+    end
+  end
+
   private
 	def game_params
-	  params.require(:game).permit(:team_id, :password, :game_seconds, :rating_list_id, :skip_elections, :max_users, :show_ratings, :rating_user, :video_id, :video_is_pitch, :youtube_url, :skip_rating_timer, :pitch_id)
+	  params.require(:game).permit(:team_id, :password, :show_ratings, :rating_user, :skip_rating_timer, :pitch_id, :game_sound)
 	end
 	def turn_params
 	  params.require(:turn).permit(:play, :record_pitch)
@@ -235,7 +254,13 @@ class GamesController < ApplicationController
 	  if user_signed_in?
 	    @user = current_user
 	    @company = @user.company
-	  else
+	  elsif game_user_logged_in?
+      @user = current_game_user
+      if @user.role == 'user' || @user.role == 'inactive'
+        flash[:alert] = 'Du hast keine Berechtigung für diese Aktion'
+        render json: {alert: true}
+      end
+    else
 	    flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
 	    redirect_to root_path
 	  end

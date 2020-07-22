@@ -34,7 +34,7 @@
 		FEHLER
 		<% else %>
 		<%= @game.team.name %>
-			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' %>
+			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' && !current_page?(gm_join_path) %>
 				<svg class="menu" onclick="toggleMenu()" viewbox="0 0 144 144"><use xlink:href="#menuIcon" /></svg>
 			<% elsif @game && @admin && @game.game_users.find_by(user_id: @admin.id) %>
         <%= link_to '', gm_logout_path(@admin.id), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
@@ -56,25 +56,30 @@
 				<div class="link" onclick="toggleObjections()">
 					<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#slidesIcon" /></svg>
 					Einwände
-					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 				</div>
 			<% end %>
 			<% if @pitch %>
 				<div class="link" onclick="toggleNav()">
 					<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#slidesIcon" /></svg>
 					Foliennavigation
-					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 				</div>
 			<% end %>
 			<div class="link" onclick="toggleUser()">
 				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#usersIcon" /></svg>
 				Nutzerliste
-				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<div class="link" onclick="toggleBestlist()">
 				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#statsIcon" /></svg>
 				Bestenliste
-				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
+			</div>
+			<div class="link" onclick="toggleRatingMenu()">
+				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#statsIcon" /></svg>
+				Bewertungen
+				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<% if @game && @game.state == 'play' %>
 		    <div class="link end-pitch"  onclick="redirectRate()">
@@ -91,6 +96,61 @@
 		</div>
 	</section>
 
+	<section id='rating-menu'>
+		<div class="nav">
+			<div class="back" onclick="toggleRatingMenu()">
+        <i class="fas fa-chevron-left"></i>zum Menü
+      </div>
+			<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeMenu()' %>
+		</div>
+		<div class="content">
+			<div class="heading">Bewertungen</div>
+			<div class="subheading">Hier kannst du die Spielregeln für die Bewertungen der Aufgaben festlegen</div>
+			<%= form_for(:game, url: customize_game_path(@game.id), html: {id: "rating_form"}) do |f| %>
+			<%= f.hidden_field :skip_rating_timer, value: @game.skip_rating_timer %>
+			<%= f.hidden_field :show_ratings, value: @game.show_ratings %>
+			<%= f.hidden_field :rating_user, value: @game.rating_user %>
+			<% end %>
+			<div class="user" id="toggle_rating" onclick="toggleRatings('allNone', 0)">
+				Bewertungen
+				<div class="toggle <%= @game.show_ratings == 'none' ? 'off' : 'on' %>"><div class="dot"></div></div>
+			</div>
+			<div class="user" id="toggle_rating_timer" onclick="toggleRatings('timer', 0)" style="<%= @game.show_ratings== 'none' ? 'display: none' : 'display: block' %>">
+				Zeitlimit für Bewertungsabgabe
+				<div class="toggle <%= @game.skip_rating_timer == true ? 'off' : 'on' %>"><div class="dot"></div></div>
+			</div>
+			<div class="user" id="toggle_rating_skip" onclick="toggleRatings('allSkip', 0)" style="<%= @game.show_ratings== 'none' ? 'display: none' : 'display: block' %>">
+				Bewertungen anzeigen
+				<div class="toggle <%= @game.show_ratings == 'skip' ? 'off' : 'on' %>"><div class="dot"></div></div>
+			</div>
+			<div class="ratings" id="rating_user_list" style="<%= @game.show_ratings == 'none' ? 'display: none' : 'display: block' %>">
+				<div class="user" onclick="toggleRatings('all', 0)">
+						<div class="avatar">
+
+						</div>
+						<div class="name">
+							Durchschnittsbewertung
+						</div>
+						<div class="radio-circle <%= @game.show_ratings == 'all' ? 'on' : 'off' %>" id="rating_user_all" ><div class="dot"></div></div>
+				</div>
+				<% @game.game_users.each do |u| %>
+				<div class="user" onclick="toggleRatings('one', <%= u.user_id %>)">
+					<div class="avatar">
+						<% if u.user.avatar? %>
+						<%= image_tag u.user.avatar.url %>
+						<% else %>
+						<div class='circle'><%= u.user.fname[0].capitalize + u.user.lname[0].capitalize %></div>
+						<% end %>
+					</div>
+					<div class="name">
+						<%= u.user.fname + ' ' + u.user.lname %>
+					</div>
+					<div class="radio-circle <%= @game.show_ratings == 'one' && @game.rating_user == u.user_id ? 'on' : 'off' %>" id="rating_user_<%= u.user_id %>" ><div class="dot"></div></div>
+				</div>
+				<% end %>
+			</div>
+		</div>
+	</section>
 	<% if @task && @task.objection_list %>
 	<section id="objections-menu">
 		<div class="nav">
@@ -102,13 +162,13 @@
 				<% @task.objection_list.objections.each do |o| %>
 				<div class="user" onclick="sendObjection('<%= o.name %>')">
 					<div class="objection"><%= o.name %></div>
-					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+					<svg class="next_objection" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
 				</div>
 				<% end %>
 		</div>
 	</section>
 	<% end %>
-	<section id="content">
+	<section id="content" class="<%= params[:this_task] && params[:show_task] ? 'noanim' : '' %>">
 		<%= yield %>
 	</section>
 
@@ -185,9 +245,9 @@
 				<% if params[:show_task] %>
 					<div class="user" style="color: #69DEA9">
 						<div class="avatar">
-							<i class="fas fa-random"></i>
+							<i class="fas fa-random" style="color: rgb(var(--btncolor))" ></i>
 						</div>
-						<div class="name">Nutzer zufällig auswählen!</div>
+						<div class="name" style="color: rgb(var(--btncolor)); font-size: 15px;">Nutzer zufällig auswählen!</div>
 						<%= link_to '', gm_set_state_path(state: 'turn') %>
 					</div>
 				<% end %>
@@ -484,6 +544,10 @@
 
 
 <script>
+	function toggleRatingMenu() {
+		$('#rating-menu').toggle();
+		$('#menu').toggle();
+	}
 	function toggleNewUserName() {
 		$('#user-new').toggle();
 		$('#user-name').toggle();
@@ -601,6 +665,7 @@
 		$('#user-new').hide();
 		$('#user-name').hide();
 		$('#bestlist-menu').hide();
+		$('#rating-menu').hide();
   }
   <% if params[:slide] %>
     $('#nav-menu').show();
@@ -642,4 +707,112 @@
 				window.location.replace('<%= gm_set_state_path('', state: 'rate') %>');
 		}
 	}
+	function toggleRatings(type, user) {
+		if( type == 'timer' ) {
+			if( $('#game_skip_rating_timer').val() == true ) {
+				$('#game_skip_rating_timer').val(0);
+				$('#rating_form').submit();
+			} else {
+				$('#game_skip_rating_timer').val(1);
+				$('#rating_form').submit();
+			}
+		} else if( type == 'allNone' ) {
+			if( $('#game_show_ratings').val() == 'none' ) {
+				$('#game_rating_user').val(0);
+				$('#game_show_ratings').val('all');
+				$('#rating_form').submit();
+			}	else {
+				$('#game_rating_user').val(0);
+				$('#game_show_ratings').val('none');
+				$('#rating_form').submit();
+			}
+		} else if( type == 'allSkip' ) {
+			if( $('#game_show_ratings').val() == 'skip' ) {
+				$('#game_rating_user').val(0);
+				$('#game_show_ratings').val('all');
+				$('#rating_form').submit();
+			}	else {
+				$('#game_rating_user').val(0);
+				$('#game_show_ratings').val('skip');
+				$('#rating_form').submit();
+			}
+		} else if( type == 'one' && $('#game_rating_user').val() == user ) {
+			$('#game_rating_user').val(0);
+			$('#game_show_ratings').val('all');
+			$('#rating_form').submit();
+		} else {
+			$('#game_rating_user').val(user);
+			$('#game_show_ratings').val(type);
+			$('#rating_form').submit();
+		}
+	}
+	$('#rating_form').on('submit', function(e) {
+		e.preventDefault()
+		var URL = "<%= customize_game_path(@game.id) %>?json=true";
+		var formData = new FormData(document.getElementById('rating_form'))
+		$.ajax({
+			url: URL,
+			type: "post",
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				<% @game.game_users.each do |u| %>
+					if( $('#rating_user_<%= u.user_id %>').hasClass('on') ) {
+						$('#rating_user_<%= u.user_id %>').removeClass('on').addClass('off');
+					}
+				<% end %>
+				if( res.skip_rating_timer == true ) {
+					if( $('#toggle_rating_timer .toggle').hasClass('on') ) {
+						$('#toggle_rating_timer .toggle').removeClass('on').addClass('off');
+					}
+				} else {
+					if( $('#toggle_rating_timer .toggle').hasClass('off') ) {
+						$('#toggle_rating_timer .toggle').removeClass('off').addClass('on');
+					}
+				}
+				if( res.show_ratings == 'all' ) {
+					if( $('#rating_user_all').hasClass('off') ) {
+						$('#rating_user_all').removeClass('off').addClass('on');
+					}
+				}
+				if( res.show_ratings == 'none' ) {
+					$('#rating_user_list').hide();
+					$('#toggle_rating_skip').hide();
+					$('#toggle_rating_timer').hide();
+					if( $('#toggle_rating_skip .toggle').hasClass('off') ) {
+						$('#toggle_rating_skip .toggle').removeClass('off').addClass('on');
+					}
+					if( $('#toggle_rating .toggle').hasClass('on') ) {
+						$('#toggle_rating .toggle').removeClass('on').addClass('off');
+					}
+				} else if( res.show_ratings == 'skip' ) {
+					$('#rating_user_list').hide();
+					if( $('#toggle_rating_skip .toggle').hasClass('on') ) {
+						$('#toggle_rating_skip .toggle').removeClass('on').addClass('off');
+					}
+				} else if( res.show_ratings == 'one' ) {
+					if( $('#rating_user_all').hasClass('on') ) {
+						$('#rating_user_all').removeClass('on').addClass('off');
+					}
+					if( $('#rating_user_' + res.rating_user).hasClass('off') ) {
+						$('#rating_user_' + res.rating_user).removeClass('off').addClass('on');
+					}
+				} else {
+					$('#rating_user_list').show();
+					$('#toggle_rating_skip').show();
+					$('#toggle_rating_timer').show();
+					if( $('#toggle_rating .toggle').hasClass('off') ) {
+							$('#toggle_rating .toggle').removeClass('off').addClass('on');
+					}
+					if( $('#toggle_rating_skip .toggle').hasClass('off') ) {
+						$('#toggle_rating_skip .toggle').removeClass('off').addClass('on');
+					}
+				}
+			}
+		})
+	})
 </script>

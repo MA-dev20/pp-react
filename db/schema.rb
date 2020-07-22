@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_17_133924) do
+ActiveRecord::Schema.define(version: 2020_07_21_113656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,27 +176,20 @@ ActiveRecord::Schema.define(version: 2020_07_17_133924) do
     t.integer "turn2"
     t.boolean "rate", default: true
     t.integer "ges_rating"
-    t.integer "game_seconds"
-    t.integer "video_id"
-    t.string "youtube_url"
-    t.boolean "video_is_pitch"
     t.boolean "video_uploading"
     t.boolean "video_toggle"
     t.boolean "video_upload_start"
     t.boolean "replay", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rating_list_id"
-    t.boolean "skip_elections", default: false
-    t.integer "max_users", default: 0
     t.string "show_ratings", default: "all"
     t.integer "rating_user"
     t.boolean "skip_rating_timer", default: false
     t.bigint "pitch_id"
     t.integer "current_task", default: 0
+    t.boolean "game_sound", default: false
     t.index ["company_id"], name: "index_games_on_company_id"
     t.index ["pitch_id"], name: "index_games_on_pitch_id"
-    t.index ["rating_list_id"], name: "index_games_on_rating_list_id"
     t.index ["team_id"], name: "index_games_on_team_id"
     t.index ["user_id"], name: "index_games_on_user_id"
   end
@@ -499,7 +492,6 @@ ActiveRecord::Schema.define(version: 2020_07_17_133924) do
   add_foreign_key "game_users", "users"
   add_foreign_key "games", "companies"
   add_foreign_key "games", "pitches"
-  add_foreign_key "games", "rating_lists"
   add_foreign_key "games", "teams"
   add_foreign_key "games", "users"
   add_foreign_key "histories", "companies"

@@ -39,7 +39,6 @@ Rails.application.routes.draw do
   get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
 
   put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
-  post '/pitches/customize', to: 'pitches#customize', as: 'customize_pitch'
 
   get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
   get 'pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order', to: 'pitches#set_task_order'
@@ -85,7 +84,6 @@ Rails.application.routes.draw do
 
   #GAME DESKTOP
   get 'games/:game_id/join', to: 'game_desktop#join', as: 'gd_join'
-
   get 'games/game', to: 'game_desktop#game', as: "gd_game"
   get 'games/game/set_slide/:slide', to: 'game_desktop#set_slide', as: 'gd_set_slide'
   get 'games/game/set_state', to: 'game_desktop#set_state', as: 'gd_set_state'
@@ -124,7 +122,7 @@ Rails.application.routes.draw do
   get 'departments/:department_id/delete_user/:user_id', to: 'department#delete_user', as: 'delete_user_from_department'
   # GAMES
   post 'games/create', to: 'games#create', as: 'new_game'
-  post 'games/:game_id/customize', to: 'games#customize', as: 'customize_game'
+  post 'games/:game_id/customize', to: 'games#customize_game', as: 'customize_game'
   post 'games/:game_id/email', to: 'games#email', as: 'email_game'
   post 'games/:game_id/users/:user_id/name', to: 'games#name', as: 'name_game'
   post 'games/:game_id/users/:user_id/new', to: 'games#create_game_user', as: 'new_game_user'
