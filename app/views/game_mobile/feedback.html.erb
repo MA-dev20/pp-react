@@ -20,7 +20,9 @@
 	<% if @pitch.task_orders.find_by(order: @game.current_task + 1) %>
 	<%= link_to 'Feedbackrunde beenden', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
 	<% else %>
-	<%= link_to 'Zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
+	<% if @game.show_ratings == 'one' || @game.show_ratings == 'all' %>
+		<%= link_to 'Zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
+	<% end %>
 	<%= link_to 'Pitchrunde beenden!', gm_set_state_path(state: 'ended'), class: 'btn'%>
 	<% end %>
 	<% end %>

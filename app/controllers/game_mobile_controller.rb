@@ -205,7 +205,7 @@ class GameMobileController < ApplicationController
     		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
     		redirect_to gm_game_path
     		return
-      elsif @task_order.task.task_type == 'slide' && @game.state != slide
+      elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
     	  redirect_to gm_set_state_path(state: 'slide')
     		return
     	elsif @game.state != 'show_task'
@@ -219,8 +219,13 @@ class GameMobileController < ApplicationController
       redirect_to gm_game_path
       return
     else
-      redirect_to gm_set_state_path(state: 'bestlist')
-      return
+      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+        redirect_to gm_set_state_path(state: 'bestlist')
+        return
+      else
+        redirect_to gm_set_state_path(state: 'ended')
+        return
+      end
     end
   end
   def set_state

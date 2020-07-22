@@ -30,6 +30,28 @@ class GameDesktopController < ApplicationController
 	  @rat_user = @game.rating_user
 	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
 	end
+  if @game.state == 'bestlist' && @game.show_ratings == 'one'
+    @ratings = [];
+    @game.game_users.each do |u|
+      if u.user_id != @game.rating_user
+        @turns = @game.game_turns.where(user_id: u.user_id)
+        @best_rating = 0
+        @turns.each do |t|
+          this_rating = t.ratings.where(user_id: @game.rating_user).average(:rating) if t.ratings.where(user_id: @game.rating_user).count != 0
+          this_rating = 0 if t.ratings.where(user_id: @game.rating_user).count == 0
+          if this_rating  > @best_rating
+            @best_rating = this_rating
+          end
+        end
+        if u.user.avatar?
+          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, avatar: u.user.avatar.url}
+        else
+          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, name: u.user.fname[0].capitalize + u.user.lname[0].capitalize}
+        end
+      end
+    end
+    @ratings = @ratings.sort_by{|e| -e[:rating]}
+  end
 	render @state
   end
 
@@ -52,8 +74,13 @@ class GameDesktopController < ApplicationController
         @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
       end
     else
-      redirect_to gd_set_state_path(state: 'bestlist')
-      return
+      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+        redirect_to gd_set_state_path(state: 'bestlist')
+        return
+      else
+        redirect_to gd_set_state_path(state: 'ended')
+        return
+      end
     end
   	if @task_order
   	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order

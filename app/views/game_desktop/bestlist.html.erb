@@ -5,16 +5,19 @@
 <section id="middle">
 <div class="bestlist">
 	<div class="first">
-		<% if @game_users.count > 0 %>
-			<% if @game.show_ratings == 'all' %>
-				<div class="rating"><%= @game_users.first.best_rating != 0 ? @game_users.first.best_rating / 10.0 : '-' %></div>
-			<% elsif @game.show_ratings == 'one' && @turns.first.ratings.where(user: @rat_user).count != 0 %>
-				<div class="rating"><%= @turns.first.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
-			<% end %>
+		<% if @game.show_ratings == 'all' && @game_users.count > 0 %>
+			<div class="rating"><%= @game_users.first.best_rating != 0 ? @game_users.first.best_rating / 10.0 : '-' %></div>
 			<% if @game_users.first.user.avatar? %>
 				<%= image_tag @game_users.first.user.avatar.url, class: 'avatar' %>
 			<% else %>
 				<div class="circle avatar"><%= @game_users.first.user.fname[0].capitalize %><%= @game_users.first.user.lname[0].capitalize %></div>
+			<% end %>
+		<% elsif @game.show_ratings == 'one' && @ratings.length >= 1 %>
+			<div class="rating"><%= @ratings[0][:rating] != 0 ? @ratings[0][:rating] / 10.0 : '-' %></div>
+			<% if @ratings[0][:avatar] %>
+				<%= image_tag @ratings[0][:avatar], class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @ratings[0][:name] %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 255 205" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,16 +27,19 @@
 		<div class="rang">1</div>
 	</div>
 	<div class="second">
-		<% if @game_users.count > 1 %>
-			<% if @game.show_ratings == 'all' %>
-				<div class="rating"><%= @game_users.second.best_rating != 0 ? @game_users.second.best_rating / 10.0 : '-' %></div>
-			<% elsif @game.show_ratings == 'one' && @turns.second.ratings.where(user: @rat_user).count != 0 %>
-				<div class="rating"><%= @turns.second.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
-			<% end %>
+		<% if @game.show_ratings == 'all' && @game_users.count > 1 %>
+			<div class="rating"><%= @game_users.second.best_rating != 0 ? @game_users.second.best_rating / 10.0 : '-' %></div>
 			<% if @game_users.second.user.avatar? %>
 				<%= image_tag @game_users.second.user.avatar.url, class: 'avatar' %>
 			<% else %>
 				<div class="circle avatar"><%= @game_users.second.user.fname[0].capitalize %><%= @game_users.second.user.lname[0].capitalize %></div>
+			<% end %>
+		<% elsif @game.show_ratings == 'one' && @ratings.length >= 2 %>
+			<div class="rating"><%= @ratings[1][:rating] != 0 ? @ratings[1][:rating] / 10.0 : '-' %></div>
+			<% if @ratings[1][:avatar] %>
+				<%= image_tag @ratings[1][:avatar], class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @ratings[1][:name] %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 189 133" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,16 +50,19 @@
 		<div class="rang">2</div>
 	</div>
 	<div class="third">
-		<% if @game_users.count > 2 %>
-			<% if @game.show_ratings == 'all' %>
-				<div class="rating"><%= @game_users.third.best_rating != 0 ? @game_users.third.best_rating / 10.0 : '-' %></div>
-			<% elsif @game.show_ratings == 'one' && @turns.third.ratings.where(user: @rat_user).count != 0 %>
-				<div class="rating"><%= @turns.third.ratings.where(user: @rat_user).average(:rating).round / 10.0 %></div>
-			<% end %>
+		<% if @game.show_ratings == 'all' && @game_users.count > 2 %>
+			<div class="rating"><%= @game_users.third.best_rating != 0 ? @game_users.third.best_rating / 10.0 : '-' %></div>
 			<% if @game_users.third.user.avatar? %>
 				<%= image_tag @game_users.third.user.avatar.url, class: 'avatar' %>
 			<% else %>
 				<div class="circle avatar"><%= @game_users.third.user.fname[0].capitalize %><%= @game_users.third.user.lname[0].capitalize %></div>
+			<% end %>
+		<% elsif @game.show_ratings == 'one' && @ratings.length >= 3 %>
+			<div class="rating"><%= @ratings[2][:rating] != 0 ? @ratings[2][:rating] / 10.0 : '-' %></div>
+			<% if @ratings[2][:avatar] %>
+				<%= image_tag @ratings[2][:avatar], class: 'avatar' %>
+			<% else %>
+				<div class="circle avatar"><%= @ratings[2][:name] %></div>
 			<% end %>
 		<% end %>
 		<svg viewBox="0 0 179 81" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">

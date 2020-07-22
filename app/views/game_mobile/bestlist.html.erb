@@ -12,6 +12,6 @@
 <div class="bottom">
 	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
 	<%= link_to 'beenden', gm_set_state_path('', state: 'ended'), class: 'btn inverted', data: {confirm: "Bist du sicher, dass du keine neue Runde starten möchtest?"} %>
-	<%= link_to 'wiederholen', gm_set_state_path('', state: 'repeat'), class: 'btn' %>
+	<%= link_to 'Pitchrunde wiederholen', gm_set_state_path('', state: 'repeat'), class: 'btn' %>
 	<% end %>
 </div>
