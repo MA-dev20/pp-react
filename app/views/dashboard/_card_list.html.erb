@@ -68,16 +68,6 @@
             <div class="length">1:20</div>
             <% end %>
         </div>
-        <div class="task-subtitle">Rating criteria:</div>
-        <div class="rating-criteria">
-            <% 4.times do |index| %>
-                <% if t.task["rating#{index+1}"].present? %>
-                    <div class="criterium rating<%= index+1 %>"><%= t.task["rating#{index+1}"] %></div>
-                <% else %>
-                    <div class="criterium rating<%= index+1 %>">-</div>
-                <% end %>
-            <% end %>
-        </div>
         <% else %>
         <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
