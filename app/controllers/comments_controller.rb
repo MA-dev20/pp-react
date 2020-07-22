@@ -32,7 +32,7 @@ class CommentsController < ApplicationController
 	@comments = @turn.comments.where.not(time: nil).order(:time)
 	respond_to do |format|
 		format.html { redirect_to dashboard_pitch_video_path(@turn)}
-		format.js { render }
+		format.js { render 'dashboard/add_comment'}
 	end
   end
 
