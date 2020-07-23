@@ -76,6 +76,12 @@
                 <div class="text">peterpitch.com/</div>
                 <%= f.text_field :password, class: 'custom-url-field' %>
             </div>
+
+            <%= f.hidden_field :game_sound, value: true %>            
+            <div class="toggle-my-ratings toggle-my-ratings-1">
+                <div class="toggle toggle-game right-side" onclick="soundCheck()"><div class="dot"></div></div>
+                <div class="text">Pitch sound</div>
+            </div>
             <%= f.submit 'weiter!', class: 'btn btn-green' %>
         </div>
         <% end %>
@@ -167,6 +173,19 @@
             $('.blur').hide();
         }
     });
+
+    function soundCheck() {
+        var toggle = $('.toggle-game');
+        if (toggle.hasClass('left-side')) {
+            toggle.removeClass('left-side');
+            toggle.addClass('right-side');
+            $('#game_game_sound').attr('value', 'true')
+        } else {
+            toggle.removeClass('right-side');
+            toggle.addClass('left-side');
+            $('#game_game_sound').attr('value', 'false')
+        }
+    }
 
     var pitches_count = '<%= @pitches&.count %>'
     console.log(pitches_count)
