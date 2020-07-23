@@ -1641,7 +1641,12 @@ input[type="file"] {
 
     #pitchModal {
         
-        top: 12%;
+        // top: 12%;
+        padding-top: 0;
+        .modal-content {
+            top: 20vh;
+        }
+
         #show_ratings {
             display: none;
         }
