@@ -38,21 +38,27 @@ class GameMobileController < ApplicationController
 	if @game.state != 'choose'
 	  redirect_to gm_game_path
 	end
-	@turn = GameTurn.find(params[:turn])
-	@turn.update(counter: @turn.counter + 1)
-	if @turn.id == @game.turn1
-	  if @admin.avatar?
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'left'
-	  else
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'left'
-	  end
-	else
-	  if @admin.avatar?
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'right'
-	  else
-	  ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'right'
-	  end
-	end
+	@turn = GameTurn.find_by(params[:turn])
+
+  if @turn
+	   @turn.update(counter: @turn.counter + 1)
+	    if @turn.id == @game.turn1
+	     if @admin.avatar?
+	        ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'left'
+	     else
+	       ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'left'
+	     end
+	   else
+	    if @admin.avatar?
+	     ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, avatar: @admin.avatar.url, site: 'right'
+	    else
+	     ActionCable.server.broadcast "count_#{@game.id}_channel", choose: true, name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, site: 'right'
+	    end
+    end
+  else
+    redirect_to gm_game_path
+    return
+  end
   end
 
   def upload_pitch
