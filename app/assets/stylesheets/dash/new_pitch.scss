@@ -3,7 +3,8 @@
 	display: flex;
 	top: 0; left: calc(25.6vh - 1px);
 	height: 8vh; width: calc(100vw - (25.6vh - 1px));
-	background-color: white;
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
 	.form-group {
 		z-index: 10;
 		margin: 1vh 2vw; height: 6vh;
@@ -333,7 +334,7 @@
     .card.left {
         top: 0;
         width: 15.65vw;
-        left: 3.5vw;
+        left: 2.5vw;
         background: transparent;
         border: none;
         box-shadow: none;
@@ -354,18 +355,20 @@
             margin-top: 5vh;
         }
 
+        // .left-card:last-child {
+        //     margin-bottom: 10vh;
+        // }
+
         .tasks {
             height: 91vh;
+            width: 103.5%;
             border-right: 0.1vh solid #CFD3D6;
             display: block;
-            // position: absolute;
-            // left: 40vh;
-            // height: 100vh;
             .card {
                 a {
                     cursor: pointer;
                 }
-                width: 13.1vw;
+                width: 14vw;
                 height: 22vh;
                 padding-top: 1vh;
                 padding-bottom: 1vh;
@@ -377,21 +380,21 @@
                     top: 3.6vh;
                     left: 0;
                     height: 17.8vh;
-                    width: 12.8vw;
+                    width: 13.8vw;
                     z-index: 10;
                 }
 
                 .task-title,
                 .task-subtitle {
-                    width: 12vw;
+                    width: 12.8vw;
                 }
 
                 .task-title .select-task-link {
-                    width: 21vh;
+                    width: 23vh;
                 }
 
                 .thumb {
-                    width: 12.1vw;
+                    width: 12.9vw;
                     height: 13.5vh;
                 }
 
@@ -413,10 +416,10 @@
             }
 
             .card.selected {
-                width: 13.2vw;
+                width: 14.2vw;
 
                 .thumb {
-                    width: 11.9vw;
+                    width: 12.9vw;
                     height: 13.5vh;
                 }
             }
@@ -1865,7 +1868,7 @@ input[type="file"] {
     text-decoration: none;
     font-size: 2.7vh;
     position: absolute;
-    left: 9.5vh;
+    left: 8vh;
     top: 1.5vh;
 }
 
