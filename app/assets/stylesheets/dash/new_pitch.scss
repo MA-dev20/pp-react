@@ -333,6 +333,14 @@
     .card.left {
         width: 15.65vw;
         left: 3.5vw;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        
+        .left-card {
+            margin-top: 0;
+        }
+
         .tasks {
             .card {
                 a {
@@ -350,21 +358,21 @@
                     top: 3.6vh;
                     left: 0;
                     height: 17.8vh;
-                    width: 13.8vw;
+                    width: 12.8vw;
                     z-index: 10;
                 }
 
                 .task-title,
                 .task-subtitle {
-                    width: 12.8vw;
+                    width: 12vw;
                 }
 
                 .task-title .select-task-link {
-                    width: 23vh;
+                    width: 21vh;
                 }
 
                 .thumb {
-                    width: 12.8vw;
+                    width: 11.9vw;
                     height: 13.5vh;
                 }
 
@@ -386,7 +394,7 @@
             }
 
             .card.selected {
-                width: 14.2vw;
+                width: 13.2vw;
             }
         }
 
