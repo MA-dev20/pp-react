@@ -65,50 +65,44 @@ class GameDesktopController < ApplicationController
 
   def set_slide
 	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
-    if @task_order
-      while @task_order && !@task_order.task.valide
-        @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
-      end
-      if @task_order
-    	  @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
-    	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
-      		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-      		redirect_to gd_game_path
-      		return
-        elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
-      	  redirect_to gd_set_state_path(state: 'slide')
-      		return
-      	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
-      		redirect_to gd_set_state_path(state: 'show_task')
-      		return
-        else
-          redirect_to gd_game_path
-      		return
-        end
-    	else
-        if @game.show_ratings == 'one' || @game.show_ratings == 'all'
-          redirect_to gd_set_state_path(state: 'bestlist')
-          return
-        else
-          redirect_to gd_set_state_path(state: 'ended')
-          return
-        end
-      end
-    else
-      redirect_to gd_set_state_path(state: 'bestlist')
-      return
+    while @task_order && !@task_order.task.valide
+      @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
     end
-
+    if @task_order
+  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+        @game.update(current_task: @task_order.order, state: 'slide') if @game.current_task != @task_order.order
+    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+    		redirect_to gd_game_path
+    		return
+      elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
+        @game.update(current_task: @task_order.order, state: 'slide') if @game.current_task != @task_order.order
+    	  redirect_to gd_game_path
+    		return
+    	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
+        @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+    		redirect_to gd_set_state_path(state: 'show_task')
+    		return
+      else
+        @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+        redirect_to gd_game_path
+    		return
+      end
+  	else
+      if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+        redirect_to gd_set_state_path(state: 'bestlist')
+        return
+      else
+        redirect_to gd_set_state_path(state: 'ended')
+        return
+      end
+    end
   end
   def set_state
     if params[:state] == 'wait'
       @game.update(state: "wait") if @game.state != 'wait'
       redirect_to gd_game_path
 	    return
-	  elsif params[:state] == 'slide'
-	    @game.update(state: 'slide')
-	    redirect_to gd_game_path
-    elsif params[:state] == 'show_task'
+	  elsif params[:state] == 'show_task'
       @task = @pitch.task_orders.find_by(order: @game.current_task).task
       @turn = @game.game_turns.where(task: @task, played: false).first
       if @turn && @game.turn1 != @turn.id && @game.turn2 != @turn.id
@@ -188,12 +182,14 @@ class GameDesktopController < ApplicationController
     elsif params[:state] == 'feedback'
       @turn = @game.game_turns.find_by(id: @game.current_turn)
       @game_user = @game.game_users.find_by(user: @turn.user)
-      @turn.update(ges_rating: nil, played: true)
+      if @turn.game_turn_ratings.count == 0
+        @turn.update(ges_rating: nil, played: true)
+      end
       @game_user.update(turn_count: @game.game_turns.where(user: @game_user.user).count)
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
-      if @game.show_ratings == 'skip' || @game.show_ratings == 'none'
+      if @game.show_ratings == 'none'
         redirect_to gd_set_state_path(state: "feedback")
         return
       end
@@ -233,14 +229,7 @@ class GameDesktopController < ApplicationController
               @game_user.update(best_rating: 0)
             end
           end
-          if @pitch.show_ratings == 'none'
-            redirect_to gd_set_state_path(state: 'feedback')
-  		      return
-          elsif @pitch.show_ratings == 'one' && @turn_ratings.count == 0
-            @turn.update(played: true)
-            redirect_to gd_set_slide_path(@game.current_task + 1)
-            return
-          elsif  @game.state != 'rating'
+          if @game.state != 'rating'
             @user = @turn.user
             @turn.game_turn_ratings.each do |tr|
               @rating = @user.user_ratings.find_by(rating_criterium: tr.rating_criterium)
@@ -256,7 +245,12 @@ class GameDesktopController < ApplicationController
             old_rating = @user.ges_rating
             @user.update(ges_rating: new_rating, ges_change: new_rating - old_rating)
             @turn.update(played: true)
-            @game.update(state: 'rating')
+            if @game.show_ratings == 'skip' || @game.show_ratings == 'one' && @turn.user_id == @game.rating_user
+              redirect_to gd_set_state_path(state: 'feedback')
+    		      return
+            else
+              @game.update(state: 'rating')
+            end
           end
         end
       end
