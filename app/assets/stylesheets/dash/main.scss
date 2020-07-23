@@ -1830,3 +1830,25 @@ select:-moz-focusring {
 		}
 	}
 }
+#content {
+	#newteam {
+
+		.fa-arrow-left {
+			position: absolute;
+			font-size: 3vh;
+			text-align: center;
+			font-size: 3.7vh;
+			line-height: 11.7vh;
+			margin: 0;
+			left: 5vh;
+		}
+
+		span {
+			text-align: center;
+			font-size: 3.7vh;
+			line-height: 11.7vh;
+			margin: 0;
+			font-weight: normal;
+		}
+	}
+}

@@ -87,8 +87,12 @@
         <% end %>
     </div>
     <div class="card" id="newteam">
-        <h1>Team erstellen!</h1>
-        <%= form_for(:team, url: new_team_path) do |f| %>
+        <h3>
+            <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
+            <span>Team erstellen!</span>
+        </h3>
+        <!-- <h1>Team erstellen!</h1> -->
+        <%= form_for(:team, url: new_team_path(pitch_id: @pitch.id)) do |f| %>
         <%= f.hidden_field :site, value: 'pitch' %>
         <div class="form-group">
             <label for="">

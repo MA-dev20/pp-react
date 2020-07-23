@@ -198,7 +198,8 @@ class DashboardController < ApplicationController
   def pitches
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
-    @game = Game.find(params[:game_id]) if params[:game_id]
+	@game = Game.find(params[:game_id]) if params[:game_id]
+	@team = Team.find(params[:team]) if params[:team]	
   end
   def new_pitch
 	@pitch = @admin.pitches.create()
