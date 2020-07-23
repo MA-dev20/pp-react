@@ -6,16 +6,16 @@
 </div>
 <div class="middle" id="choose-middle">
 	<div class="circle-left">
-		<% if @turn1.user.avatar? %>
+		<% if @turn1 && @turn1.user.avatar? %>
 			<%= link_to image_tag(@turn1.user.avatar.url), gm_choosen_path('', turn: @turn1.id), class: 'custom-border', id: "left-img" %>
-		<% else %>
+		<% elsif @turn1 %>
 			<%= link_to @turn1.user.fname[0].capitalize + @turn1.user.lname[0].capitalize, gm_choosen_path('', turn: @turn1.id), class: 'circle custom-border', id: "left-img" %>
 		<% end %>
 	</div>
 	<div class="circle-right">
-		<% if @turn2.user.avatar? %>
+		<% if @turn2 && @turn2.user.avatar? %>
 			<%= link_to image_tag(@turn2.user.avatar.url), gm_choosen_path('', turn: @turn2.id), class: 'custom-border', id: "left-img" %>
-		<% else %>
+		<% elsif @turn2 %>
 			<%= link_to @turn2.user.fname[0].capitalize + @turn2.user.lname[0].capitalize, gm_choosen_path('', turn: @turn2.id), class: 'circle custom-border', id: "left-img" %>
 		<% end %>
 	</div>

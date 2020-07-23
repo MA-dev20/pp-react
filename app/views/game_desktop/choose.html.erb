@@ -5,16 +5,16 @@
 		<h3 id="head">Wer soll pitchen?</h3>
 		<h5>Tippe auf den Teilnehmer, der als nächstes pitchen soll!</h5>
 		<div class="circle-left fadeInLeft">
-			<% if @turn1.user.avatar? %>
+			<% if @turn1 && @turn1.user.avatar? %>
 			<%= image_tag @turn1.user.avatar.url, id: 'left-img' %>
-			<% else %>
+			<% elsif @turn1 %>
 			<div class="circle" id="left-img"><%= @turn1.user.fname[0].capitalize + @turn1.user.lname[0].capitalize %></div>
 			<% end %>
 		</div>
 		<div class="circle-right fadeInRight">
-			<% if @turn2.user.avatar? %>
+			<% if @turn2 && @turn2.user.avatar? %>
 			<%= image_tag @turn2.user.avatar.url, id: 'right-img' %>
-			<% else %>
+			<% elsif @turn2 %>
 			<div class="circle" id="right-img"><%= @turn2.user.fname[0].capitalize + @turn2.user.lname[0].capitalize %></div>
 			<% end %>
 		</div>

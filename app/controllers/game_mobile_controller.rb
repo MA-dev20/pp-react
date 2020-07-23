@@ -408,7 +408,6 @@ class GameMobileController < ApplicationController
     elsif params[:state] == 'repeat'
       if @game.state != 'repeat' && @game.state != 'wait'
         @game.update(state: 'repeat', active: false)
-		    game_old = @game
 		    temp = Game.where(password: @game.password, state: 'wait', active: true).first
 		    temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
       end
@@ -475,9 +474,9 @@ class GameMobileController < ApplicationController
 	  @state = @game.state
 	  @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	  if @state == 'repeat'
-		temp = Game.where(password: @game.password, state: 'wait', active: true).first
-		game_login temp
-		redirect_to gm_repeat_path
+      temp = Game.where(password: @game.password, state: 'wait', active: true).first
+  		game_login temp
+		  redirect_to gm_repeat_path
 	  elsif @state == 'ended'
 		redirect_to gm_ended_path
 	  end
