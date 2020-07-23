@@ -118,7 +118,9 @@
 	$('#task_sound').on('ended', function() {
 		$('#play .sound').fadeOut(10);
 		$('#task').fadeIn(100);
+		<% if @game.game_sound %>
 		document.getElementById('theme').play();
+		<% end %>
 		MyApp.timer.resume();
 	})
 	<% end %>
@@ -294,7 +296,9 @@
 			$('.objection .text').css('font-size', '10vh')
 			$('.objection .text').css('line-height', '10vh')
 		}
+		<% if @game.game_sound %>
 		document.getElementById('theme').pause();
+		<% end %>
 		MyApp.timer.pause();
 		<% if @game.game_sound %>
 		document.getElementById('o_start').play();
