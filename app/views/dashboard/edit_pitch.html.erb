@@ -730,9 +730,5 @@
 		window.location.replace(URL);
 	  <% end %>
 	}
-	<% if @task %>
-		$('#tasksScrollBar').animate({
-			scrollTop: $("#task_<%= @task.id %>").offset().top - $('#tasksScrollBar').offset().top - 500
-		}, 50);
-	<% end %>
+	
 </script>
