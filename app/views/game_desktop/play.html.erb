@@ -107,7 +107,9 @@
 	$('#task_video').on('ended', function() {
 		$('#play .video').addClass('fadeOut');
 		$('#task').show();
+		<% if @game.game_sound %>
 		document.getElementById('theme').play();
+		<% end %>
 		MyApp.timer.resume();
 	})
 	<% elsif @task.task_medium && @task.task_medium.audio? %>

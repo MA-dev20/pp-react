@@ -78,7 +78,7 @@
 			</div>
 			<div class="link" onclick="toggleRatingMenu()">
 				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#statsIcon" /></svg>
-				Bewertungen
+				Spielregeln
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<% if @game && @game.state == 'play' %>
@@ -104,13 +104,18 @@
 			<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeMenu()' %>
 		</div>
 		<div class="content">
-			<div class="heading">Bewertungen</div>
+			<div class="heading">Spielregeln</div>
 			<div class="subheading">Hier kannst du die Spielregeln für die Bewertungen der Aufgaben festlegen</div>
 			<%= form_for(:game, url: customize_game_path(@game.id), html: {id: "rating_form"}) do |f| %>
 			<%= f.hidden_field :skip_rating_timer, value: @game.skip_rating_timer %>
 			<%= f.hidden_field :show_ratings, value: @game.show_ratings %>
 			<%= f.hidden_field :rating_user, value: @game.rating_user %>
+			<%= f.hidden_field :game_sound, value: @game.game_sound %>
 			<% end %>
+			<div class="user" id="toggle_sound" onclick="toggleRatings('sound', 0)">
+				Pitch Sound
+				<div class="toggle <%= @game.game_sound == true ? 'on' : 'off' %>"><div class="dot"></div></div>
+			</div>
 			<div class="user" id="toggle_rating" onclick="toggleRatings('allNone', 0)">
 				Bewertungen
 				<div class="toggle <%= @game.show_ratings == 'none' ? 'off' : 'on' %>"><div class="dot"></div></div>
@@ -120,7 +125,7 @@
 				<div class="toggle <%= @game.skip_rating_timer == true ? 'off' : 'on' %>"><div class="dot"></div></div>
 			</div>
 			<div class="user" id="toggle_rating_skip" onclick="toggleRatings('allSkip', 0)" style="<%= @game.show_ratings== 'none' ? 'display: none' : 'display: block' %>">
-				Bewertungen anzeigen
+				Bewertungen anzeigen <span>von</span>
 				<div class="toggle <%= @game.show_ratings == 'skip' ? 'off' : 'on' %>"><div class="dot"></div></div>
 			</div>
 			<div class="ratings" id="rating_user_list" style="<%= @game.show_ratings == 'none' ? 'display: none' : 'display: block' %>">
@@ -698,7 +703,7 @@
 		});
 	}
 	function redirectBestlist() {
-		if ( confirm("Bist du sicher, dass du direct zur Bestenliste möchtest?") ) {
+		if ( confirm("Bist du sicher, dass du direkt zur Bestenliste möchtest?") ) {
 				window.location.replace('<%= gm_set_state_path('', state: 'bestlist') %>');
 		}
 	}
@@ -708,7 +713,15 @@
 		}
 	}
 	function toggleRatings(type, user) {
-		if( type == 'timer' ) {
+		if( type == 'sound' ) {
+			if( $('#game_game_sound').val() == true ) {
+				$('#game_game_sound').val(0);
+				$('#rating_form').submit();
+			} else {
+				$('#game_game_sound').val(1);
+				$('#rating_form').submit();
+			}
+		} else if( type == 'timer' ) {
 			if( $('#game_skip_rating_timer').val() == true ) {
 				$('#game_skip_rating_timer').val(0);
 				$('#rating_form').submit();
@@ -765,13 +778,22 @@
 						$('#rating_user_<%= u.user_id %>').removeClass('on').addClass('off');
 					}
 				<% end %>
-				if( res.skip_rating_timer == true ) {
-					if( $('#toggle_rating_timer .toggle').hasClass('on') ) {
-						$('#toggle_rating_timer .toggle').removeClass('on').addClass('off');
+				if( res.game_sound == true ) {
+					if( $('#toggle_sound .toggle').hasClass('off') ) {
+						$('#toggle_sound .toggle').removeClass('off').addClass('on');
 					}
 				} else {
+					if( $('#toggle_sound .toggle').hasClass('on') ) {
+						$('#toggle_sound .toggle').removeClass('on').addClass('off');
+					}
+				}
+				if( res.skip_rating_timer == true ) {
 					if( $('#toggle_rating_timer .toggle').hasClass('off') ) {
 						$('#toggle_rating_timer .toggle').removeClass('off').addClass('on');
+					}
+				} else {
+					if( $('#toggle_rating_timer .toggle').hasClass('on') ) {
+						$('#toggle_rating_timer .toggle').removeClass('on').addClass('off');
 					}
 				}
 				if( res.show_ratings == 'all' ) {

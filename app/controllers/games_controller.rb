@@ -217,7 +217,7 @@ class GamesController < ApplicationController
     @game = Game.find(params[:game_id])
     if @game.update(game_params)
       if params[:json] == "true"
-        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer}
+        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer, game_sound: @game.game_sound}
       else
         game_login @game
         redirect_to gd_join_path(@game)
@@ -225,7 +225,7 @@ class GamesController < ApplicationController
     else
       flash[:alert] = 'Konnte Spiel nicht speichern!'
       if params[:json] == "true"
-        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer}
+        render json: {show_ratings: @game.show_ratings, rating_user: @game.rating_user, skip_rating_timer: @game.skip_rating_timer, game_sound: @game.game_sound}
       else
         redirect_to dashboard_pitches_path(game_id: @game.id, pitch_id: @pitch.id)
       end
