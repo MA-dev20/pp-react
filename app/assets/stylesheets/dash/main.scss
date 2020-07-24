@@ -76,6 +76,7 @@ body {
 	border-right: 1px solid transparent;
 	box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.5);
 	z-index: 100;
+
 	.avatar {
 		position: relative;
 		top: 0;
@@ -150,6 +151,17 @@ body {
 			max-height: 4vh;
 		}
 	}
+	.settings {
+		position: absolute;
+		bottom: 15vh;
+		height: 5vh; width: 100%;
+		line-height: 5vh; font-size: 4vh;
+		text-align: center;
+		cursor: pointer;
+	}
+	.settings:hover {
+		font-size: 5vh;
+	}
 }
 #content {
 	position: fixed;
@@ -203,7 +215,7 @@ body {
 			width: auto;
 			font-weight: bold;
 		}
-		
+
 	}
 	.rating-criteria {
 		margin: 0;
@@ -457,7 +469,7 @@ body {
 				text-decoration: none;
 				cursor: pointer;
 			}
-			i.back, 
+			i.back,
 			a.back {
 				position: relative;
 				display: inline-block;
@@ -537,7 +549,7 @@ body {
 			}
 			.table#company_admin-table {
 				margin: 0;
-				
+
 			}
 			.placehere {
 				padding: 1vh 0;
@@ -551,7 +563,7 @@ body {
 					text-align: left;
 				}
 				.remove {
-					.fa-trash-alt {display: none}	
+					.fa-trash-alt {display: none}
 				}
 				.remove.active {
 					.fa-trash-alt {display: inline-block}
@@ -598,7 +610,7 @@ body {
 						td.accept {
 							font-size: 3vh;
 						}
-						
+
 					}
 					tr:last-child td {border-bottom: none;}
 				}
@@ -1112,7 +1124,7 @@ body {
 			height: 35vh;
 			overflow: hidden;
 		}
-		
+
 	}
 	.card#account {
 		position: absolute;
@@ -1135,7 +1147,7 @@ body {
 				cursor: pointer;
 				a {
 					position: absolute;
-					top: 0; left: 0; 
+					top: 0; left: 0;
 					height: 100%; width: 100%;
 				}
 				.thumb {
@@ -1228,7 +1240,7 @@ body {
 				overflow: hidden;
 				a {
 					position: absolute;
-					top: 0; left: 0; 
+					top: 0; left: 0;
 					height: 20vh; width: 100%;
 				}
 				.thumb {
@@ -1446,7 +1458,7 @@ body {
 					.coming-soon {
 						line-height: 25vh; text-align: center; font-size: 3vh;
 						color: rgba(0,0,0,0.3); font-weight: bold;
-					}	
+					}
 				}
 			}
 			.comments {
@@ -1685,7 +1697,7 @@ body {
 				.play, .pause {
 					position: absolute;
 					// left: calc(7.5vw - 2vh);
-					left: calc(7.5vw - -7vh); 
+					left: calc(7.5vw - -7vh);
 					bottom: 0;
 					height: 4vh; width: 4vh;
 					color: rgba(var(--btncolor), .8);
@@ -1698,7 +1710,7 @@ body {
 				.stop {
 					position: absolute;
 					// right: calc(8vw + 2vh);
-					right: calc(8vw + 11vh); 
+					right: calc(8vw + 11vh);
 					bottom: 0;
 					height: 3vh; width: 3vh;
 					color: rgba(var(--btncolor), .8);
@@ -1794,7 +1806,7 @@ body {
 		height: 50px;
 		line-height: 50px;
 		width: 50px;
-		color: 
+		color:
 		#6e6e6e;
 		font-size: 30px;
 		text-align: center;
