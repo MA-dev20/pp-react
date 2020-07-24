@@ -1,9 +1,10 @@
-#content #new-pitch-navbar {
+#new-pitch-navbar {
 	position: fixed;
 	display: flex;
-	top: 0; left: calc(25.6vh - 1px);
+	top: 0; left: calc(25.6vh);
 	height: 8vh; width: calc(100vw - (25.6vh - 1px));
-    background-color: white;
+	z-index: 101;
+  background-color: white;
     box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
 	.form-group {
 		z-index: 10;
@@ -30,12 +31,20 @@
 			text-decoration: none;
 			width: 3vw;
 			text-align: center;
-			font-weight: bold;
-        }
-        
-        .done-btn {
-            width: 6vw;
-        }
+			font-weight: bold; font-size: 1.7vh;
+			color: white; background-color: rgb(var(--btncolor));
+			height: 5.5vh; line-height: 5.5vh;
+			border: 1px solid rgb(var(--btncolor)); border-radius: 6vh;
+			padding: 0 3vh;
+
+    }
+    .done-btn {
+      width: 6vw;
+    }
+		.btn:hover, .btn.reversed {
+			color: rgb(var(--btncolor));
+			background-color: transparent;
+		}
 	}
 	h1 {
 		position: absolute;
@@ -53,7 +62,7 @@
 	top: 8vh;  left: calc(25.6vh - 1px);
 	height: 92vh; width: calc(100vw - (25.6vh - 1px));
     font-size: 1.7vh;
-    
+
     .form-group {
         .title-field {
             position: absolute;
@@ -85,10 +94,10 @@
 	.card.left, .right-side-card {
 		left: 2vw; top: 5vh;
 		height: 82vh; width: 15vw;
-		
+
 		padding: 0;
 		.tasks, .right-tasks {
-            width: 15vw; 
+            width: 15vw;
             height: 82vh;
 			.card, .task-card {
                 cursor: pointer;
@@ -99,7 +108,7 @@
 				.task-link {
 					position: absolute;
 					top: 4vh; left: 0;
-                    // height: 18vh; 
+                    // height: 18vh;
                     // width: 13vw;
                     height: 27.5vh;
                     width: 14vw;
@@ -165,7 +174,7 @@
 						cursor: pointer;
 					}
                 }
-                
+
 				.thumb {
                     position: relative;
                     border-radius: 1vh;
@@ -208,7 +217,7 @@
 						text-align: center;
                     }
                 }
-                
+
                 .thumb-no-border {
                     border: none;
                 }
@@ -272,7 +281,7 @@
 					}
 				}
             }
-            
+
             .card {
                 width: 14vw;
                 padding-top: 1vh;
@@ -298,7 +307,7 @@
 				border-top: 2px solid red;
 			}
         }
-        
+
         #tasksScrollBar {
             .ps__thumb-y {
                 height: 17vh !important;
@@ -338,7 +347,7 @@
         background: transparent;
         border: none;
         box-shadow: none;
-        
+
         .add-first-task .btn {
             top: 5vh;
         }
@@ -431,7 +440,7 @@
 
         .ps__thumb-y {
             top: 25vh !important;
-        } 
+        }
     }
 
     .pitch-tasks-list {
@@ -482,7 +491,7 @@
                     padding-top: 0;
                     height: 12.5vh;
                 }
-            
+
                 .thumb-border {
                     height: 12vh;
                 }
@@ -548,14 +557,14 @@
                 }
 			}
         }
-        
+
         .add-reaction, .add-catchword {
             .hr-line {
                 padding: 0;
             }
         }
 		.card.add-catchword {
-            top: -1.5vh; 
+            top: -1.5vh;
             // width: 60vh;
             width: 94.3%;
             height: 43vh;
@@ -616,7 +625,7 @@
                     }
                     .audio-play-div {
                         background:#69DEA9;
-                        
+
                         img, i {
                             cursor: pointer;
                             width: 8vh;
@@ -637,7 +646,7 @@
 						line-height: 2vh;
 						font-size: 1.8vh;
                     }
-                    
+
                     .remove-option {
                         margin: 1vh;
                         display: flex;
@@ -677,10 +686,10 @@
 						cursor: pointer;
                         font-size: 2vh;
                         text-decoration: none;
-                        
+
 					}
                 }
-                
+
                 .audio-preview {
 					line-height: 10vh;
                     i {
@@ -703,12 +712,12 @@
                     }
                 }
             }
-            
+
             .audio .btn, .video .btn {
                 margin-right: 1vh;
             }
         }
-        
+
 		.add-reaction, .catchword {
 
             .words-list .word {
@@ -721,14 +730,14 @@
                 }
                 // .ps__rail-y, .ps__thumb-y {
                 //     // background: red !important;
-                // }  
+                // }
                 .ps__thumb-y {
                     top: 25vh !important;
-                }    
+                }
             }
 
             .ow-list {
-                height: 10vh;             
+                height: 10vh;
             }
 
             .cw-list {
@@ -756,7 +765,7 @@
             }
 			.form-group {
 				margin: 1vh 0;
-                
+
                 .add-cw {
                     display: flex;
                     align-items: center;
@@ -766,7 +775,7 @@
                     cursor: pointer;
                     width: 5vh;
                 }
-                
+
                 .form-field {
 					width: 46%;
 				}
@@ -774,7 +783,7 @@
 					// position: absolute;
 					// right: 1vw;
                     // width: 45%;
-                    
+
                     width: 30%;
                     position: relative;
                     right: 0;
@@ -815,7 +824,7 @@
                     .fa-caret-left {
                         padding: 1.2vh 0.4vh 0;
                     }
-    
+
                     span {
                         float: right;
                         padding-right: 0.6vh;
@@ -860,7 +869,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
-            
+
             .fields {
                 display: flex;
                 justify-content: space-between;
@@ -898,7 +907,7 @@
                 width: 19.8vh;
             }
         }
-        
+
         .catchword-heading {
             display: flex;
             justify-content: space-between;
@@ -924,7 +933,7 @@
 
 		.card.add-reaction {
             position: relative;
-            top: -1.5vh; 
+            top: -1.5vh;
             height: 40vh;
             width: 28%;
             // width: 35vh;
@@ -968,7 +977,7 @@
 				position: relative;
 				.form-field {
                     // width: calc(100% - 12.5vh);
-					width: calc(100% - 5.5vh);                    
+					width: calc(100% - 5.5vh);
 					padding-left: 3.5vh;
 				}
 				.star {
@@ -1004,7 +1013,7 @@
         .add-reaction, .catchword, .add-rating {
             .capsule-list {
 				position: relative;
-				width: 26vw;                
+				width: 26vw;
                 padding: 1vh 1vw;
 				.word {
 					float: left;
@@ -1031,7 +1040,7 @@
             }
             .list-with-words {
                 // background-color: #fafafa;
-                min-height: 4vh; 
+                min-height: 4vh;
             }
         }
 
@@ -1058,7 +1067,7 @@
                 top: 1.8vh;
             }
         }
-        
+
         #pitches {
             display: none;
             padding: 1vw;
@@ -1089,9 +1098,9 @@
         padding-top: 10vh;
         left: 0;
         top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
+        width: 100%;
+        height: 100%;
+        overflow: auto;
         background-color: rgba(244, 250, 255, 0.8);
 
         .heading h1 {
@@ -1140,7 +1149,7 @@
             text-align: center;
             font-weight: bold;
         }
-        
+
         .inner-content {
             display: flex;
             width: 100%;
@@ -1268,7 +1277,7 @@
 
             .btn-wrapper {
                 position: absolute;
-                bottom: 0;                
+                bottom: 0;
                 .submit-btn {
                     width: 6vw;
                 }
@@ -1308,7 +1317,7 @@
             margin-top: 0;
             margin-bottom: 0;
         }
-    
+
         .card-heading {
             display: flex;
         }
@@ -1324,17 +1333,17 @@
             left: 2.2vh;
             top: 1.3vh;
         }
-    
+
         .card-heading h2 {
             margin-left: 2.3vh;
             width: 20vh;
             font-size: 1.7vh;
         }
-    
+
         .card-content {
             display: flex;
         }
-    
+
         .modal-card {
             border: 1px solid #CFD3D6;
             cursor: pointer;
@@ -1345,7 +1354,7 @@
             margin-left: 2.3vh;
             position: relative;
         }
-    
+
         .modal-card label {
             position: absolute;
             bottom: 0;
@@ -1386,7 +1395,7 @@
 			#player {
 				display: none;
 			}
-			
+
 			video {
 				position: absolute;
 				width: 100%;
@@ -1512,11 +1521,11 @@
     }
 
     .form-group .form-field.danger {
-        border: 0.1vh solid red; 
+        border: 0.1vh solid red;
     }
 
     .form-group .form-field.valid {
-        border: .1vh solid #dfe1e5; 
+        border: .1vh solid #dfe1e5;
     }
 
     .save {
@@ -1615,13 +1624,9 @@
 }
 
 .danger {
-    border: 0.1vh solid red; 
+    border: 0.1vh solid red;
 }
 .hide {
-    display: none;
-}
-
-#navbar {
     display: none;
 }
 
@@ -1640,7 +1645,7 @@ input[type="file"] {
 #content {
 
     #pitchModal {
-        
+
         // top: 12%;
         padding-top: 0;
         .modal-content {
@@ -1650,20 +1655,20 @@ input[type="file"] {
         #show_ratings {
             display: none;
         }
-    
+
         .form-group label.container {
             display: block;
             position: relative;
             cursor: pointer;
             margin: 0.2vh 0;
         }
-    
+
         .skip-elections label,
         .pitch-sound label {
             font-size: 2vh;
             font-weight: bold;
         }
-    
+
         /* Hide the browser's default checkbox */
         .container input {
             position: absolute;
@@ -1672,7 +1677,7 @@ input[type="file"] {
             height: 0;
             width: 0;
         }
-    
+
         /* Create a custom checkbox */
         .checkmark {
             position: absolute;
@@ -1684,47 +1689,47 @@ input[type="file"] {
             border-radius: 0.3vh;
             background-color: white;
         }
-    
+
         /* On mouse-over, add a grey background color */
         .container:hover input~.checkmark {
             background-color: white;
         }
-    
+
         /* When the checkbox is checked, add a blue background */
         .container input:checked~.checkmark {
             background-color: white;
         }
-    
+
         /* Create the checkmark/indicator (hidden when not checked) */
         .common-checkbox .checkmark:after {
             content: "";
             position: absolute;
             display: none;
         }
-    
+
         /* Show the checkmark when checked */
         .common-checkbox input:checked~.checkmark:after {
             display: block;
         }
-    
-    
-    
+
+
+
         .rating-container .checkmark:after {
             display: none;
         }
-    
+
         .rating-container input:checked~.checkmark:after {
             display: block;
         }
-    
+
         .rating-container .checkmark:after {
             content: "";
             position: absolute;
             display: block;
         }
-    
-    
-    
+
+
+
         /* Style the checkmark/indicator */
         .container .checkmark:after {
             left: .5vh;
@@ -1742,7 +1747,7 @@ input[type="file"] {
             label {
                 font-size: 1.8vh;
             }
-    
+
             .form-group {
                 position: relative;
                 text-align: left;
@@ -1750,7 +1755,7 @@ input[type="file"] {
                     width: calc(100% - 9vh);
                 }
             }
-    
+
             .add {
                 position: absolute;
                 right: 0;

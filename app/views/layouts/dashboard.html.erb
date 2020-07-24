@@ -19,6 +19,19 @@
 </style>
 
 <body>
+	<% if @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) %>
+	<section id="new-pitch-navbar">
+		<h1>Pitch erstellen</h1>
+		<div class="btn-group">
+			<% if @pitch.title.present? %>
+				<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
+			<% else %>
+				<a href="javascript:void(0)" class="btn reversed exit-btn">Exit</a>
+			<% end %>
+			<button class="btn done-btn open-modal" data-modal="pitch-modal">Done</button>
+		</div>
+	</section>
+	<% else %>
 	<section id="navbar">
 		<div class="dropdown" onclick="toggleDropdown()">
 			Hallo, <%= @admin.fname %> <%= @admin.lname %>
@@ -54,6 +67,7 @@
 		</div>
 
 	</section>
+	<% end %>
 	<section id="sidebar">
 		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
 
