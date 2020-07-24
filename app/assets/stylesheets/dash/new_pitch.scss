@@ -425,13 +425,22 @@
             }
         }
 
-        .ps__rail-y {
-            height: 0 !important;
-        }
+        // .ps__rail-y {
+        //     height: 3vh !important;
+        // }
 
-        .ps__thumb-y {
-            top: 25vh !important;
-        } 
+        // .ps__thumb-y {
+        //     // top: 25vh !important;
+        //     // bottom: 100vh !important;
+        // } 
+
+        .ps--active-y > .ps__rail-y {
+            display: block;
+            // background-color: black !important;
+            right: -1.7vh !important;
+            height: 10vh !important;
+            // bottom: 100vh !important;
+        }
     }
 
     .pitch-tasks-list {
