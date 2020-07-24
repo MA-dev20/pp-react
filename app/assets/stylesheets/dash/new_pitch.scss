@@ -334,7 +334,7 @@
     .card.left {
         top: 0;
         width: 15.65vw;
-        left: 2.5vw;
+        left: 1vw;
         background: transparent;
         border: none;
         box-shadow: none;
@@ -361,7 +361,7 @@
 
         .tasks {
             height: 91vh;
-            width: 103.5%;
+            width: 105.5%;
             border-right: 0.1vh solid #CFD3D6;
             display: block;
             .card {
@@ -492,7 +492,7 @@
 
 	.card.right {
 		position: absolute;
-		top: 4vh; left: 20vw;
+		top: 4vh; left: 19.5vw;
 		height: 82vh; width: 65vw;
 		padding: 0;
 		.slide-preview {
@@ -1871,10 +1871,11 @@ input[type="file"] {
     color: rgb(var(--custcolor));
     cursor: pointer;
     text-decoration: none;
-    font-size: 2.7vh;
+    font-size: 3.3vh;
     position: absolute;
-    left: 8vh;
-    top: 1.5vh;
+    left: 4vh;
+    // top: 1.5vh;
+    top: -5.5vh;
 }
 
 .warning-msg {
