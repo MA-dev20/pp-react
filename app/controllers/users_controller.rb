@@ -21,7 +21,7 @@ class UsersController < ApplicationController
 	  redirect_to dashboard_teams_path
 	end
   end
-	
+
   def edit
 	authorize! :update, @user
 	flash[:alert] = 'Konnte User nicht updaten!' if !@user.update(user_params)
@@ -33,16 +33,16 @@ class UsersController < ApplicationController
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
 	redirect_to account_path if params[:site] == 'account'
   end
-	
+
   def new_password
 	@user = User.find_by(email: params[:user][:email])
   end
-	
+
   def edit_avatar
 	@user.update(avatar: params[:file]) if params[:file].present? && @user.present?
 	render json: {file: @user.avatar.url}
   end
-	
+
   def destroy
     authorize! :destroy, @user
 	@company = @user.company
@@ -54,22 +54,25 @@ class UsersController < ApplicationController
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard'
   end
-	
+
   def company_admin
-	@user.update(role: "company_admin")
-	render json: {user: @user}
+	@user.update(role: "company")
+  @user.teams.create(name: 'all') if !@user.teams.find_by(name: 'all')
+	render json: {user: @user, role: @user.role}
   end
-	
+
   def department_admin
-	@user.update(role: 'department_admin')
-	render json: {user: @user}
+	@user.update(role: 'department')
+  @user.teams.create(name: 'all') if !@user.teams.find_by(name: 'all')
+	render json: {user: @user, role: @user.role}
   end
-	
+
   def admin
 	@user.update(role: 'admin')
-	render json: {user: @user}
+  @user.teams.create(name: 'all') if !@user.teams.find_by(name: 'all')
+	render json: {user: @user, role: @user.role}
   end
-	
+
   def user
 	if @user.role == 'inactive'
 	  password = SecureRandom.urlsafe_base64(8)
@@ -79,10 +82,13 @@ class UsersController < ApplicationController
 	  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
 	    flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
 	  end
-	  render json: {user: @user}	
+	  render json: {user: @user, role: @user.role}
 	else
 	  @user.update(role: "user")
-	  render json: {user: @user}
+    @user.teams.each do |u|
+      u.destroy
+    end
+	  render json: {user: @user, role: @user.role}
 	end
   end
   private

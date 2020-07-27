@@ -9,7 +9,7 @@
 			<%= image_tag "", id: 'logo', style: 'display: none' %>
 			Logo hinzufügen
 			<% end %>
-			<div class="hover"><i class="fas fa-plus"></i></div>			
+			<div class="hover"><i class="fas fa-plus"></i></div>
 		</label>
 		<%= f.file_field :logo %>
 	</div>
@@ -19,9 +19,7 @@
 	</div>
 	<div class="form-group color">
 		<label for="">Farbe</label> <br>
-		<%= f.number_field "color1_0", value: @company.color1[0], class: 'form-field' %>
-		<%= f.number_field "color1_1", value: @company.color1[1], class: 'form-field' %>
-		<%= f.number_field "color1_2", value: @company.color1[2], class: 'form-field' %>
+		<%= f.color_field :color_hex %>
 	</div>
 	<%= f.submit 'speichern!', class: 'btn btn-green' %>
 	<% end %>
@@ -50,7 +48,7 @@
 	})(jQuery);
 	var inputLogo = document.getElementById('company_logo');
 	var image = document.getElementById('company_image');
-	
+
 	inputLogo.addEventListener("change", function(e) {
 		var files = e.target.files;
 		var done = function(url) {
@@ -118,6 +116,6 @@
 				$('#popup').hide();
 			}
 		})
-		
+
 	}
 </script>

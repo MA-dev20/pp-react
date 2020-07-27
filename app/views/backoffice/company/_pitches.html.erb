@@ -1,0 +1,34 @@
+<div class="card" id="pitch">
+  <h3>Pitches</h3>
+  <div class="table" id="pitches-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Pitchname</th>
+          <th>Slides</th>
+          <th>Tasks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="allTasks" class="pitchname <%= !@pitch ? 'highlighted' : '' %>">
+          <td onclick="redirect('all')">Alle Tasks</td>
+          <td onclick="redirect('all')" id="count"><%= @company.tasks.where(task_type: 'slide').count %></td>
+          <td onclick="redirect('all')" id="count"><%= @company.tasks.where.not(task_type: 'slide').count %></td>
+        </tr>
+        <% @pitches.each do |p| %>
+          <tr id="" class="pitchname <%= @pitch && @pitch == p ? 'highlighted' : '' %>">
+            <td onclick="redirect('<%= p.id %>')"><%= p.title %></td>
+            <td onclick="redirect('<%= p.id %>')"><%= p.tasks.where(task_type: 'slide').count %></td>
+            <td onclick="redirect('<%= p.id %>')"><%= p.tasks.where.not(task_type: 'slide').count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/javascript">
+  function redirect(tID) {
+      var url = "<%= backoffice_company_url(@company) %>?pitch=" + tID;
+      window.location.replace(url);
+  }
+</script>

@@ -5,6 +5,7 @@
  *= require slick-theme
  *= require dash/pitches
  *= require dash/new_pitch
+ *= require dash/backoffice
  */
 
 @import "font-awesome-sprockets";
@@ -20,9 +21,48 @@ body {
 	color: #212529;
 }
 #navbar {
+	position: fixed;
 	z-index: 100;
+	top: 0; left: calc(25.6vh);
+	height: 8vh; width: calc(100vw - (25.6vh - 1px));
+	line-height: 8vh;
+	.company {
+		width: 20vw;
+		margin: 3.5vh auto;
+		text-align: center;
+		line-height: 3.5vh;
+		font-size: 3.5vh;
+		font-weight: bold;
+	}
+	.links {
+		.fas {
+			float: left;
+			line-height: 3.5vh;
+			margin: 3.5vh 2vw 3.5vh 2vw;
+			font-size: 1.85vh;
+			line-height: 2vh;
+			font-size: 2vh;
+			color: rgb(var(--custcolor));
+			text-decoration: none;
+		}
+		.fas:hover {
+			transform: scale(1.2);
+		}
+		.link {
+			float: left;
+			margin: 3.5vh 1vw;
+			font-size: 1.85vh;
+			line-height: 2vh;
+			cursor: pointer;
+			color: black;
+			text-decoration: none;
+		}
+		.link.active, .link:hover {
+			border-bottom: 2px solid rgb(var(--custcolor));
+		}
+	}
 	.dropdown {
-		position: fixed;
+		position: absolute;
 		top: 0;
 		right: 0;
 		line-height: 3.5vh;
@@ -158,6 +198,10 @@ body {
 		line-height: 5vh; font-size: 4vh;
 		text-align: center;
 		cursor: pointer;
+		a {
+			text-decoration: none;
+			color: white;
+		}
 	}
 	.settings:hover {
 		font-size: 5vh;
@@ -830,9 +874,46 @@ body {
 			cursor: pointer;
 		}
 	}
+	.toggleUser {
+		position: relative;
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		.toggle {
+			position: absolute;
+			display: inline-block;
+			right: 5px;
+			margin: 9px 10px;
+			height: 10px;
+			border-radius: 7.5px;
+			width: 30px;
+			background-color: white;
+			border: 1px solid gray;
+			.dot {
+				position: absolute;
+				top: -3.5px;
+				height: 15px; width: 15px;
+				border-radius: 50%;
+				background-color: white;
+				border: 1px solid gray;
+			}
+		}
+		.toggle.on {
+			background-color: rgb(var(--btncolor));
+			border-color: transparent;
+			.dot {
+				right: -2px; left: auto;
+				border-color: rgb(var(--btncolor))
+			}
+
+		}
+		.toggle.off {
+			.dot {right: auto; left: -2px}
+		}
+	}
 	.form-group {
 		width: 100%;
-		margin-bottom: 2.5vh;
+		margin-bottom: 1.5vh;
 		clear: left;
 		label {
 			font-weight: 300;
@@ -877,7 +958,7 @@ body {
 			width: calc(100% - 2vh);
 			background-color: white;
 			border: .1vh solid #dfe1e5;
-			height: 5.5vh;
+			height: 5vh;
 			border-radius: .8vh;
 			font-size: 1.8vh;
 			padding: 0 1vh;

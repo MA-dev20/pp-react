@@ -1,0 +1,52 @@
+.card#ability-card {
+  height: 85vh;
+  #ability-table {
+    height: 70vh;
+  }
+  table thead tr th,
+  table tbody tr td,
+  table tbody tr th {
+    text-align: center;
+    i.far.fa-square {
+      color: rgba(0,0,0,.5);
+    }
+    i.far.fa-check-square {
+      color: rgba(29, 218, 175,1);
+    }
+    .toggle {
+      position: relative;
+      display: inline-block;
+      right: 5px;
+      margin: 9px 10px;
+      height: 10px;
+      border-radius: 7.5px;
+      width: 30px;
+      background-color: white;
+      border: 1px solid gray;
+      .dot {
+        position: absolute;
+        top: -3.5px;
+        height: 15px; width: 15px;
+        border-radius: 50%;
+        background-color: white;
+        border: 1px solid gray;
+      }
+    }
+    .toggle.on {
+			background-color: rgb(var(--btncolor));
+			border-color: transparent;
+			.dot {
+				right: -2px; left: auto;
+				border-color: rgb(var(--btncolor))
+			}
+
+		}
+		.toggle.off {
+			.dot {right: auto; left: -2px}
+		}
+  }
+  table tbody tr th:first-child,
+  table tbody tr td:first-child {
+    text-align: left;
+  }
+}

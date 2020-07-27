@@ -1,15 +1,3 @@
-<section id="new-pitch-navbar">
-	<h1>Pitch erstellen</h1>
-	<div class="btn-group">
-		<% if @pitch.title.present? %>
-			<%= link_to 'Exit', dashboard_pitches_path, class: 'btn reversed'%>
-		<% else %>
-			<a href="javascript:void(0)" class="btn reversed exit-btn">Exit</a>
-		<% end %>
-		<button class="btn done-btn open-modal" data-modal="pitch-modal">Done</button>
-	</div>
-</section>
-
 <div id="new-pitch-content">
 	<% if @pitch.title.present? %>
 		<%= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow-icon' %>
@@ -423,7 +411,7 @@
 
 
 
-	
+
 	function loadFile(e, type = '') {
 		const id = $(e.target).attr('id');
 		let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
@@ -472,7 +460,7 @@
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
 		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
 
-		//Browse pitch tasks 
+		//Browse pitch tasks
 		$('.pitches-header').text('Pitches');
 		$('.pitch-tasks-list .ps__rail-y').hide();
 		$('.pitch-list .ps__rail-y').show();
@@ -642,7 +630,7 @@
 	// End Options modal
 
 	new PerfectScrollbar('#tasksScrollBar');
-	
+
 	function addTask() {
 		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
@@ -685,15 +673,15 @@
 					$(`#task_${task_id} .task-name`).text(value);
 				} else {
 					if (value) {
-						$(`#task_${task_id} .${type}`).text(value); 
+						$(`#task_${task_id} .${type}`).text(value);
 					} else {
-						$(`#task_${task_id} .${type}`).text('-'); 
+						$(`#task_${task_id} .${type}`).text('-');
 					}
 				}
 			}
 		})
 	}
-	
+
 	function deleteTask(task_id) {
 		$.ajax({
 			url: '<%= delete_task_card_path(@pitch) %>',
@@ -730,5 +718,5 @@
 		window.location.replace(URL);
 	  <% end %>
 	}
-	
+
 </script>

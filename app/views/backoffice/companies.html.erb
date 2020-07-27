@@ -5,312 +5,68 @@
 		<button class="btn btn-green" onclick="toggleCompany()">Unternehmen anlegen</button>
 	</div>
 	<div class="card" id="company" style="<%= @company && !@company.activated || params[:edit] ? 'display: none' : '' %>">
-		<h3>Unternehmen</h3>
-		<div class="table" id="company-table">
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Nutzer</th>
-						<th>Pitches</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<% @companies.each do |c| %>
-					<tr class="<%= @company && @company == c ? 'highlighted' : '' %>">
-						<td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
-						<td onclick="redirect(<%= c.id %>)"><%= c.users.count %></td>
-						<td onclick="redirect(<%= c.id %>)"><%= c.games.count %></td>
-						<td class="edit"><%= link_to '', backoffice_company_path(c.id, edit: ''), class: 'far fa-edit' %></td>
-						<td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
-					</tr>
-					<% end %>
-				</tbody>
-			</table>
-		</div>
+	<h3>Unternehmen</h3>
+	<div class="table" id="company-table">
+	  <table>
+	    <thead>
+	      <tr>
+	        <th>Name</th>
+	        <th>Nutzer</th>
+	        <th>Pitches</th>
+	        <th></th>
+	        <th></th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <% @companies.each do |c| %>
+	      <tr class="<%= @company && @company == c ? 'highlighted' : '' %>">
+	        <td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
+	        <td onclick="redirect(<%= c.id %>)"><%= c.users.count %></td>
+	        <td onclick="redirect(<%= c.id %>)"><%= c.games.count %></td>
+	        <td class="edit"><%= link_to '', backoffice_company_path(c.id, edit: ''), class: 'far fa-edit' %></td>
+	        <td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
+	      </tr>
+	      <% end %>
+	    </tbody>
+	  </table>
 	</div>
-	<% if @company && params[:edit] %>
-	<div class="card" id="editCompany">
-		<h3><%= link_to '', backoffice_company_path(@company), class: 'fas fa-arrow-left back' %>Unternehmen bearbeiten</h3>
-		<%= form_for(:company, url: edit_company_path(@company, site: "backoffice_company")) do |f| %>
-			<div class="form-group">
-				<label for="">Unternehmensname</label>
-				<%= f.text_field :name, class: 'form-field' %>
-			</div>
-			<div class="form-group">
-				<label for="">Angestellte</label>
-				<%= f.number_field :employees, class: 'form-field' %>
-			</div>
-			<div class="form-group">
-				<label for="">Nachricht</label>
-				<%= f.text_field :message, class: 'form-field' %>
-			</div>
-		<%= f.submit 'speichern!', class: 'btn btn-green' %>
-		<% end %>
 	</div>
-	<% end %>
-	<% if @company && !@company.activated %>
-	<div class="card" id="companyMessage">
-		<h3><%= link_to '', backoffice_companies_path, class: 'fas fa-arrow-left back' %>Message</h3>
-		<div class="table" id="user-table">
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>E-Mail</th>
-						<th>Telefon</th>
-						<th>Position</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><%= @company.users.first.fname %> <%= @company.users.first.lname %></td>
-						<td><%= @company.users.first.email %></td>
-						<td><%= @company.users.first.phone %></td>
-						<td><%= @company.users.first.position %></td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="text"><%= @company.message %></div>
-		</div>
-	</div>
-	<script>new PerfectScrollbar('#user-table');</script>
-	<% end %>
-	<div class="card" id="createCompany" style="display: none">
-		<h3><i class="fas fa-arrow-left back" onclick="toggleCompany()"></i>Unternehmen anlegen</h3>
-		<%= form_for(:company, url: new_company_path) do |f| %>
-			<div class="form-group">
-				<label for="">Unternehmensname</label>
-				<%= f.text_field :name, class: 'form-field' %>
-			</div>
-			<%= f.submit 'speichern!', class: 'btn btn-green' %>
-		<% end %>
-	</div>
+	<script>
+	  function redirect(cID) {
+	    var url = "<%= backoffice_companies_url %>/" + cID + '?team=all';
+	    location.replace(url);
+	  }
+	</script>
 </div>
 <div class="right">
 	<div class="search">
 		<i class="fas fa-search"></i>
 		<input type="text" placeholder="User suchen" id="searchUsers" class="form-field">
-		<% if @company %>
-		<button class="btn" onclick="toggleUser()">User erstellen</button>
-		<% else %>
-		<button class="btn disabled">User erstellen</button>
-		<% end %>
 	</div>
-	<div class="card" id='inactive-company' style="<%= @company && @company.activated ? 'display: none' : '' %>">
-		<h3>Inactive Unternehmen</h3>
-		<div class="table" id="inactive-company-table">
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>E-Mail</th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<% @unactivated_companies.each do |c| %>
-					<tr class="red <%= c == @company ? 'highlighted' : '' %>">
-						<td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
-						<td onclick="redirect(<%= c.id %>)"><%= c.users.first.email %></td>
-						<td class="accept"><%= link_to '', accept_company_path(c.id), class: 'far fa-check-circle' %></td>
-						<td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
-					</tr>
-					<% end %>
-			</tbody>
-		</table>
-		</div>
-	</div>
-	<% if @company && @company.activated && !@user %>
-	<div class="card" id="users">
-		<h3><%= link_to '', backoffice_companies_path, class: 'fas fa-arrow-left back' %><%= @company.name %> - Users</h3>
-		<div class="table" id="users-table">
-			<table>
-				<thead>
-					<tr>
-						<th colspan="2">Name</th>
-						<th>Pitches</th>
-						<th>Score</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<% @users.each do |u| %>
-					<tr>
-						<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/wolf.png' %></td>
-						<td><%= u.fname %> <%= u.lname %></td>
-						<td><%= u.games.count %></td>
-						<td>10</td>
-						<td class="edit"><%= link_to '', backoffice_company_path(@company, edit_user: u.id), class: 'far fa-edit' %></td>
-						<td class="remove"><%= link_to '', destroy_user_path(u.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
-					</tr>
-					<% end %>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<script>new PerfectScrollbar('#users-table');</script>
-	<% end %>
-	<% if @user %>
-	<div class="card" id="editUser">
-		<h3><%= link_to '', backoffice_company_path(@company), class: 'fas fa-arrow-left back' %>Edit User</h3>
-		<%= form_for(:user, url: edit_user_path(@user, site: 'backoffice_company')) do |f| %>
-			<div class="form-group avatar">
-				<label for="user_avatar">
-					<%= image_tag @user.avatar? ? @user.avatar.url : 'dash/wolf.png', id: 'avatar' %>
-					<div class="hover">
-						<i class="fas fa-plus"></i>
-					</div>
-				</label>
-				<%= f.file_field :avatar %>
-			</div>
-			<div class="form-group half-left">
-				<label for="">Vorname</label>
-				<%= f.text_field :fname, class: 'form-field' %>
-			</div>
-			<div class="form-group half-right">
-				<label for="">Nachname</label>
-				<%= f.text_field :lname, class: 'form-field' %>
-			</div>
-			<div class="form-group">
-				<label for="">E-Mail</label>
-				<%= f.email_field :email, class: 'form-field' %>
-			</div>
-			<%= f.submit 'speichern!', class: 'btn btn-green' %>
-		<% end %>
-	</div>
-	<% end %>
-	<div class="card" id="createUser">
-		<h3><i class="fas fa-arrow-left back" onclick="toggleUser()"></i>User anlegen!</h3>
-		<%= form_for(:user, url: new_user_path) do |f| %>
-			<div class="form-group half-left">
-				<label for="">Vorname</label>
-				<%= f.text_field :fname, value: '', class: "form-field" %>
-			</div>
-			<div class="form-group half-right">
-				<label for="">Nachname</label>
-				<%= f.text_field :lname, value: '', class: "form-field" %>
-			</div>
-			<div class="form-group">
-				<label for="">E-Mail</label>
-				<%= f.email_field :email, value: '', class: "form-field" %>
-			</div>
-			<%= f.submit 'speichern!', class: 'btn btn-green' %>
-		<% end %>
+	<div class="card" id='inactive-company'>
+	  <h3>Inactive Unternehmen</h3>
+
+	  <div class="table" id="inactive-company-table">
+	  <table>
+	    <thead>
+	      <tr>
+	        <th>Name</th>
+	        <th>E-Mail</th>
+	        <th></th>
+	        <th></th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <% @unactivated_companies.each do |c| %>
+	        <tr class="red <%= c == @company ? 'highlighted' : '' %>">
+	          <td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
+	          <td onclick="redirect(<%= c.id %>)"><%= c.users.first.email %></td>
+	          <td class="accept"><%= link_to '', accept_company_path(c.id), class: 'far fa-check-circle' %></td>
+	          <td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
+	        </tr>
+	        <% end %>
+	    </tbody>
+	  </table>
+	  </div>
 	</div>
 </div>
-
-<% if @user %>
-<div class="popup" id="popup">
-	<div class="img-container">
-		<%= image_tag '', id: 'user_image' %>
-	</div>
-   	<div class="center">
-    	<div class="btn btn-green" id="crop">speichern</div>
-   	</div>
-   	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
-</div>
-
-<script>
-	(function ($) {
-	  $.each(['show', 'hide'], function (i, ev) {
-	    var el = $.fn[ev];
-	    $.fn[ev] = function () {
-	      this.trigger(ev);
-	      return el.apply(this, arguments);
-	    };
-	  });
-	})(jQuery);
-	var inputAvatar = document.getElementById('user_avatar');
-	var image = document.getElementById('user_image');
-	
-	inputAvatar.addEventListener('change', function(e) {
-		var files = e.target.files;
-		var done = function(url) {
-			inputAvatar.value = '';
-			image.src = url;
-			$('#popup').show();
-		};
-		var reader, file, url;
-		if(files && files.length > 0) {
-			file = files[0];
-			if(URL) {
-				done(URL.createObjectURL(file));
-			} else if(FileReader) {
-				reader = new FileReader();
-				reader.onload = function(e) {
-					done(reader.result);
-				}
-				reader.readAsDataURL(file);
-			}
-		}
-	})
-	$('#popup').on('show', function() {
-		cropper = new Cropper(image, {
-			aspectRatio: 1,	
-		});
-	})
-	$('#popup').on('hide', function() {
-		cropper.destroy();
-		cropper = null;
-	})
-	$('#crop').on('click', function() {
-		var initialURL, canvas;
-		if(cropper) {
-			canvas = cropper.getCroppedCanvas({
-				fillColor: "white",
-				width: 500,
-				height: 500,
-			});
-			initalURL = avatar.src;
-			avatar.src = canvas.toDataURL();
-			canvas.toBlob(function(blob) {
-				var date = new Date().getTime();
-				var file = new window.File([blob], 'avatar_'+date+'.jpg', {type: 'image/jpg'});
-				var formData = new FormData();
-				formData.append('file', file);
-				uploadImage('avatar', formData);
-			});
-		};
-	})
-	function uploadImage(img, formData) {
-		var url = '<%= update_avatar_user_path(@user) %>';
-		$.ajax({
-			url: url,
-			type: 'put',
-			cache: false,
-			async: true,
-			contentType: false,
-			processData: false,
-			data: formData,
-			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-			success: function(res) {
-				formData = new FormData();
-				$('#avatar').data('url', res.file);
-				$('#popup').hide();
-			}
-		})
-		
-	}
-</script>
-<% end %>
-<script>
-	function toggleCompany() {
-		$('#company').toggle();
-		$('#createCompany').toggle();
-	}
-	function toggleUser() {
-		$('#users').toggle();
-		$('#createUser').toggle();
-	}
-	function redirect(cID) {
-		var url = "<%= backoffice_companies_url %>/" + cID;
-		location.replace(url)
-	}
-	new PerfectScrollbar('#inactive-company-table');
-	new PerfectScrollbar('#company-table');
-</script>

@@ -1,10 +1,10 @@
 class DashboardController < ApplicationController
   before_action :set_user
   layout "dashboard"
-	
+
   def index
 	@team = Team.find(params[:team]) if params[:team]
-	
+
 	if @admin.ratings.count != 0 && @admin.role == 'user'
 	@admin_ratings = []
 	@admin.user_ratings.each do |r|
@@ -40,7 +40,7 @@ class DashboardController < ApplicationController
 	    render 'index'
     end
   end
-	
+
   def customize_game
 	@game = Game.find(params[:game_id])
 	@team = @game.team
@@ -67,14 +67,14 @@ class DashboardController < ApplicationController
 	  end
 	end
   end
-	
+
   def teams
 	@team = Team.find(params[:team_id]) if params[:team_id]
 	@users = @team.users.order('fname') if params[:team_id] && params[:edit] != "true"
 	@users.order('lname')
 	@user = User.find(params[:edit_user]) if params[:edit_user]
   end
-	
+
   def user_stats
 	@user = User.find(params[:user_id])
 	if @user.ratings.count == 0
@@ -113,7 +113,7 @@ class DashboardController < ApplicationController
 	@team = TeamUser.find_by(user: @user).team
 	@team_users = @team.users.sort_by{|e| - e[:ges_rating]}
   end
-	
+
   def team_stats
 	@team = Team.find(params[:team_id])
 	if @team.games.count == 0 || @team.users.count == 0
@@ -156,7 +156,7 @@ class DashboardController < ApplicationController
 	@turns = @team.game_turns.where.not(ges_rating: nil)
 	@team_users = @team.users.sort_by{|e| -e[:ges_rating]}
   end
-	
+
   def customize
 	@CLs = @admin.catchword_lists.order('name')
 	@CL = CatchwordList.find_by(id: params[:CL]) if params[:CL]
@@ -165,10 +165,13 @@ class DashboardController < ApplicationController
 	@RLs = @admin.rating_lists.order('name')
 	@RL = RatingList.find_by(id: params[:RL]) if params[:RL]
   end
-	
+
   def account
   end
-	
+
+  def company
+  end
+
   def video
 	@pitches = []
 	@admin.games.each do |p|
@@ -186,7 +189,7 @@ class DashboardController < ApplicationController
 	@videos = @admin.videos
 	@videos << @company.videos
   end
-	
+
   def pitch_video
 	@turn = GameTurn.find(params[:turn_id])
 	@ratings = @turn.game_turn_ratings
@@ -199,18 +202,18 @@ class DashboardController < ApplicationController
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
-	@team = Team.find(params[:team]) if params[:team]	
+	@team = Team.find(params[:team]) if params[:team]
   end
   def new_pitch
 	@pitch = @admin.pitches.create()
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
-  
+
   def edit_pitch
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
-		@task = @pitch.tasks.find(params[:task_id]) 
+		@task = @pitch.tasks.find(params[:task_id])
 	else
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
 	end
@@ -234,9 +237,9 @@ class DashboardController < ApplicationController
 	@task = Task.find(params[:selected_task_id])
 	@task.update(params[:type].to_sym => params[:value])
   end
-	
+
   private
-  
+
 	def set_user
 	  if user_signed_in?
 		@admin = current_user

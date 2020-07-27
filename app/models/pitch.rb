@@ -8,9 +8,14 @@ class Pitch < ApplicationRecord
 
     mount_uploader :image, ImageUploader
     mount_uploader :video, VideoUploader
-    
-    accepts_nested_attributes_for :tasks, reject_if: :all_blank, allow_destroy: true 
 
+    accepts_nested_attributes_for :tasks, reject_if: :all_blank, allow_destroy: true
+
+		before_save do
+			user = User.find(self.user_id)
+			self.company_id = user.company_id if self.company_id.nil?
+		end
+		
     def self.videos_count
         joins(:tasks).group('tasks.video', 'tasks.pitch_id').count
     end

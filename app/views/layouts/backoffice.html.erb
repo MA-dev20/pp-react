@@ -15,10 +15,23 @@
 	  --custcolor: <%= @root.company.color1[0] %>,<%= @root.company.color1[1] %>, <%= @root.company.color1[2] %>;
 	  --btncolor: <%= @root.company.color2[0] %>,<%= @root.company.color2[1] %>, <%= @root.company.color2[2] %>;
 	}
-	
+
 </style>
   <body>
    	<section id="navbar">
+      <% if @company %>
+      <div class="links">
+        <%= link_to '', backoffice_companies_path, class: 'fas fa-chevron-left' %>
+        <%= link_to 'Teams', backoffice_company_path(@company, team: 'all'), class: 'link' + (params[:team] ? ' active' : '') %>
+        <%= link_to 'Pitches', backoffice_company_path(@company, pitch: 'all'), class: 'link' + (params[:pitch] ? ' active' : '') %>
+        <%= link_to 'Content', backoffice_company_path(@company, content: 'all'), class: 'link' + (params[:content] ? ' active' : '') %>
+        <%= link_to 'Rechte', backoffice_company_path(@company, abilities: 'user'), class: 'link' + (params[:abilities] ? ' active' : '') %>
+      </div>
+      <div class="company">
+        <%= @company.name %>
+      </div>
+
+      <% end %>
    		<div class="dropdown" onclick="toggleDropdown()">
    		Hallo, <%= @root.fname %> <%= @root.lname %>
    		<i class="fas fa-caret-down dropdown-img"></i>
@@ -30,8 +43,8 @@
    			</div>
    			<% if can? :manage, @company %>
 				<div class="link">
-					Unternehmens Dashboard
-					<%= link_to '', company_dash_path %>
+					Unternehmen
+					<%= link_to '', dash_company_path %>
 				</div>
    			<% end %>
    			<% if @departement && (can? :manage, @department) %>
@@ -49,11 +62,11 @@
 				<%= link_to '', destroy_user_session_path, method: 'delete' %>
   			</div>
    		</div>
-   		
+
    	</section>
    	<section id="sidebar">
    		<%= image_tag @root.avatar? ? @root.avatar.url : 'dash/wolf.png', class: 'avatar' %>
-   		
+
    		<div class="links">
    			<div class="link <%= current_page?(backoffice_path) ? 'active' : '' %>">
    				<i class="fas fa-book open"></i>

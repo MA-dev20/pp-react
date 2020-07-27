@@ -1,0 +1,24 @@
+<% if params[:abilities] %>
+<%= render "backoffice/company/abilities.html.erb" %>
+<% else %>
+<div class="left">
+  <% if params[:pitch] %>
+  <%= render "backoffice/company/pitches.html.erb" %>
+  <% elsif params[:content] %>
+  <%= render "backoffice/company/tasks.html.erb" %>
+  <% elsif params[:edit] %>
+  <%= render "backoffice/company/edit_company.html.erb" %>
+  <% else %>
+  <%= render "backoffice/company/teams.html.erb" %>
+  <% end %>
+</div>
+<div class="right">
+  <% if params[:pitch] %>
+  <%= render "backoffice/company/tasks.html.erb" %>
+  <% elsif params[:content] %>
+  <%= render "backoffice/company/task_media.html.erb" %>
+  <% else %>
+  <%= render "backoffice/company/users.html.erb" %>
+  <% end %>
+</div>
+<% end %>

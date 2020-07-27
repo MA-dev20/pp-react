@@ -25,12 +25,7 @@ Rails.application.routes.draw do
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
-
-  #Pitches-Tasks
-  # get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
-  # get 'dashboard/pitch/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
-  # get 'dashboard/pitch/save', to: 'dashboard#create_pitch', as: 'dashboard_create_pitch'
-
+  get 'dashboard/company', to: 'dashboard#company', as: 'dash_company'
 
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:pitch_id/edit', to: 'dashboard#edit_pitch', as: 'dashboard_edit_pitch'
@@ -60,16 +55,9 @@ Rails.application.routes.draw do
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 
 
-
-
-  get 'dashboard/company', to: 'dash_company#index', as: 'company_dash'
-  get 'dashboard/company/edit', to: 'dash_company#company', as: 'company_dash_edit'
-  get 'dashboard/company/departments', to: 'dash_company#departments', as: 'company_dash_departments'
-  get 'dashboard/company/departments/:department_id', to: 'dash_company#department', as: 'company_dash_department'
-
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"
-  get 'backoffice/companies/:company_id', to: 'backoffice#companies', as: "backoffice_company"
+  get 'backoffice/companies/:company_id', to: 'backoffice#company', as: "backoffice_company"
   get 'backoffice/catchwords', to: 'backoffice#catchwords', as: 'backoffice_catchwords'
   get 'backoffice/objections', to: 'backoffice#objections', as: 'backoffice_objections'
   get 'backoffice/ratings', to: 'backoffice#ratings', as: 'backoffice_ratings'
@@ -146,8 +134,8 @@ Rails.application.routes.draw do
   post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
-  put 'users/:user_id/company_admin', to: 'users#company_admin', as: 'make_company_admin'
-  put 'users/:user_id/make_department_admin', to: 'users#department_admin', as: 'make_department_admin'
+  put 'users/:user_id/make_company', to: 'users#company_admin', as: 'make_company'
+  put 'users/:user_id/make_department', to: 'users#department_admin', as: 'make_department'
   put 'users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
   put 'users/:user_id/make_user', to: 'users#user', as: 'make_user'
 
@@ -174,4 +162,9 @@ Rails.application.routes.draw do
   post 'videos/new', to: 'video#new', as: "new_video"
   post 'videos/:video_id/edit', to: 'video#edit', as: 'edit_video'
   get 'videos/:video_id/destroy', to: 'video#destroy', as: 'delete_video'
+
+  #User Abilities
+  post "company/:company_id/abilities/update_user", to: 'user_abilities#update_user', as: 'update_user_abilities'
+  post "company/:company_id/abilities/update_admin", to: 'user_abilities#update_admin', as: 'update_admin_abilities'
+  post "company/:company_id/abilities/update_root", to: 'user_abilities#update_root', as: 'update_root_abilities'
 end

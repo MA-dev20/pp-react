@@ -1,0 +1,230 @@
+<% if params[:edit_user] %>
+<% @user = User.find_by(id: params[:edit_user]) %>
+<div class="card" id="editUser">
+  <h3><%= link_to '', backoffice_company_path(@company, team: params[:team]), class: 'fas fa-arrow-left back' %>Edit User</h3>
+  <%= link_to '', destroy_user_path(@user, site: 'backoffice'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
+  <%= form_for(:user, url: edit_user_path(@user, site: 'backoffice')) do |f| %>
+    <%= f.hidden_field :role, value: @user.role %>
+    <div class="form-group avatar">
+      <label for="user_avatar">
+        <%= image_tag @user.avatar.url, id: 'avatar' %>
+        <div class="hover">
+          <i class="fas fa-plus"></i>
+        </div>
+      </label>
+      <%= f.file_field :avatar %>
+    </div>
+    <div class="form-group half-left">
+      <label for="">Vorname</label>
+      <%= f.text_field :fname, class: 'form-field' %>
+    </div>
+    <div class="form-group half-right">
+      <label for="">Nachname</label>
+      <%= f.text_field :lname, class: 'form-field' %>
+    </div>
+    <div class="form-group">
+      <label for="">E-Mail</label>
+      <%= f.email_field :email, class: 'form-field' %>
+    </div>
+    <div class="form-group half-left">
+      <div class="toggleUser"  onclick="toggleRole('admin')">
+        <div id="toggleAdmin" class="toggle <%= @user.role == 'admin' ? 'on' : 'off' %>" ><div class="dot"></div></div> Admin
+      </div>
+      </div>
+      <div class="form-group half-right">
+      <div class="toggleUser" onclick="toggleRole('company')">
+        <div id="toggleCompany" class="toggle <%= @user.role == 'company' ? 'on' : 'off' %>" ><div class="dot"></div></div> Company
+      </div>
+    </div>
+
+
+    <%= f.submit 'speichern!', class: 'btn btn-green' %>
+  <% end %>
+</div>
+<div class="popup" id="popup">
+    <div class="img-container">
+      <%= image_tag '', id: 'user_image' %>
+    </div>
+    <div class="center">
+      <div class="btn btn-green" id="crop">speichern</div>
+    </div>
+    <div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+</div>
+<script type="text/javascript">
+  function toggleRole(role) {
+    if( role == 'admin' ) {
+      if($('#user_role').val() == 'admin' ) {
+        var URL = "<%= make_user_path(@user) %>";
+      } else {
+        var URL = "<%= make_admin_path(@user) %>";
+      }
+    } else if( role == 'company' ) {
+      if($('#user_role').val() == 'company' ) {
+        var URL = "<%= make_user_path(@user) %>";
+      } else {
+        var URL = "<%= make_company_path(@user) %>";
+      }
+    }
+    $.ajax({
+			url: URL,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+        $('#user_role').val(role);
+				if( res.role == 'company') {
+          if( $('#toggleCompany').hasClass('off') ) {
+            $('#toggleCompany').removeClass('off').addClass('on')
+          }
+          if( $('#toggleAdmin').hasClass('off') ) {
+              $('#toggleAdmin').removeClass('off').addClass('on')
+          }
+        } else if(res.role == 'admin') {
+          if( $('#toggleCompany').hasClass('on') ) {
+            $('#toggleCompany').removeClass('on').addClass('off')
+          }
+          if( $('#toggleAdmin').hasClass('off') ) {
+              $('#toggleAdmin').removeClass('off').addClass('on')
+          }
+        } else if(res.role == 'user') {
+          if( $('#toggleCompany').hasClass('on') ) {
+            $('#toggleCompany').removeClass('on').addClass('off')
+          }
+          if( $('#toggleAdmin').hasClass('on') ) {
+              $('#toggleAdmin').removeClass('on').addClass('off')
+          }
+        }
+			}
+		})
+
+  }
+  function showPopup() {
+      $('#popup').show();
+  }
+  function hidePopup() {
+      $('#popup').hide();
+  }
+  (function ($) {
+  $.each(['show', 'hide'], function (i, ev) {
+    var el = $.fn[ev];
+    $.fn[ev] = function () {
+      this.trigger(ev);
+      return el.apply(this, arguments);
+    };
+  });
+  })(jQuery);
+  var inputAvatar = document.getElementById('user_avatar');
+	var image = document.getElementById('user_image');
+
+	inputAvatar.addEventListener('change', function(e) {
+		var files = e.target.files;
+		var done = function(url) {
+			inputAvatar.value = '';
+			image.src = url;
+			$('#popup').show();
+		};
+		var reader, file, url;
+		if(files && files.length > 0) {
+			file = files[0];
+			if(URL) {
+				done(URL.createObjectURL(file));
+			} else if(FileReader) {
+				reader = new FileReader();
+				reader.onload = function(e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+	})
+	$('#popup').on('show', function() {
+		cropper = new Cropper(image, {
+			aspectRatio: 1,
+		});
+	})
+	$('#popup').on('hide', function() {
+		cropper.destroy();
+		cropper = null;
+	})
+	$('#crop').on('click', function() {
+		var initialURL, canvas;
+		if(cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			initalURL = avatar.src;
+			avatar.src = canvas.toDataURL();
+			canvas.toBlob(function(blob) {
+				var date = new Date().getTime();
+				var file = new window.File([blob], 'avatar_'+date+'.jpg', {type: 'image/jpg'});
+				var formData = new FormData();
+				formData.append('file', file);
+				uploadImage('avatar', formData);
+			});
+		};
+	})
+	function uploadImage(img, formData) {
+		var url = '<%= update_avatar_user_path(@user) %>';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				formData = new FormData();
+				$('#avatar').data('url', res.file);
+				$('#popup').hide();
+			}
+		})
+
+	}
+</script>
+<% else %>
+<div class="card" id="users">
+  <h3><% if @team %><%= link_to '', backoffice_company_path(@company, team: 'all'), class: 'fas fa-arrow-left back' %><% end %><%= @company.name %> - Users</h3>
+  <div class="table" id="users-table">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">Name</th>
+          <th>Pitches</th>
+          <th>Score</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |u| %>
+        <% if params[:edit_team] && @team.users.find_by(id: u.id) %>
+        <% else %>
+        <tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="username">
+          <td class="img"><%= image_tag u.avatar.url %></td>
+          <td><%= u.fname %> <%= u.lname %></td>
+          <td><%= u.games.count %></td>
+          <td><%= u.ges_rating / 10.0 %></td>
+          <td class="edit"><%= link_to '', backoffice_company_path(@company, team: params[:team], edit_user: u.id), class: 'far fa-edit' %></td>
+          <td class="remove"><%= link_to '', destroy_user_path(u.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
+        </tr>
+        <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% end %>
+<script>new PerfectScrollbar('#users-table');</script>
+<script type="text/javascript">
+  function drag(e) {
+    e.dataTransfer.setData("EID", e.target.id);
+    e.dataTransfer.setData('ID', e.target.getAttribute('data-id'))
+  }
+</script>

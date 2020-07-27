@@ -1,0 +1,134 @@
+<% if @team && params[:edit_team] %>
+<div class="card" id="editTeam">
+  <h3><%= link_to '', backoffice_company_path(@company, team: @team.id), class: 'fas fa-arrow-left back' %>Team bearbeiten!</h3>
+  <%= link_to '', destroy_team_path(@team, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
+  <%= form_for(:team, url: edit_team_path(@team)) do |f| %>
+    <div class="form-group">
+      <label for="">Teamname</label>
+      <%= f.text_field :name, class: 'form-field' %>
+    </div>
+    <div class="table" id="adduser" ondrop="dropTeamADD(event)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)">
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2">Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @team.users.each do |u| %>
+          <tr>
+            <td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/icons/wolf.png' %></td>
+            <td><%= u.fname %> <%= u.lname %></td>
+            <td class="remove active"><%= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="placehere">Nutzer hier hinziehen, um sie diesem Team hinzuzufügen!</div>
+    <%= f.submit 'speichern!', class: 'btn btn-green' %>
+  <% end %>
+  <script>
+    function dropTeamADD(e) {
+  		e.preventDefault();
+  		var uID = e.dataTransfer.getData('ID');
+  		addTeamUser(uID);
+  	}
+    function addTeamUser(uID) {
+  		var url = '/teams/' + <%= @team.id %> + '/add/user/' + uID;
+  		$.ajax({
+  			url: url,
+  			type: 'put',
+  			cache: false,
+  			async: true,
+  			contentType: false,
+  			processData: false,
+  			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+  			success: function(res) {
+  				var userDiv = '<tr><td class="img">' + $('#user_'+uID+" td:nth-child(1)").html() + '</td>';
+  				userDiv += '<td>' + $('#user_'+uID+" td:nth-child(2)").html() + '</td><td class="remove"><a class="far fa-trash-alt" href="/teams/<%= @team.id %>/delete/user/'+uID+'?site=dashboard_team_edit"></a></td></tr>';
+  				$('#adduser tbody').append(userDiv);
+  				$('#user_'+uID).remove();
+  			}
+  		})
+  	}
+  </script>
+</div>
+<% else %>
+<div class="card" id="team">
+  <h3>Teams</h3>
+  <div class="table" id="teams-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Teamname</th>
+          <th>Nutzer</th>
+          <th>Score</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="team_all" class="teamname <%= !@team ? 'highlighted' : '' %>">
+          <td onclick="redirect('all')">Alle</td>
+          <td onclick="redirect('all')" id="count"><%= @company.users.count %></td>
+          <td onclick="redirect('all')"></td>
+          <td onclick="redirect('all')"></td>
+          <td onclick="redirect('all')"></td>
+        </tr>
+        <% @teams.each do |t| %>
+          <tr ondrop="dropTeam(event, <%= t.id %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)" id="team_<%= t.id %>" class="teamname <%= @team && @team == t ? 'highlighted' : '' %>">
+            <td onclick="redirect(<%= t.id %>)"><%= t.name == 'all' ? t.user.fname + ' ' + t.user.lname + "'s User" : t.name %></td>
+            <td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.count %></td>
+            <td onclick="redirect(<%= t.id %>)"><%= t.name == 'all' ? '-' : t.ges_rating / 10.0 %></td>
+            <td class="edit"><%= link_to '', backoffice_company_path(@company, team: t.id, edit_team: true), class: 'far fa-edit' %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% end %>
+<script>
+  new PerfectScrollbar('#teams-table');
+  function toggleTeam() {
+    $('#team').toggle();
+    $('#createTeam').toggle();
+  }
+  function redirect(tID) {
+      var url = "<%= backoffice_company_url(@company) %>?team=" + tID;
+      window.location.replace(url);
+  }
+  function dropTeam(e, tID) {
+		e.preventDefault();
+		var uID = e.dataTransfer.getData('ID');
+		addUSER(tID, uID);
+	}
+  function addUSER(tID, uID) {
+		var url = '/teams/' + tID + '/add/user/' + uID;
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				$('#team_' + tID + ' #count').text(res.count);
+				$('#teams-table .highlighted').each(function() {
+					$( this ).removeClass('highlighted')
+				});
+				<% if @team %>
+				$('#team_' + <%= @team.id %> + '').addClass('highlighted');
+				$('#team_' + <%= @team.id %> + ' tbody').append($('#user_'+uID));
+				<% end %>
+			}
+		})
+	}
+  function allowDrop(ev) {
+		ev.preventDefault();
+		$(ev.target).parent().addClass('highlighted');
+	}
+</script>

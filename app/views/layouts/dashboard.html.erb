@@ -38,22 +38,16 @@
 			<i class="fas fa-caret-down dropdown-img"></i>
 		</div>
 		<div class="dropdown-content">
-			<% if can? :manage, @company %>
-			<div class="link">
-				Unternehmen
-				<%= link_to '', company_dash_path %>
-			</div>
-			<% end %>
-			<% if @departement && (can? :manage, @department) %>
-			<div class="link">
-				Abteilung
-				<%= link_to '', department_dash_path %>
-			</div>
-			<% end %>
-			<% if can? :manage, :all %>
+			<% if @admin.bo_role == 'root' %>
 			<div class="link">
 				Backoffice
 				<%= link_to '', backoffice_path %>
+			</div>
+			<% end %>
+			<% if can? :manage, @company %>
+			<div class="link">
+				Unternehmen
+				<%= link_to '', dash_company_path %>
 			</div>
 			<% end %>
 			<div class="link">
@@ -148,9 +142,6 @@
 			<% end %>
 		</div>
 
-		<div class="settings">
-			<i class="fas fa-cog"></i>
-		</div>
 		<div class="logo">
 			<svg viewBox="0 0 160 156" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path

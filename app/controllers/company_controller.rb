@@ -35,7 +35,7 @@ class CompanyController < ApplicationController
 	  redirect_to root_path
     end
   end
-	
+
   def new
 	authorize! :create, Company
 	@company = Company.new(company_params)
@@ -43,7 +43,7 @@ class CompanyController < ApplicationController
 	flash[:alert] = "Konnte Unternehmen nicht anlegen!" if !@company.save
 	redirect_to backoffice_companies_path
   end
-	
+
   def accept
 	authorize! :manage, @company
 	flash[:alert] = 'Konnte Unternehmen nicht aktivieren!' if !@company.update(activated: true)
@@ -53,25 +53,14 @@ class CompanyController < ApplicationController
 	UserMailer.after_activate(@user, password).deliver
 	redirect_to backoffice_company_path(@company)
   end
-	
+
   def edit
 	authorize! :update, @company
-	if params[:company][:color1_0] && params[:company][:color1_1] && params[:company][:color1_2]
-	  @company.color1[0] = params[:company][:color1_0]
-	  @company.color1[1] = params[:company][:color1_1]
-      @company.color1[2] = params[:company][:color1_2]
-	  @company.color2[0] = params[:company][:color1_0]
-	  @company.color2[1] = params[:company][:color1_1]
-	  @company.color2[2] = params[:company][:color1_2]
-	  flash[:alert] = 'Konnte Unternehmen nicht updaten!' if !@company.save
-	  flash[:alert] = 'Konnte Unternehmen nicht updaten!' if !@company.update(company_params)
-	else
-	  flash[:alert] = 'Konnte Unternehmen nicht updaten!' if !@company.update(company_params)
-	end
+  @company.update(company_params)
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
-	redirect_to company_dash_edit_path if params[:site] == 'company_dash'
+	redirect_to dash_company_path if params[:site] == 'company_dash'
   end
-	
+
   def edit_logo
 	authorize! :update, @company
 	@company.update(logo: params[:file]) if params[:file].present? && @company.present?
@@ -87,15 +76,15 @@ class CompanyController < ApplicationController
 	end
 	redirect_to backoffice_companies_path if params[:site] == 'backoffice_company'
   end
-	
+
   private
 	def company_params
-	  params.require(:company).permit(:name, :logo, :employees, :message)
+	  params.require(:company).permit(:name, :logo, :employees, :message, :color_hex)
 	end
 	def user_params
 	  params.require(:company).permit(:fname, :lname, :phone, :email, :position)
 	end
-	
+
 	def set_company
 	  @company = Company.find(params[:company_id])
 	end
@@ -105,6 +94,6 @@ class CompanyController < ApplicationController
 	  else
 		flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
 		redirect_to root_path
-	  end 
+	  end
 	end
 end
