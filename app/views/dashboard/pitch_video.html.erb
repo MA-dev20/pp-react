@@ -1,9 +1,38 @@
 <div class="card pitch-video">
 	<div class="left">
-		<h3 class="pitch-video-title"><%= @turn&.task&.title %></h3>
 		<div class="user">
 			<%= image_tag @turn.user.avatar.url %>
 			<%= @turn.user.fname %> <%= @turn.user.lname %> - <%= @turn.created_at.strftime("%d.%m.%y") %>
+		</div>
+		<div class="video-title-wrapper">
+			<h3 class="pitch-video-title"><%= @turn&.task&.title %></h3>
+		</div>
+		<div class="media-wrapper">
+			<div class="card <%= @task.task_type == 'catchword' ? 'card-cw' : '' %> <%= @task.task_type == 'audio' ? 'card-audio' : '' %>">
+				<div class="length">
+					<%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? '0' + (@task.time % 60).to_s : (@task.time % 60).to_s %>
+				</div>
+				<% if @task.task_medium&.video_url_id&.present? %>
+					<% if @task.task_medium.video_url_type == 'youtube' %>
+						<iframe class="video-i-frame" width="420" height="170" src="https://www.youtube.com/watch?v=JCUhlf_fEk4"></iframe>
+					<% else %>
+						<iframe class="video-i-frame" width="420" height="170" src="https://player.vimeo.com/video/<%= @task.task_medium.video_url_id %>"></iframe>
+					<% end %>
+				<% elsif @task.task_type == 'video' %>
+					<video class="video-tag" src="<%= @task.task_medium.video.url %>" controls></video>
+				<% elsif @task.task_type == 'audio' %>
+					<div class="audio-play-div">
+						<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
+						<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
+					</div>
+					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>				
+				<% elsif @task.task_type == 'image' %>
+					<%= image_tag @task.task_medium.image.url %>
+				<% elsif @task.task_type == 'catchword' %>
+					<h2><%= @turn.catchword.name %></h2>
+				<% end %>	
+				
+			</div>
 		</div>
 		<%= link_to '', delete_pitch_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
 		<% if @ratings.count != 0 %>
@@ -24,7 +53,10 @@
 			<% end %>
 			<div class="ges-rating">
 				<div class="rate">
-					<%= @turn.ges_rating / 10.0 %>
+					<%
+						turn_rating = @turn.ges_rating / 10.0
+					%>
+					<%= (turn_rating == 10.0) ? 10 : turn_rating %>
 					<svg viewbox="0 0 100 100">
 						<circle cx="50" cy="50" r="48" stroke="rgb(var(--custcolor))" stroke-width="4" fill="none" stroke-dasharray="<%= 301.59 * (@turn.ges_rating / 100.0) %> 1000"></circle>
 					</svg>
@@ -35,6 +67,7 @@
 		<% end %>
 		<% if @own_ratings.count != 0 %>
 		<div class="own-ratings">
+			<p class="rating-heading">Rating</p>
 			<% @own_ratings.each do |r| %>
 				<div class="rating">
 					<div class="name"><%= r.rating_criterium.name %></div>
@@ -48,7 +81,10 @@
 			<div class="switch-text">Eigene Bewertung</div>
 			<div class="ges-rating">
 				<div class="rate">
-					<%= (@own_ratings.average(:rating) / 10.0).round(1) %>
+					<%
+						own_rating = (@own_ratings.average(:rating) / 10.0).round(1)
+					%>
+					<%= (own_rating == 10.0) ? 10 : own_rating %>
 					<svg viewbox="0 0 100 100">
 						<circle cx="50" cy="50" r="48" stroke="rgb(var(--custcolor))" stroke-width="4" fill="none" stroke-dasharray="<%= 301.59 * (@turn.ges_rating / 100.0) %> 1000"></circle>
 					</svg>
@@ -203,4 +239,26 @@
 	pitch.addEventListener('ended', function() {
 		stopVideo();
 	})
+
+
+	function playAudio() {
+		if ($('.audio-play-div .play-audio').hasClass('audio-play-circle')) {
+			document.getElementById('task-audio').play();
+			$('.audio-play-div .audio-play-circle').hide();
+			$('.audio-play-div .audio-pause-circle').show();
+		}
+	}
+
+	function pauseAudio() {
+		if ($('.audio-play-div .pause-audio').hasClass('audio-pause-circle')) {
+			document.getElementById('task-audio').pause();
+			$('.audio-play-div .audio-pause-circle').hide();
+			$('.audio-play-div .audio-play-circle').show();
+		} 
+	}
+
+	function stopAudio() {
+		$('.audio-play-div .audio-play-circle').show();
+		$('.audio-play-div .audio-pause-circle').hide();
+	}
 </script>
