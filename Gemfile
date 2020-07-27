@@ -16,6 +16,7 @@ gem 'streamio-ffmpeg'
 gem 'sitemap_generator'
 gem 'anycable-rails'
 gem 'rqrcode'
+gem 'deep_cloneable', '~> 3.0.0'
 
 gem 'rangesliderjs-rails'
 # looks

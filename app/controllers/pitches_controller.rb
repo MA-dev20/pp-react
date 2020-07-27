@@ -134,6 +134,23 @@ class PitchesController < ApplicationController
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id)
   end
 
+  def copy_pitch
+	@pitch = Pitch.find(params[:id])
+	# @pitch_clone = @pitch.deep_clone do |original, kopy|
+	# 	kopy.image = original.image
+	# end
+	@pitch_clone = @pitch.deep_clone include: :tasks
+	@pitch_clone.save
+	@pitch.deep_clone do |original, kopy|
+		@pitch_clone.update(image: original.image)
+	end
+	@pitch_clone.task_orders.each_with_index do |t, index|
+		t.update(order: index+1)
+		# @pitch_clone.task_orders.find(t.id).update(order: t.order)
+	end
+	redirect_to dashboard_pitches_path
+  end
+
   def delete_task
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
