@@ -5,3 +5,4 @@ log/
 .*db/schema.rb
 Gemfile
 config/database.yml
+db/schema.rb
