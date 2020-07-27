@@ -277,17 +277,29 @@
 	border-radius: 5px;
 	
 	.dropdown-option {
-		padding: 1vh;
+		// padding: 1vh;
 	}
 	.select-name {
 		display: block;
 		line-height: 3vh;
-		// padding: 0 1vh 1vh;
+		padding: 0.3vh 0;
+	}
+
+	.select-name:nth-child(1) {
+		padding-top: 0.5vh;
+	}
+
+	.select-name:last-child {
+		padding-bottom: 0.5vh; 
+	}
+
+	.select-name:hover {
+		background: #e3e6ea;
 	}
 
 	a {
-		width: 100%;
 		display: block;
+		margin: 0 1vh;
 		color: #212529;
 		text-decoration: none;
 	}
