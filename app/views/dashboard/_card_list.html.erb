@@ -110,7 +110,8 @@
     </div>
     <% end %>
     <% if @pitch.tasks.count == 0 %>
-    <div class="form-group add-first-task">
-        <button class="btn" onclick="addTask()">Add first task</button>
+    <div class="left-card card add-first-task selected" onclick='addTask()'>
+        <%= image_tag 'dash/icons/circle-plus-green.svg' %>
+        <div class="title">Add first slide</div>
     </div>
     <% end %>

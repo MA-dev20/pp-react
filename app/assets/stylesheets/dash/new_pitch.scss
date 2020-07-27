@@ -328,6 +328,22 @@
             top: 0;
         }
 
+        .add-first-task {
+            img {
+                display: block;
+                height: 7vh;
+                width: 5.5vh;
+                margin: 4vh auto 0 auto;
+            }
+
+            .title {
+                font-weight: 400 !important;
+                text-align: center;
+                margin: 1vh 0 auto !important;
+                width: 100%;
+            }
+        }
+
 		.add-task {
             z-index: 10;
 			position: absolute;
