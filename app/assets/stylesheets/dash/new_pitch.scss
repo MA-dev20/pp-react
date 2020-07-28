@@ -249,6 +249,14 @@
                     }
                 }
 
+                .thumb.browse-slide {
+                    height: 12vh;
+
+                    .no-pdf-image-icon {
+                        top: 30%;
+                    }
+                }
+
 				.title {
 					margin: 0 .5vw;
 					font-size: 2vh;
@@ -489,7 +497,11 @@
                 float: left;
                 border-radius: 1vh;
                 margin: .5vh .5vw 1.5vh .5vw;
-                height: 34vh;
+                height: 24.5vh;
+
+                .task-title {
+                    padding-top: 0.5vh;
+                }
 
                 .buttons {
                     .btn {
