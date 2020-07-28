@@ -438,9 +438,9 @@
                         top: 34%;
                     }
 
-                    img {
-                        object-fit: fill;
-                    }
+                    // img {
+                    //     object-fit: fill;
+                    // }
                 }
             }
 
@@ -2066,7 +2066,8 @@ input[type="file"] {
                 height: 55vh;
                 width: 90%;
                 border-radius: 1vh;
-                object-fit: fill;
+                // object-fit: fill;
+                object-fit: contain;
             }
 
             .remove-option {
