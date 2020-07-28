@@ -1397,7 +1397,7 @@ body {
 			.deleteList {
 				position: absolute;
 				bottom: 0;
-				right: 0;
+				left: 0;
 				margin: 2vh;
 				margin-left: 0;
 				color: grey;
@@ -1879,6 +1879,11 @@ select:-moz-focusring {
 			text-align: center;
 		}
 
+		img {
+			height: 24vh;
+			width: 100%; 
+		}
+
 		.video-i-frame {
 			height: 23vh;
 			width: 96%;
@@ -1931,7 +1936,7 @@ select:-moz-focusring {
 		align-items: center;
 	}
 
-	.card-audio {
+	.card-full-width {
 		padding-top: 0 !important;
 	}
 }
