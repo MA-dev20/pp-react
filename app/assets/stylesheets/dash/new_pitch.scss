@@ -1132,6 +1132,16 @@
                 height: 25vh;
             }
         }
+
+        .pitch-list {
+            .buttons {
+                width: 92% !important;
+
+                .btn {
+                    width: 100% !important;
+                }
+            }
+        }
 	}
 }
 
