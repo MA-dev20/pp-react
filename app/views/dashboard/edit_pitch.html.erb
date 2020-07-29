@@ -707,6 +707,7 @@
 		})
 	}
 	function selectTask(task_id) {
+		$('.browse-tasks-partial').hide();
 	  <% if @task %>
 		$.ajax({
 			url: '<%= dashboard_select_task_path(@pitch, @task) %>',
