@@ -15,7 +15,8 @@ Rails.application.routes.draw do
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
-  get 'dashboard', to: 'dashboard#index', as: 'dashboard'
+  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard'
+  # get 'dashboard', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
   get 'dashboard/teams/:team_id', to: 'dashboard#teams', as: 'dashboard_team'
