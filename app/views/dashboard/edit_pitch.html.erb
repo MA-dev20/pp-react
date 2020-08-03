@@ -34,7 +34,7 @@
 				<%= t.hidden_field :media_type, value: 'audio' %>
 				<input type="hidden" name="pdf_type" value="audio">
 			<% end %>
-			<div class="add-task">
+			<div class="add-task <%= 'hide' if @pitch.tasks.count == 0 %>" >
 				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
 			</div>
 		</div>
@@ -695,6 +695,7 @@
 		})
 	}
 	function selectTask(task_id) {
+		$('.browse-tasks-partial').hide();
 	  <% if @task %>
 		$.ajax({
 			url: '<%= dashboard_select_task_path(@pitch, @task) %>',

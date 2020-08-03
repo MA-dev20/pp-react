@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
-  get 'dashboard', to: 'dashboard#index', as: 'dashboard'
+  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard'
   get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
   post 'pitches/:pitch_id/tasks/:task_id/create_ratings', to: 'pitches#create_ratings', as: 'create_ratings'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
+  get '/pitches/:id/duplicate', to: 'pitches#copy_pitch', as: 'copy_pitch'
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 

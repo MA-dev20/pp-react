@@ -9,7 +9,12 @@ class Pitch < ApplicationRecord
     mount_uploader :image, ImageUploader
     mount_uploader :video, VideoUploader
 
-    accepts_nested_attributes_for :tasks, reject_if: :all_blank, allow_destroy: true
+    # accepts_nested_attributes_for :tasks, reject_if: :all_blank, allow_destroy: true
+
+    # amoeba do
+    #     enable
+    #     clone [:tasks]
+    # end
 
     def self.videos_count
         joins(:tasks).group('tasks.video', 'tasks.pitch_id').count

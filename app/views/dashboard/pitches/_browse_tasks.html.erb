@@ -8,18 +8,19 @@
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches pitch-list">
         <% pitches.each do |pitch| %>
-        <div class="card">
+        <div class="card pitch-card">
             <div class="thumb">
                 <% if pitch.image? %>
-                <%= image_tag pitch.image.url %>
+                <%= image_tag pitch.image.url, class: 'pitch-placeholder-img' %>
                 <% else %>
-                <%= image_tag 'dash/Image.png' %>
+                <%#= image_tag 'dash/Image.png' %>
+                <%= image_tag 'dash/pitch_placeholder.png', class: 'pitch-placeholder-img' %>
                 <% end %>
             </div>
             
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size %>,
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size %>,
                 Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
             </div>
             <div class="buttons">
@@ -39,47 +40,79 @@
                 <% pitch.tasks.each_with_index do |task, index| %>
                 <div class="task-card">
                     <div class="task-title">
-                        <div class="name"><%= index + 1 %>. Task</div>
+                        <% if task.task_type == 'slide' %>
+                            <div class="name"><%= index + 1 %>. Slide - <%= task.pdf_type.titleize %></div>
+                        <% else %>
+                            <% if task.task_medium.present? %>
+                                <div class="name"><%= index + 1 %>. Task - <%= task.task_medium.media_type.titleize %></div>
+                            <% else %>
+                                <div class="name"><%= index + 1 %>. Task</div>
+                            <% end %>
+                        <% end %>
                     </div>
                     <div class="task-subtitle title task-name">
                         <%= task.title&.titleize %>
                     </div>
-                    <% if task.task_medium && task.task_medium.video? %>
-                    <% image_url = task.task_medium.video.thumb.url %>
-                    <% elsif task.task_medium && task.task_medium.image? %>
-                    <% image_url = task.task_medium.image.url %>
-                    <% else %>
-                    <% image_url = nil %>
-                    <% end %>
-                    <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
+                    <% if task.task_type != 'slide' %>
                         <% if task.task_medium && task.task_medium.video? %>
-                        <%= image_tag task.task_medium.video.thumb.url, class: 'image' %>
+                            <% image_url = task.task_medium.video.thumb.url %>
                         <% elsif task.task_medium && task.task_medium.image? %>
-                        <%= image_tag task.task_medium.image.url, class: 'image' %>
+                            <% image_url = task.task_medium.image.url %>
                         <% else %>
-                        <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
+                            <% image_url = nil %>
                         <% end %>
-                        <% if task.time %>
-                        <div class="length">
-                            <%= (task.time / 60).to_s %>:<%= (task.time % 60) < 10 ? '0' + (task.time % 60).to_s : (task.time % 60).to_s %>
+                        <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
+                            <% if (task.task_medium && (task.task_medium.video? || task.task_medium.video_url_id?)) %>
+                                <% if task.task_medium.video_url_id? %>
+                                    <%= image_tag task.task_medium.video_img, class: 'image' %>
+                                <% else %>
+                                    <%= image_tag task.task_medium.video.thumb.url, class: 'image' %>
+                                <% end %>
+                                <i class="fa fa-play-circle video-play-thumb"></i>
+                                <% elsif task.task_medium && task.task_medium.image? %>
+                                    <%= image_tag task.task_medium.image.url, class: 'image' %>
+                                <% elsif task.task_medium && task.task_medium.audio? %>
+                                    <%= image_tag 'dash/audio.png', class: 'no-image-icon no-image-audio-icon' %>
+                                <% else %>
+                                    <%= image_tag 'dash/no-image-icon.png', class: 'no-image-icon' %>
+                                <% end %>
+                                <% if task.time %>
+                                <div class="length">
+                                    <%= (task.time / 60).to_s %>:<%= (task.time % 60) < 10 ? '0' + (task.time % 60).to_s : (task.time % 60).to_s %>
+                                </div>
+                            <% else %>
+                                <div class="length">1:20</div>
+                            <% end %>
                         </div>
+                    <% else %>
+                        <% if task.task_medium && (task.task_medium.image? || task.task_medium.video? || task.task_medium.video_url_id?) %>
+                            <div class="thumb slide browse-slide">
+                                <% if task.task_medium && task.task_medium.video? %>
+                                <%= image_tag task.task_medium.video.thumb.url %>
+                                <i class="fa fa-play-circle video-play-thumb"></i>
+                                <% elsif task.task_medium.video_url_id? %>
+                                <%= image_tag task.task_medium.video_img, class: 'image' %>
+                                <i class="fa fa-play-circle video-play-thumb"></i>
+                                <% elsif task.task_medium && task.task_medium.image? %>
+                                <%= image_tag task.task_medium.image.url %>
+                                <% else %>
+                                <%= image_tag 'dash/Image.png' %>
+                                <% end %>
+                            </div>
                         <% else %>
-                        <div class="length">1:20</div>
+                            <div class="thumb thumb-border slide browse-slide">
+                                <% if task.task_medium && task.task_medium.audio? %>
+                                    <%= image_tag 'dash/audio.png', class: 'no-pdf-image-icon' %>
+                                <% elsif task.pdf_type == 'image' %>
+                                    <%= image_tag 'dash/image-icon.png', class: 'no-pdf-image-icon' %>
+                                <% elsif task.pdf_type == 'video' %>
+                                    <%= image_tag 'dash/video-icon.png', class: 'no-pdf-image-icon' %>
+                                <% elsif task.pdf_type == 'audio' %>
+                                    <%= image_tag 'dash/audio.png', class: 'no-pdf-image-icon' %>
+                                <% end %>
+                            </div>
                         <% end %>
-                    </div>
-                    <div class="task-subtitle">Rating criteria:</div>
-                    <div class="rating-criteria">
-                        <% criteria_count = task&.rating_list&.rating_criteria&.count %>
-                        <% if task.rating_list %>
-                        <% task.rating_list.rating_criteria.each do |rating| %>
-                        <div class="criterium"><%= rating.name %></div>
-                        <% end %>
-                        <% end %>
-                        <% criteria_count = 4 - (criteria_count.present? ? criteria_count : 0) %>
-                        <% criteria_count.times do |time| %>
-                        <div class="criterium">-</div>
-                        <% end %>
-                    </div>
+                    <% end %>
                     <div class="buttons">
                         <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
                     </div>

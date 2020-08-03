@@ -8,8 +8,39 @@
     <div class="pitches" id="pitch-list">
         <% @pitches.each do |pitch| %>
         <div class="card" id="pitch">
-          <div class="title"><%= pitch.title %></div>
-          <%= link_to '', delete_unsave_pitch_path(pitch), class: 'fas fa-trash remove remove-pitch remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+          <div class="pitches-title-wrapper">
+            <div class="title"><%= pitch.title %></div>
+            <%#= link_to '', delete_unsave_pitch_path(pitch), class: 'fas fa-trash remove remove-pitch remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <div class="custom-dropdown-select">
+                <div class="dropdown-div" onclick="openDropdown(this)">
+                    <i class="fa fa-ellipsis-v dropdown-icon" aria-hidden="true"></i>
+                </div>
+                <div class="dropdown-option-wrapper">
+                    <div class="dropdown-option">
+                        <span class="select-name">
+                            <a href="<%=  dashboard_edit_pitch_path(pitch) %>" data-turbolinks="false">
+                                <i class="fas fa-pencil-alt"></i>Edit
+                            </a>
+                        </span>
+                        <span class="select-name">
+                            <a href="">
+                                <i class="fa fa-share-alt" aria-hidden="true"></i>Share
+                            </a>
+                        </span>
+                        <span class="select-name">
+                            <a href="<%= copy_pitch_path(pitch) %>">
+                                <i class="fas fa-copy" aria-hidden="true"></i>Duplicate
+                            </a>
+                        </span>
+                        <span class="select-name">
+                            <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
+                                <i class="far fa-trash-alt" aria-hidden="true"></i>Delete
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+          </div>
           <div class="thumb">
               <% if pitch.image? %>
               <%= image_tag pitch.image.url, class: 'pitch-placeholder-img' %>
@@ -25,8 +56,8 @@
                 Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size %>,
                 Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
             </div>
-            <div class="buttons">
-                <%= link_to 'Edit', dashboard_edit_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
+            <div class="pitch-buttons">
+                <%#= link_to 'Edit', dashboard_edit_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
                 <%= link_to 'Pitch', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
             </div>
         </div>
@@ -180,7 +211,23 @@
         if ($(e.target).is('.blur')) {
             $('.blur').hide();
         }
+
+		if (!$(e.target).hasClass('dropdown-icon')) {
+			var container = $(".dropdown-div");
+			if (container.has(e.target).length === 0) {
+				$('.dropdown-option-wrapper').hide();
+			}
+        }
     });
+
+    function openDropdown(e) {
+        if ($(e).siblings('.dropdown-option-wrapper').is(':visible')) {
+            $('.dropdown-option-wrapper').hide();
+        } else {
+            $('.dropdown-option-wrapper').hide();
+            $(e).siblings('.dropdown-option-wrapper').show();
+        }
+    }
 
     function soundCheck() {
         var toggle = $('.toggle-game');

@@ -1471,16 +1471,15 @@ body {
 			.pitch-video-title {
 				width: 100%;
 				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
+				// text-overflow: ellipsis;
+				// white-space: nowrap;
+				overflow-wrap: break-word;
 			}
 			.deleteList {
 				position: absolute;
-				// top: 0;
-				// right: 0;
 				bottom: 0;
 				left: 0;
-				margin: 2vh;
+				margin: 2vh 0 0;
 				margin-left: 0;
 				color: grey;
 				font-size: 3vh;
@@ -1669,7 +1668,7 @@ body {
 				}
 				.switch {
 					position: absolute;
-					bottom: 1vh;
+					// bottom: 1vh;
 					width: 3vh;
 					height: 1.5vh;
 					background-color: rgba(0,0,0,.2);
@@ -1687,7 +1686,7 @@ body {
 					position: absolute;
 					left: 4vh;
 					width: calc(100% - 4vh);
-					bottom: 1vh;
+					// bottom: 1vh;
 					font-size: 1.5vh;
 					line-height: 1.5vh;
 				}
@@ -1997,5 +1996,82 @@ select:-moz-focusring {
 			margin: 0;
 			font-weight: normal;
 		}
+	}
+}
+
+.media-wrapper {
+	.card {
+		text-align: center;
+		margin: 0;
+		padding-top: 5px !important;
+		height: 24vh !important;
+
+		.video-tag, img {
+			height: 23vh;
+			width: 96%;
+			position: relative;
+			border-radius: 1vh;
+			text-align: center;
+		}
+
+		img {
+			height: 100%;
+			width: 100%; 
+		}
+
+		.video-i-frame {
+			height: 23vh;
+			width: 96%;
+		}
+
+		.audio-play-div {
+			background: #69DEA9;
+			height: 24vh;
+			width: 100%;
+			position: relative;
+			border-radius: 1vh;
+
+			i {
+				font-size: 6vh;
+				line-height: 24vh;
+				color: #fff;
+				cursor: pointer;
+			}
+
+			.pause-audio {
+				display: none;
+			}
+
+			.audio-tag {
+				display: none;
+			}
+		}
+		.length {
+			border: 1px solid #69DEA9;
+			background: #fff;
+			color: #000;
+			box-sizing: border-box;
+			border-radius: 1vh;
+			position: absolute;
+			top: 1.5vh;
+			left: 1vw;
+			height: 4vh;
+			width: 6vh;
+			line-height: 4vh;
+			font-size: 2vh;
+			text-align: center;
+			z-index: 1;
+		}
+
+	}
+
+	.card-cw {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.card-full-width {
+		padding-top: 0 !important;
 	}
 }

@@ -249,6 +249,14 @@
                     }
                 }
 
+                .thumb.browse-slide {
+                    height: 12vh;
+
+                    .no-pdf-image-icon {
+                        top: 30%;
+                    }
+                }
+
 				.title {
 					margin: 0 .5vw;
 					font-size: 2vh;
@@ -326,6 +334,22 @@
 
         .add-first-task .btn {
             top: 0;
+        }
+
+        .add-first-task {
+            img {
+                display: block;
+                height: 7vh;
+                width: 5.5vh;
+                margin: 4vh auto 0 auto;
+            }
+
+            .title {
+                font-weight: 400 !important;
+                text-align: center;
+                margin: 1vh 0 auto !important;
+                width: 100%;
+            }
         }
 
 		.add-task {
@@ -422,9 +446,9 @@
                         top: 34%;
                     }
 
-                    img {
-                        object-fit: fill;
-                    }
+                    // img {
+                    //     object-fit: fill;
+                    // }
                 }
             }
 
@@ -473,7 +497,11 @@
                 float: left;
                 border-radius: 1vh;
                 margin: .5vh .5vw 1.5vh .5vw;
-                height: 34vh;
+                height: 24.5vh;
+
+                .task-title {
+                    padding-top: 0.5vh;
+                }
 
                 .buttons {
                     .btn {
@@ -1098,6 +1126,20 @@
             .card .buttons .btn:last-child {
                 left: 0;
                 width: 22.8vh;
+            }
+
+            .pitch-card {
+                height: 25vh;
+            }
+        }
+
+        .pitch-list {
+            .buttons {
+                width: 92% !important;
+
+                .btn {
+                    width: 100% !important;
+                }
             }
         }
 	}
@@ -1952,7 +1994,7 @@ input[type="file"] {
     position: relative;
     top: 1vh;
     height: 78vh !important;
-    display: block;
+    display: none;
     background-color: white;
     border-radius: 1vh;
     box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
@@ -2050,7 +2092,8 @@ input[type="file"] {
                 height: 55vh;
                 width: 90%;
                 border-radius: 1vh;
-                object-fit: fill;
+                // object-fit: fill;
+                object-fit: contain;
             }
 
             .remove-option {
