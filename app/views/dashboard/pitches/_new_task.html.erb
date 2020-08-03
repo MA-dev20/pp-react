@@ -287,6 +287,7 @@
 						<div class="btn-wrapper">
 							<label class="btn reversed upload" id="video_upload_btn">Upload from computer</label>
 							<div class="btn reversed upload open-modal record-video">Record</div>
+							<label class="btn reversed upload" id="">Image library</label>
 						</div>
 						<div class="video-form">
 							<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -335,8 +336,11 @@
 						<%= t.file_field :audio, accept: '.mp3,.wav', class: 'audio-field' %>
 						<%#= f.hidden_field :audio_id, class: 'audio-id' %>
 						<%= t.hidden_field :media_type, value: 'audio' %>
-						<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
-						<div class="btn reversed upload record">Record</div>
+						<div class="btn-wrapper">
+							<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
+							<div class="btn reversed upload record">Record</div>
+							<label class="btn reversed upload" id="">Image library</label>
+						</div>
 					</div>
 				</div>
 				<% end %>
