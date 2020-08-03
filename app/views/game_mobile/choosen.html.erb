@@ -10,7 +10,7 @@
 	<% end %>
 </div>
 <div class="bottom">
-	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+	<% if @admin == @game.user %>
 	<%= link_to 'weiter', gm_set_state_path('', state: 'turn'), class: 'btn custom-btn' %>
 	<% end %>
 </div>

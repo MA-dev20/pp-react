@@ -16,7 +16,7 @@ module Dashboard
             @pitch = @admin.pitches.create()
 		 	@cw_lists = @admin.catchword_lists.all
         end
-		
+
 		def create_task
 		  @task = Task.create(task_params)
 		end
@@ -99,7 +99,7 @@ module Dashboard
             @task_media = TaskMedium.create(audio: params[:file]) if params[:file].present?
             render json: {id: @task_media.id}
         end
-		
+
 		def createVideo
 		  @task_media = TaskMedium.create(video: params[:file]) if params[:file].present?
           render json: {id: @task_media.id, video_url: @task_media.video.url}
@@ -116,7 +116,7 @@ module Dashboard
         def pitch_params
             params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :skip_rating_timer, :video_path, :image, :video, :destroy_image, :destroy_video, :user_id, tasks_attributes: [:id, :title, :time, :user_id, :image, :video, :video_id, :audio, :audio_id, :ratings, :reactions, :media_option, :reaction_ids, :catchwords, :catchword_ids, :destroy_media, :_destroy])
         end
-		
+
 		def task_params
 		  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :type, :title, :time, :task_media_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating_list)
 		end
@@ -137,9 +137,7 @@ module Dashboard
                 @admin = current_user
                 @company = @admin.company
                 @department = @admin.department
-                @teamAll = @admin.teams.find_by(name: 'all') if @admin.role != "user"
-                @teams = @admin.teams.where.not(name: 'all').order('name') if @admin.role != "user"
-                @users = @teamAll.users.order('fname') if @admin.role != "user"
+                @teams = @admin.teams.order('name')
             else
                 flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
                 redirect_to root_path
@@ -150,5 +148,5 @@ module Dashboard
             @cw_lists = @admin.catchword_lists.order('name').includes(:catchwords)
 	        @obj_lists = @admin.objection_lists.order('name').includes(:objections)
         end
-    end 
+    end
 end

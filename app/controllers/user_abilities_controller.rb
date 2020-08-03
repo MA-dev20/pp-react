@@ -1,40 +1,16 @@
 class UserAbilitiesController < ApplicationController
   before_action :set_company
 
-  def update_user
-    @ability = @company.user_abilities.find_by(role: 'user')
-    if @ability
-      @ability.update(ability_params)
+  def update
+    @user_ability = @company.user_abilities.find_by(role: params[:role])
+    if @user_ability
+      @user_ability.update(ability_params)
     else
-      @ability = @company.user_abilities.new(ability_params)
-      @ability.role = 'user'
-      @ability.save
+      @user_ability = @company.user_abilities.new(ability_params)
+      @user_ability.role = params[:role]
+      @user_ability.save
     end
-    render json: {ability: @ability}
-  end
-
-  def update_admin
-    @ability = @company.user_abilities.find_by(role: 'admin')
-    if @ability
-      @ability.update(ability_params)
-    else
-      @ability = @company.user_abilities.new(ability_params)
-      @ability.role = 'admin'
-      @ability.save
-    end
-    render json: {ability: @ability}
-  end
-
-  def update_root
-    @ability = @company.user_abilities.find_by(role: 'root')
-    if @ability
-      @ability.update(ability_params)
-    else
-      @ability = @company.user_abilities.new(ability_params)
-      @ability.role = 'root'
-      @ability.save
-    end
-    render json: {ability: @ability}
+    render json: {ability: @user_ability}
   end
 
   private

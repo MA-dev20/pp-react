@@ -10,22 +10,24 @@
         </tr>
       </thead>
       <tbody>
-        <% if @tasks %>
-        <% @tasks.each do |t| %>
-          <tr id="" class="taskname <%= @task && @tasks == t ? 'highlighted' : '' %>">
-            <td><%= t.title %></td>
-            <td><%= t.task_type %></td>
-            <td><%= t.time %></td>
-          </tr>
-        <% end %>
-        <% else %>
+        <% if @task_order %>
         <% @task_order.each do |t| %>
           <tr id="" class="taskname <%= @task && @tasks == t ? 'highlighted' : '' %>">
             <td><%= t.task.title %></td>
             <td><%= t.task.task_type %></td>
             <td><%= t.task.time %></td>
           </tr>
-        <% end end %>
+        <% end %>
+        <% else %>
+        <% @tasks.each do |t| %>
+          <tr id="" class="taskname <%= @task && @tasks == t ? 'highlighted' : '' %>">
+            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.title %></td>
+            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.task_type %></td>
+            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.time %></td>
+          </tr>
+        <% end %>
+
+        <% end %>
       </tbody>
     </table>
   </div>
@@ -33,7 +35,7 @@
 <script type="text/javascript">
   new PerfectScrollbar('#tasks-table');
   function redirect(tID) {
-      var url = "<%= backoffice_company_url(@company) %>?pitch=" + tID;
+      var url = "<%= backoffice_company_url(@company) %>?content=" + tID;
       window.location.replace(url);
   }
 </script>

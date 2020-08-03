@@ -22,8 +22,10 @@
 		<%= image_tag 'logos/peterpitch.png', class: 'logo' %>
 		<% if @game.state == 'rating' && @game.show_ratings == 'one' || @game.state == 'bestlist' && @game.show_ratings == 'one'%>
 		Bewertung von: <%= User.find(@game.rating_user).fname %> <%= User.find(@game.rating_user).lname %>
-		<% else %>
+		<% elsif @game.team %>
 		- <%= @game.team.name %> -
+    <% else %>
+    - <%= @game.user.fname + "'s Pitch" %> -
 		<% end %>
 		<%= image_tag @company.logo? ? @company.logo.url : '', class: 'company'%>
 	</section>

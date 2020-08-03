@@ -1,6 +1,6 @@
 <div class="head">
 	<h3>- Willkommen im Pitchraum -</h3>
-	<h1><%= @game.team.name %></h1>
+	<h1><%= @game.team ? @game.team.name : @game.user.fname + "'s Pitch" %></h1>
 </div>
 
 <div class="middle">

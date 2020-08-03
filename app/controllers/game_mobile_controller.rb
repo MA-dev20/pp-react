@@ -321,7 +321,7 @@ class GameMobileController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gm_game_path
     elsif params[:state] == 'rate'
-      if @game.show_ratings == 'none'
+      if @game.show_ratings == 'none' || @game.game_users.count == 1
         redirect_to gm_set_state_path(state: "feedback")
         return
       end
@@ -439,7 +439,7 @@ class GameMobileController < ApplicationController
 	def check_game
 	  if game_logged_in?
 		@game = current_game
-        @pitch = @game.pitch
+    @pitch = @game.pitch
 		@company = @game.company
 	  else
 		flash[:alert] = "Bitte trete dem Spiel zuerst bei!"
@@ -449,6 +449,7 @@ class GameMobileController < ApplicationController
 	def check_entered
 	  if game_logged_in?
 		@game = current_game
+    @company = @game.company
 		if game_user_logged_in? && @state != 'repeat'
 		  @admin = current_game_user
 		  if !@game.game_users.find_by(user: @admin)
@@ -463,7 +464,6 @@ class GameMobileController < ApplicationController
 	def check_user
 	  if game_user_logged_in?
 		@admin = current_game_user
-		@company = @admin.company
 	  else
 		flash[:alert] = "Bitte logge dich ein um einem Spiel beizutreten!"
 		redirect_to root_path

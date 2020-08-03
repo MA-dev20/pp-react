@@ -6,6 +6,7 @@
  *= require dash/pitches
  *= require dash/new_pitch
  *= require dash/backoffice
+ *= require dash/content
  */
 
 @import "font-awesome-sprockets";
@@ -602,8 +603,7 @@ body {
 				height: 25vh;
 			}
 			#users-table {
-				table tbody td:nth-child(2),
-				table thead th:nth-child(2) {
+				table tbody td:nth-child(2) {
 					text-align: left;
 				}
 				.remove {
@@ -1821,6 +1821,7 @@ body {
 	width: 100vw;
 	background-color: rgba(0,0,0,.5);
 	color: black;
+	z-index: 1000;
 	.card {
 		position: absolute;
 		top: 40vh;
@@ -1850,6 +1851,59 @@ body {
 		h3 {
 			font-size: 3vh;
 		}
+	}
+	.card.inactive_user {
+		top: 20vh;
+		height: 60vh;
+		width: 60vw;
+		left: 20vw;
+		#inactive_user-table {
+			height: 40vh;
+			table {
+				text-align: left;
+				width: 100%;
+				tr th:last-child,
+				tr td:last-child {
+					text-align: center;
+				}
+			}
+		}
+		.btn.inverted {
+			float: left;
+			color: rgb(var(--custcolor));
+			background-color: white;
+			left: 5vw;
+		}
+		.btn {
+			position: absolute;
+			box-sizing: border-box;
+			right: 5vw;
+			bottom: 2vh;
+			height: 35px;
+			width: 40%;
+			line-height: 35px;
+			font-size: 15px;
+			border-radius: 17.5px;
+			padding: 0 5px;
+			color: white;
+			text-align: center;
+			border: 1px solid rgb(var(--custcolor));
+			cursor: pointer;
+			text-decoration: none;
+			font-family: 'BarackPro-Solid' !important;
+			background-color: rgb(var(--custcolor));
+			-webkit-appearance: none !important;
+			-moz-appearance: none !important;
+		}
+		.btn:hover {
+			color: rgb(var(--custcolor));
+			background-color: white;
+		}
+		.btn.inverted:hover {
+			color: white;
+			background-color: rgb(var(--custcolor));
+		}
+
 	}
 }
 .popup {

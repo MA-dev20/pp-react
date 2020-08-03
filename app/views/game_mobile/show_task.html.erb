@@ -1,7 +1,7 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="head" id="task-head">
 
-  <% if @admin.role != 'user' && @admin.role != 'inactive' %>
+  <% if @admin == @game.user %>
 	<h1>Nutzerauswahl</h1>
   <h3>Anstelle des Votings kannst du hier selbst einen Nutzer bestimmen!</h3>
   <% else %>
@@ -9,7 +9,7 @@
 	<h3>Lies dir die Aufgabe aufmerksam durch!</h3>
   <% end %>
 </div>
-<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+<% if @admin == @game.user %>
 <div class="middle">
 	<div class="circle">
 		?

@@ -7,7 +7,7 @@
 			<h1>Bewertung abgegeben!</h1>
 		<% end %>
 	</div>
-	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+	<% if @admin == @game.user %>
 	<div class="middle">
 		<div class="text">
 			Aktuell haben den Pitch bewertet: <br>
@@ -20,7 +20,7 @@
 		<div class="dot"></div>
 	</div>
 	<div class="bottom">
-		<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+		<% if @admin == @game.user %>
 		<%= link_to 'Bewertung beenden!', gm_set_state_path('', state: 'rating'), class: 'btn custom-btn' %>
 		<% end %>
 	</div>

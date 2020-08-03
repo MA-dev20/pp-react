@@ -189,7 +189,7 @@ class GameDesktopController < ApplicationController
       @game.update(state: 'feedback') if @game.state != 'feedback'
       redirect_to gd_game_path
     elsif params[:state] == 'rate'
-      if @game.show_ratings == 'none'
+      if @game.show_ratings == 'none' || @game.game_users.count == 1
         redirect_to gd_set_state_path(state: "feedback")
         return
       end
@@ -302,7 +302,6 @@ class GameDesktopController < ApplicationController
 	def check_user
 	  if user_signed_in?
 		@admin = current_user
-		@company = @admin.company
 	  else
 		flash[:alert] = "Bitte logge dich ein um einem Spiel beizutreten!"
 		redirect_to root_path

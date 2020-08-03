@@ -10,7 +10,7 @@
 	<% end %>
 </div>
 <div class="bottom big">
-	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+	<% if @admin == @game.user %>
 		<%= link_to 'Pitch wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
 		<% if @pitch.task_orders.find_by(order: @game.current_task + 1) %>
 			<%= link_to 'weiter', gm_set_slide_path(@game.current_task + 1), class: 'btn custom-btn' %>

@@ -1,0 +1,5 @@
+<% @companies.each do |c| %>
+  <% if c.role != 'inactive' || c.role != 'inactive_user' %>
+    <%= link_to c.name, login_company_path(c.id) %>
+  <% end %>
+<% end %>

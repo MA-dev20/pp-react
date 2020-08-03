@@ -1,5 +1,5 @@
 class BackofficeController < ApplicationController
-  before_action :check_user
+  before_action :check_user, :check_company
   before_action :set_company
   layout 'backoffice'
 
@@ -30,16 +30,17 @@ class BackofficeController < ApplicationController
     @team = Team.find_by(id: params[:team]) if params[:team]
     @users = @team.users.order("lname") if @team
     @users = @company.users.order("lname") if !@users
+    @user = @company.users.find_by(id: params[:edit_user]) if params[:edit_user]
+    @company_user = @company.company_users.find_by(user_id: params[:edit_user]) if params[:edit_user]
 
     @pitches = @company.pitches.order(:title)
     @pitch = Pitch.find_by(id: params[:pitch]) if params[:pitch]
     @task_order = @pitch.task_orders.order(:order) if @pitch
     @tasks = @company.tasks.order(:title)
 
-    @tasks = @company.tasks.order(:title) if !@task_order
     @task = Task.find_by(id: params[:content]) if params[:content]
-    @media = @task.task_media if @task
-    @media = @company.task_media.order(:media_type) if !@media
+    @medium = @task.task_medium if @task
+    @media = @company.task_media.order(:media_type) if !@medium
 
     if params[:abilities] == 'user'
       @user_abilities = @company.user_abilities.find_by(role: 'user')
@@ -49,12 +50,12 @@ class BackofficeController < ApplicationController
     if params[:abilities] == 'admin'
       @user_abilities = @company.user_abilities.find_by(role: 'admin')
       @user_abilities = UserAbility.find_by(name: 'Standard', role: 'admin') if !@user_abilities
-      @user_abilities = UserAbility.create(name: 'Standard', role: 'admin', view_team: "user", create_team: 'user', edit_team: 'user', share_team: 'user', view_user: 'team', create_user: 'team', edit_user: 'team', share_user: 'team', view_stats: 'team', view_pitch: 'team', create_pitch: "team", edit_pitch: 'team', share_pitch: 'team', view_task: 'team', create_task: 'team', edit_task: 'team', share_task: 'team', view_media: 'team', create_media: 'team', edit_media: 'team', share_media: "team") if !@user_abilities
+      @user_abilities = UserAbility.create(name: 'Standard', role: 'admin') if !@user_abilities
     end
     if params[:abilities] == 'root'
       @user_abilities = @company.user_abilities.find_by(role: 'root')
       @user_abilities = UserAbility.find_by(name: 'Standard', role: 'root') if !@user_abilities
-      @user_abilities = UserAbility.create(name: 'Standard', role: 'root', edit_company: true, view_department: 'company', create_department: 'company', edit_department: 'company', view_team: "user", create_team: 'user', edit_team: 'user', share_team: 'user', view_user: 'team', create_user: 'team', edit_user: 'team', share_user: 'team', view_stats: 'team', view_pitch: 'team', create_pitch: "team", edit_pitch: 'team', share_pitch: 'team', view_task: 'team', create_task: 'team', edit_task: 'team', share_task: 'team', view_media: 'team', create_media: 'team', edit_media: 'team', share_media: "team") if !@user_abilities
+      @user_abilities = UserAbility.create(name: 'Standard', role: 'root') if !@user_abilities
     end
   end
 
@@ -93,6 +94,13 @@ class BackofficeController < ApplicationController
 	def set_company
 	  @company = Company.find(params[:company_id]) if params[:company_id]
 	end
+    def check_company
+      if company_logged_in?
+        @root_company = current_company
+      else
+        redirect_to dash_choose_company_path
+      end
+    end
     def check_user
 	  if user_signed_in?
 		@root = current_user

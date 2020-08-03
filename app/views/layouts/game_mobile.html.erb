@@ -33,8 +33,8 @@
 		<% if current_page?(gm_error_path) %>
 		FEHLER
 		<% else %>
-		<%= @game.team.name %>
-			<% if @admin && @admin.role != 'user' && @admin.role != 'inactive' && !current_page?(gm_join_path) %>
+			<%= @game.team ? @game.team.name : @game.user.fname + "'s Pitch" %>
+			<% if @admin == @game.user %>
 				<svg class="menu" onclick="toggleMenu()" viewbox="0 0 144 144"><use xlink:href="#menuIcon" /></svg>
 			<% elsif @game && @admin && @game.game_users.find_by(user_id: @admin.id) %>
         <%= link_to '', gm_logout_path(@admin.id), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>

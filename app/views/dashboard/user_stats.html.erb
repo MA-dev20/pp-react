@@ -65,9 +65,9 @@
 	<div class="scrollChart disabled" id="scrollChartRight" onclick="scrollChartRight()">
 		<i class="fas fa-chevron-circle-right"></i>
 	</div>
-	
+
 	<div class="divider"></div>
-	
+
 	<div class="card" id="bestlist">
 		<div class="trophy">
 		<div class="gold">
@@ -90,22 +90,26 @@
 		</div>
 		</div>
 		<div class="divider"></div>
-		
+
+		<% if @team %>
 		<div class="bestlist">
-			<% if @team.users.count >= 1 %>
-			<div class="first <%= @team_users.first == @user ? 'highlighted' : '' %>">
-				1. <%= @team_users.first.fname %><span id="rating"><%= (@team_users.first.ges_rating / 10.0).to_s %></span>
+			<% if @first_user && (can? :read, User.find_by(id: @first_user[:id])) %>
+			<div class="first <%= @first_user[:id] == @user.id ? 'highlighted' : '' %>">
+				<%= @first_user[:place] %>. <%= @first_user[:name] %><span id="rating"><%= @first_user[:rating] %></span>
 			</div>
-			<% if @team.users.count >= 2 %>
-			<div class="second <%= @team_users.second == @user ? 'highlighted' : '' %>">
-				2. <%= @team_users.second.fname %><span id="rating"><%= (@team_users.second.ges_rating / 10.0).to_s %></span>
+			<% end %>
+			<% if @second_user && (can? :read, User.find_by(id: @second_user[:id])) %>
+			<div class="second <%= @second_user[:id] == @user.id ? 'highlighted' : '' %>">
+				<%= @second_user[:place] %>. <%= @second_user[:name] %><span id="rating"><%= @second_user[:rating] %></span>
 			</div>
-			<% if @team.users.count >= 3 %>
-			<div class="third <%= @team_users.third == @user ? 'highlighted' : '' %>">
-				3. <%= @team_users.third.fname %><span id="rating"><%= (@team_users.third.ges_rating / 10.0).to_s %></span>
+			<% end %>
+			<% if @third_user && (can? :read, User.find_by(id: @third_user[:id])) %>
+			<div class="third <%= @third_user[:id] == @user.id ? 'highlighted' : '' %>">
+				<%= @third_user[:place] %>. <%= @third_user[:name] %><span id="rating"><%= @third_user[:rating] %></span>
 			</div>
-			<% end end end %>
+			<% end %>
 		</div>
+		<% end %>
 	</div>
 </div>
 
@@ -125,12 +129,12 @@
 	})
 	$('#worst').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 100.0 %>));
 	$('#best').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 100.0 %>));
-	
+
 	ratecircle('#ges', 'ges_text', <%= @user.ges_rating / 100.0 %>);
 	<% @user_ratings.each do |r| %>
 		ratecircle('#rating_<%= r[:id] %>', 'text_<%= r[:id] %>', <%= r[:rating] / 100.0 %>);
 	<% end %>
-	
+
 	var ctx = document.getElementById("myChart");
 	var datapoints = [];
 	var label = [];
@@ -178,7 +182,7 @@
                 hoverRadius: 9,
                 datapoints: datapoints6,
                 extra: datapoints6,
-				
+
 			}],
 		},
 		options: {
@@ -227,7 +231,7 @@
 			},
 		}
 	});
-	
+
 	function setChart(id) {
 		$('.rating-criteria .active').removeClass('active');
 		datapoints = [NaN];
@@ -239,7 +243,7 @@
 				datapoints[i] = {value: <%= cd[:ges] %>, data: json_data};
 				label[i] = ["<%= cd[:date] %>", "<%= cd[:time] %>"];
 				i++;
-			<% end %>		
+			<% end %>
 		} else {
 			i = 0;
 			<% @chartdata.each do |cd| %>

@@ -2,7 +2,9 @@
 	<div class="search">
 		<i class="fas fa-search"></i>
 		<input type="text" placeholder="Team suchen" id="searchTeams" class="form-field">
+		<% if can? :create, Team %>
 		<button class="btn btn-green" onclick="toggleTeam()">Team erstellen</button>
+		<% end %>
 	</div>
 	<% if params[:edit] == 'true' %>
 	<div class="card" id="editTeam">
@@ -22,7 +24,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<% @team.users.where.not(role: "inactive").each do |u| %>
+						<% @team.users.each do |u| %>
 						<tr>
 							<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/icons/wolf.png' %></td>
 							<td><%= u.fname %> <%= u.lname %></td>
@@ -58,9 +60,9 @@
 					</tr>
 				</thead>
 				<tbody>
-				 	<tr onclick="redirect(<%= @teamAll.id %>)" class="teamname <%= @team && @team == @teamAll || @team.nil? ? 'highlighted' : '' %>">
+				 	<tr onclick="redirect('all')" class="teamname <%= !@team ? 'highlighted' : '' %>">
 				 		<td>Alle</td>
-				 		<td><%= @teamAll.users.count %></td>
+				 		<td><%= @users_count %></td>
 				 		<td></td>
 				 		<td></td>
 				 		<td></td>
@@ -249,18 +251,20 @@
 						<th>Name</th>
 						<th>Pitches</th>
 						<th>Score</th>
+						<th>Role</th>
 						<th></th>
 						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<% @users.where.not(role: 'inactive').each do |u| %>
+					<% @users.each do |u| %>
 						<% if params[:edit] == "true" && TeamUser.where(team_id: @team.id, user_id: u.id).count == 0 || params[:edit] != 'true' %>
 						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="username <%= @user == u ? 'highlighted' : '' %>">
 							<td class="img"><%= image_tag u.avatar.url %></td>
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td><%= u.game_turns.count %></td>
 							<td><%= u.ges_rating / 10.0 %></td>
+							<td><%= CompanyUser.find_by(company: @company, user: u).role %></td>
 							<td class='edit'><%= link_to '', dashboard_teams_path('', edit_user: u.id), class: 'far fa-edit' %></td>
 							<td class="stats"><%= link_to '', dashboard_user_stats_path(u.id), class: 'far fa-chart-bar' %></td>
 						</tr>
@@ -283,11 +287,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% @users.where(role: 'inactive').each do |u| %>
+					<% @users.each do |u| %>
 						<tr class="username-inactive">
 							<td class="img"><%= image_tag u.avatar.url %></td>
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
-							<td class="accept"><%= link_to '', make_user_path(u.id), class: 'fas fa-check-circle', method: 'put' %></td>
+							<td class="accept"><%= link_to '', make_user_path(@company, u.id), class: 'fas fa-check-circle', method: 'put' %></td>
 							<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
 						</tr>
 					<% end %>
@@ -309,7 +313,7 @@
 	<% end %>
 	<div class="card" id="createUser">
 		<h3><i class="fas fa-arrow-left back" onclick="toggleUser()"></i>Nutzer anlegen!</h3>
-		<%= form_for(:user, url: new_user_path) do |f| %>
+		<%= form_for(:user, url: new_user_path(@company)) do |f| %>
 			<div class="form-group half-left">
 				<label for="">Vorname</label>
 				<%= f.text_field :fname, value: '', class: "form-field" %>
@@ -353,10 +357,14 @@
             return !reg.test(text);
         }).hide();
 	})
-		
+
 	function redirect(tID) {
-		var URL = "<%= dashboard_teams_path %>"
-		location.replace(URL + '/' + tID);
+		var URL = "<%= dashboard_teams_path %>";
+		if( tID == 'all') {
+			location.replace(URL);
+		} else {
+			location.replace(URL + '/' + tID);
+		}
 	}
 	function allowDrop(ev) {
 		ev.preventDefault();

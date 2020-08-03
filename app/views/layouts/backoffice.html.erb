@@ -12,8 +12,8 @@
   </head>
  <style>
 	:root {
-	  --custcolor: <%= @root.company.color1[0] %>,<%= @root.company.color1[1] %>, <%= @root.company.color1[2] %>;
-	  --btncolor: <%= @root.company.color2[0] %>,<%= @root.company.color2[1] %>, <%= @root.company.color2[2] %>;
+	  --custcolor: <%= @root_company.color1[0] %>,<%= @root_company.color1[1] %>, <%= @root_company.color1[2] %>;
+	  --btncolor: <%= @root_company.color2[0] %>,<%= @root_company.color2[1] %>, <%= @root_company.color2[2] %>;
 	}
 
 </style>
@@ -65,7 +65,7 @@
 
    	</section>
    	<section id="sidebar">
-   		<%= image_tag @root.avatar? ? @root.avatar.url : 'dash/wolf.png', class: 'avatar' %>
+   		<%= image_tag @root.avatar.url, class: 'avatar' %>
 
    		<div class="links">
    			<div class="link <%= current_page?(backoffice_path) ? 'active' : '' %>">

@@ -16,21 +16,12 @@ class CreateUserAbilities < ActiveRecord::Migration[5.2]
       t.string :edit_team, default: "none"
       t.string :share_team, default: "none"
 
-      t.string :view_user, default: "user"
-      t.string :create_user, default: "none"
-      t.string :edit_user, default: "user"
-      t.string :share_user, default: "none"
       t.string :view_stats, default: "user"
 
       t.string :view_pitch, default: "user"
       t.string :create_pitch, default: "none"
       t.string :edit_pitch, default: "none"
       t.string :share_pitch, default: "none"
-
-      t.string :view_task, default: "user"
-      t.string :create_task, default: "none"
-      t.string :edit_task, default: "none"
-      t.string :share_task, default: "none"
 
       t.string :view_media, default: "user"
       t.string :create_media, default: "none"

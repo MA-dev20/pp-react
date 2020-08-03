@@ -1,6 +1,6 @@
 class CompanyController < ApplicationController
   before_action :check_user, except: [:register]
-  before_action :set_company, only: [:accept, :edit, :destroy, :edit_logo]
+  before_action :set_company, only: [:login, :accept, :edit, :destroy, :edit_logo]
   def register
 	if Company.find_by(name: company_params[:name]).nil?
 	  @company = Company.new(company_params)
@@ -34,6 +34,11 @@ class CompanyController < ApplicationController
 	  flash[:alert] = 'Du hast dich bereits registriert oder der Firmenname ist schon vergeben!'
 	  redirect_to root_path
     end
+  end
+
+  def login
+    company_login @company
+    redirect_to dashboard_path
   end
 
   def new

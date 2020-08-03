@@ -1,44 +1,16 @@
 class DashboardController < ApplicationController
   before_action :set_user
+  before_action :set_company, except: [:choose_company]
+  before_action :check_inactive, except: [:choose_company]
   layout "dashboard"
 
-  def index
-	@team = Team.find(params[:team]) if params[:team]
+  def choose_company
+    @company = @admin.companies.first
+    @companies = @admin.companies.order(:name)
+  end
 
-	if @admin.ratings.count != 0 && @admin.role == 'user'
-	@admin_ratings = []
-	@admin.user_ratings.each do |r|
-	  @admin_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
-	end
-	@admin_ratings = @admin_ratings.sort_by{|e| -e[:name]}
-	@days = 1
-	@turns = @admin.game_turns.order('created_at')
-	date = @turns.first.created_at.beginning_of_day
-	@chartdata = []
-	@turns.each do |t|
-	  bod = t.created_at.beginning_of_day
-	  if date != bod
-		@days += 1
-		date = bod
-	  end
-	end
-	@turns = @turns.where.not(ges_rating: nil)
-	@turns.each do |t|
-	  cust_rating = []
-	  if t.game_turn_ratings.count != 0
-	    t.game_turn_ratings.each do |tr|
-		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
-	    end
-	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), word: t.catchword.name, ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
-	  else
-		@turns = @turns.except(t)
-	  end
-	end
-	@team = TeamUser.find_by(user: @admin).team
-	@team_users = @team.users.sort_by{|e| - e[:ges_rating]}
-	elsif @admin.role == 'user'
-	    render 'index'
-    end
+  def index
+    redirect_to dashboard_pitches_path
   end
 
   def customize_game
@@ -69,18 +41,25 @@ class DashboardController < ApplicationController
   end
 
   def teams
+  @teams = @company.teams.accessible_by(current_ability)
 	@team = Team.find(params[:team_id]) if params[:team_id]
-	@users = @team.users.order('fname') if params[:team_id] && params[:edit] != "true"
-	@users.order('lname')
+  @users_count = @company.users.accessible_by(current_ability).count
+	@users = @team.users.accessible_by(current_ability).order('lname') if params[:team_id] && params[:edit] != "true"
+  @users = @company.users.accessible_by(current_ability).order('lname') if !@users
 	@user = User.find(params[:edit_user]) if params[:edit_user]
   end
 
   def user_stats
 	@user = User.find(params[:user_id])
-	if @user.ratings.count == 0
+	if @user.game_turn_ratings.count == 0
 	  flash[:alert] = 'Der Spieler hat noch nicht gepitcht!'
-	  redirect_to dashboard_teams_path
- 	  return
+    if can? :read, Team
+      redirect_to dashboard_teams_path
+ 	    return
+    else
+      redirect_to dashboard_path
+ 	    return
+    end
 	end
 	@user_ratings = []
 	@user.user_ratings.each do |r|
@@ -110,8 +89,31 @@ class DashboardController < ApplicationController
 		@turns = @turns.except(t)
 	  end
 	end
-	@team = TeamUser.find_by(user: @user).team
-	@team_users = @team.users.sort_by{|e| - e[:ges_rating]}
+  TeamUser.where(user: @user).each do |t|
+    @team = t.team if t.team.company == @company
+  end
+  if @team
+    @team_place = []
+    place = 1
+    @team.users.sort_by{|e| - e[:ges_rating]}.each do |tu|
+      @team_place << {place: place, id: tu.id, name: tu.fname, rating: (tu.ges_rating / 10.0)}
+      place = place + 1
+    end
+    this_user = @team_place.find {|x| x[:id] == @user.id}
+    if this_user[:place] == 1
+      @first_user = @team_place.find {|x| x[:place] == 1}
+      @second_user = @team_place.find {|x| x[:place] == 2}
+      @third_user = @team_place.find {|x| x[:place] == 3}
+    elsif this_user[:place] == @team_place.size
+      @first_user = @team_place.find {|x| x[:place] == this_user[:place] - 2}
+      @second_user = @team_place.find {|x| x[:place] == this_user[:place] - 1}
+      @third_user = this_user
+    else
+      @first_user = @team_place.find {|x| x[:place] == this_user[:place] - 1}
+      @second_user = this_user
+      @third_user = @team_place.find {|x| x[:place] == this_user[:place] + 1}
+    end
+  end
   end
 
   def team_stats
@@ -158,12 +160,13 @@ class DashboardController < ApplicationController
   end
 
   def customize
-	@CLs = @admin.catchword_lists.order('name')
-	@CL = CatchwordList.find_by(id: params[:CL]) if params[:CL]
-	@OLs = @admin.objection_lists.order('name')
-	@OL = ObjectionList.find_by(id: params[:OL]) if params[:OL]
-	@RLs = @admin.rating_lists.order('name')
-	@RL = RatingList.find_by(id: params[:RL]) if params[:RL]
+    @folders = @admin.content_folders.where(content_folder: nil)
+    @files = @admin.task_media.where(content_folder: nil)
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.order(:title)
+    end
   end
 
   def account
@@ -202,10 +205,17 @@ class DashboardController < ApplicationController
 	@pitches = @admin.pitches
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
+  @teams = @company.teams.accessible_by(current_ability)
+  if @teams.count == 0
+    @teams = []
+    @admin.team_users.each do |t|
+      @teams << t.team if t.team.company == @company
+    end
+  end
 	@team = Team.find(params[:team]) if params[:team]
   end
   def new_pitch
-	@pitch = @admin.pitches.create()
+	@pitch = @admin.pitches.create(company: @company)
 	redirect_to dashboard_edit_pitch_path(@pitch)
   end
 
@@ -239,18 +249,44 @@ class DashboardController < ApplicationController
   end
 
   private
+  	def set_user
+  	  if user_signed_in?
+  		    @admin = current_user
+  	  else
+  		  flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
+  		  redirect_to root_path
+  	  end
+  	end
+    def set_company
+      if company_logged_in?
+        @company = current_company
+        @role = CompanyUser.find_by(user: @admin, company: @company).role
+      else
+        redirect_to dash_choose_company_path
+      end
+    end
 
-	def set_user
-	  if user_signed_in?
-		@admin = current_user
-		@company = @admin.company
-		@department = @admin.department
-		@teamAll = @admin.teams.find_by(name: 'all') if @admin.role != "user"
-		@teams = @admin.teams.where.not(name: 'all').order('name') if @admin.role != "user"
-		@users = @teamAll.users.order('fname') if @admin.role != "user"
-	  else
-		flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
-		redirect_to root_path
-	  end
-	end
+    def check_inactive
+      if company_logged_in? && user_signed_in?
+        @company = current_company
+        @admin = current_user
+        @role = CompanyUser.find_by(user: @admin, company: @company).role
+        @company.company_users.where(role: 'inactive_user').each do |u|
+          u.destroy
+        end
+        if @company.company_users.where(role: 'inactive').count != 0
+          if @role == 'admin' || @role == 'root'
+            @inactive_users = @company.company_users.where(role: 'inactive')
+          end
+        end
+        @company.company_users.where(role: 'inactive_user').each do |cu|
+          @user = cu.user
+          if @user.company_users.count == 1
+            @user.destroy
+          else
+            cu.destroy
+          end
+        end
+      end
+    end
 end

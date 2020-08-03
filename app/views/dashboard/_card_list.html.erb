@@ -7,21 +7,7 @@
         <% if t.task.task_type != "slide" %>
         <div class="task-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
-            <% if t.task.task_type.present? %>
-                <% if ((t.task.task_type == 'catchword' && t.task&.catchword_list&.catchwords.present?) || (t.task.task_medium.present? && t.task.task_medium.media_type == 'video' && t.task.task_medium.video_url_id.present?) || (t.task.task_medium.present? &&  (t.task.task_medium.video.present? || t.task.task_medium.audio.present? || t.task.task_medium.image.present?))) %>
-                    <% if t.task.title.present? %>    
-                        <input type="hidden" class="exclamation-triangle" value="0">
-                        <i class="fas fa-exclamation-triangle" style="display: none"></i>
-                    <% else %>
-                        <input type="hidden" class="exclamation-triangle" value="0">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    <% end %>
-                <% else %>
-                    <input type="hidden" class="exclamation-triangle" value="1">
-                    <i class="fas fa-exclamation-triangle"></i>
-                <% end %>
-            <% else %>
-                <input type="hidden" class="exclamation-triangle" value="2">
+            <% if t.task.valide == false %>
                 <i class="fas fa-exclamation-triangle"></i>
             <% end %>
             <% if t.task.task_medium.present? %>
@@ -73,7 +59,7 @@
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
             <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
-            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.id %>)"></a>            
+            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.id %>)"></a>
             <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy' %>
         </div>
         <div class="task-subtitle task-name">

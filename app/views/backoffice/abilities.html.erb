@@ -6,7 +6,7 @@
 <tr>
   <td>View</td>
   <td onclick="toggleAbility('view_crud', 'company')"><i class="far <%= @user_abilities.view_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_company"></i></td>
-  <td onclick="toggleAbility('view_crud', 'crud')"><i class="far <%= @user_abilities.view_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_crud"></i></td>
+  <td onclick="toggleAbility('view_crud', 'department')"><i class="far <%= @user_abilities.view_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_department"></i></td>
   <td onclick="toggleAbility('view_crud', 'team')"><i class="far <%= @user_abilities.view_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_team"></i></td>
   <td onclick="toggleAbility('view_crud', 'user')"><i class="far <%= @user_abilities.view_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_user"></i></td>
   <td onclick="toggleAbility('view_crud', 'none')"><i class="far <%= @user_abilities.view_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_none"></i></td>
@@ -14,7 +14,7 @@
 <tr>
   <td>Create</td>
   <td onclick="toggleAbility('create_crud', 'company')"><i class="far <%= @user_abilities.create_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_company"></i></td>
-  <td onclick="toggleAbility('create_crud', 'crud')"><i class="far <%= @user_abilities.create_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_crud"></i></td>
+  <td onclick="toggleAbility('create_crud', 'department')"><i class="far <%= @user_abilities.create_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_department"></i></td>
   <td onclick="toggleAbility('create_crud', 'team')"><i class="far <%= @user_abilities.create_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_team"></i></td>
   <td onclick="toggleAbility('create_crud', 'user')"><i class="far <%= @user_abilities.create_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_user"></i></td>
   <td onclick="toggleAbility('create_crud', 'none')"><i class="far <%= @user_abilities.create_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_none"></i></td>
@@ -22,7 +22,7 @@
 <tr>
   <td>Edit / Destroy</td>
   <td onclick="toggleAbility('edit_crud', 'company')"><i class="far <%= @user_abilities.edit_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_company"></i></td>
-  <td onclick="toggleAbility('edit_crud', 'crud')"><i class="far <%= @user_abilities.edit_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_crud"></i></td>
+  <td onclick="toggleAbility('edit_crud', 'department')"><i class="far <%= @user_abilities.edit_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_department"></i></td>
   <td onclick="toggleAbility('edit_crud', 'team')"><i class="far <%= @user_abilities.edit_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_team"></i></td>
   <td onclick="toggleAbility('edit_crud', 'user')"><i class="far <%= @user_abilities.edit_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_user"></i></td>
   <td onclick="toggleAbility('edit_crud', 'none')"><i class="far <%= @user_abilities.edit_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_none"></i></td>
@@ -30,7 +30,7 @@
 <tr>
   <td>Share</td>
   <td onclick="toggleAbility('share_crud', 'company')"><i class="far <%= @user_abilities.share_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_company"></i></td>
-  <td onclick="toggleAbility('share_crud', 'crud')"><i class="far <%= @user_abilities.share_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_crud"></i></td>
+  <td onclick="toggleAbility('share_crud', 'department')"><i class="far <%= @user_abilities.share_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_department"></i></td>
   <td onclick="toggleAbility('share_crud', 'team')"><i class="far <%= @user_abilities.share_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_team"></i></td>
   <td onclick="toggleAbility('share_crud', 'user')"><i class="far <%= @user_abilities.share_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_user"></i></td>
   <td onclick="toggleAbility('share_crud', 'none')"><i class="far <%= @user_abilities.share_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_none"></i></td>
@@ -39,7 +39,7 @@
 
 if( res.ability.view_crud ) {
   $('#view_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_crud').removeClass('fa-check-square').addClass('fa-square');
+  $('#view_crud_department').removeClass('fa-check-square').addClass('fa-square');
   $('#view_crud_team').removeClass('fa-check-square').addClass('fa-square');
   $('#view_crud_user').removeClass('fa-check-square').addClass('fa-square');
   $('#view_crud_none').removeClass('fa-check-square').addClass('fa-square');
@@ -47,7 +47,7 @@ if( res.ability.view_crud ) {
 }
 if( res.ability.create_crud ) {
   $('#create_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_crud').removeClass('fa-check-square').addClass('fa-square');
+  $('#create_crud_department').removeClass('fa-check-square').addClass('fa-square');
   $('#create_crud_team').removeClass('fa-check-square').addClass('fa-square');
   $('#create_crud_user').removeClass('fa-check-square').addClass('fa-square');
   $('#create_crud_none').removeClass('fa-check-square').addClass('fa-square');
@@ -55,7 +55,7 @@ if( res.ability.create_crud ) {
 }
 if( res.ability.edit_crud ) {
   $('#edit_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_crud').removeClass('fa-check-square').addClass('fa-square');
+  $('#edit_crud_department').removeClass('fa-check-square').addClass('fa-square');
   $('#edit_crud_team').removeClass('fa-check-square').addClass('fa-square');
   $('#edit_crud_user').removeClass('fa-check-square').addClass('fa-square');
   $('#edit_crud_none').removeClass('fa-check-square').addClass('fa-square');
@@ -63,7 +63,7 @@ if( res.ability.edit_crud ) {
 }
 if( res.ability.share_crud ) {
   $('#share_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_crud').removeClass('fa-check-square').addClass('fa-square');
+  $('#share_crud_department').removeClass('fa-check-square').addClass('fa-square');
   $('#share_crud_team').removeClass('fa-check-square').addClass('fa-square');
   $('#share_crud_user').removeClass('fa-check-square').addClass('fa-square');
   $('#share_crud_none').removeClass('fa-check-square').addClass('fa-square');

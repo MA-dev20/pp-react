@@ -66,34 +66,35 @@
 		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar' %>
 
 		<div class="links">
-			<% if @admin.role == 'user' %>
-			<div class="link <%= current_page?(dashboard_path) ? 'active' : '' %>)">
-				<i class="fas fa-user-friends"></i>
-				<div class="text">Statistik</div>
-				<%= link_to '', dashboard_path(@admin) %>
-			</div>
-			<% end %>
+
 
 			<% if @pitch && !@pitch.title.present? && current_page?(dashboard_edit_pitch_path(@pitch)) %>
 				<% if can? :create, Game %>
 				<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>"
 					d>
-					<i class="fab fa-youtube"></i>
+					<i class="fas fa-gamepad"></i>
 					<div class="text">Pitches</div>
 					<a class="navbar-link" data-href="<%= dashboard_pitches_path %>" href="javascript:void(0)"></a>
 					<%#= link_to '', dashboard_pitches_path %>
 				</div>
+				<% if can? :read, Team %>
+					<div class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
+						<i class="fas fa-user-friends"></i>
+						<div class="text">Nutzer</div>
+						<a class="navbar-link" data-href="<%= dashboard_teams_path %>" href="javascript:void(0)"></a>
+						<%#= link_to '', dashboard_teams_path %>
+					</div>
+				<% else %>
+					<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>"
+						d>
+						<i class="fas fa-chart-line"></i>
+						<div class="text">Statistik</div>
+						<a class="navbar-link" data-href="<%= dashboard_user_stats_path(@admin) %>" href="javascript:void(0)"></a>
+						<%#= link_to '', dashboard_pitches_path %>
+					</div>
+					<% end %>
 				<% end %>
-				<% if @admin.role != 'user' %>
-				<div
-					class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
-					<i class="fas fa-user-friends"></i>
-					<div class="text">Nutzer</div>
-					<a class="navbar-link" data-href="<%= dashboard_teams_path %>" href="javascript:void(0)"></a>
-					<%#= link_to '', dashboard_teams_path %>
-				</div>
-				<% end %>
-				<% if can? :create, CatchwordList %>
+				<% if can? :read, TaskMedium %>
 				<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
 					<div class="text">Customize</div>
@@ -101,6 +102,7 @@
 					<%#= link_to '', dashboard_customize_path %>
 				</div>
 				<% end %>
+
 				<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"
 					d>
 					<i class="fab fa-youtube"></i>
@@ -110,30 +112,33 @@
 				</div>
 			<% else %>
 				<% if can? :create, Game %>
-				<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>"
-					d>
-					<i class="fas fa-gamepad"></i>
-					<div class="text">Pitches</div>
-					<%= link_to '', dashboard_pitches_path %>
-				</div>
+					<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>">
+						<i class="fas fa-gamepad"></i>
+						<div class="text">Pitches</div>
+						<%= link_to '', dashboard_pitches_path %>
+					</div>
 				<% end %>
-				<% if @admin.role != 'user' %>
-				<div
-					class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
-					<i class="fas fa-user-friends"></i>
-					<div class="text">Nutzer</div>
-					<%= link_to '', dashboard_teams_path %>
-				</div>
+				<% if can? :read, Team %>
+					<div	class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
+						<i class="fas fa-user-friends"></i>
+						<div class="text">Nutzer</div>
+						<%= link_to '', dashboard_teams_path %>
+					</div>
+				<% else %>
+					<div	class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
+						<i class="fas fa-chart-line"></i>
+						<div class="text">Statistik</div>
+						<%= link_to '', dashboard_user_stats_path(@admin) %>
+					</div>
 				<% end %>
-				<% if can? :create, CatchwordList %>
+				<% if can? :read, TaskMedium %>
 				<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
 					<div class="text">Customize</div>
 					<%= link_to '', dashboard_customize_path %>
 				</div>
 				<% end %>
-				<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>"
-					d>
+				<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>">
 					<i class="fab fa-youtube"></i>
 					<div class="text">Video Tool</div>
 					<%= link_to '', dashboard_video_path %>
@@ -154,6 +159,71 @@
 	<section id="content">
 		<%= yield %>
 	</section>
+
+	<% if @inactive_users %>
+		<div class="modal-blur">
+			<div class="card inactive_user">
+			  <div class="close" onclick="redirectInactive()"><i class="fas fa-times"></i></div>
+				<h3>Inactive User</h3>
+				<%= form_for(:users, url: activate_users_path(@company), html: {id: "inactive_user_form"}) do |f| %>
+					<div id="inactive_user-table">
+				    <table>
+							<thead>
+								<tr>
+									<th>Vorname</th>
+									<th>Nachname</th>
+									<th>E-Mail</th>
+									<th>Akzeptieren</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<% @inactive_users.each do |iu| %>
+								<tr>
+									<td><%= iu.user.fname %></td>
+									<td><%= iu.user.lname %></td>
+									<td><%= iu.user.email %></td>
+									<td><input type="checkbox" name="users[user_id]" value="<%= iu.user_id %>" id='user_<%= iu.user_id %>'></td>
+								</tr>
+								<% end %>
+							</tbody>
+					  </table>
+					</div>
+					<div class="btn inverted" onclick="chooseAll()">
+						Alle auswählen
+					</div>
+					<%= f.submit 'speichern', class: 'btn' %>
+				<% end %>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function chooseAll() {
+				<% @inactive_users.each do |iu| %>
+					$('#user_<%= iu.user_id %>').click();
+				<% end %>
+			}
+			$('#inactive_user_form').on('submit', function(e) {
+		    e.preventDefault();
+		    var URL = "<%= activate_users_path(@company) %>";
+		    var formData = new FormData(document.getElementById('inactive_user_form'));
+		    $.ajax({
+		      url: URL,
+		      type: "post",
+		      cache: false,
+		      async: true,
+		      contentType: false,
+		      processData: false,
+		      data: formData,
+		      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+		      success: function (res) {
+		        location.reload();
+		      }
+		    });
+
+		  })
+
+		</script>
+	<% end %>
 
 	<% if flash[:alert] %>
 	<div class="modal-blur">
@@ -183,6 +253,7 @@
 	if (!<%= current_page?(dashboard_pitches_path) %>) {
 		new PerfectScrollbar('#content');
 	}
+	
 
 </script>
 

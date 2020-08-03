@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
+  get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
   get 'dashboard/teams/:team_id', to: 'dashboard#teams', as: 'dashboard_team'
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
   # COMPANY
   post 'companies/register', to: 'company#register', as: 'register_company'
   post 'companies/new', to: 'company#new', as: 'new_company'
+  get 'companies/:company_id/login', to: 'company#login', as: 'login_company'
   get 'companies/:company_id/accept', to: 'company#accept', as: "accept_company"
   post 'companies/:company_id/edit', to: 'company#edit', as: 'edit_company'
   get 'companies/:company_id/destroy', to: 'company#destroy', as: 'destroy_company'
@@ -129,15 +131,15 @@ Rails.application.routes.draw do
   get 'teams/:team_id/delete/user/:user_id',to: 'teams#delete_user', as: 'delete_user_from_team'
 
   #USER
-  post 'users/create', to: 'users#create', as: 'new_user'
+  post 'company/:company_id/users/create', to: 'users#create', as: 'new_user'
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
   post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
+  post 'company/:company_id/users/activate_users', to: 'users#activate_users', as: 'activate_users'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
-  put 'users/:user_id/make_company', to: 'users#company_admin', as: 'make_company'
-  put 'users/:user_id/make_department', to: 'users#department_admin', as: 'make_department'
-  put 'users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
-  put 'users/:user_id/make_user', to: 'users#user', as: 'make_user'
+  put 'company/:company_id/users/:user_id/make_root', to: 'users#root', as: 'make_root'
+  put 'company/:company_id/users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
+  put 'company/:company_id/users/:user_id/make_user', to: 'users#user', as: 'make_user'
 
   #Customize
   post 'lists/new', to: 'customize#new_list', as: 'new_list'
@@ -164,7 +166,5 @@ Rails.application.routes.draw do
   get 'videos/:video_id/destroy', to: 'video#destroy', as: 'delete_video'
 
   #User Abilities
-  post "company/:company_id/abilities/update_user", to: 'user_abilities#update_user', as: 'update_user_abilities'
-  post "company/:company_id/abilities/update_admin", to: 'user_abilities#update_admin', as: 'update_admin_abilities'
-  post "company/:company_id/abilities/update_root", to: 'user_abilities#update_root', as: 'update_root_abilities'
+  post "company/:company_id/abilities/update/:role", to: 'user_abilities#update', as: 'update_user_abilities'
 end

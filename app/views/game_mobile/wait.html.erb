@@ -23,7 +23,7 @@
 <% end %>
 <% else %>
 <div class="head">
-	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
+	<% if @admin == @game.user %>
 	<h1>PITCH BEIGETRETEN!</h1>
 	<h3>Bitte warten, bis alle beigetreten sind!</h3>
 	<% else %>
@@ -43,10 +43,10 @@
 	<div class="dot"></div>
 </div>
 <div class="bottom">
-	<% if @admin.role == 'user' || @admin.role == 'inactive' %>
-	<div class="text">Gleich gehts los...</div>
-	<% else %>
+	<% if @admin == @game.user %>
 	<%= link_to "los geht's!", gm_set_slide_path(1), class: 'btn custom-btn' %>
+	<% else %>
+	<div class="text">Gleich gehts los...</div>
 	<% end %>
 </div>
 <% end %>

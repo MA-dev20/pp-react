@@ -4,13 +4,13 @@ class Company < ApplicationRecord
   has_many :departments, dependent: :destroy
   has_many :histories, dependent: :destroy
   has_many :teams, dependent: :destroy
-  has_many :users, dependent: :destroy
+  has_many :company_users, dependent: :destroy
+  has_many :users, through: :company_users
   has_many :user_abilities, dependent: :destroy
   has_many :games, dependent: :destroy
   has_many :pitches, dependent: :destroy
   has_many :tasks, dependent: :destroy
-  has_many :company_media, dependent: :destroy
-  has_many :task_media, through: :company_media
+  has_many :task_media, dependent: :destroy
 
   has_many :catchword_lists, dependent: :destroy
   has_many :catchwords, dependent: :destroy

@@ -3,8 +3,8 @@
 <div class="card" id="editUser">
   <h3><%= link_to '', backoffice_company_path(@company, team: params[:team]), class: 'fas fa-arrow-left back' %>Edit User</h3>
   <%= link_to '', destroy_user_path(@user, site: 'backoffice'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
+  <input type="hidden" id="user_role" value="<%= @company_user.role %>">
   <%= form_for(:user, url: edit_user_path(@user, site: 'backoffice')) do |f| %>
-    <%= f.hidden_field :role, value: @user.role %>
     <div class="form-group avatar">
       <label for="user_avatar">
         <%= image_tag @user.avatar.url, id: 'avatar' %>
@@ -28,12 +28,12 @@
     </div>
     <div class="form-group half-left">
       <div class="toggleUser"  onclick="toggleRole('admin')">
-        <div id="toggleAdmin" class="toggle <%= @user.role == 'admin' ? 'on' : 'off' %>" ><div class="dot"></div></div> Admin
+        <div id="toggleAdmin" class="toggle <%= @company_user.role == 'root' || @company_user.role == 'admin' ? 'on' : 'off' %>" ><div class="dot"></div></div> Admin
       </div>
       </div>
       <div class="form-group half-right">
-      <div class="toggleUser" onclick="toggleRole('company')">
-        <div id="toggleCompany" class="toggle <%= @user.role == 'company' ? 'on' : 'off' %>" ><div class="dot"></div></div> Company
+      <div class="toggleUser" onclick="toggleRole('root')">
+        <div id="toggleRoot" class="toggle <%= @company_user.role == 'root' ? 'on' : 'off' %>" ><div class="dot"></div></div> Company
       </div>
     </div>
 
@@ -51,18 +51,19 @@
     <div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
 </div>
 <script type="text/javascript">
+  new PerfectScrollbar('#editUser');
   function toggleRole(role) {
     if( role == 'admin' ) {
-      if($('#user_role').val() == 'admin' ) {
-        var URL = "<%= make_user_path(@user) %>";
+      if($('#user_role').val() == 'user' ) {
+        var URL = "<%= make_admin_path(@company, @user) %>";
       } else {
-        var URL = "<%= make_admin_path(@user) %>";
+        var URL = "<%= make_user_path(@company, @user) %>";
       }
-    } else if( role == 'company' ) {
-      if($('#user_role').val() == 'company' ) {
-        var URL = "<%= make_user_path(@user) %>";
+    } else if( role == 'root' ) {
+      if($('#user_role').val() == 'root' ) {
+        var URL = "<%= make_user_path(@company, @user) %>";
       } else {
-        var URL = "<%= make_company_path(@user) %>";
+        var URL = "<%= make_root_path(@company, @user) %>";
       }
     }
     $.ajax({
@@ -74,27 +75,31 @@
 			processData: false,
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function(res) {
-        $('#user_role').val(role);
-				if( res.role == 'company') {
-          if( $('#toggleCompany').hasClass('off') ) {
-            $('#toggleCompany').removeClass('off').addClass('on')
-          }
-          if( $('#toggleAdmin').hasClass('off') ) {
-              $('#toggleAdmin').removeClass('off').addClass('on')
-          }
-        } else if(res.role == 'admin') {
-          if( $('#toggleCompany').hasClass('on') ) {
-            $('#toggleCompany').removeClass('on').addClass('off')
-          }
-          if( $('#toggleAdmin').hasClass('off') ) {
-              $('#toggleAdmin').removeClass('off').addClass('on')
-          }
-        } else if(res.role == 'user') {
-          if( $('#toggleCompany').hasClass('on') ) {
-            $('#toggleCompany').removeClass('on').addClass('off')
-          }
-          if( $('#toggleAdmin').hasClass('on') ) {
-              $('#toggleAdmin').removeClass('on').addClass('off')
+        if( res.error ) {
+          window.location.reload()
+        } else {
+          $('#user_role').val(res.role);
+  				if( res.role == 'root') {
+            if( $('#toggleRoot').hasClass('off') ) {
+              $('#toggleRoot').removeClass('off').addClass('on')
+            }
+            if( $('#toggleAdmin').hasClass('off') ) {
+                $('#toggleAdmin').removeClass('off').addClass('on')
+            }
+          } else if(res.role == 'admin') {
+            if( $('#toggleRoot').hasClass('on') ) {
+              $('#toggleRoot').removeClass('on').addClass('off')
+            }
+            if( $('#toggleAdmin').hasClass('off') ) {
+                $('#toggleAdmin').removeClass('off').addClass('on')
+            }
+          } else if(res.role == 'user') {
+            if( $('#toggleRoot').hasClass('on') ) {
+              $('#toggleRoot').removeClass('on').addClass('off')
+            }
+            if( $('#toggleAdmin').hasClass('on') ) {
+                $('#toggleAdmin').removeClass('on').addClass('off')
+            }
           }
         }
 			}
@@ -198,6 +203,7 @@
           <th colspan="2">Name</th>
           <th>Pitches</th>
           <th>Score</th>
+          <th>Role</th>
           <th></th>
           <th></th>
         </tr>
@@ -211,6 +217,7 @@
           <td><%= u.fname %> <%= u.lname %></td>
           <td><%= u.games.count %></td>
           <td><%= u.ges_rating / 10.0 %></td>
+          <td><%= CompanyUser.find_by(user: u, company: @company).role %></td>
           <td class="edit"><%= link_to '', backoffice_company_path(@company, team: params[:team], edit_user: u.id), class: 'far fa-edit' %></td>
           <td class="remove"><%= link_to '', destroy_user_path(u.id, site: 'backoffice_company'), class: 'far fa-trash-alt' %></td>
         </tr>
@@ -220,8 +227,8 @@
     </table>
   </div>
 </div>
-<% end %>
 <script>new PerfectScrollbar('#users-table');</script>
+<% end %>
 <script type="text/javascript">
   function drag(e) {
     e.dataTransfer.setData("EID", e.target.id);

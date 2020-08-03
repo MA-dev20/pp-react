@@ -9,7 +9,7 @@
 		</div>
 </div>
 <div class="bottom">
-	<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+	<% if @admin == @game.user %>
 	<%= link_to 'weiter', gm_set_slide_path(@game.current_task + 1), class: 'btn custom-btn' %>
 	<% end %>
 </div>

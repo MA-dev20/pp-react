@@ -1,6 +1,6 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div class="navbar-links">
-	<% if @turn.record_pitch && @admin.role != 'user' && @admin.role != 'inactive' %>
+	<% if @turn.record_pitch && @admin == @game.user %>
 		<% if params[:process] && @game.state != 'play' %>
 			<% redirect_to gm_game_path %>
 		<% end %>
@@ -31,7 +31,7 @@
 	<div class="dot"></div>
 	<div class="dot"></div>
 </div>
-<% if @admin.role != 'user' && @admin.role != 'inactive' %>
+<% if @admin == @game.user %>
 <div class="addTime">
 	<div id="add10s" onclick="addTime(10)">+10s</div>
 	<div id="add20s" onclick="addTime(20)">+20s</div>
@@ -40,7 +40,7 @@
 </div>
 <% end %>
 <div class="bottom">
-	 <% if @turn.record_pitch && @admin.role != 'user' && @admin.role != 'inactive' && params[:pitch] == 'record' %>
+	 <% if @turn.record_pitch && @admin == @game.user && params[:pitch] == 'record' %>
 	 	<input type="file" id="pitch_video" name="video" accept="video/*" capture="enviroment" style="display: none">
 		<button class="btn custom-btn" id="video-btn">Kamera öffnen</button>
 	 <% else %>
