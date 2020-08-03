@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_113656) do
+ActiveRecord::Schema.define(version: 2020_07_31_092313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,7 +32,9 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.integer "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "content_folder_id"
     t.index ["company_id"], name: "index_catchword_lists_on_company_id"
+    t.index ["content_folder_id"], name: "index_catchword_lists_on_content_folder_id"
     t.index ["game_id"], name: "index_catchword_lists_on_game_id"
     t.index ["user_id"], name: "index_catchword_lists_on_user_id"
   end
@@ -43,7 +45,9 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.string "sound"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["company_id"], name: "index_catchwords_on_company_id"
+    t.index ["user_id"], name: "index_catchwords_on_user_id"
   end
 
   create_table "coaches", force: :cascade do |t|
@@ -77,6 +81,42 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.integer "color2", default: [29, 218, 175], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color_hex"
+  end
+
+  create_table "company_users", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.string "role", default: "user"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_company_users_on_company_id"
+    t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "content_folders", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "department_id"
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.bigint "content_folder_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_content_folders_on_company_id"
+    t.index ["content_folder_id"], name: "index_content_folders_on_content_folder_id"
+    t.index ["department_id"], name: "index_content_folders_on_department_id"
+    t.index ["team_id"], name: "index_content_folders_on_team_id"
+    t.index ["user_id"], name: "index_content_folders_on_user_id"
+  end
+
+  create_table "department_users", force: :cascade do |t|
+    t.bigint "department_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_department_users_on_department_id"
+    t.index ["user_id"], name: "index_department_users_on_user_id"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -224,7 +264,9 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.integer "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "content_folder_id"
     t.index ["company_id"], name: "index_objection_lists_on_company_id"
+    t.index ["content_folder_id"], name: "index_objection_lists_on_content_folder_id"
     t.index ["game_id"], name: "index_objection_lists_on_game_id"
     t.index ["user_id"], name: "index_objection_lists_on_user_id"
   end
@@ -331,6 +373,17 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.string "video_url_type"
     t.string "video_img"
     t.string "video_title"
+    t.bigint "company_id"
+    t.bigint "department_id"
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.bigint "content_folder_id"
+    t.string "title"
+    t.index ["company_id"], name: "index_task_media_on_company_id"
+    t.index ["content_folder_id"], name: "index_task_media_on_content_folder_id"
+    t.index ["department_id"], name: "index_task_media_on_department_id"
+    t.index ["team_id"], name: "index_task_media_on_team_id"
+    t.index ["user_id"], name: "index_task_media_on_user_id"
   end
 
   create_table "task_orders", force: :cascade do |t|
@@ -407,6 +460,32 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.index ["user_id"], name: "index_teams_on_user_id"
   end
 
+  create_table "user_abilities", force: :cascade do |t|
+    t.bigint "company_id"
+    t.string "name"
+    t.string "role"
+    t.boolean "edit_company", default: false
+    t.string "view_department", default: "none"
+    t.string "create_department", default: "none"
+    t.string "edit_department", default: "none"
+    t.string "view_team", default: "none"
+    t.string "create_team", default: "none"
+    t.string "edit_team", default: "none"
+    t.string "share_team", default: "none"
+    t.string "view_stats", default: "user"
+    t.string "view_pitch", default: "user"
+    t.string "create_pitch", default: "none"
+    t.string "edit_pitch", default: "none"
+    t.string "share_pitch", default: "none"
+    t.string "view_media", default: "user"
+    t.string "create_media", default: "none"
+    t.string "edit_media", default: "none"
+    t.string "share_media", default: "none"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_user_abilities_on_company_id"
+  end
+
   create_table "user_ratings", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "rating_criterium_id"
@@ -419,8 +498,6 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.bigint "company_id"
-    t.bigint "department_id"
     t.string "fname"
     t.string "lname"
     t.string "avatar"
@@ -430,7 +507,6 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.string "position"
     t.string "bo_role", default: "none"
     t.boolean "coach", default: false
-    t.string "role", default: "user"
     t.integer "zipcode"
     t.integer "ges_rating", default: 0
     t.integer "ges_change", default: 0
@@ -444,8 +520,6 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
     t.inet "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_users_on_company_id"
-    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
@@ -469,10 +543,15 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
   add_foreign_key "catchword_lists", "games"
   add_foreign_key "catchword_lists", "users"
   add_foreign_key "catchwords", "companies"
+  add_foreign_key "catchwords", "users"
   add_foreign_key "coaches", "companies"
   add_foreign_key "coaches", "users"
   add_foreign_key "comments", "game_turns"
   add_foreign_key "comments", "users"
+  add_foreign_key "company_users", "companies"
+  add_foreign_key "company_users", "users"
+  add_foreign_key "department_users", "departments"
+  add_foreign_key "department_users", "users"
   add_foreign_key "departments", "companies"
   add_foreign_key "do_and_donts", "companies"
   add_foreign_key "do_and_donts", "departments"
@@ -516,6 +595,10 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
   add_foreign_key "ratings", "game_turns"
   add_foreign_key "ratings", "rating_criteria"
   add_foreign_key "ratings", "users"
+  add_foreign_key "task_media", "companies"
+  add_foreign_key "task_media", "departments"
+  add_foreign_key "task_media", "teams"
+  add_foreign_key "task_media", "users"
   add_foreign_key "task_orders", "pitches"
   add_foreign_key "task_orders", "tasks"
   add_foreign_key "tasks", "catchword_lists"
@@ -533,10 +616,9 @@ ActiveRecord::Schema.define(version: 2020_07_21_113656) do
   add_foreign_key "teams", "companies"
   add_foreign_key "teams", "departments"
   add_foreign_key "teams", "users"
+  add_foreign_key "user_abilities", "companies"
   add_foreign_key "user_ratings", "rating_criteria"
   add_foreign_key "user_ratings", "users"
-  add_foreign_key "users", "companies"
-  add_foreign_key "users", "departments"
   add_foreign_key "videos", "companies"
   add_foreign_key "videos", "departments"
   add_foreign_key "videos", "users"
