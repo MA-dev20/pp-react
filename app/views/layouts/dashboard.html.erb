@@ -159,6 +159,17 @@
 	<section id="content">
 		<%= yield %>
 	</section>
+<div class="svg-icons">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 144 144" xml:space="preserve">
+	<g id="addIcon">
+		<g><circle class="st7" cx="72" cy="72" r="69.6"/></g>
+		<g>
+			<line class="st44" x1="71.6" y1="41.9" x2="71.6" y2="103.5"/>
+			<line class="st44" x1="102.5" y1="72.7" x2="40.8" y2="72.7"/>
+		</g>
+	</g>
+</svg>
+</div>
 
 	<% if @inactive_users %>
 		<div class="modal-blur">
@@ -253,7 +264,7 @@
 	if (!<%= current_page?(dashboard_pitches_path) %>) {
 		new PerfectScrollbar('#content');
 	}
-	
+
 
 </script>
 

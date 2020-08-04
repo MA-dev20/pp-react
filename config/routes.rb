@@ -35,6 +35,8 @@ Rails.application.routes.draw do
   get '/dashboard/:pitch_id/task/update_values', to: 'dashboard#update_values', as: 'dashboard_update_values'
   get 'dashboard/pitches/new', to: 'dashboard#new_pitch', as: 'dashboard_new_pitch'
 
+  post '/dashboard/search_content', to: 'dashboard#search_content', as: 'search_content'
+
   put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
 
   get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
@@ -56,6 +58,8 @@ Rails.application.routes.draw do
   get '/pitches/:id/duplicate', to: 'pitches#copy_pitch', as: 'copy_pitch'
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
+
+  post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'

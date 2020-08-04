@@ -11,16 +11,32 @@
 		<% if @folder %>
 		<h3><span onclick="redirectFolder('first')">Libary</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
-		<h3>Text, Video oder Bild hinzufügen!</h3>
+		<h3>Mein Content</h3>
+		<div class="search">
+			<i class="fas fa-search"></i>
+			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
+		</div>
 		<% end %>
+		<svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
 	</div>
 	<div id="scrollcontent">
 	<% if @folders.count != 0 %>
 	<div class="folders">
 		<h3>Ordner</h3>
 		<% @folders.each do |f| %>
-			<div class="card" onclick="redirectFolder('<%= f.id %>')">
-				<%= image_tag 'dash/icons/folder.svg' %>
+			<div class="card">
+				<div class="dropdown">
+					<i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+					<div class="dropdown-Menu">
+						<div class="point">
+							Edit
+						</div>
+						<div class="point">
+							Löschen
+						</div>
+					</div>
+				</div>
+				<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
 				<div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
 				<div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
 			</div>
@@ -37,7 +53,18 @@
 		<h3>Dateien</h3>
 		<% @files.each do |f| %>
 			<div class="card">
-				<div class="thumb">
+				<div class="dropdown">
+					<i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+					<div class="dropdown-Menu">
+						<div class="point">
+							Edit
+						</div>
+						<div class="point">
+							Löschen
+						</div>
+					</div>
+				</div>
+				<div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
 						<% if f.media_type == 'video' %>
 							<%= image_tag f.video.thumb.url,  class: 'image' %>
 							<i class="fas fa-play-circle"></i>
@@ -45,12 +72,23 @@
 							<% if f.image.present? %>
 							<%= image_tag f.image.url,  class: 'image' %>
 							<% end %>
+						<% elsif f.media_type == 'audio' %>
+							<div class="audio-image">
+								<%= image_tag 'dash/audio.png' %>
+							</div>
+						<% elsif f.media_type == 'pdf' %>
 						<% end %>
 
 				</div>
 				<div class="text">
-						<div class="title" id="media_title_<%= f.id %>"><%= f.title? ? f.title : f.tasks.first&.title %><div class="ellipsis">...</div></div>
+						<div class="title" id="media_title_<%= f.id %>"><%= f.title %><div class="ellipsis">...</div></div>
+						<% if f.media_type == 'video' %>
 						<div class="time"><%= image_tag 'dash/video-icon.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+						<% elsif f.media_type == 'audio' %>
+						<div class="time"><%= image_tag 'dash/audio.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+						<% else %>
+						<div class="time"><%= image_tag 'dash/image-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+						<% end %>
 				</div>
 
 			</div>
@@ -62,8 +100,117 @@
 	<% end %>
 	</div>
 </div>
+<% if @video %>
+	<div class="background-blur">
+
+
+	<div class="content-popup video">
+		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
+		<%= form_for :task_medium, url: update_media_path(@video.id), html: {id: 'video_update-form'} do |f| %>
+		<div class="form-group">
+			<%= f.text_field :title, value: @video.title, class: 'form-field' %>
+		</div>
+		<%= video_tag @video.video, controls: true, autoplay: true %>
+		<div class="btns">
+			<div class="btn inverted left" onclick='closeContentPopup()'>Cancel</div>
+			<%= f.submit 'speichern', class: 'btn' %>
+		</div>
+		<% end %>
+	</div>
+	</div>
+	<script type="text/javascript">
+		$('#video_update-form').on('submit', function(e) {
+			e.preventDefault();
+			var URL = '<%= update_media_path(@video) %>';
+			var formData = new FormData(document.getElementById('video_update-form'));
+			$.ajax({
+				url: URL,
+				type: "post",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: formData,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function (res) {
+					location.replace('<%= dashboard_customize_path %>');
+				}
+			})
+		})
+	</script>
+<% end %>
 <script type="text/javascript">
 	new PerfectScrollbar('#scrollcontent');
+
+	$('#searchContent').on('keyup', function() {
+		var searchVal = $('#searchContent').val();
+
+		var URL = '<%= search_content_path %>';
+		$.ajax({
+			url: URL,
+			type: 'post',
+			data: { search: searchVal },
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				var foldersDiv = '<h3>Ordner</h3>';
+				if(res.folders.length > 0) {
+					$('.folders').show();
+					res.folders.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>'
+						userDiv += '<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('+item["id"]+')">';
+						userDiv += '<div class="title" id="title_'+item["id"]+'">'+item["title"]+'<div class="ellipsis">...</div></div>';
+						userDiv += '<div class="author">'+item["author"]+'</div>'
+						userDiv += '</div>';
+						foldersDiv += userDiv;
+					})
+					$('.folders').html(foldersDiv);
+				}	else {
+					$('.folders').hide();
+				}
+				var filesDiv = '<h3>Dateien</h3>';
+				if(res.files.length > 0) {
+					$('.files').show();
+					res.files.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>';
+						userDiv += '<div class="thumb" data-type="'+item["type"]+'" data-id="'+item["id"]+'" onclick="showMedia(this)">';
+						if( item["type"] == 'video') {
+							userDiv += '<img src="'+item["thumb"]+'" alt="" class="image"><i class="fas fa-play-circle"></i>';
+						} else if ( item["type"] == 'image' ){
+							userDiv += '<img src="'+item["thumb"]+'" alt="" class="image">';
+						} else if ( item["type"] == 'audio' ) {
+							userDiv += '<div class="audio-image"><%= image_tag 'dash/audio.png' %></div>';
+						}
+						userDiv += '</div><div class="text">';
+						userDiv += '<div class="title" id="media_title_'+item["id"]+'">'+item["title"]+'<div class="ellipsis">...</div></div>';
+						if( item["type"] == 'video') {
+							userDiv += '<div class="time"><%= image_tag 'dash/video-icon.png' %>'+item["duration"]+' - '+item["author"]+'</div>';
+					  } else if( item["type"] == 'audio') {
+							userDiv += '<div class="time"><%= image_tag 'dash/audio.png' %>'+item["author"]+'</div>';
+						} else if( item["type"] == 'image') {
+							userDiv += '<div class="time"><%= image_tag 'dash/image-icon.png' %>'+item["duration"]+' - '+item["author"]+'</div>';
+						}
+						userDiv += '</div>';
+						userDiv += '</div>';
+						filesDiv += userDiv;
+					})
+					$('.files').html(filesDiv);
+				}	else {
+					$('.files').hide();
+				}
+			},
+		})
+
+	})
+	function showMedia(e) {
+		var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+		location.replace('?' + type + '=' + mediaID);
+	}
+	function closeContentPopup() {
+		$('.background-blur').hide();
+	}
 	function redirectFolder(fID) {
 		if ( fID == 'first' ) {
 			var URL = "<%= dashboard_customize_path %>";
@@ -71,6 +218,14 @@
 			var URL = "<%= dashboard_customize_path %>?folder_id=" + fID;
 		}
 		location.replace(URL);
+	}
+	function toggleDropdownContent(e) {
+		if( $(e).siblings('.dropdown-Menu').is(":visible") ) {
+			$('.dropdown-Menu').hide();
+		} else {
+			$('.dropdownMenu').hide();
+			$(e).siblings('.dropdown-Menu').show();
+		}
 	}
 
 </script>
