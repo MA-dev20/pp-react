@@ -183,6 +183,8 @@ class PitchesController < ApplicationController
 	@admin = current_user
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
+	@folders = @admin.content_folders.where(content_folder: nil)
+    @files = @admin.task_media.where(content_folder: nil)
 	respond_to do |format|
 		format.js { render 'dashboard/delete_task_card'}
 	end
