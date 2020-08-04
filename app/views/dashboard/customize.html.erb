@@ -24,14 +24,14 @@
 	<div class="folders">
 		<h3>Ordner</h3>
 		<% @folders.each do |f| %>
-			<div class="card">
+			<div class="card" id="folder_<%= f.id %>">
 				<div class="dropdown">
 					<i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
 					<div class="dropdown-Menu">
-						<div class="point">
+						<div class="point" data-type="folder" data-id="<%= f.id %>" onclick="showMedia(this)">
 							Edit
 						</div>
-						<div class="point">
+						<div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">
 							Löschen
 						</div>
 					</div>
@@ -98,6 +98,49 @@
 	<% end %>
 	</div>
 </div>
+<% if params[:folder] %>
+<% @this_folder = ContentFolder.find(params[:folder]) %>
+<div class="background-blur">
+	<div class="content-popup folder">
+		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
+		<h3>Umbenennen</h3>
+		<%= form_for :content_folder, url: update_folder_path(@this_folder.id), html: {id: 'folder_update-form'} do |f| %>
+			<div class="audio">
+				<%= image_tag 'dash/icons/folder.svg' %>
+			</div>
+
+			<div class="form-group">
+					<%= f.text_field :title, value: @this_folder.name, class: 'form-field' %>
+			</div>
+			<div class="btns">
+				<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
+				<%= f.submit 'speichern', class: 'btn' %>
+			</div>
+		<% end %>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#folder-update-form').on('submit', function(e) {
+		e.preventDefault();
+		var URL = '<%= update_folder_path(@this_folder) %>';
+		var formData = new FormData(document.getElementById('folder-update-form'));
+		$.ajax({
+			url: URL,
+			type: "post",
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#title_' + res.id).text(res.name)
+				$('.background-blur').hide();
+			}
+		})
+	})
+</script>
+<% end %>
 <% if @image %>
 	<div class="background-blur">
 	<div class="content-popup video">
@@ -292,6 +335,23 @@
 		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
 		location.replace('?' + type + '=' + mediaID);
+	}
+	function deleteFolder(e) {
+		var mediaID = $(e).attr('data-id');
+		var URL = '/content_folder/'+mediaID+'/delete';
+		$.ajax({
+			url: URL,
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				if( res.id ) {
+					$('#folder_' + res.id).hide();
+				} else if (res.error) {
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
+					$('body').append(userDiv);
+				}
+			}
+		})
 	}
 	function deleteContent(e) {
 		var type = $(e).attr('data-type');

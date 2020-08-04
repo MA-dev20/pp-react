@@ -4,8 +4,8 @@ class ContentFolder < ApplicationRecord
   belongs_to :team, required: false
   belongs_to :user
   belongs_to :content_folder, required: false
-  has_many :content_folders
-  has_many :task_media
+  has_many :content_folders, dependent: :destroy
+  has_many :task_media, dependent: :destroy
 
   def self.search(search)
     if search
