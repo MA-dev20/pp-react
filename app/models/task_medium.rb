@@ -11,11 +11,23 @@ class TaskMedium < ApplicationRecord
   belongs_to :user
   belongs_to :content_folder, required: false
 
+  def self.search(search)
+    if search
+      where('lower(title) LIKE ?', "%#{search.downcase}%")
+    else
+      scoped
+    end
+  end
+
 	before_save do
 	  if self.audio? &&
 		self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
+    self.title = self.audio_identifier if !self.title
 	  elsif self.video?
 		self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
+    self.title = self.video_identifier if !self.title
+    elsif self.image
+      self.title = self.image_identifier if !self.title
 	  end
 	end
 end

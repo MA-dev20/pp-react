@@ -167,6 +167,49 @@ class DashboardController < ApplicationController
       @folders = @folder.content_folders
       @files = @folder.task_media.order(:title)
     end
+    if params[:video]
+      @video = TaskMedium.find_by(id: params[:video])
+
+    end
+  end
+
+  def search_content
+    if params[:search] && params[:search] != ''
+      @files = []
+      @admin.task_media.search(params[:search]).each do |file|
+        if file.media_type == 'video'
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+        elsif file.media_type == 'image'
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+        elsif file.media_type == 'audio'
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+        end
+        @files << @file
+      end
+      @folders = []
+      @admin.content_folders.search(params[:search]).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+    else
+      @folders = []
+      @admin.content_folders.where(content_folder: nil).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @files = []
+      @admin.task_media.where(content_folder: nil).each do |file|
+        if file.media_type == 'video'
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+        elsif file.media_type == 'image'
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+        elsif file.media_type == 'audio'
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+        end
+        @files << @file
+      end
+    end
+    render json: {folders: @folders, files: @files}
   end
 
   def account
