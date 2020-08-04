@@ -79,6 +79,9 @@
 	</div>
 </div>
 
+<div id="pitchLibraryModal">
+	<%= render partial: 'library_modal', locals: { folders: @folders, files: @files } %>
+</div>
 
 <div id="videoModal" class="modal hide">
 	<div class="modal-content">
@@ -107,6 +110,10 @@
 </div>
 
 <script>
+
+	$('.library').on('click', function() {
+		$('#libraryModal').show();
+	})
 
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();

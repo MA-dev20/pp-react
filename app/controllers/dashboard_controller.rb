@@ -230,6 +230,29 @@ class DashboardController < ApplicationController
 	end
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
+	
+	@folders = @admin.content_folders.where(content_folder: nil)
+    @files = @admin.task_media.where(content_folder: nil)
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.order(:title)
+    end
+  end
+
+  def select_folder
+	@pitch = Pitch.find(params[:id])
+	if params[:type] == 'first'
+		@folders = @admin.content_folders.where(content_folder: nil)
+    	@files = @admin.task_media.where(content_folder: nil)
+	else
+		@folder = ContentFolder.find(params[:folder_id])
+		@folders = @folder.content_folders
+		@files = @folder.task_media.order(:title)
+	end
+	respond_to do |format|
+		format.js { render 'select_folder'}
+	end
   end
 
   def select_task

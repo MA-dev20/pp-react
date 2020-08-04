@@ -1705,7 +1705,8 @@ input[type="file"] {
 
 #content {
 
-    #pitchModal {
+    #pitchModal,
+    #libraryModal {
 
         // top: 12%;
         padding-top: 0;
@@ -1836,6 +1837,20 @@ input[type="file"] {
             float: right;
             height: 12vh;
             width: 21vh;
+        }
+    }
+
+    #libraryModal .modal-content {
+        top: 14vh;
+    }
+
+    #libraryModal {
+        .card#content_card {
+            height: unset;
+        }
+
+        .card#content_card #scrollcontent {
+            height: 60vh;
         }
     }
 
