@@ -169,7 +169,6 @@ class DashboardController < ApplicationController
     end
     if params[:video]
       @video = TaskMedium.find_by(id: params[:video])
-
     end
   end
 
@@ -280,7 +279,7 @@ class DashboardController < ApplicationController
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.order(:title)
-    end
+	end
   end
 
   def select_folder
@@ -293,9 +292,28 @@ class DashboardController < ApplicationController
 		@folders = @folder.content_folders
 		@files = @folder.task_media.order(:title)
 	end
+	# if params[:folder_id]
+    #   @folder = ContentFolder.find(params[:folder_id])
+    #   @folders = @folder.content_folders
+    #   @files = @folder.task_media.order(:title)
+    # end
+    # if params[:video]
+    #   @video = TaskMedium.find_by(id: params[:video])
+    # end
 	respond_to do |format|
 		format.js { render 'select_folder'}
 	end
+  end
+
+  def add_media_content
+	@pitch = Pitch.find(params[:id])
+	selected_type = params[:selected_media_type].present? ? params[:selected_media_type] : params[:pdf_media_type]
+	if params[:media_type] == selected_type
+		@pitch.tasks.find(params[:task_id]).update(task_medium_id: params[:media_id])
+	end
+
+	render json: {id: @pitch.id, task_id: params[:task_id]}
+	# redirect_to dashboard_edit_pitch_path(@pitch, task_id: params[:task_id])
   end
 
   def select_task
@@ -305,6 +323,8 @@ class DashboardController < ApplicationController
 	@admin = current_user
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
+	@folders = @admin.content_folders.where(content_folder: nil)
+    @files = @admin.task_media.where(content_folder: nil)
 	respond_to do |format|
 		format.js { render 'select_task'}
 	end

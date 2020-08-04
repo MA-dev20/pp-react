@@ -339,7 +339,7 @@
 						<div class="btn-wrapper">
 							<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
 							<div class="btn reversed upload record">Record</div>
-							<label class="btn reversed upload library" id="">Image library</label>
+							<label class="btn reversed upload library" id="">Library</label>
 						</div>
 					</div>
 				</div>
@@ -433,7 +433,15 @@
 	</div>
 </div>
 
+<div id="pitchLibraryModal">
+	<%= render partial: 'library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>
+</div>
+
 <script>
+
+	$('.library').on('click', function() {
+		$('#libraryModal').show();
+	})
 
 	function processVimeoVideo(url) {
 		var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/;
