@@ -169,7 +169,12 @@ class DashboardController < ApplicationController
     end
     if params[:video]
       @video = TaskMedium.find_by(id: params[:video])
-
+    end
+    if params[:image]
+      @image = TaskMedium.find_by(id: params[:image])
+    end
+    if params[:audio]
+      @audio = TaskMedium.find_by(id: params[:audio])
     end
   end
 

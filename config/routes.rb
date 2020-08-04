@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 
   post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
+  put 'task_medium/:task_medium_id/delete', to: "task_media#delete", as: 'delete_media'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'

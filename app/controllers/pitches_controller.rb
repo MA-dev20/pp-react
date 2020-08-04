@@ -73,21 +73,21 @@ class PitchesController < ApplicationController
   end
 
   def update_task
-	@pitch = Pitch.find(params[:pitch_id])
-	@task = Task.find(params[:task_id])
-	@task.update(task_params)
-	if @task.task_type == 'slide' && @task.task_medium
-		@task.update(valide: true)
-	elsif @task.title && @task.time && @task.title != ''
-	  if @task.catchword_list || @task.task_medium
-		@task.update(valide: true)
-	  elsif @task.valide
-		@task.update(valide: false)
-	  end
-	elsif @task.valide
-	  @task.update(valide: false)
-	end
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  	@pitch = Pitch.find(params[:pitch_id])
+  	@task = Task.find(params[:task_id])
+  	@task.update(task_params)
+  	if @task.task_type == 'slide' && @task.task_medium
+  		@task.update(valide: true)
+  	elsif @task.title && @task.time && @task.title != ''
+  	  if @task.catchword_list || @task.task_medium
+  		@task.update(valide: true)
+  	  elsif @task.valide
+  		@task.update(valide: false)
+  	  end
+  	elsif @task.valide
+  	  @task.update(valide: false)
+  	end
+  	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 
   def select_task
@@ -157,7 +157,9 @@ class PitchesController < ApplicationController
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
 	@task_order.destroy
 	@task_orders = @pitch.task_orders.all.order(:order)
-
+  if @task.task_orders.count == 0
+    @task.destroy
+  end
 	i = 1
 	@task_orders.each do |to|
 	  to.update(order: i)
@@ -171,6 +173,9 @@ class PitchesController < ApplicationController
 	@task = Task.find(params[:selected_task_id])
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
 	@task_order.destroy
+  if @task.task_orders.count == 0
+    @task.destroy
+  end
 	@task_orders = @pitch.task_orders.all.order(:order)
 	@task = @pitch.tasks.first
 
