@@ -168,7 +168,6 @@ class DashboardController < ApplicationController
       @files = @folder.task_media.order(:title)
     end
     if params[:video]
-<<<<<<< HEAD
       @content = TaskMedium.find_by(id: params[:video])
     end
     if params[:image]
@@ -176,9 +175,6 @@ class DashboardController < ApplicationController
     end
     if params[:audio]
       @content = TaskMedium.find_by(id: params[:audio])
-=======
-      @video = TaskMedium.find_by(id: params[:video])
->>>>>>> feature-pitch-tasks-design-changes-shakeel
     end
   end
 
@@ -282,7 +278,7 @@ class DashboardController < ApplicationController
 	end
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
-	
+
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
     if params[:folder_id]
