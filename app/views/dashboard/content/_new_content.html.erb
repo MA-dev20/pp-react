@@ -1,0 +1,91 @@
+<div class="background-blur" id="new-content">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newContent()' %>
+    <h3>Content hochladen</h3>
+    <div class="droparea">
+      <div class="info">Drag & Drop Datei</div>
+      <div class="btn inverted">Datei auswählen</div>
+      <div class="add">Datei hier hinziehen</div>
+    </div>
+    <div class="form-group">
+      <input type="text" name="" value="" class="form-field" placeholder="Namen eingeben!">
+    </div>
+    <div class="btns">
+      <div class="btn inverted">cancel</div>
+      <div class="btn">speichern</div>
+    </div>
+  </div>
+</div>
+<script>
+  function newContent() {
+    $('#new-content').toggle();
+  }
+  function newContentType(type) {
+    location.replace('?new=' + type);
+  }
+  <% if params[:new] %>
+    toggleNewContent();
+    newContent();
+  <% end %>
+
+  var DropZone = $('.droparea')
+	DropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	DropZone.on('dragover dragenter', function () {
+		$(this).addClass('dragover');
+	})
+	DropZone.on('dragleave dragend drop', function () {
+		$(this).removeClass('dragover');
+	})
+
+	DropZone.on('drop', function (e) {
+		global_file = e.originalEvent.dataTransfer.files;
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
+			global_method = 'audioDragDrop'
+			global_event = e;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleAudioUpload(e);
+			}
+		} else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
+      global_method = 'imageDragDrop'
+			global_event = e;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleImageUpload(e);
+			}
+    } else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
+      global_method = 'videoDragDrop'
+			global_event = e;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handleVideoUpload(e);
+			}
+    } else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'pdf') {
+      global_method = 'pdfDragDrop'
+			global_event = e;
+			if (isOtherMediaExists()) {
+				$('.warning-card-wrapper').show();
+			} else {
+				handlePDFUpload(e);
+			}
+    }
+	});
+  function handleAudioUpload(event) {
+
+  }
+  function handleVideoUpload(event) {
+
+  }
+  function handleImageUpload(event) {
+
+  }
+  function handlePDFUpload(event) {
+
+  }
+</script>

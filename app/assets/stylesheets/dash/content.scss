@@ -194,11 +194,6 @@
           color: white;
         }
       }
-      .thumb:hover {
-        .fas {
-          transform: scale(1.1);
-        }
-      }
       .text {
         position: absolute;
         top: 8vh; left: 0;
@@ -251,6 +246,15 @@
   height: 100%; width: 100%;
   background-color: rgba(0,0,0,.3);
   z-index: 1000;
+  display: none;
+  .btn.inverted, .btn:hover {
+    color: rgb(var(--btncolor));
+    background-color: white;
+  }
+  .btn.inverted:hover, .btn {
+    background-color: rgb(var(--btncolor));
+    color: white;
+  }
   .content-popup {
     position: fixed;
     top: 20vh;
@@ -262,8 +266,60 @@
     text-align: center;
     z-index: 1000;
     padding: 10px;
+    .card-list {
+      text-align: center;
+      .card {
+        position: relative;
+        text-align: center;
+        width: 6vw;
+        margin: 0 .5vw 2vh;
+        padding: 0;
+        border: 1px solid rgba(0,0,0,.1);
+        box-shadow: none;
+        cursor: pointer;
+        overflow: visible;
+        display: inline-block;
+        height: auto;
+        font-size: 1.5vh;
+        font-weight: 600;
+        i,
+        img {
+          font-size: 5vh;
+          height: 5vh;
+          margin-top: 1vh;
+          display: inline-block;
+        }
+        i {
+          font-size: 4vh;
+          margin: 1.5vh 0 .5vh 0;
+        }
+      }
+    }
+    .droparea {
+      margin: 0 auto;
+      opacity: 1;
+      width: 30vw;
+      height: 30vh;
+      border: 2px dashed rgba(0,0,0,.2);
+      border-radius: .8vh;
+      box-sizing: border-box;
+      .info {
+        display: block;
+        margin: 10vh 0 0 0;
+        line-height: 5vh;
+      }
+      .btn {
+        display: inline-block;
+        margin: 0;
+        width: 50%;
+    }
+  }
+    .dragover {
+      opacity: .2;
+    }
     .form-field {
       width: 30vw;
+      box-sizing: border-box;
       margin: 10px 5vw;
       height: 5vh;
       font-size: 2vh;
@@ -303,14 +359,6 @@
         width: 48%;
         top: 0;
         border: 1px solid rgb(var(--btncolor));
-      }
-      .btn.inverted, .btn:hover {
-        color: rgb(var(--btncolor));
-  			background-color: white;
-      }
-      .btn.inverted:hover, .btn {
-        background-color: rgb(var(--btncolor));
-  			color: white;
       }
       .btn:first-child {
         left: 0;

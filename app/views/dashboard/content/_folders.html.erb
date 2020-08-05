@@ -1,0 +1,43 @@
+<% if @folders.count != 0 %>
+<div class="folders">
+  <h3>Ordner</h3>
+  <% @folders.each do |f| %>
+    <div class="card" id="folder_<%= f.id %>">
+      <div class="dropdown">
+        <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+        <div class="dropdown-Menu">
+          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Edit</div>
+          <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
+        </div>
+      </div>
+      <img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
+      <div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
+      <div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+    </div>
+  <% end %>
+  <script type="text/javascript">
+    <% @folders.each do |f| %>
+      checkOverflow('title_<%= f.id %>');
+    <% end %>
+  </script>
+</div>
+<% end %>
+<script type="text/javascript">
+  function deleteFolder(e) {
+		var mediaID = $(e).attr('data-id');
+		var URL = '/content_folder/'+mediaID+'/delete';
+		$.ajax({
+			url: URL,
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				if( res.id ) {
+					$('#folder_' + res.id).hide();
+				} else if (res.error) {
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
+					$('body').append(userDiv);
+				}
+			}
+		})
+	}
+</script>

@@ -168,13 +168,13 @@ class DashboardController < ApplicationController
       @files = @folder.task_media.order(:title)
     end
     if params[:video]
-      @video = TaskMedium.find_by(id: params[:video])
+      @content = TaskMedium.find_by(id: params[:video])
     end
     if params[:image]
-      @image = TaskMedium.find_by(id: params[:image])
+      @content = TaskMedium.find_by(id: params[:image])
     end
     if params[:audio]
-      @audio = TaskMedium.find_by(id: params[:audio])
+      @content = TaskMedium.find_by(id: params[:audio])
     end
   end
 
