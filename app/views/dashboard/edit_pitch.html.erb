@@ -105,7 +105,9 @@
 	</div>
 </div>
 <div id="pitchLibraryModal">
+	<% if @task %>
 	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>
+	<% end %>
 </div>
 <script>
 
