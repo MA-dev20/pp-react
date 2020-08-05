@@ -20,7 +20,7 @@ class TaskMedium < ApplicationRecord
   end
 
 	before_save do
-	  if self.audio? &&
+	  if self.audio?
 		self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
     self.title = self.audio_identifier if !self.title
 	  elsif self.video?

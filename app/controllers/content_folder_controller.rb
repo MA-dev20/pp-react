@@ -7,8 +7,11 @@ class ContentFolderController < ApplicationController
     authorize! :create, ContentFolder
     @folder = @user.content_folders.new(folder_params)
     @folder.company = @company
-    @folder.save
-    render json: {id: @folder.id, name: @folder.name, content_folder_id: @folder.content_folder_id}
+    if @folder.save
+      render json: {id: @folder.id, name: @folder.name, content_folder_id: @folder.content_folder_id}
+    else
+      render json: {error: 'Name fehlt!'}
+    end
   end
 
   def update

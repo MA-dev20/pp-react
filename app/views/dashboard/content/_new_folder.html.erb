@@ -10,7 +10,7 @@
         <%= f.hidden_field :content_folder_id, value: @folder.id %>
       <% end %>
       <div class="form-group">
-        <%= f.text_field :name, value: 'neuer Ordner', class: 'form-field' %>
+        <%= f.text_field :name, value: '', placeholder: 'Ordnernamen eingeben', class: 'form-field' %>
       </div>
       <div class="btns">
 				<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
@@ -27,18 +27,28 @@
     e.preventDefault();
     var URL = '<%= new_folder_path %>';
     var formData = new FormData(document.getElementById('new_folder-form'));
-    $.ajax({
-      url: URL,
-      type: "post",
-			cache: false,
-			async: true,
-			contentType: false,
-			processData: false,
-      data: formData,
-			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-			success: function (res) {
-  			location.reload();
-			}
-    })
+    if( $('#content_folder_name').val() == '' ) {
+      $('#content_folder_name').css('border-color', 'red');
+      return false;
+    } else {
+      $.ajax({
+        url: URL,
+        type: "post",
+    		cache: false,
+    		async: true,
+    		contentType: false,
+    		processData: false,
+        data: formData,
+    		beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+    		success: function (res) {
+          if( res.error ) {
+            $('#content_folder_name').css('border-color', 'red');
+          } else {
+            $('#content_folder_name').val('');
+            location.reload();
+          }
+    		}
+      })
+    }
   })
 </script>

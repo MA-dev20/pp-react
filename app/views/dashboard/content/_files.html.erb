@@ -2,6 +2,7 @@
 <div class="files">
   <h3>Dateien</h3>
   <% @files.each do |f| %>
+    <% if f.audio? || f.image? || f.video? %>
     <div class="card" id='media_<%= f.id %>'>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
@@ -43,6 +44,7 @@
     <script type="text/javascript">
       checkOverflow('media_title_<%= f.id %>');
     </script>
+    <% end %>
   <% end %>
 </div>
 <% end %>

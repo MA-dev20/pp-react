@@ -6,6 +6,8 @@ class ContentFolder < ApplicationRecord
   belongs_to :content_folder, required: false
   has_many :content_folders, dependent: :destroy
   has_many :task_media, dependent: :destroy
+  validates :name, presence: true
+
 
   def self.search(search)
     if search
