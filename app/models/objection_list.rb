@@ -12,7 +12,16 @@ class ObjectionList < ApplicationRecord
 	self.image = Random.rand(8)
   end
 
+
   def image_url
 	return 'randomPics/objections/'+(self.image + 1).to_s+'.jpg'
+  end
+
+  def self.search(search)
+    if search
+      where('lower(name) LIKE ?', "%#{search.downcase}%")
+    else
+      scoped
+    end
   end
 end

@@ -1,5 +1,4 @@
-<% if @files.count != 0 %>
-<div class="files">
+<div class="files" style="<%= @files.count == 0 ? 'display: none' : 'display: block' %>">
   <h3>Dateien</h3>
   <% @files.each do |f| %>
     <% if f.audio? || f.image? || f.video? %>
@@ -47,7 +46,6 @@
     <% end %>
   <% end %>
 </div>
-<% end %>
 <script type="text/javascript">
   function deleteContent(e) {
 		var type = $(e).attr('data-type');

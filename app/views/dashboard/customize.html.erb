@@ -22,11 +22,13 @@
 	<div id="scrollcontent">
 		<%= render 'dashboard/content/folders.html.erb' %>
 		<%= render 'dashboard/content/files.html.erb' %>
+		<%= render 'dashboard/content/lists.html.erb' %>
 	</div>
 </div>
 <%= render 'dashboard/content/new.html.erb' %>
 <%= render 'dashboard/content/new_folder.html.erb' %>
 <%= render 'dashboard/content/new_content.html.erb' %>
+<%= render 'dashboard/content/new_list.html.erb' %>
 <%= render 'dashboard/content/edit.html.erb' %>
 
 <script type="text/javascript">
@@ -101,6 +103,25 @@
 					$('.files').html(filesDiv);
 				}	else {
 					$('.files').hide();
+				}
+				var listsDiv = '<h3>Lists</h3>';
+				if(res.lists.length > 0) {
+					$('.lists').show();
+					res.lists.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>';
+						userDiv += '<div class="thumb" data-type="'+item["type"]+'" data-id="'+item["id"]+'" onclick="showMedia(this)">';
+						userDiv += '<div class="audio-image"><%= image_tag 'dash/no-image-icon.png' %></div>';
+						userDiv += '</div><div class="text">';
+						userDiv += '<div class="title" id="media_title_'+item["id"]+'">'+item["name"]+'<div class="ellipsis">...</div></div>';
+						userDiv += '<div class="time"><%= image_tag 'dash/no-image-icon.png' %>'+item["user_name"]+'</div>';
+						userDiv += '</div>';
+						userDiv += '</div>';
+						listsDiv += userDiv;
+					})
+					$('.lists').html(listsDiv);
+				} else {
+					$('.lists').hide();
 				}
 			},
 		})

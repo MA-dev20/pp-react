@@ -56,6 +56,7 @@
     width: 100%; height: 70vh;
   }
   .files,
+  .lists,
   .folders  {
     clear: left;
     text-align: left;
@@ -70,7 +71,7 @@
       position: relative;
       text-align: center;
       width: 7vw;
-      margin: 0 .5vw 2vh;
+      margin: 0 1vw 2vh 0;
       float: left;
       padding: 0;
       border: 1px solid rgba(0,0,0,.1);
@@ -154,8 +155,10 @@
       }
     }
   }
-  .files {
+  .files,
+  .lists {
     padding: 1vh 0 0 0;
+
     .card {
       height: 16vh;
       width: calc(7vw + 1vh);
@@ -236,6 +239,7 @@
           }
         }
       }
+
     }
   }
 }
@@ -324,6 +328,12 @@
       height: 5vh;
       font-size: 2vh;
       text-align: center;
+    }
+    .divider {
+      height: 1px;
+      width: 100%;
+      background-color: rgba(0,0,0,.2);
+      margin-bottom: 1.5vh;
     }
     .audio {
       img {

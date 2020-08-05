@@ -1,0 +1,51 @@
+<div class="lists" style="<%= @lists.count == 0 ? 'display: none' : 'display: block' %>">
+  <h3>Listen</h3>
+  <% @lists.each do |f| %>
+    <div class="card" id='list_<%= f[:id] %>'>
+      <div class="dropdown">
+        <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+        <div class="dropdown-Menu">
+          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
+            Edit
+          </div>
+          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="deleteContent(this)">
+            Löschen
+          </div>
+        </div>
+      </div>
+      <div class="thumb" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showList(this)">
+          <div class="audio-image">
+            <%= image_tag 'dash/no-image-icon.png' %>
+          </div>
+      </div>
+      <div class="text">
+          <div class="title" id="media_title_<%= f[:id] %>"><%= f[:name] %><div class="ellipsis">...</div></div>
+          <div class="time"><%= image_tag 'dash/no-image-icon.png' %><%= f[:user_name] %></div>
+      </div>
+
+    </div>
+    <script type="text/javascript">
+      checkOverflow('media_title_<%= f[:id] %>');
+    </script>
+  <% end %>
+</div>
+<script type="text/javascript">
+  function deleteContent(e) {
+		var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+		var URL = '/task_medium/'+mediaID+'/delete';
+		$.ajax({
+			url: URL,
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				if( res.id ) {
+					$('#media_' + res.id).hide();
+				} else if (res.error) {
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
+					$('body').append(userDiv);
+				}
+			}
+		})
+	}
+</script>

@@ -68,6 +68,8 @@ Rails.application.routes.draw do
   post 'content_folder/:folder_id/update', to: "content_folder#update", as: 'update_folder'
   put 'content_folder/:folder_id/delete', to: "content_folder#delete", as: 'delete_folder'
 
+  post 'lists/new', to: 'list#create', as: 'create_list'
+
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"

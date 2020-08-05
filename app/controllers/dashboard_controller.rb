@@ -165,10 +165,24 @@ class DashboardController < ApplicationController
   def customize
     @folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
+    @lists = []
+    @admin.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+      @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+    end
+    @admin.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+      @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+    end
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.order(:title)
+      @lists = []
+      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
+        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+      end
+      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
+        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      end
     end
     if params[:video]
       @content = TaskMedium.find_by(id: params[:video])
@@ -201,6 +215,13 @@ class DashboardController < ApplicationController
         @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
         @folders << @folder
       end
+      @lists = []
+      @admin.catchword_lists.where.not(name: 'task_list').search(params[:search]).each do |cl|
+        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+      end
+      @admin.objection_lists.where.not(name: 'task_list').search(params[:search]).each do |ol|
+        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      end
     else
       @folders = []
       @admin.content_folders.where(content_folder: nil).each do |folder|
@@ -220,8 +241,25 @@ class DashboardController < ApplicationController
           @files << @file
         end
       end
+      @lists = []
+      @admin.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+        this_task = Task.find_by(catchword_list: cl)
+        if cl.name
+          @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+        elsif this_task
+          @lists << {id: cl.id, name: this_task.title, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+        end
+      end
+      @admin.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+        this_task = Task.find_by(objection_list: ol)
+        if ol.name
+          @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+        elsif this_task
+          @lists << {id: ol.id, name: this_task.title, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+        end
+      end
     end
-    render json: {folders: @folders, files: @files}
+    render json: {folders: @folders, files: @files, lists: @lists}
   end
 
   def account
