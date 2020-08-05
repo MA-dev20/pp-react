@@ -104,12 +104,10 @@
 		</div>
 	</div>
 </div>
-
+<div id="pitchLibraryModal">
+	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>
+</div>
 <script>
-
-	$('.library').on('click', function() {
-		$('#libraryModal').show();
-	})
 
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
@@ -308,6 +306,9 @@
 	// 	}
 	// })
 
+	$('.library').on('click', function() {
+		$('#libraryModal').show();
+	})
 
 	$('.yes-btn').on('click', function() {
 		$('#pitchModal').hide();

@@ -152,8 +152,8 @@
 				task_id: task_id,
 				media_id: media_id,
 				media_type: media_type,
-				selected_media_type: $('.active.option').text().trim().toLowerCase(),
-				pdf_media_type: $('.selected').find('.slide-title .name').text().split('-')[1].trim().toLowerCase()				
+				selected_media_type: $('.active.option').text() !== "" ? $('.active.option').text().trim().toLowerCase() : "",
+				pdf_media_type: $('.selected').find('.slide-title .name').text() !== "" ? $('.selected').find('.slide-title .name').text().split('-')[1].trim().toLowerCase() : ""				
             },
             success: function (res) {
 			var URL = `/dashboard/pitches/${res.id}/edit?task_id=${res.task_id}`;
