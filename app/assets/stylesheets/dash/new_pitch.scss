@@ -755,7 +755,13 @@
             }
 
             .audio .btn, .video .btn {
-                margin-right: 1vh;
+                // margin-right: 1vh;
+            }
+
+            .audio .btn-wrapper {
+                width: 90%;
+                display: flex;
+                justify-content: space-between;
             }
         }
 
@@ -1699,7 +1705,8 @@ input[type="file"] {
 
 #content {
 
-    #pitchModal {
+    #pitchModal,
+    #libraryModal {
 
         // top: 12%;
         padding-top: 0;
@@ -1833,6 +1840,21 @@ input[type="file"] {
         }
     }
 
+    #libraryModal .modal-content {
+        top: 14vh;
+    }
+
+    #libraryModal {
+        .card#content_card {
+            height: unset;
+            width: unset;
+        }
+
+        .card#content_card #scrollcontent {
+            height: 60vh;
+        }
+    }
+
     .video-frame {
         height: 28vh;
         width: 100%;
@@ -1891,7 +1913,9 @@ input[type="file"] {
         .label-btn {
             top: 28%;
             .btn-wrapper {
+                width: 90%;
                 display: flex;
+                justify-content: space-between;
             }
 
             .video-form {
@@ -2267,4 +2291,13 @@ input[type="file"] {
 @keyframes loading-bar-spinner {
   0%   { transform: rotate(0deg);   transform: rotate(0deg); }
   100% { transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+
+#content {
+    .pitch-modal-submit-wrapper {
+        position: relative !important;
+        display: flex;
+        justify-content: flex-end;
+    }
 }

@@ -12,7 +12,7 @@ class Task < ApplicationRecord
 
 	before_save do
 		user = User.find(self.user_id)
-		self.company_id = user.company_id if self.company_id.nil?
+		self.company_id = user.company_ids.first if self.company_id.nil?
 	end
 	after_save do
 		if self.task_type == 'catchword' && self.catchword_list&.catchwords.present?

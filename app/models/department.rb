@@ -4,7 +4,7 @@ class Department < ApplicationRecord
   belongs_to :company
   has_many :histories, dependent: :destroy
   has_many :teams, dependent: :destroy
-  has_many :department_users, :dependent: :destroy
+  has_many :department_users, dependent: :destroy
   has_many :users, through: :department_users
   
   has_many :do_and_donts, dependent: :destroy

@@ -231,7 +231,7 @@
 						<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
 						<%= t.hidden_field :media_type, value: 'image' %>
 						<label class="btn reversed upload" id="image_upload_btn">Upload from Computer</label>
-						<label class="btn reversed upload image-library" id="">Image library</label>
+						<label class="btn reversed upload image-library library" id="">Image library</label>
 					</div>
 				</div>
 				<% end %>
@@ -287,6 +287,7 @@
 						<div class="btn-wrapper">
 							<label class="btn reversed upload" id="video_upload_btn">Upload from computer</label>
 							<div class="btn reversed upload open-modal record-video">Record</div>
+							<label class="btn reversed upload library" id="">Library</label>
 						</div>
 						<div class="video-form">
 							<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -335,8 +336,11 @@
 						<%= t.file_field :audio, accept: '.mp3,.wav', class: 'audio-field' %>
 						<%#= f.hidden_field :audio_id, class: 'audio-id' %>
 						<%= t.hidden_field :media_type, value: 'audio' %>
-						<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
-						<div class="btn reversed upload record">Record</div>
+						<div class="btn-wrapper">
+							<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
+							<div class="btn reversed upload record">Record</div>
+							<label class="btn reversed upload library" id="">Library</label>
+						</div>
 					</div>
 				</div>
 				<% end %>
@@ -430,7 +434,10 @@
 </div>
 
 <script>
-	
+
+	$('.library').on('click', function() {
+		$('#libraryModal').show();
+	})
 
 	function processVimeoVideo(url) {
 		var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/;
