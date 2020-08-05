@@ -330,6 +330,7 @@
         height: 15vh;
         margin: 2vh 0;
       }
+      i {font-size: 15vh; color: red; width: 100%;}
       audio {
           width: 30vw;
           margin: 1.5vh 5vw 0;
@@ -340,8 +341,11 @@
       top: 0; right: 0;
       margin: 15px;
       height: 25px;
+
+
     }
-    video {
+    video,
+    img {
       display: inline-block;
       height: 50vh;
       max-width: 100%;

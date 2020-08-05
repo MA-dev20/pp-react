@@ -7,6 +7,9 @@ class DashboardController < ApplicationController
   def choose_company
     @company = @admin.companies.first
     @companies = @admin.companies.order(:name)
+    if @companies.count == 1
+      redirect_to login_company_path(@company.id)
+    end
   end
 
   def index
@@ -182,14 +185,16 @@ class DashboardController < ApplicationController
     if params[:search] && params[:search] != ''
       @files = []
       @admin.task_media.search(params[:search]).each do |file|
-        if file.media_type == 'video'
+        if file.media_type == 'video' && file.video?
           @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-        elsif file.media_type == 'image'
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
           @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
-        elsif file.media_type == 'audio'
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
           @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
         end
-        @files << @file
       end
       @folders = []
       @admin.content_folders.search(params[:search]).each do |folder|
@@ -204,14 +209,16 @@ class DashboardController < ApplicationController
       end
       @files = []
       @admin.task_media.where(content_folder: nil).each do |file|
-        if file.media_type == 'video'
+        if file.media_type == 'video' && file.video?
           @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-        elsif file.media_type == 'image'
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
           @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
-        elsif file.media_type == 'audio'
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
           @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
         end
-        @files << @file
       end
     end
     render json: {folders: @folders, files: @files}

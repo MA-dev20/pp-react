@@ -2,22 +2,33 @@
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newContent()' %>
     <h3>Content hochladen</h3>
+    <div class="preview"></div>
     <div class="droparea">
       <div class="info">Drag & Drop Datei</div>
       <div class="btn inverted">Datei auswählen</div>
     </div>
+    <%= form_for :task_medium, url: create_media_path, html: {id: 'media-form'} do |f| %>
+    <%= f.hidden_field :media_type, value: '' %>
+    <%= f.hidden_field :audio %>
+    <%= f.file_field :image %>
+    <%= f.file_field :pdf %>
+    <%= f.file_field :video %>
     <div class="form-group">
-      <input type="text" name="" value="" class="form-field" placeholder="Namen eingeben!">
+      <%= f.text_field :title, class: 'form-field', placeholder: 'Namen eingeben' %>
     </div>
     <div class="btns">
-      <div class="btn inverted">cancel</div>
-      <div class="btn">speichern</div>
+      <div class="btn inverted" onclick="newContent()">cancel</div>
+      <%= f.submit 'speichern', class: 'btn' %>
     </div>
+    <% end %>
   </div>
 </div>
 <script>
+  var files;
   function newContent() {
     $('#new-content').toggle();
+    $('.droparea').show();
+    $('.preview').text('');
   }
   function newContentType(type) {
     location.replace('?new=' + type);
@@ -40,51 +51,72 @@
 	})
 
 	DropZone.on('drop', function (e) {
-		global_file = e.originalEvent.dataTransfer.files;
-		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'audio') {
-			global_method = 'audioDragDrop'
-			global_event = e;
-			if (isOtherMediaExists()) {
-				$('.warning-card-wrapper').show();
-			} else {
-				handleAudioUpload(e);
-			}
-		} else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
-      global_method = 'imageDragDrop'
-			global_event = e;
-			if (isOtherMediaExists()) {
-				$('.warning-card-wrapper').show();
-			} else {
-				handleImageUpload(e);
-			}
-    } else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'video') {
-      global_method = 'videoDragDrop'
-			global_event = e;
-			if (isOtherMediaExists()) {
-				$('.warning-card-wrapper').show();
-			} else {
-				handleVideoUpload(e);
-			}
-    } else if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'pdf') {
-      global_method = 'pdfDragDrop'
-			global_event = e;
-			if (isOtherMediaExists()) {
-				$('.warning-card-wrapper').show();
-			} else {
-				handlePDFUpload(e);
-			}
-    }
+		files = e.originalEvent.dataTransfer.files;
+    handleFiles();
 	});
-  function handleAudioUpload(event) {
-
+  function handleFiles() {
+    if (files[0]['type'].split('/')[0] === 'audio') {
+      $('#task_medium_media_type').val('audio');
+      var userDiv = '<div class="audio"><%= image_tag 'dash/audio.png' %></div>';
+      $('.droparea').hide();
+      $(".preview").prepend(userDiv);
+      var sound = document.createElement('audio');
+      sound.controls = 'controls';
+      sound.src = URL.createObjectURL(files[0]);
+      $('.audio').append(sound);
+		} else if (files[0]['type'].split('/')[0] === 'image') {
+      $('#task_medium_media_type').val('image');
+      $('.droparea').hide();
+      var image = document.createElement('img');
+      image.src = URL.createObjectURL(files[0]);
+      $('.preview').append(image);
+    } else if (files[0]['type'].split('/')[0] === 'video') {
+      $('#task_medium_media_type').val('video');
+      $('.droparea').hide();
+      var video = document.createElement('video');
+      video.controls = 'controls';
+      video.src = URL.createObjectURL(files[0]);
+      $('.preview').append(video);
+    } else if (files[0]['type'].split('/')[1] === 'pdf') {
+      $('#task_medium_media_type').val('pdf');
+      var userDiv = '<div class="audio"><%= image_tag 'dash/import-PDF.png' %></div>';
+      $('.droparea').hide();
+      $(".preview").prepend(userDiv);
+    } else {
+      $('#task_medium_media_type').val('invalid');
+      $('.droparea').hide();
+      var userDiv = '<div class="audio"><i class="fas fa-exclamation-triangle"></i>Ungültiges Format!</div>';
+      $(".preview").prepend(userDiv);
+    }
   }
-  function handleVideoUpload(event) {
+  $("#media-form").on('submit', function(e) {
+    e.preventDefault();
+    var URL = "<%= create_media_path %>";
+    var formData = new FormData(document.getElementById('media-form'));
+    if ( $('#task_medium_media_type').val() == 'audio' ) {
+      formData.append( $('#task_medium_audio').attr('name'), files[0] );
+    } else if ( $('#task_medium_media_type').val() == 'image' ) {
+      formData.append( $('#task_medium_image').attr('name'), files[0] );
+    } else if ( $('#task_medium_media_type').val() == 'video' ) {
+      formData.append( $('#task_medium_video').attr('name'), files[0] );
+    } else if ( $('#task_medium_media_type').val() == 'pdf' ) {
+      formData.append( $('#task_medium_pdf').attr('name'), files[0] );
+    } else {
+      alert('Ungültiger Dateityp');
+      return;
+    }
+    $.ajax({
+      url: URL,
+      type: 'post',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        location.reload();
+      }
+    })
+  })
 
-  }
-  function handleImageUpload(event) {
-
-  }
-  function handlePDFUpload(event) {
-
-  }
 </script>
