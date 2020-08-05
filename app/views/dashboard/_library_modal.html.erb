@@ -46,7 +46,7 @@
 			<div class="files">
 				<h3>Dateien</h3>
 				<% files.each do |f| %>
-					<% if (f.tasks.present?) && ((f.tasks&.first&.task_type == 'slide' && f[f.media_type.to_sym].present?) || (f.tasks&.first&.task_type != 'slide')) %>
+					<% if f[f.media_type.to_sym].present? %>			
 					<div class="card" onclick="addMediaContent('<%= task_id %>', '<%= f.id  %>', '<%= f.media_type %>')">
 						<div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>">
 								<% if f.media_type == 'video' %>
