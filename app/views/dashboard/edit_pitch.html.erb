@@ -258,6 +258,9 @@
 	var global_event = '';
 	var global_file = '';
 	var global_method = '';
+	var global_media_type = '';
+	var global_media_id = '';
+	var global_task_id = '';
 	var field_id = '';
 	var mediaDeleted = false;
 	var cwListId = 0;
@@ -366,6 +369,8 @@
 				sendList('catchword', cwListId);
 			else if (global_method === 'videoUrl')
 				handleVideoLinkClicked(global_event);
+			else if (global_method === 'library')
+				uploadMediaContent(global_task_id, global_media_id, global_media_type)
 		}
 		field_id, global_event, global_method, global_file = '';
 		cwListId = 0;

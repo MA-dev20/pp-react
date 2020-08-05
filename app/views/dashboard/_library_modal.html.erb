@@ -142,8 +142,26 @@
             }
         })
 	}
-	
+
 	function addMediaContent(task_id, media_id, media_type) {
+		global_task_id = task_id;
+		global_media_id= media_id;
+		global_media_type = media_type;
+		global_method = 'library';
+		if ($('.selected').find('.slide-title .name').text() == "") {
+			if (isOtherMediaExists()) {
+				$('#libraryModal').hide();
+				$('.warning-card-wrapper').show();
+			} else {
+				$('.warning-card-wrapper').hide();
+				uploadMediaContent(task_id, media_id, media_type);
+			}
+		} else {
+			uploadMediaContent(task_id, media_id, media_type);
+		}
+	}
+	
+	function uploadMediaContent(task_id, media_id, media_type) {
         $.ajax({
             url: '<%= add_media_content_path(@pitch) %>',
             type: 'GET',
