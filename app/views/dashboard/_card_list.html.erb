@@ -30,8 +30,8 @@
                 <div class="name"><%= t.order %>. Task</div>
             <% end %>
             <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
-            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.id %>)"></a>
-            <%= link_to '', copy_task_path(@pitch, t.id), class: 'fas fa-copy copy copy-task' %>
+            <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a>
+            <%= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
         </div>
         <div class="task-subtitle task-name">
             <%= t.task.title %>
