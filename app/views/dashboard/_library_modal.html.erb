@@ -1,11 +1,11 @@
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function checkOverflow(ID) {
 		element = document.getElementById(ID);
 		if( element.offsetHeight < element.scrollHeight ) {
 			$("#"+ID + ' .ellipsis').show();
 		}
 	}
-</script>
+</script> -->
 <div id="libraryModal" class="modal hide">
 	<div class="modal-content pitch-modal-content">
 		<span class="close">&times;</span>
@@ -35,11 +35,11 @@
 						<div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
 					</div>
 				<% end %>
-				<script type="text/javascript">
+				<!-- <script type="text/javascript">
 					<% folders.each do |f| %>
 						checkOverflow('title_<%= f.id %>');
 					<% end %>
-				</script>
+				</script> -->
 			</div>
 			<% end %>
 			<% if files.count != 0 %>
@@ -76,9 +76,9 @@
 						</div>
 					</div>
 					<% end %>
-					<script type="text/javascript">
+					<!-- <script type="text/javascript">
 						checkOverflow('media_title_<%= f.id %>');
-					</script>
+					</script> -->
 				<% end %>
 			</div>
 			<% end %>
