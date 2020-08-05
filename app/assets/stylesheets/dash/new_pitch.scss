@@ -2300,4 +2300,18 @@ input[type="file"] {
         display: flex;
         justify-content: flex-end;
     }
+
+    .media-btns-container {
+        .btn {
+            width: 15vh !important;
+        }
+
+        .btn-margin {
+            margin: 2vh 0 !important;
+        }
+
+        .btn-ml-1 {
+            margin-left: 1vh !important; 
+        }
+    }
 }

@@ -16,11 +16,11 @@
 		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_image_form'} do |t| %>
 		<div class="dropzone-container pdf-image-drop-zone">
 			<label class="dropzone-text">Drag and Drop file from your Computer</label>
-			<div class="label-btn">
+			<div class="label-btn media-btns-container">
 				<%= t.file_field :image, class: 'pdf-image-fileinput', id: 'pdf_task_medium_image', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
-				<label class="btn reversed upload" id="pdf_image_upload_btn">Upload from Computer</label>
-				<label class="btn reversed upload image-library library" id="">Image library</label>
+				<label class="btn reversed upload btn-margin" id="pdf_image_upload_btn">Upload</label>
+				<label class="btn reversed upload image-library library btn-margin btn-ml-1" id="">Image library</label>
 			</div>
 		</div>
 		<% end %>
@@ -62,13 +62,13 @@
 		<div class="dropzone-container pdf-video-drop-zone" 
 		style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
 			<label class="dropzone-text">Drag and Drop file from your Computer</label>
-			<div class="label-btn">
+			<div class="label-btn media-btns-container">
 				<%= t.file_field :video, accept: 'video/*', class: 'pdf-video-field', id: 'pdf_task_medium_video' %>
 				<%= t.hidden_field :media_type, value: 'video' %>
 				<div class="btn-wrapper">
-					<label class="btn reversed upload" id="pdf_video_upload_btn">Upload from computer</label>
-					<div class="btn reversed upload record-video record-pdf-video">Record</div>
-					<label class="btn reversed upload library" id="">Library</label>
+					<label class="btn reversed upload btn-margin" id="pdf_video_upload_btn">Upload</label>
+					<div class="btn reversed upload record-video record-pdf-video btn-margin btn-ml-1">Record</div>
+					<label class="btn reversed upload library btn-margin btn-ml-1" id="">Library</label>
 				</div>
 				<div class="video-form">
 					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -101,12 +101,12 @@
 	<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_audio_content_form'} do |t| %>
 	<div class="dropzone-container pdf-audio-drop-zone">
 		<label class="dropzone-text">Drag and Drop file from your Computer</label>
-		<div class="label-btn">
+		<div class="label-btn media-btns-container">
 			<%= t.file_field :audio, accept: '.mp3,.wav', class: 'pdf-audio-field', id: 'pdf_task_medium_audio' %>
 			<%= t.hidden_field :media_type, value: 'audio' %>
-			<label class="btn reversed upload" id="pdf_audio_upload_btn">Upload from computer</label>
-			<div class="btn reversed record-audio">Record</div>
-			<label class="btn reversed upload library" id="">Library</label>
+			<label class="btn reversed upload btn-margin" id="pdf_audio_upload_btn">Upload</label>
+			<div class="btn reversed record-audio btn-margin btn-ml-1">Record</div>
+			<label class="btn reversed upload library btn-margin btn-ml-1" id="">Library</label>
 		</div>
 	</div>
 	<% end %>

@@ -227,10 +227,10 @@
 				<div class="dropzone-container image-drop-zone"
 					style="<%= 'display: none;' if @task.task_medium && @task.task_medium.image? %>">
 					<label class="dropzone-text">Drag and Drop file from your Computer</label>
-					<div class="label-btn">
+					<div class="label-btn media-btns-container">
 						<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
 						<%= t.hidden_field :media_type, value: 'image' %>
-						<label class="btn reversed upload" id="image_upload_btn">Upload from Computer</label>
+						<label class="btn reversed upload" id="image_upload_btn">Upload</label>
 						<label class="btn reversed upload image-library library" id="">Image library</label>
 					</div>
 				</div>
@@ -280,14 +280,14 @@
 				<div class="dropzone-container video-drop-zone"
 					style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
 					<label class="dropzone-text">Drag and Drop file from your Computer</label>
-					<div class="label-btn">
+					<div class="label-btn media-btns-container">
 						<%= t.file_field :video, accept: 'video/*', class: 'video-field' %>
 						<%#= t.hidden_field :video_id, class: 'video-id' %>
 						<%= t.hidden_field :media_type, value: 'video' %>
-						<div class="btn-wrapper">
-							<label class="btn reversed upload" id="video_upload_btn">Upload from computer</label>
-							<div class="btn reversed upload open-modal record-video">Record</div>
-							<label class="btn reversed upload library" id="">Library</label>
+						<div class="">
+							<label class="btn reversed upload" id="video_upload_btn">Upload</label>
+							<div class="btn reversed upload open-modal record-video btn-ml-1">Record</div>
+							<label class="btn reversed upload library btn-ml-1" id="">Library</label>
 						</div>
 						<div class="video-form">
 							<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -332,14 +332,14 @@
 				<div class="dropzone-container audio-drop-zone"
 					style="<%= 'display: none;' if @task.task_medium && @task.task_medium.audio? %>">
 					<label class="dropzone-text">Drag and Drop file from your Computer</label>
-					<div class="label-btn">
+					<div class="label-btn media-btns-container">
 						<%= t.file_field :audio, accept: '.mp3,.wav', class: 'audio-field' %>
 						<%#= f.hidden_field :audio_id, class: 'audio-id' %>
 						<%= t.hidden_field :media_type, value: 'audio' %>
-						<div class="btn-wrapper">
-							<label class="btn reversed upload" id="audio_upload_btn">Upload from computer</label>
-							<div class="btn reversed upload record">Record</div>
-							<label class="btn reversed upload library" id="">Library</label>
+						<div class="">
+							<label class="btn reversed upload" id="audio_upload_btn">Upload</label>
+							<div class="btn reversed upload record btn-ml-1">Record</div>
+							<label class="btn reversed upload library btn-ml-1" id="">Library</label>
 						</div>
 					</div>
 				</div>
