@@ -221,7 +221,7 @@ class PitchesController < ApplicationController
   def create_task_media
 	  @pitch = Pitch.find(params[:pitch_id])
 	  @task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user)
-    @task_medium.update(media_params)
+      @task_medium.update(media_params)
 	  if params[:task_id].present?
 		  @task = Task.find(params[:task_id])
 		  @task.update(task_medium_id: @task_medium.id)
@@ -303,6 +303,18 @@ class PitchesController < ApplicationController
 		@task_medium.update(media_params)
 		pdf_type = params[:pdf_type] || 'image'
 		@task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true, pdf_type: pdf_type)
+	end
+	if params[:selected_card_order]
+		task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, params[:selected_card_order]).order(:order)
+		if task_orders.present?
+			set_order_id = task_orders.first.order
+			order = set_order_id + 1
+			task_orders.each do |task_order|
+				task_order.update(order: order)
+				order += 1
+			end
+			task_orders.find_by(task_id: @task.id).update(order: set_order_id)
+		end
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end

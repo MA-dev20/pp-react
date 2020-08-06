@@ -370,6 +370,7 @@ class DashboardController < ApplicationController
   def select_task
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:selected_task_id])
+	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
 	@task_type = @task.task_type
 	@admin = current_user
 	@cw_lists = @admin.catchword_lists

@@ -8,3 +8,4 @@ if ('<%= @task_type %>' === 'slide') {
     $('#selectedTask').html("<%=j render partial: 'dashboard/pitches/new_task' %>");
 }
 $('#pitchLibraryModal').html("<%=j render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>");
+$('.selected-card-order').val('<%= @task_order.order %>');
