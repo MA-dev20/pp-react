@@ -1,0 +1,31 @@
+<div class="background-blur" id="add-content">
+  <div class="content-popup new">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'toggleNewContent()' %>
+    <h3>Hinzufügen</h3>
+    <div class="card-list">
+      <div class="card" id="new_folder" onclick="newFolder()">
+        <%= image_tag 'dash/icons/folder.svg' %>
+        <div class="type">Ordner</div>
+      </div>
+      <div class="card" id="new_audio" onclick="newContent()">
+        <%= image_tag 'dash/audio.png' %>
+        <div class="type">Content</div>
+      </div>
+
+      <div class="card" id="new_catchword" onclick="newList('catchword')">
+        <i class="far fa-list-alt"></i>
+        <div class="type">Catchwort</div>
+      </div>
+      <div class="card" id="new_reaction" onclick="newList('objection')">
+        <i class="far fa-list-alt"></i>
+        <div class="type">Reaktion</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script type="text/javascript">
+  function toggleNewContent() {
+    $('#add-content').toggle();
+  }
+</script>

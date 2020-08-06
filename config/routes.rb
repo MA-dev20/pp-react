@@ -60,7 +60,15 @@ Rails.application.routes.draw do
   get '/pitches/:pitch_id/task/:task_id/destroy', to: 'pitches#delete_task', as: 'delete_task'
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 
+  post 'task_medium/new', to: 'task_media#create', as: 'create_media'
   post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
+  put 'task_medium/:task_medium_id/delete', to: "task_media#delete", as: 'delete_media'
+
+  post 'content_folder/new', to: 'content_folder#new', as: 'new_folder'
+  post 'content_folder/:folder_id/update', to: "content_folder#update", as: 'update_folder'
+  put 'content_folder/:folder_id/delete', to: "content_folder#delete", as: 'delete_folder'
+
+  post 'lists/new', to: 'list#create', as: 'create_list'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'

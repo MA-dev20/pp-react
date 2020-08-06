@@ -56,6 +56,7 @@
     width: 100%; height: 70vh;
   }
   .files,
+  .lists,
   .folders  {
     clear: left;
     text-align: left;
@@ -70,7 +71,7 @@
       position: relative;
       text-align: center;
       width: 7vw;
-      margin: 0 .5vw 2vh;
+      margin: 0 1vw 2vh 0;
       float: left;
       padding: 0;
       border: 1px solid rgba(0,0,0,.1);
@@ -154,8 +155,10 @@
       }
     }
   }
-  .files {
+  .files,
+  .lists {
     padding: 1vh 0 0 0;
+
     .card {
       height: 16vh;
       width: calc(7vw + 1vh);
@@ -192,11 +195,6 @@
           text-align: center;
           font-size: 3.5vh;
           color: white;
-        }
-      }
-      .thumb:hover {
-        .fas {
-          transform: scale(1.1);
         }
       }
       .text {
@@ -241,6 +239,7 @@
           }
         }
       }
+
     }
   }
 }
@@ -251,53 +250,129 @@
   height: 100%; width: 100%;
   background-color: rgba(0,0,0,.3);
   z-index: 1000;
+  display: none;
+  .btn.inverted, .btn:hover {
+    color: rgb(var(--btncolor));
+    background-color: white;
+  }
+  .btn.inverted:hover, .btn {
+    background-color: rgb(var(--btncolor));
+    color: white;
+  }
   .content-popup {
     position: fixed;
     top: 20vh;
     left: 30vw;
     width: 40vw;
     background-color: white;
-    border-radius: 20px;
+    border-radius: .8vh;
     box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
     text-align: center;
     z-index: 1000;
     padding: 10px;
+    .card-list {
+      text-align: center;
+      .card {
+        position: relative;
+        text-align: center;
+        width: 6vw;
+        margin: 0 .5vw 2vh;
+        padding: 0;
+        border: 1px solid rgba(0,0,0,.1);
+        box-shadow: none;
+        cursor: pointer;
+        overflow: visible;
+        display: inline-block;
+        height: auto;
+        font-size: 1.5vh;
+        font-weight: 600;
+        i,
+        img {
+          font-size: 5vh;
+          height: 5vh;
+          margin-top: 1vh;
+          display: inline-block;
+        }
+        i {
+          font-size: 4vh;
+          margin: 1.5vh 0 .5vh 0;
+        }
+      }
+    }
+    .droparea {
+      margin: 0 auto;
+      opacity: 1;
+      width: 30vw;
+      height: 30vh;
+      border: 2px dashed rgba(0,0,0,.2);
+      border-radius: .8vh;
+      box-sizing: border-box;
+      .info {
+        display: block;
+        margin: 10vh 0 0 0;
+        line-height: 5vh;
+      }
+      .btn {
+        display: inline-block;
+        margin: 0;
+        width: 50%;
+    }
+  }
+    .dragover {
+      opacity: .2;
+    }
     .form-field {
       width: 30vw;
+      box-sizing: border-box;
       margin: 10px 5vw;
       height: 5vh;
       font-size: 2vh;
       text-align: center;
     }
+    .divider {
+      height: 1px;
+      width: 100%;
+      background-color: rgba(0,0,0,.2);
+      margin-bottom: 1.5vh;
+    }
+    .audio {
+      img {
+        height: 15vh;
+        margin: 2vh 0;
+      }
+      i {font-size: 15vh; color: red; width: 100%;}
+      audio {
+          width: 30vw;
+          margin: 1.5vh 5vw 0;
+      }
+    }
     .close {
       position: absolute;
       top: 0; right: 0;
-      margin: 10px;
-      height: 20px;
+      margin: 15px;
+      height: 25px;
+
+
     }
-    video {
+    video,
+    img {
       display: inline-block;
       height: 50vh;
       max-width: 100%;
     }
     .btns {
       position: relative;
-      left: 0; width: 100%;
-      height: 10vh;
+      left: 0; width: 30vw;
+      margin: 20px 5vw 0;
+      height: 5.5vh;
       .btn {
         position: absolute;
         height: 5.5vh;
         display: inline-block;
-        width: 40%;
-        top: 1vh;
-      }
-      .btn.inverted, .btn:hover {
-        color: rgb(var(--btncolor));
-  			background-color: white;
-      }
-      .btn.inverted:hover, .btn {
-        background-color: rgb(var(--btncolor));
-  			color: white;
+        box-sizing: border-box;
+        width: 48%;
+        top: 0;
+        border: 1px solid rgb(var(--btncolor));
       }
       .btn:first-child {
         left: 0;

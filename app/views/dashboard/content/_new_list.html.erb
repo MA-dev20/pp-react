@@ -1,0 +1,34 @@
+<div class="background-blur" id="new-list">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newList("close")' %>
+    <h3>Neue Liste</h3>
+    <%= form_for :list, url: create_list_path, html: {id: 'new-list-form'} do |f| %>
+      <%= f.hidden_field :type %>
+      <div class="audio">
+        <%= image_tag 'dash/noImageIcon.svg' %>
+      </div>
+      <div class="form-group">
+        <%= f.text_field :name, placeholder: 'Titel eingeben', class: 'form-field' %>
+      </div>
+      <div class="btns">
+        <div class="btn inverted" onclick="newList('close')">close</div>
+        <%= f.submit 'erstellen', class: 'btn' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+<script>
+  function newList(type) {
+    if( type == 'close' ) {
+      $('#new-list').hide();
+    } else if( type == 'catchword') {
+      $('#new-list h3').text('Neue Catchwortliste')
+      $('#list_type').val(type);
+      $('#new-list').show();
+    } else {
+      $('#new-list h3').text('Neue Einwandliste')
+      $('#list_type').val(type);
+      $('#new-list').show();
+    }
+  }
+</script>

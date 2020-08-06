@@ -1,0 +1,109 @@
+<% if params[:edit_folder] %>
+<% @this_folder = ContentFolder.find(params[:edit_folder]) %>
+<div class="background-blur" id="edit_folder">
+	<div class="content-popup folder">
+		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
+		<h3>Umbenennen</h3>
+		<%= form_for :content_folder, url: update_folder_path(@this_folder.id), html: {id: 'folder_update-form'} do |f| %>
+			<div class="audio">
+				<%= image_tag 'dash/icons/folder.svg' %>
+			</div>
+
+			<div class="form-group">
+					<%= f.text_field :title, value: @this_folder.name, class: 'form-field' %>
+			</div>
+			<div class="btns">
+				<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
+				<%= f.submit 'speichern', class: 'btn' %>
+			</div>
+		<% end %>
+	</div>
+</div>
+<script type="text/javascript">
+  $('#edit_folder').show();
+	$('#folder-update-form').on('submit', function(e) {
+		e.preventDefault();
+		var URL = '<%= update_folder_path(@this_folder) %>';
+		var formData = new FormData(document.getElementById('folder-update-form'));
+		$.ajax({
+			url: URL,
+			type: "post",
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#title_' + res.id).text(res.name)
+				$('.background-blur').hide();
+			}
+		})
+	})
+</script>
+<% end %>
+<% if @content %>
+	<div class="background-blur" id="edit_content">
+	<div class="content-popup">
+		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
+		<%= form_for :task_medium, url: update_media_path(@content.id), html: {id: 'content_update-form'} do |f| %>
+		<div class="form-group">
+			<%= f.text_field :title, value: @content.title, class: 'form-field' %>
+		</div>
+		<% if @content.media_type == 'image' %>
+			<%= image_tag @content.image.url %>
+		<% elsif @content.media_type == 'video' %>
+			<%= video_tag @content.video.url, controls: true, id: 'content_media'%>
+		<% elsif @content.media_type == 'audio' %>
+			<div class="audio">
+				<%= image_tag 'dash/audio.png' %>
+				<%= audio_tag @content.audio.url, controls: true, id: 'content_media' %>
+			</div>
+		<% end %>
+		<div class="btns">
+			<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
+			<%= f.submit 'speichern', class: 'btn' %>
+		</div>
+		<% end %>
+	</div>
+	</div>
+	<script type="text/javascript">
+    $('#edit_content').show();
+		$('#content_update-form').on('submit', function(e) {
+			e.preventDefault();
+			var URL = '<%= update_media_path(@content) %>';
+			var formData = new FormData(document.getElementById('video_update-form'));
+			$.ajax({
+				url: URL,
+				type: "post",
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: formData,
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function (res) {
+					<% if @content.content_folder %>
+						location.replace('<%= dashboard_customize_path %>?folder_id=<%= @content.content_folder_id %>');
+					<% else %>
+						location.replace('<%= dashboard_customize_path %>');
+					<% end %>
+				}
+			})
+		})
+	</script>
+<% end %>
+
+<script type="text/javascript">
+  function showMedia(e) {
+		var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+		location.replace('?' + type + '=' + mediaID);
+	}
+  function closeContentPopup() {
+		$('.background-blur').hide();
+		if( $('#content_media').length > 0 ) {
+			document.getElementById('content_media').pause()
+		}
+	}
+</script>

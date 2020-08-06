@@ -17,133 +17,36 @@
 			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
 		</div>
 		<% end %>
-		<svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+		<svg class="icon add" viewbox="0 0 144 144" onclick="toggleNewContent()"><use xlink:href="#addIcon" /></svg>
 	</div>
 	<div id="scrollcontent">
-	<% if @folders.count != 0 %>
-	<div class="folders">
-		<h3>Ordner</h3>
-		<% @folders.each do |f| %>
-			<div class="card">
-				<div class="dropdown">
-					<i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
-					<div class="dropdown-Menu">
-						<div class="point">
-							Edit
-						</div>
-						<div class="point">
-							Löschen
-						</div>
-					</div>
-				</div>
-				<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
-				<div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
-				<div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
-			</div>
-		<% end %>
-		<script type="text/javascript">
-			<% @folders.each do |f| %>
-				checkOverflow('title_<%= f.id %>');
-			<% end %>
-		</script>
-	</div>
-	<% end %>
-	<% if @files.count != 0 %>
-	<div class="files">
-		<h3>Dateien</h3>
-		<% @files.each do |f| %>
-			<% if f[f.media_type.to_sym].present? %>
-				<div class="card">
-					<div class="dropdown">
-						<i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
-						<div class="dropdown-Menu">
-							<div class="point">
-								Edit
-							</div>
-							<div class="point">
-								Löschen
-							</div>
-						</div>
-					</div>
-					<div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
-							<% if f.media_type == 'video' %>
-								<%= image_tag f.video.thumb.url,  class: 'image' %>
-								<i class="fas fa-play-circle"></i>
-							<% elsif f.media_type == 'image' %>
-								<% if f.image.present? %>
-								<%= image_tag f.image.url,  class: 'image' %>
-								<% end %>
-							<% elsif f.media_type == 'audio' %>
-								<div class="audio-image">
-									<%= image_tag 'dash/audio.png' %>
-								</div>
-							<% elsif f.media_type == 'pdf' %>
-							<% end %>
-
-					</div>
-					<div class="text">
-							<div class="title" id="media_title_<%= f.id %>"><%= f.title %><div class="ellipsis">...</div></div>
-							<% if f.media_type == 'video' %>
-							<div class="time"><%= image_tag 'dash/video-icon.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
-							<% elsif f.media_type == 'audio' %>
-							<div class="time"><%= image_tag 'dash/audio.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
-							<% else %>
-							<div class="time"><%= image_tag 'dash/image-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
-							<% end %>
-					</div>
-
-				</div>
-			<% end %>
-			<script type="text/javascript">
-				checkOverflow('media_title_<%= f.id %>');
-			</script>
-		<% end %>
-	</div>
-	<% end %>
+		<%= render 'dashboard/content/folders.html.erb' %>
+		<%= render 'dashboard/content/files.html.erb' %>
+		<%= render 'dashboard/content/lists.html.erb' %>
 	</div>
 </div>
-<% if @video %>
-	<div class="background-blur">
+<%= render 'dashboard/content/new.html.erb' %>
+<%= render 'dashboard/content/new_folder.html.erb' %>
+<%= render 'dashboard/content/new_content.html.erb' %>
+<%= render 'dashboard/content/new_list.html.erb' %>
+<%= render 'dashboard/content/edit.html.erb' %>
 
-
-	<div class="content-popup video">
-		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
-		<%= form_for :task_medium, url: update_media_path(@video.id), html: {id: 'video_update-form'} do |f| %>
-		<div class="form-group">
-			<%= f.text_field :title, value: @video.title, class: 'form-field' %>
-		</div>
-		<%= video_tag @video.video, controls: true, autoplay: true %>
-		<div class="btns">
-			<div class="btn inverted left" onclick='closeContentPopup()'>Cancel</div>
-			<%= f.submit 'speichern', class: 'btn' %>
-		</div>
-		<% end %>
-	</div>
-	</div>
-	<script type="text/javascript">
-		$('#video_update-form').on('submit', function(e) {
-			e.preventDefault();
-			var URL = '<%= update_media_path(@video) %>';
-			var formData = new FormData(document.getElementById('video_update-form'));
-			$.ajax({
-				url: URL,
-				type: "post",
-				cache: false,
-				async: true,
-				contentType: false,
-				processData: false,
-				data: formData,
-				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-				success: function (res) {
-					location.replace('<%= dashboard_customize_path %>');
-				}
-			})
-		})
-	</script>
-<% end %>
 <script type="text/javascript">
+	$(document).click(function (e) {
+		if ($(e.target).is('.background-blur')) {
+			$('.background-blur').hide();
+			if( $('#content_media').length > 0 ) {
+				document.getElementById('content_media').pause()
+			}
+		}
+		if (!$(e.target).hasClass('dropdown')) {
+			var container = $(".dropdown");
+			if (container.has(e.target).length === 0) {
+				$('.dropdown-Menu').hide();
+			}
+		}
+	});
 	new PerfectScrollbar('#scrollcontent');
-
 	$('#searchContent').on('keyup', function() {
 		var searchVal = $('#searchContent').val();
 
@@ -191,7 +94,7 @@
 					  } else if( item["type"] == 'audio') {
 							userDiv += '<div class="time"><%= image_tag 'dash/audio.png' %>'+item["author"]+'</div>';
 						} else if( item["type"] == 'image') {
-							userDiv += '<div class="time"><%= image_tag 'dash/image-icon.png' %>'+item["duration"]+' - '+item["author"]+'</div>';
+							userDiv += '<div class="time"><%= image_tag 'dash/image-icon.png' %>'+item["author"]+'</div>';
 						}
 						userDiv += '</div>';
 						userDiv += '</div>';
@@ -201,18 +104,29 @@
 				}	else {
 					$('.files').hide();
 				}
+				var listsDiv = '<h3>Lists</h3>';
+				if(res.lists.length > 0) {
+					$('.lists').show();
+					res.lists.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>';
+						userDiv += '<div class="thumb" data-type="'+item["type"]+'" data-id="'+item["id"]+'" onclick="showMedia(this)">';
+						userDiv += '<div class="audio-image"><%= image_tag 'dash/no-image-icon.png' %></div>';
+						userDiv += '</div><div class="text">';
+						userDiv += '<div class="title" id="media_title_'+item["id"]+'">'+item["name"]+'<div class="ellipsis">...</div></div>';
+						userDiv += '<div class="time"><%= image_tag 'dash/no-image-icon.png' %>'+item["user_name"]+'</div>';
+						userDiv += '</div>';
+						userDiv += '</div>';
+						listsDiv += userDiv;
+					})
+					$('.lists').html(listsDiv);
+				} else {
+					$('.lists').hide();
+				}
 			},
 		})
 
 	})
-	function showMedia(e) {
-		var type = $(e).attr('data-type');
-		var mediaID = $(e).attr('data-id');
-		location.replace('?' + type + '=' + mediaID);
-	}
-	function closeContentPopup() {
-		$('.background-blur').hide();
-	}
 	function redirectFolder(fID) {
 		if ( fID == 'first' ) {
 			var URL = "<%= dashboard_customize_path %>";
