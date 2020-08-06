@@ -114,7 +114,8 @@
                         <% end %>
                     <% end %>
                     <div class="buttons">
-                        <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
+                        <%#= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
+                        <div class="btn reversed" onclick="addTaskWithAjax('<%= copy_task_path(@pitch, task.id) %>')">Use this task</div>
                     </div>
                 </div>
                 <% end %>

@@ -318,6 +318,18 @@ class DashboardController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
 		@task = @pitch.tasks.find(params[:task_id])
+		if params[:selected_card_order_id]
+			task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, params[:selected_card_order_id]).order(:order)
+			if task_orders.present?
+				set_order_id = task_orders.first.order
+				order = set_order_id + 1
+				task_orders.each do |task_order|
+					task_order.update(order: order)
+					order += 1
+				end
+				task_orders.find_by(task_id: @task.id).update(order: set_order_id)
+			end
+		end
 	else
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
 	end
@@ -330,6 +342,9 @@ class DashboardController < ApplicationController
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.order(:title)
+	end
+	if params[:selected_card_order_id]
+		render json: { task_id: @task.id }
 	end
   end
 

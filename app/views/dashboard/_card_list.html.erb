@@ -1,5 +1,5 @@
 <% @pitch.task_orders.order(:order).each do |t| %>
-<div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>"
+<div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>" data-order-id="<%= t.order %>"
         id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
         ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
         data-id="<%= t.id %>">
@@ -29,9 +29,11 @@
             <% else %>
                 <div class="name"><%= t.order %>. Task</div>
             <% end %>
-            <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
             <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a>
-            <%= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
+            <%#= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
+            <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>')">
+                <i class="fas fa-copy copy" aria-hidden="true"></i>
+            </div>
         </div>
         <div class="task-subtitle task-name">
             <%= t.task.title %>
@@ -72,9 +74,10 @@
         <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
-            <%#= link_to '', delete_task_path(@pitch, t.id), class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
             <a class="fas fa-trash remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a>
-            <%= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy' %>
+            <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>')">
+                <i class="fas fa-copy copy" aria-hidden="true"></i>
+            </div>
         </div>
         <div class="task-subtitle task-name">
             <%= t.task.title %>

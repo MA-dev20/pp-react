@@ -646,8 +646,27 @@
 	new PerfectScrollbar('#tasksScrollBar');
 
 	function addTask() {
-		window.location.replace("<%= create_task_path(@pitch) %>");
+		window.location.replace("<%#= create_task_path(@pitch) %>");
 	}
+
+	function addTaskWithAjax(url = '') {
+		if (!url) {
+			url = '<%= create_task_path(@pitch) %>'
+		}
+        $.ajax({
+            url: url,
+            type: 'GET',
+			dataType: "json",
+			data: {
+				selected_card_order_id: $('.selected').attr('data-order-id'),
+			},
+            success: function (res) {
+                var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + res.task_id;
+                window.location.replace(URL);
+            }
+        })
+	}
+
 	function selectDragDropTask(task_id) {
       <% if @task %>
         var globalForm = new FormData(document.getElementById('new_task_form'));

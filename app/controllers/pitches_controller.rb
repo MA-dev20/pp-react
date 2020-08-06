@@ -36,8 +36,8 @@ class PitchesController < ApplicationController
 
   def create_task
 	@pitch = Pitch.find(params[:pitch_id])
-  @task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  	@task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id, selected_card_order_id: params[:selected_card_order_id])
   end
 
   def update_pitch
@@ -131,7 +131,7 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@new_task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
 	@new_task.update(@task.attributes.except("id", "created_at", "updated_at"))
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id)
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id, selected_card_order_id: params[:selected_card_order_id])
   end
 
   def copy_pitch
