@@ -30,6 +30,7 @@
 <%= render 'dashboard/content/new_content.html.erb' %>
 <%= render 'dashboard/content/new_list.html.erb' %>
 <%= render 'dashboard/content/edit.html.erb' %>
+<%= render 'dashboard/content/edit_list.html.erb' %>
 
 <script type="text/javascript">
 	$(document).click(function (e) {
@@ -49,7 +50,6 @@
 	new PerfectScrollbar('#scrollcontent');
 	$('#searchContent').on('keyup', function() {
 		var searchVal = $('#searchContent').val();
-
 		var URL = '<%= search_content_path %>';
 		$.ajax({
 			url: URL,

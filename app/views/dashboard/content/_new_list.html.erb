@@ -4,6 +4,7 @@
     <h3>Neue Liste</h3>
     <%= form_for :list, url: create_list_path, html: {id: 'new-list-form'} do |f| %>
       <%= f.hidden_field :type %>
+      <%= f.hidden_field :content_folder_id, value: params[:folder_id] ? params[:folder_id] : nil %>
       <div class="audio">
         <%= image_tag 'dash/noImageIcon.svg' %>
       </div>

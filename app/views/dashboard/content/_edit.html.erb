@@ -98,7 +98,11 @@
   function showMedia(e) {
 		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
+		<% if params[:folder_id] %>
+		location.replace('?folder_id=<%= params[:folder_id] %>&' + type + '=' + mediaID);
+		<% else %>
 		location.replace('?' + type + '=' + mediaID);
+		<% end  %>
 	}
   function closeContentPopup() {
 		$('.background-blur').hide();

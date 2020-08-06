@@ -10,6 +10,7 @@
     <%= form_for :task_medium, url: create_media_path, html: {id: 'media-form'} do |f| %>
     <%= f.hidden_field :media_type, value: '' %>
     <%= f.hidden_field :audio %>
+    <%= f.hidden_field :content_folder_id, value: params[:folder_id] ? params[:folder_id] : nil %>
     <%= f.file_field :image %>
     <%= f.file_field :pdf %>
     <%= f.file_field :video %>

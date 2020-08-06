@@ -22,7 +22,10 @@
 #endPitchIcon,
 #nextIcon,
 #endTurnIcon,
-#addIcon {
+#addIcon,
+#handIcon {
+	.st1 {fill: white}
+	.st1b {fill: black}
 	.st2{fill:none;stroke: rgb(var(--custcolor));stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
 	.st5{fill:none;stroke:rgb(var(--custcolor));stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
 	.st6{fill: rgb(var(--custcolor));}

@@ -1,0 +1,198 @@
+<% if @liste %>
+<div class="background-blur" id="editList">
+  <div class="content-popup">
+    <% if @listType == 'catchword' %>
+    <h3>Catchwortliste bearbeiten</h3>
+    <% else %>
+    <h3>Einwandliste bearbeiten</h3>
+    <% end %>
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeListPopup()' %>
+    <%= form_for :list, url: edit_list_path(@liste), html: {id: 'editListForm'} do |f| %>
+      <%= f.hidden_field :type, value: @listType %>
+      <div class="form-group list-table">
+        <label for="">Titel bearbeiten</label>
+        <%= f.text_field :name, value: @liste.name, placeholder: 'Titel eingeben', class: 'form-field' %>
+      </div>
+    <% end %>
+    <%= form_for :list, url: list_add_entry_path(@liste), html: {id: 'addEntryForm'} do |f| %>
+      <%= f.hidden_field :type, value: @listType %>
+      <div class="form-group list-table">
+        <% if @listType == 'catchword' %>
+        <label for="">Catchwort hinzufügen</label>
+        <%= f.text_field :name, placeholder: 'Catchwort eingeben', class: 'form-field shortened' %>
+        <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+        <% else %>
+        <label for="">Einwand hinzufügen</label>
+        <%= f.text_field :name, placeholder: 'Einwand eingeben', class: 'form-field shortened' %>
+        <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+
+        <% end %>
+      </div>
+    <% end %>
+    <div class="entries">
+      <% if @listType == 'catchword' %>
+      <table>
+        <thead>
+          <tr>
+            <th class='name'>Name</th>
+            <th class="icon"></th>
+            <th class="icon"></th>
+            <th class="icon"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @liste.catchwords.each do |c| %>
+            <tr id="entry_<%= c.id %>">
+              <td class='name'><%= c.name %></td>
+              <td class="icon"><i class="far fa-play-circle play <%= c.sound? ? '' : 'disabled' %>" data-id="<%= c.id %>" onclick="playSound(this)"></i></td>
+              <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
+              <td class="icon"><i class="far fa-trash-alt remove"></i></td>
+            </tr>
+            <% if c.sound? %>
+              <%= audio_tag c.sound.url, id: 'sound_' + c.id.to_s %>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+      <% else %>
+      <table>
+        <thead>
+          <tr>
+            <th class='name'>Name</th>
+            <th class="icon"></th>
+            <th class="icon"></th>
+            <th class="icon"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @liste.objections.each do |o| %>
+          <tr id="entry_<%= o.id %>">
+            <td class='name'><%= o.name %></td>
+            <td class="icon"><i class="far fa-play-circle play <%= o.sound? ? '' : 'disabled' %>" data-id="<%= o.id %>" onclick="playSound(this)"></i></td>
+            <td class="icon"><i class="far fa-dot-circle record" data-id="<%= o.id %>" onclick="recordSound(this)"></i></td>
+            <td class="icon"><i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i></td>
+          </tr>
+          <% if o.sound? %>
+            <%= audio_tag o.sound.url, id: 'sound_' + o.id.to_s %>
+          <% end %>
+          <% end %>
+        </tbody>
+      </table>
+      <% end %>
+    </div>
+    <div class="btns">
+      <div class="btn inverted">close</div>
+      <div class="btn">speichern</div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  new PerfectScrollbar('.entries');
+  function closeListPopup() {
+    $('#editList').hide();
+  }
+  $('#addEntryForm').on('submit', function(e) {
+    e.preventDefault();
+    var URL = '<%= list_add_entry_path(@liste) %>';
+    var formData = new FormData(document.getElementById('addEntryForm'))
+    $.ajax({
+      url: URL,
+      type: "post",
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: formData,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function (res) {
+        $('#addEntryForm #list_name').val('');
+        location.reload();
+      }
+    })
+  })
+  function playSound(elem) {
+    var eID = $(elem).attr('data-id');
+    if( $(elem).hasClass('disabled') ) {
+      return;
+    } else if( $(elem).hasClass('fa-play-circle') ) {
+      $(elem).removeClass('fa-play-circle').addClass('fa-pause-circle');
+      document.getElementById("sound_" + eID).play();
+      $('#sound_' + eID).on('ended', function() {
+        $(elem).removeClass('fa-pause-circle').addClass('fa-play-circle');
+      })
+    } else {
+      $(elem).removeClass('fa-pause-circle').addClass('fa-play-circle');
+      document.getElementById("sound_" + eID).pause();
+    }
+  }
+  function recordSound(elem) {
+    var eID = $(elem).attr('data-id');
+    if( $(elem).hasClass('fa-dot-circle') ) {
+      $(elem).removeClass('fa-dot-circle').addClass('fa-stop-circle');
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        const audioChunks = [];
+        mediaRecorder.addEventListener("dataavailable", event => {
+          audioChunks.push(event.data);
+        });
+        $(elem).on('click', function() {
+          mediaRecorder.stop();
+        })
+        mediaRecorder.addEventListener('stop', () => {
+          const audioBlob = new Blob(audioChunks);
+          const audioUrl = URL.createObjectURL(audioBlob);
+          if( $('#entry_' + eID + ' .play').hasClass('disabled') ) {
+            const audio = new Audio(audioUrl);
+            audio.id = "sound_" + eID;
+            $('#entry_' + eID).append(audio);
+            $('#entry_' + eID + ' .play').removeClass("disabled");
+          } else {
+            $('#sound_' + eID).attr("src", audioUrl);
+          }
+          var file = new window.File([audioBlob], ["sound", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+          var globalForm = new FormData();
+          globalForm.append('sound', file);
+          globalForm.append('type', "<%= @listType %>" );
+          globalForm.append('entry', eID );
+          uploadSound(globalForm);
+          $(elem).removeClass('fa-stop-circle').addClass('fa-dot-circle');
+        })
+      });
+    }
+  }
+  function uploadSound(sound) {
+    var URL = "<%= edit_entry_path %>";
+    $.ajax({
+      url: URL,
+      type: "post",
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: sound,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function (res) {
+        $('#addEntryForm #list_name').val('');
+        location.reload();
+      }
+    })
+  }
+  function deleteEntry(elem) {
+    var eID = $(elem).attr('data-id');
+    var URL = '/lists/<%= @listType %>/entry/' + eID;
+    $.ajax({
+      url: URL,
+      type: "post",
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function (res) {
+        location.reload();
+      }
+    })
+  }
+</script>
+<% end %>
