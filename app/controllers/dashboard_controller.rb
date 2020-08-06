@@ -318,8 +318,14 @@ class DashboardController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
 		@task = @pitch.tasks.find(params[:task_id])
-		if params[:selected_card_order_id]
-			task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, params[:selected_card_order_id]).order(:order)
+		if params[:selected_card_order_id].present?
+			if params[:type].present?
+				task = Task.find(params[:selected_task_id])
+				task_order = task.task_orders.first
+				task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, task_order.order).order(:order)
+			else
+				task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, params[:selected_card_order_id]).order(:order)
+			end
 			if task_orders.present?
 				set_order_id = task_orders.first.order
 				order = set_order_id + 1

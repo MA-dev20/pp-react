@@ -131,14 +131,11 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@new_task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
 	@new_task.update(@task.attributes.except("id", "created_at", "updated_at"))
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id, selected_card_order_id: params[:selected_card_order_id])
+	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id, selected_task_id: @task.id, type: params[:type], selected_card_order_id: params[:selected_card_order_id])
   end
 
   def copy_pitch
 	@pitch = Pitch.find(params[:id])
-	# @pitch_clone = @pitch.deep_clone do |original, kopy|
-	# 	kopy.image = original.image
-	# end
 	@pitch_clone = @pitch.deep_clone include: :tasks
 	@pitch_clone.save
 	@pitch.deep_clone do |original, kopy|
@@ -146,7 +143,6 @@ class PitchesController < ApplicationController
 	end
 	@pitch_clone.task_orders.each_with_index do |t, index|
 		t.update(order: index+1)
-		# @pitch_clone.task_orders.find(t.id).update(order: t.order)
 	end
 	redirect_to dashboard_pitches_path
   end

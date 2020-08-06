@@ -649,7 +649,7 @@
 		window.location.replace("<%#= create_task_path(@pitch) %>");
 	}
 
-	function addTaskWithAjax(url = '') {
+	function addTaskWithAjax(url = '', type = '') {
 		if (!url) {
 			url = '<%= create_task_path(@pitch) %>'
 		}
@@ -658,6 +658,7 @@
             type: 'GET',
 			dataType: "json",
 			data: {
+				type: type,
 				selected_card_order_id: $('.selected').attr('data-order-id'),
 			},
             success: function (res) {
