@@ -105,7 +105,7 @@
 	</div>
 </div>
 <div id="pitchLibraryModal">
-	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>
+	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task&.id } %>
 </div>
 <script>
 
