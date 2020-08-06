@@ -112,7 +112,7 @@
 </div>
 <script>
 
-	$('.selected-card-order').val('<%= @task.task_orders&.first&.order %>')
+	$('.selected-card-order').val('<%= @task&.task_orders&.first&.order %>')
 	
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
@@ -646,7 +646,7 @@
 	new PerfectScrollbar('#tasksScrollBar');
 
 	function addTask() {
-		window.location.replace("<%#= create_task_path(@pitch) %>");
+		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
 
 	function addTaskWithAjax(url = '', type = '') {
