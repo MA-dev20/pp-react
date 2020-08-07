@@ -1,5 +1,9 @@
 <div class="pitch-videos">
 	<div class="card" >
+		<div class="search">
+			<%= image_tag 'dash/new_icons/search.svg' %>
+			<input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
+		</div>
 		<h3>Pitch Videos</h3>
 		<div class="videos" id="pitch-videos">
 			<% @pitches.each do |p| %>
@@ -24,7 +28,7 @@
 		</div>
 	</div>
 </div>
-<div class="own-videos">
+<div class="own-videos" style="display: none">
 	<div class="card" id='videos' style="<%= params[:edit] ? 'display: none' : '' %>">
 		<h3>Eigene Videos <i class="fas fa-plus-circle add" onclick="toggleVideo()"></i></h3>
 		
@@ -93,6 +97,14 @@
 <script>
 	new PerfectScrollbar('#pitch-videos');
 	new PerfectScrollbar('#uploaded-videos');
+
+	$("#searchPitch").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#pitch-videos .card .word").filter(function () {
+            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+	});
+	
 	function toggleVideo() {
 		$('#videos').toggle();
 		$('#new_video').toggle();

@@ -23,16 +23,19 @@
 				<input class="pdf-image-file-field" accept="image/*" type="file" name="task_medium[image]">
 				<%= t.hidden_field :media_type, value: 'image' %>
 				<input type="hidden" name="pdf_type" value="image">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
 			<% end %>
 			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_video_form"} do |t| %>
 				<input class="pdf-video-file-field" accept="video/*" type="file" name="task_medium[video]">
 				<%= t.hidden_field :media_type, value: 'video' %>
 				<input type="hidden" name="pdf_type" value="video">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
 			<% end %>
 			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_audio_form"} do |t| %>
 				<input class="pdf-video-file-field" accept="audio/*" type="file" name="task_medium[audio]">
 				<%= t.hidden_field :media_type, value: 'audio' %>
 				<input type="hidden" name="pdf_type" value="audio">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
 			<% end %>
 			<div class="add-task <%= 'hide' if @pitch.tasks.count == 0 %>" >
 				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
@@ -105,12 +108,12 @@
 	</div>
 </div>
 <div id="pitchLibraryModal">
-	<% if @task %>
-	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>
-	<% end %>
+	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task&.id } %>
 </div>
 <script>
 
+	$('.selected-card-order').val('<%= @task&.task_orders&.first&.order %>')
+	
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
 		$('#videoModal').hide();
@@ -645,6 +648,26 @@
 	function addTask() {
 		window.location.replace("<%= create_task_path(@pitch) %>");
 	}
+
+	function addTaskWithAjax(url = '', type = '') {
+		if (!url) {
+			url = '<%= create_task_path(@pitch) %>'
+		}
+        $.ajax({
+            url: url,
+            type: 'GET',
+			dataType: "json",
+			data: {
+				type: type,
+				selected_card_order_id: $('.selected').attr('data-order-id'),
+			},
+            success: function (res) {
+                var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + res.task_id;
+                window.location.replace(URL);
+            }
+        })
+	}
+
 	function selectDragDropTask(task_id) {
       <% if @task %>
         var globalForm = new FormData(document.getElementById('new_task_form'));

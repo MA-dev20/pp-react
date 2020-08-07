@@ -1314,11 +1314,11 @@ body {
 		right: 4vh;
 	}
 	.pitch-videos, .own-videos {
-		position: absolute;
-		top: 15vh;
+		// position: absolute;
+		// top: 15vh;
 		h3 { text-align: left;}
 		.card {
-			height: 60vh;
+			height: 75vh;
 			box-shadow: 0px 0.2vh 1vh 0 rgba(94,94,94,0.15);
 			margin-bottom: 1vh;
 			.deleteList {
@@ -1448,13 +1448,46 @@ body {
 		}
 	}
 	.pitch-videos {
-		right: calc(40% + 3vh);
-		width: 50%;
+		// right: calc(40% + 3vh);
+		// width: 50%;
+		width: 90%;
+		width: 90%;
+		margin: 0 42px;
+		margin-top: 5vh;
 		.videos {
 			position: relative;
-			height: 45vh;
-			.card:nth-child(3n +1) {
+			// height: 45vh;
+			height: 55vh;
+			.card:nth-child(8n +1) {
 				margin-left: 0;
+			}
+		}
+
+		.search {
+			position: relative;
+			padding-top: 2vh;
+			img {
+				position: absolute;
+				top: 3.3vh;
+				left: 1vh;
+				width: 3vh;
+			}
+
+			i {
+				position: absolute;
+				top: 3.3vh;
+				line-height: 5.5vh;
+				width: 5vh;
+				text-align: center;
+			}
+			.form-field {
+				width: calc(100% - 6vh);
+				background-color: white;
+				border: 1px solid #CFD3D6;
+				height: 5.5vh;
+				border-radius: .8vh;
+				font-size: 1.8vh;
+				padding: 0 1vh 0 5vh;
 			}
 		}
 	}
@@ -1505,6 +1538,10 @@ body {
 				margin-left: 0;
 				color: grey;
 				font-size: 3vh;
+			}
+
+			.deleteVideo {
+				width: 3.5vh;
 			}
 			.user {
 				line-height: 3vh;

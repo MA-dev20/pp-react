@@ -2,7 +2,7 @@ class Task < ApplicationRecord
 	belongs_to :company, required: false
 	belongs_to :department, required: false
 	belongs_to :team, required: false
-  belongs_to :user
+  	belongs_to :user
 	belongs_to :task_medium, required: false
 	belongs_to :catchword_list, required: false
 	belongs_to :objection_list, required: false
