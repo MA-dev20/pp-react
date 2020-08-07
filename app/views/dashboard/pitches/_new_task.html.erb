@@ -98,7 +98,7 @@
 					<div class="hr-line"></div>
 					<div class="words-wrapper">
 						<div class="word"><%= cw.name %></div>
-						<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'fas fa-trash remove' %>
+						<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'far fa-trash-alt remove' %>
 					</div>
 					<% end %>
 					<% end %>
@@ -216,7 +216,7 @@
 					<% if @task.task_medium && @task.task_medium.image? %>
 					<div class="remove-option">
 						<label><%= File.basename(@task.task_medium.image.url) %></label>
-						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 					</div>
 					<%= image_tag @task.task_medium.image.url, class: 'preview-img-tag' %>
 					<% else %>
@@ -258,7 +258,7 @@
 						<% if @task.task_medium.video_url_id.present? %>
 							<div class="remove-option">
 								<label><%= @task.task_medium.video_title %></label>
-								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 							</div>
 							<% if @task.task_medium.video_url_type == 'youtube' %>
 							<iframe class="video-frame" width="420" height="170" src="https://www.youtube.com/embed/<%= @task.task_medium.video_url_id %>"></iframe>
@@ -268,7 +268,7 @@
 						<% elsif @task.task_medium.video.present? %>
 							<div class="remove-option">
 								<label><%= File.basename(@task.task_medium.video.url) %></label>
-								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 							</div>
 							<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
 						<% end %>
@@ -313,7 +313,7 @@
 					<% if @task.task_medium && @task.task_medium.audio? %>
 					<div class="remove-option remove-option-audio">
 						<label><%= File.basename(@task.task_medium.audio.url) %></label>
-						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 					</div>
 					<div class="audio-play-div">
 						<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
@@ -416,7 +416,7 @@
 			<div class="words-wrapper">
 				<div class="word"><%= ow.name %></div>
 				<!-- <a class="fas fa-trash remove"></a> -->
-				<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'fas fa-trash remove' %>
+				<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'far fa-trash-alt remove' %>
 			</div>
 			<% end %>
 			<% end %>
