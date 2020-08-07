@@ -1,6 +1,6 @@
 <div class="card" id="pitches">
     <div class="search">
-        <i class="fas fa-search"></i>
+        <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
         <input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
     </div>
     <h3>Pitches</h3>
@@ -64,7 +64,10 @@
         <% end %>
         <!-- </a> -->
         <div class="card" id="newpitch">
-            <%= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
+            <%#= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
+            <a href="<%= dashboard_new_pitch_path %>">
+                <%= inline_svg_tag 'dash/new_icons/plus_button.svg', class: 'add-new-pitch plus-cust-icon' %>
+            </a>
             <div class="title">Create new Pitch</div>
         </div>
     </div>

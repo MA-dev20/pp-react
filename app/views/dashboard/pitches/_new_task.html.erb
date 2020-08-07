@@ -77,8 +77,7 @@
 				<div class="form-group fields">
 					<%= cw.text_field :name, placeholder: 'Type your catchword', class: 'form-field' %>
 					<div class="add-cw">
-						<img class="add-cw-img cw-image"
-							src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+						<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img cw-image plus-cust-icon' %>
 					</div>
 					<div class="cw custom-select cw-dropdown" onclick="openList('catchword')">Catchword
 						<div class="sub-cs" id="cw-options">
@@ -394,8 +393,7 @@
 			<div class="reaction-input-field-div">
 				<%= f.text_field :name , placeholder: "Type your reactions", class: 'form-field' %>
 				<div class="add-cw">
-					<img class="add-cw-img ol-image"
-						src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+					<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img ol-image plus-cust-icon' %>
 				</div>
 			</div>
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reactions

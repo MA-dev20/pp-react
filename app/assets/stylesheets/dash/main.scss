@@ -565,6 +565,12 @@ body {
 				width: 5vh;
 				text-align: center;
 			}
+			.search-img {
+				position: absolute;
+				top: 1.5vh;
+				left: 1vh;
+				width: 3vh;
+			}
 			.form-field {
 				width: 50%;
 				background-color: white;
@@ -601,6 +607,7 @@ body {
 				margin: 2vh;
 				color: grey;
 				font-size: 3vh;
+				width: 4vh;
 			}
 			position: relative;
 			margin-top: 1.5vh;
@@ -667,6 +674,14 @@ body {
 							position: relative;width: 5.2vh;
 						}
 						td.remove, td.play, td.accept, td.edit, td.stats {text-align: center}
+						td.stats, td.edit {
+							.edit-icon, .stats-icon {
+								width: 2vh;
+								.st2 {
+									stroke: rgb(var(--custcolor));
+								}
+							}
+						}
 						td.stats {color: #ffcc00;}
 						td.accept, td.edit, td.play{color: rgb(var(--custcolor));}
 						td.remove {color: grey;}

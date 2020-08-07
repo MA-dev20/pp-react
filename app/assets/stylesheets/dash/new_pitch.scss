@@ -3,8 +3,8 @@
 	display: flex;
 	top: 0; left: calc(25.6vh);
 	height: 8vh; width: calc(100vw - (25.6vh - 1px));
-	z-index: 101;
-  background-color: white;
+	// z-index: 101;
+    background-color: white;
     box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
 	.form-group {
 		z-index: 10;
@@ -1425,12 +1425,16 @@
     }
 
     .close {
-        position: relative;
+        position: absolute;
         top: -2vh;
         color: #aaaaaa;
         float: right;
         font-size: 6vh;
         font-weight: bold;
+        width: 3vh;
+        /* padding: 2vh; */
+        margin: 4vh 3vh;
+        right: 0;
     }
 
     .close:hover,
@@ -2313,5 +2317,26 @@ input[type="file"] {
         .btn-ml-1 {
             margin-left: 1vh !important; 
         }
+    }
+
+    .plus-cust-icon {
+        .st7 {
+            fill: rgb(var(--btncolor)) !important;
+            // stroke: rgb(var(--custcolor)) !important;
+        }
+    }
+
+    .back-arrow-cust {
+        top: -6vh;
+        width: 4vh;
+
+        .st9 {
+            stroke: rgb(var(--btncolor)) !important;
+        }
+    }
+
+    .add-new-pitch {
+        width: 10vh;
+        margin-top: 6.5vh;
     }
 }

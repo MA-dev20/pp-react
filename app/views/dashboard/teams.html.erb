@@ -1,6 +1,6 @@
 <div class="left">
 	<div class="search">
-		<i class="fas fa-search"></i>
+        <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
 		<input type="text" placeholder="Team suchen" id="searchTeams" class="form-field">
 		<% if can? :create, Team %>
 		<button class="btn btn-green" onclick="toggleTeam()">Team erstellen</button>
@@ -9,7 +9,10 @@
 	<% if params[:edit] == 'true' %>
 	<div class="card" id="editTeam">
 		<h3><%= link_to '', dashboard_team_path(@team), class: 'fas fa-arrow-left back' %>Team bearbeiten!</h3>
-		<%= link_to '', destroy_team_path(@team, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
+		<%#= link_to '', destroy_team_path(@team, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
+		<a href="<%= destroy_team_path(@team, site: 'dashboard') %>" data-confirm="Bist du sicher das du dieses Team löschen möchtest?">
+			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteEdit' %>
+		</a>
 		<%= form_for(:team, url: edit_team_path(@team)) do |f| %>
 			<div class="form-group">
 				<label for="">Teamname</label>
@@ -72,8 +75,18 @@
 							<td onclick="redirect(<%= t.id %>)"><%= t.name %></td>
 							<td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.count %></td>
 							<td onclick="redirect(<%= t.id %>)"><%= t.ges_rating / 10.0 %></td>
-							<td class="edit"><%= link_to '', dashboard_team_path(t.id, edit: true), class: 'far fa-edit' %></td>
-							<td class="stats"><%= link_to '', dashboard_team_stats_path(t.id), class: 'far fa-chart-bar' %></td>
+							<!-- <td class="edit"><%#= link_to '', dashboard_team_path(t.id, edit: true), class: 'far fa-edit' %></td> -->
+							<!-- <td class="stats"><%#= link_to '', dashboard_team_stats_path(t.id), class: 'far fa-chart-bar' %></td> -->							
+							<td class="edit">
+								<a href="<%= dashboard_team_path(t.id, edit: true) %>">
+									<%= inline_svg_tag 'dash/new_icons/edit-user.svg', class: 'edit-icon' %>
+								</a>
+							</td>
+							<td class="stats">
+								<a href="<%= dashboard_team_stats_path(t.id) %>">
+									<%= inline_svg_tag 'dash/new_icons/statistics.svg', class: 'stats-icon' %>
+								</a>
+							</td>
 						</tr>
 					<% end %>
 				</tbody>
@@ -102,14 +115,17 @@
 </div>
 <div class="right">
 	<div class="search">
-		<i class="fas fa-search"></i>
+        <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
 		<input type="text" placeholder="User suchen" id="searchUsers" class="form-field">
 		<button class="btn btn-green" onclick="toggleUser()">User erstellen</button>
 	</div>
 	<% if @user %>
 	<div class="card" id="editUser">
 		<h3><%= link_to '', dashboard_teams_path, class: 'fas fa-arrow-left back' %>Edit User</h3>
-		<%= link_to '', destroy_user_path(@user, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
+		<%#= link_to '', destroy_user_path(@user, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
+		<a href="<%= destroy_user_path(@user, site: 'dashboard') %>" data-confirm="Bist du sicher das du diesen User löschen möchtest?">
+			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteEdit' %>
+		</a>
 		<%= form_for(:user, url: edit_user_path(@user, site: 'dashboard_teams')) do |f| %>
 			<div class="form-group avatar">
 				<label for="user_avatar">
@@ -265,8 +281,18 @@
 							<td><%= u.game_turns.count %></td>
 							<td><%= u.ges_rating / 10.0 %></td>
 							<td><%= CompanyUser.find_by(company: @company, user: u).role %></td>
-							<td class='edit'><%= link_to '', dashboard_teams_path('', edit_user: u.id), class: 'far fa-edit' %></td>
-							<td class="stats"><%= link_to '', dashboard_user_stats_path(u.id), class: 'far fa-chart-bar' %></td>
+							<!-- <td class='edit'><%#= link_to '', dashboard_teams_path('', edit_user: u.id), class: 'far fa-edit' %></td> -->
+							<!-- <td class="stats"><%#= link_to '', dashboard_user_stats_path(u.id), class: 'far fa-chart-bar' %></td> -->
+							<td class="edit">
+								<a href="<%= dashboard_teams_path('', edit_user: u.id) %>">
+									<%= inline_svg_tag 'dash/new_icons/edit-user.svg', class: 'edit-icon' %>
+								</a>
+							</td>
+							<td class="stats">
+								<a href="<%= dashboard_user_stats_path(u.id) %>">
+									<%= inline_svg_tag 'dash/new_icons/statistics.svg', class: 'stats-icon' %>
+								</a>
+							</td>
 						</tr>
 						<% end %>
 					<% end %>
