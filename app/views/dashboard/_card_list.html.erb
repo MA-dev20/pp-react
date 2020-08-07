@@ -114,7 +114,10 @@
     <% end %>
     <% if @pitch.tasks.count == 0 %>
     <div class="left-card card add-first-task selected" onclick='addTask()'>
-        <%= image_tag 'dash/icons/circle-plus-green.svg' %>
+        <%#= image_tag 'dash/icons/circle-plus-green.svg' %>
+        <div class="plus-icon-container">
+            <%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'plus-cust-icon' %>
+        </div>
         <div class="title">Add first slide</div>
     </div>
     <% end %>

@@ -75,7 +75,8 @@
 <% if @pitch && !@game.present? %>
 <div class="blur">
     <div class="card" id="letspitch">
-        <span class="close">&times;</span>
+        <!-- <span class="close">&times;</span> -->
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
         <h1>Jetzt Pitch starten!</h1>
         <%= form_for(:game, url: new_game_path) do |f| %>
         <%= f.hidden_field :pitch_id, value: @pitch.id %>
