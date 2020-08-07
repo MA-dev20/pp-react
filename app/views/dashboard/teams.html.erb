@@ -8,7 +8,12 @@
 	</div>
 	<% if params[:edit] == 'true' %>
 	<div class="card" id="editTeam">
-		<h3><%= link_to '', dashboard_team_path(@team), class: 'fas fa-arrow-left back' %>Team bearbeiten!</h3>
+		<h3><%#= link_to '', dashboard_team_path(@team), class: 'fas fa-arrow-left back' %>
+			<a href="<%= dashboard_team_path(@team) %>" class="link">
+				<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
+			</a>
+			Team bearbeiten!
+		</h3>
 		<%#= link_to '', destroy_team_path(@team, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du dieses Team löschen möchtest?'} %>
 		<a href="<%= destroy_team_path(@team, site: 'dashboard') %>" data-confirm="Bist du sicher das du dieses Team löschen möchtest?">
 			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteEdit' %>
@@ -102,7 +107,13 @@
 	</script>
 	<% end %>
 	<div class="card" id="createTeam">
-		<h3><i class="fas fa-arrow-left back" onclick="toggleTeam()"></i>Team anlegen</h3>
+		<h3>
+			<!-- <i class="fas fa-arrow-left back" onclick="toggleTeam()"></i> -->
+			<span onclick="toggleTeam()" class="back-span">
+				<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
+			</span>
+			Team anlegen
+		</h3>
 		<%= form_for(:team, url: new_team_path) do |f| %>
 			<%= f.hidden_field :site, value: 'teams' %>
 			<div class="form-group">
@@ -121,7 +132,11 @@
 	</div>
 	<% if @user %>
 	<div class="card" id="editUser">
-		<h3><%= link_to '', dashboard_teams_path, class: 'fas fa-arrow-left back' %>Edit User</h3>
+		<h3><%#= link_to '', dashboard_teams_path, class: 'fas fa-arrow-left back' %>
+		<a href="<%= dashboard_teams_path %>" class="link">
+			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
+		</a>
+		Edit User</h3>
 		<%#= link_to '', destroy_user_path(@user, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
 		<a href="<%= destroy_user_path(@user, site: 'dashboard') %>" data-confirm="Bist du sicher das du diesen User löschen möchtest?">
 			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteEdit' %>
@@ -301,7 +316,13 @@
 		</div>
 	</div>
 	<div class="card" id="inactive-users" style="display: none">
-		<h3><i class="fas fa-arrow-left back" onclick="toggleInUser()"></i>Inactive Nutzer</h3>
+		<h3>
+			<!-- <i class="fas fa-arrow-left back" onclick="toggleInUser()"></i> -->
+			<span onclick="toggleInUser()" class="back-span">
+				<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
+			</span>
+			Inactive Nutzer
+		</h3>
 		<div class="table" id="users-table">
 			<table>
 				<thead>
@@ -338,7 +359,13 @@
 	</script>
 	<% end %>
 	<div class="card" id="createUser">
-		<h3><i class="fas fa-arrow-left back" onclick="toggleUser()"></i>Nutzer anlegen!</h3>
+		<h3>
+			<!-- <i class="fas fa-arrow-left back" onclick="toggleUser()"></i> -->
+			<span onclick="toggleUser()" class="back-span">
+			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
+			</span>
+			Nutzer anlegen!
+		</h3>
 		<%= form_for(:user, url: new_user_path(@company)) do |f| %>
 			<div class="form-group half-left">
 				<label for="">Vorname</label>
