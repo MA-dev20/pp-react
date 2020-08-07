@@ -2169,3 +2169,23 @@ select:-moz-focusring {
 		padding-top: 0 !important;
 	}
 }
+
+#content {
+	#content_card {
+		.plus-cust-icon {
+			width: 4vh;
+			cursor: pointer;
+			.st7 {
+				fill: rgb(var(--btncolor)) !important;
+				// stroke: rgb(var(--custcolor)) !important;
+			}
+		}
+
+		.search-img {
+			position: absolute;
+			top: 0.8vh;
+			left: 1vh;
+			width: 2.5vh;
+		}
+	}
+}
