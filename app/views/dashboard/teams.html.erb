@@ -36,7 +36,12 @@
 						<tr>
 							<td class="img"><%= image_tag u.avatar? ? u.avatar.url : 'dash/icons/wolf.png' %></td>
 							<td><%= u.fname %> <%= u.lname %></td>
-							<td class="remove active"><%= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %></td>
+							<td class="remove active">
+								<%#= link_to '', delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit'), class: 'far fa-trash-alt' %>
+								<a href="<%= delete_user_from_team_path(@team, u.id, site: 'dashboard_team_edit') %>">
+									<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'trash-cust-icon' %>
+								</a>
+							</td>
 						</tr>
 						<% end %>
 					</tbody>
@@ -144,7 +149,11 @@
 		<%= form_for(:user, url: edit_user_path(@user, site: 'dashboard_teams')) do |f| %>
 			<div class="form-group avatar">
 				<label for="user_avatar">
-					<%= image_tag @user.avatar? ? @user.avatar.url : 'dash/icons/wolf.png', id: 'avatar' %>
+					<% if @user.avatar.present? %>
+						<%= image_tag @user.avatar.url, id: 'avatar' %>
+					<% else %>
+						<%= image_tag 'dash/new_icons/adduser.svg', id: 'avatar' %>
+					<% end %>
 					<div class="hover">
 						<i class="fas fa-plus"></i>
 					</div>
@@ -339,7 +348,12 @@
 							<td class="img"><%= image_tag u.avatar.url %></td>
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td class="accept"><%= link_to '', make_user_path(@company, u.id), class: 'fas fa-check-circle', method: 'put' %></td>
-							<td class="remove active"><%= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %></td>
+							<td class="remove active">
+								<%#= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %>
+								<a href="<%= destroy_user_path(u.id, site: 'dashboard') %>" data-confirm="Bist du sicher das du den Nutzer löschen willst?">
+									<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'trash-cust-icon' %>
+								</a>
+							</td>
 						</tr>
 					<% end %>
 				</tbody>
