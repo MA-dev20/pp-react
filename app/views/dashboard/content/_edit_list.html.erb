@@ -46,7 +46,12 @@
               <td class='name'><%= c.name %></td>
               <td class="icon"><i class="far fa-play-circle play <%= c.sound? ? '' : 'disabled' %>" data-id="<%= c.id %>" onclick="playSound(this)"></i></td>
               <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
-              <td class="icon"><i class="far fa-trash-alt remove"></i></td>
+              <td class="icon">
+                <!-- <i class="far fa-trash-alt remove"></i> -->
+                <span>
+                  <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
+                </span>
+              </td>
             </tr>
             <% if c.sound? %>
               <%= audio_tag c.sound.url, id: 'sound_' + c.id.to_s %>
@@ -70,7 +75,12 @@
             <td class='name'><%= o.name %></td>
             <td class="icon"><i class="far fa-play-circle play <%= o.sound? ? '' : 'disabled' %>" data-id="<%= o.id %>" onclick="playSound(this)"></i></td>
             <td class="icon"><i class="far fa-dot-circle record" data-id="<%= o.id %>" onclick="recordSound(this)"></i></td>
-            <td class="icon"><i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i></td>
+            <td class="icon">
+              <!-- <i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i> -->
+              <span data-id="<%= o.id %>" onclick="deleteEntry(this)">
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
+              </span>
+            </td>
           </tr>
           <% if o.sound? %>
             <%= audio_tag o.sound.url, id: 'sound_' + o.id.to_s %>
