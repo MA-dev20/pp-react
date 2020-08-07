@@ -7,13 +7,13 @@ class ListController < ApplicationController
       @list = @company.catchword_lists.new(list_params)
       @list.user = @user
       @list.save
-      redirect_to dashboard_customize_path(catchword: @list.id)
+      redirect_to dashboard_my_content_path(catchword: @list.id)
       return
     else
       @list = @company.objection_lists.new(list_params)
       @list.user = @user
       @list.save
-      redirect_to dashboard_customize_path(objection: @list.id)
+      redirect_to dashboard_my_content_path(objection: @list.id)
       return
     end
   end
@@ -22,6 +22,11 @@ class ListController < ApplicationController
     render json: {id: @list.id, type: @list_type}
   end
   def destroy
+    if params[:type] == 'catchword'
+      @list = CatchwordList.find(params[:list_id])
+    else
+      @list = ObjectionList.find(params[:list_id])
+    end
     if @list.destroy
       render json: {success: true}
     else

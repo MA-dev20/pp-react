@@ -7,11 +7,12 @@
 	}
 </script>
 <div class="card" id="content_card">
+
 	<div class="head">
 		<% if @folder %>
-		<h3><span onclick="redirectFolder('first')">Libary</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">My Content</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
-		<h3>Mein Content</h3>
+		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">My Content</span></h3>
 		<div class="search">
 			<i class="fas fa-search"></i>
 			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
@@ -19,11 +20,13 @@
 		<% end %>
 		<svg class="icon add" viewbox="0 0 144 144" onclick="toggleNewContent()"><use xlink:href="#addIcon" /></svg>
 	</div>
+
 	<div id="scrollcontent">
 		<%= render 'dashboard/content/folders.html.erb' %>
 		<%= render 'dashboard/content/files.html.erb' %>
 		<%= render 'dashboard/content/lists.html.erb' %>
 	</div>
+
 </div>
 <%= render 'dashboard/content/new.html.erb' %>
 <%= render 'dashboard/content/new_folder.html.erb' %>
@@ -31,6 +34,9 @@
 <%= render 'dashboard/content/new_list.html.erb' %>
 <%= render 'dashboard/content/edit.html.erb' %>
 <%= render 'dashboard/content/edit_list.html.erb' %>
+<%= render 'dashboard/content/share_content.html.erb' %>
+<%= render 'dashboard/content/share_list.html.erb' %>
+<%= render 'dashboard/content/share_folder.html.erb' %>
 
 <script type="text/javascript">
 	$(document).click(function (e) {
@@ -40,6 +46,9 @@
 				document.getElementById('content_media').pause()
 			}
 		}
+		if ($(e.target).is('.background-transparent')) {
+			$('.background-transparent').hide();
+		}
 		if (!$(e.target).hasClass('dropdown')) {
 			var container = $(".dropdown");
 			if (container.has(e.target).length === 0) {
@@ -47,7 +56,9 @@
 			}
 		}
 	});
+
 	new PerfectScrollbar('#scrollcontent');
+
 	$('#searchContent').on('keyup', function() {
 		var searchVal = $('#searchContent').val();
 		var URL = '<%= search_content_path %>';
@@ -127,14 +138,20 @@
 		})
 
 	})
+
 	function redirectFolder(fID) {
-		if ( fID == 'first' ) {
-			var URL = "<%= dashboard_customize_path %>";
+		if ( fID == 'libary' ) {
+			var URL = "<%= dashboard_content_path %>";
+    } else if ( fID == 'my_content' ) {
+      var URL = "<%= dashboard_my_content_path %>";
+    } else if ( fID == 'shared_content') {
+      var URL = "<%= dashboard_shared_content_path %>";
 		} else {
-			var URL = "<%= dashboard_customize_path %>?folder_id=" + fID;
+			var URL = "<%= dashboard_my_content_path %>?folder_id=" + fID;
 		}
 		location.replace(URL);
 	}
+
 	function toggleDropdownContent(e) {
 		if( $(e).siblings('.dropdown-Menu').is(":visible") ) {
 			$('.dropdown-Menu').hide();
@@ -143,5 +160,4 @@
 			$(e).siblings('.dropdown-Menu').show();
 		}
 	}
-
 </script>

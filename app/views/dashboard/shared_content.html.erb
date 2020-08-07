@@ -1,0 +1,152 @@
+<script type="text/javascript">
+	function checkOverflow(ID) {
+		element = document.getElementById(ID);
+		if( element.offsetHeight < element.scrollHeight ) {
+			$("#"+ID + ' .ellipsis').show();
+		}
+	}
+</script>
+<div class="card" id="content_card">
+
+	<div class="head">
+		<% if @folder %>
+		<h3><span onclick="redirectFolder('libary')">Libary</span> <% if @folder.content_folder && @folder.content_folder.name != 'root_folder' %><% if @folder.content_folder.content_folder && @folder.content_folder.content_folder.name != 'root_folder'%><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<% else %>
+		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('shared_content')">Shared Content</span></h3>
+		<div class="search">
+			<i class="fas fa-search"></i>
+			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
+		</div>
+		<% end %>
+	</div>
+
+	<div id="scrollcontent">
+		<%= render 'dashboard/content/folders.html.erb' %>
+		<%= render 'dashboard/content/files.html.erb' %>
+		<%= render 'dashboard/content/lists.html.erb' %>
+	</div>
+
+</div>
+<script type="text/javascript">
+	$(document).click(function (e) {
+		if ($(e.target).is('.background-blur')) {
+			$('.background-blur').hide();
+			if( $('#content_media').length > 0 ) {
+				document.getElementById('content_media').pause()
+			}
+		}
+		if ($(e.target).is('.background-transparent')) {
+			$('.background-transparent').hide();
+		}
+		if (!$(e.target).hasClass('dropdown')) {
+			var container = $(".dropdown");
+			if (container.has(e.target).length === 0) {
+				$('.dropdown-Menu').hide();
+			}
+		}
+	});
+
+	new PerfectScrollbar('#scrollcontent');
+
+	$('#searchContent').on('keyup', function() {
+		var searchVal = $('#searchContent').val();
+		var URL = '<%= search_content_path %>';
+		$.ajax({
+			url: URL,
+			type: 'post',
+			data: { search: searchVal },
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				var foldersDiv = '<h3>Ordner</h3>';
+				if(res.folders.length > 0) {
+					$('.folders').show();
+					res.folders.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>'
+						userDiv += '<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('+item["id"]+')">';
+						userDiv += '<div class="title" id="title_'+item["id"]+'">'+item["title"]+'<div class="ellipsis">...</div></div>';
+						userDiv += '<div class="author">'+item["author"]+'</div>'
+						userDiv += '</div>';
+						foldersDiv += userDiv;
+					})
+					$('.folders').html(foldersDiv);
+				}	else {
+					$('.folders').hide();
+				}
+				var filesDiv = '<h3>Dateien</h3>';
+				if(res.files.length > 0) {
+					$('.files').show();
+					res.files.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>';
+						userDiv += '<div class="thumb" data-type="'+item["type"]+'" data-id="'+item["id"]+'" onclick="showMedia(this)">';
+						if( item["type"] == 'video') {
+							userDiv += '<img src="'+item["thumb"]+'" alt="" class="image"><i class="fas fa-play-circle"></i>';
+						} else if ( item["type"] == 'image' ){
+							userDiv += '<img src="'+item["thumb"]+'" alt="" class="image">';
+						} else if ( item["type"] == 'audio' ) {
+							userDiv += '<div class="audio-image"><%= image_tag 'dash/audio.png' %></div>';
+						}
+						userDiv += '</div><div class="text">';
+						userDiv += '<div class="title" id="media_title_'+item["id"]+'">'+item["title"]+'<div class="ellipsis">...</div></div>';
+						if( item["type"] == 'video') {
+							userDiv += '<div class="time"><%= image_tag 'dash/video-icon.png' %>'+item["duration"]+' - '+item["author"]+'</div>';
+					  } else if( item["type"] == 'audio') {
+							userDiv += '<div class="time"><%= image_tag 'dash/audio.png' %>'+item["author"]+'</div>';
+						} else if( item["type"] == 'image') {
+							userDiv += '<div class="time"><%= image_tag 'dash/image-icon.png' %>'+item["author"]+'</div>';
+						}
+						userDiv += '</div>';
+						userDiv += '</div>';
+						filesDiv += userDiv;
+					})
+					$('.files').html(filesDiv);
+				}	else {
+					$('.files').hide();
+				}
+				var listsDiv = '<h3>Lists</h3>';
+				if(res.lists.length > 0) {
+					$('.lists').show();
+					res.lists.forEach(function(item) {
+						var userDiv = '<div class="card">';
+						userobjection_listDiv += '<div class="dropdown"><i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i><div class="dropdown-Menu"><div class="point">Edit</div><div class="point">Löschen</div></div></div>';
+						userDiv += '<div class="thumb" data-type="'+item["type"]+'" data-id="'+item["id"]+'" onclick="showMedia(this)">';
+						userDiv += '<div class="audio-image"><%= image_tag 'dash/no-image-icon.png' %></div>';
+						userDiv += '</div><div class="text">';
+						userDiv += '<div class="title" id="media_title_'+item["id"]+'">'+item["name"]+'<div class="ellipsis">...</div></div>';
+						userDiv += '<div class="time"><%= image_tag 'dash/no-image-icon.png' %>'+item["user_name"]+'</div>';
+						userDiv += '</div>';
+						userDiv += '</div>';
+						listsDiv += userDiv;
+					})
+					$('.lists').html(listsDiv);
+				} else {
+					$('.lists').hide();
+				}
+			},
+		})
+
+	})
+
+	function redirectFolder(fID) {
+		if ( fID == 'libary' ) {
+			var URL = "<%= dashboard_content_path %>";
+    } else if ( fID == 'my_content' ) {
+      var URL = "<%= dashboard_my_content_path %>";
+    } else if ( fID == 'shared_content') {
+      var URL = "<%= dashboard_shared_content_path %>";
+		} else {
+			var URL = "<%= dashboard_my_content_path %>?folder_id=" + fID;
+		}
+		location.replace(URL);
+	}
+
+	function toggleDropdownContent(e) {
+		if( $(e).siblings('.dropdown-Menu').is(":visible") ) {
+			$('.dropdown-Menu').hide();
+		} else {
+			$('.dropdownMenu').hide();
+			$(e).siblings('.dropdown-Menu').show();
+		}
+	}
+</script>

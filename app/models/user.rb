@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :catchwords, dependent: :destroy
   has_many :objection_lists, dependent: :destroy
   has_many :objections, dependent: :destroy
+  has_many :shared_folders, dependent: :destroy
+  has_many :shared_content, dependent: :destroy
 
   has_many :teams, dependent: :destroy
   has_many :team_users, dependent: :destroy

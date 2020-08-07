@@ -8,6 +8,9 @@
           <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
             Edit
           </div>
+          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="shareList(this)">
+            Share
+          </div>
           <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="deleteList(this)">
             Löschen
           </div>
@@ -35,10 +38,19 @@
   <% end %>
 </div>
 <script type="text/javascript">
+  function shareList(e) {
+    var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+    <% if params[:folder_id] %>
+      location.replace('?folder_id=<%= params[:folder_id] %>&share_list='+mediaID+'&type='+type);
+    <% else %>
+    location.replace('?share_list='+mediaID+'&type='+type);
+    <% end %>
+  }
   function deleteList(e) {
 		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
-		var URL = '/task_medium/'+mediaID+'/delete';
+		var URL = '/lists/'+type + '/' +mediaID+'/delete';
 		$.ajax({
 			url: URL,
 			type: 'put',

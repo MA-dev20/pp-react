@@ -19,15 +19,17 @@ class TaskMedium < ApplicationRecord
     end
   end
 
-	before_save do
+  before_save do
 	  if self.audio?
-		self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
-    self.title = self.audio_identifier if !self.title || self.title == ''
+		  self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
+      self.title = self.audio_identifier if !self.title || self.title == ''
 	  elsif self.video?
-		self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
-    self.title = self.video_identifier if !self.title || self.title == ''
-    elsif self.image
+		  self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
+      self.title = self.video_identifier if !self.title || self.title == ''
+    elsif self.image?
       self.title = self.image_identifier if !self.title || self.title == ''
+    elsif self.pdf?
+      self.title = self.pdf_identifier if !self.title || self.title == ''
 	  end
 	end
 end

@@ -22,11 +22,18 @@ Rails.application.routes.draw do
   get 'dashboard/teams/:team_id', to: 'dashboard#teams', as: 'dashboard_team'
   get 'dashboard/teams/:team_id/stats', to: 'dashboard#team_stats', as: 'dashboard_team_stats'
   get 'dashboard/users/:user_id/stats', to: 'dashboard#user_stats', as: 'dashboard_user_stats'
-  get 'dashboard/customize', to: 'dashboard#customize', as: 'dashboard_customize'
+  get 'dashboard/content', to: 'dashboard#content', as: 'dashboard_content'
+  get 'dashboard/content/libary', to: 'dashboard#my_content', as: 'dashboard_my_content'
+  get 'dashboard/content/shared', to: 'dashboard#shared_content', as: 'dashboard_shared_content'
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
   get 'dashboard/company', to: 'dashboard#company', as: 'dash_company'
+
+  post 'share/content/:medium_id', to: 'share#share_content', as: 'share_content'
+  post 'share/list/:type/:list_id', to: 'share#share_list', as: 'share_list'
+  post 'share/folder/:folder_id', to: 'share#share_folder', as: 'share_folder'
+  post 'share/users/:user_id/update_name', to: 'share#update_user'
 
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:id/edit_page', to: 'dashboard#select_folder', as: 'select_folder'
@@ -70,6 +77,7 @@ Rails.application.routes.draw do
 
   post 'lists/new', to: 'list#create', as: 'create_list'
   post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
+  put 'lists/:type/:list_id/delete', to: 'list#destroy', as: 'delete_list'
   post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
   post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
   post 'lists/:type/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
@@ -165,8 +173,7 @@ Rails.application.routes.draw do
   post 'rating/:rating_criterium_id/edit', to: 'customize#edit_rating', as: 'edit_rating'
   put 'words/record/:id', to: 'customize#recordWord', as: "record_word"
   put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
-  
-  get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
+
   get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
 
   #Comments

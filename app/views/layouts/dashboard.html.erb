@@ -95,11 +95,11 @@
 					<% end %>
 				<% end %>
 				<% if can? :read, TaskMedium %>
-				<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
+				<div class="link <%= current_page?(dashboard_content_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
-					<div class="text">Customize</div>
-					<a class="navbar-link" data-href="<%= dashboard_customize_path %>" href="javascript:void(0)"></a>
-					<%#= link_to '', dashboard_customize_path %>
+					<div class="text">Content</div>
+					<a class="navbar-link" data-href="<%= dashboard_content_path %>" href="javascript:void(0)"></a>
+
 				</div>
 				<% end %>
 
@@ -132,10 +132,10 @@
 					</div>
 				<% end %>
 				<% if can? :read, TaskMedium %>
-				<div class="link <%= current_page?(dashboard_customize_path) ? 'active' : '' %>">
+				<div class="link <%= current_page?(dashboard_content_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
-					<div class="text">Customize</div>
-					<%= link_to '', dashboard_customize_path %>
+					<div class="text">Content</div>
+					<%= link_to '', dashboard_content_path %>
 				</div>
 				<% end %>
 				<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>">

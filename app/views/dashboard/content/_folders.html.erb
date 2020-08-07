@@ -7,6 +7,7 @@
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Edit</div>
+          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Share</div>
           <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
         </div>
       </div>
@@ -23,6 +24,14 @@
 </div>
 <% end %>
 <script type="text/javascript">
+  function shareFolder(e) {
+    var mediaID = $(e).attr('data-id');
+    <% if params[:folder_id] %>
+      location.replace('?folder_id=<%= params[:folder_id] %>&share_content='+mediaID);
+    <% else %>
+    location.replace('?share_folder='+mediaID);
+    <% end %>
+  }
   function deleteFolder(e) {
 		var mediaID = $(e).attr('data-id');
 		var URL = '/content_folder/'+mediaID+'/delete';
