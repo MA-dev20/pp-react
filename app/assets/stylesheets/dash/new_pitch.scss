@@ -2376,4 +2376,13 @@ input[type="file"] {
             color: #CFD3D6 !important;
         }
     }
+
+    .popup {
+        .close-modal {
+            width: 4vh !important;
+            margin: 2vh 0;
+            right: 0 !important;
+            left: 0.3vh !important;
+        }
+    }
 }

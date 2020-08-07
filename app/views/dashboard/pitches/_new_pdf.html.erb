@@ -115,7 +115,10 @@
 </div>
 
 <div class="popup" id="popupPdfImage">
-	<div class="close" onclick="hidePdfPopup()"><i class="fas fa-times"></i></div>
+	<div class="close" onclick="hidePdfPopup()">
+		<!-- <i class="fas fa-times"></i> -->
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal' %>
+	</div>
 	<div class="img-container">
 		<%= image_tag '', id: 'pdf_media_image' %>
 	</div>

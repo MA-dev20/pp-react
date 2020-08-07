@@ -236,7 +236,10 @@
 				<% end %>
 			</div>
 			<div class="popup" id="popup">
-				<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+				<div class="close" onclick="hidePopup()">
+					<!-- <i class="fas fa-times"></i> -->
+					<%= image_tag 'dash/new_icons/close.svg', class: 'close-modal' %>					
+				</div>
 
 				<div class="img-container">
 					<%= image_tag '', id: 'media_image' %>
