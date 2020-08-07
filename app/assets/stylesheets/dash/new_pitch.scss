@@ -2385,4 +2385,17 @@ input[type="file"] {
             left: 0.3vh !important;
         }
     }
+
+    .trash-icon {
+        width: 2vh;
+    }
+
+    .remove-option svg {
+        width: 2.5vh;
+        top: -2px;
+
+        .st41, .st2 {
+            stroke: #fff !important;
+        }
+    }
 }
