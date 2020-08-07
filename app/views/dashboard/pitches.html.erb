@@ -34,7 +34,8 @@
                         </span>
                         <span class="select-name">
                             <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
-                                <i class="far fa-trash-alt" aria-hidden="true"></i>Delete
+                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>	
+                                <!-- <i class="far fa-trash-alt" aria-hidden="true"></i> -->
                             </a>
                         </span>
                     </div>
