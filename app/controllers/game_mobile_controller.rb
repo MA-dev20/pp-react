@@ -37,6 +37,7 @@ class GameMobileController < ApplicationController
   def choosen
 	if @game.state != 'choose'
 	  redirect_to gm_game_path
+    return
 	end
 	@turn = GameTurn.find_by(id: params[:turn])
 

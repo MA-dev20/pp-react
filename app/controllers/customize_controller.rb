@@ -43,7 +43,7 @@ class CustomizeController < ApplicationController
 	  redirect_to dashboard_customize_path('', RL: @list.id) if !params[:site]
 	end
   end
-	
+
   def list_add_sound
 	@list = CatchwordList.find(params[:list_id]) if params[:type] == 'word'
 	@type = params[:type]
@@ -79,13 +79,13 @@ class CustomizeController < ApplicationController
 	redirect_to backoffice_catchwords_path if @type == 'word'
 	redirect_to backoffice_objections_path if @type == 'objection'
   end
-	
+
   def edit_rating
 	@rating_criterium = RatingCriterium.find(params[:rating_criterium_id])
 	@rating_criterium.update(icon: params[:rating][:icon])
 	redirect_to backoffice_ratings_path
   end
-	
+
   def new_doAndDont
 	authorize! :create, DoAndDont
 	@words = DoAndDont.create(user_id: @admin.id) if @admin.do_and_dont.nil?
@@ -98,7 +98,7 @@ class CustomizeController < ApplicationController
 	redirect_to dashboard_customize_path if params[:word][:do]
 	redirect_to dashboard_customize_path('', words: 'dont') if params[:word][:dont]
   end
-	
+
   def deleteDoAndDont
 	@words = @admin.do_and_dont
 	if params[:do] == "do"
@@ -111,19 +111,19 @@ class CustomizeController < ApplicationController
 	  redirect_to dashboard_customize_path('', words: 'dont')
 	end
   end
-	
+
   def recordWord
 	@word = Catchword.find(params[:id])
     @word.update(sound: params[:file]) if params[:file].present? &&  @word.present?
     render json: {sound:  @word.sound.url}
   end
-	
+
   def recordObjection
 	@objection = Objection.find(params[:id])
     @objection.update(sound: params[:file]) if params[:file].present? &&  @objection.present?
     render json: {sound:  @objection.sound.url}
   end
-	
+
   # PUT delete/:type/:id
   def deleteEntry
 	if params[:type] == 'word'
@@ -146,7 +146,7 @@ class CustomizeController < ApplicationController
 	  end
 	end
   end
-	
+
   def deleteList
 	if params[:type] == 'word'
 	  @list = CatchwordList.find(params[:list])
@@ -162,7 +162,7 @@ class CustomizeController < ApplicationController
 	@list.destroy
 	redirect_to dashboard_customize_path
   end
-	
+
   private
 	def list_params
 	  params.require(:list).permit(:name)
@@ -170,7 +170,7 @@ class CustomizeController < ApplicationController
 	def entry_params
 	  params.require(:entry).permit(:name)
 	end
-	
+
     def check_user
 	  if user_signed_in?
 	    @admin = current_user

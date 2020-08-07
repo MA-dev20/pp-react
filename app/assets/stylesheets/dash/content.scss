@@ -85,12 +85,12 @@
         height: 20px;
         text-align: center;
         font-size: 14px;
-        z-index: 100;
+        z-index: 10000;
         border-radius: 10px;
-        margin: 6px 8px;
         i {
           color: black;
           font-size: 13;
+          padding: 8px 8px;
         }
         .dropdown-Menu {
           display: none;
@@ -115,7 +115,6 @@
           }
         }
       }
-
     }
     .card:nth-child(2) {
       margin-left: 0;
@@ -158,7 +157,6 @@
   .files,
   .lists {
     padding: 1vh 0 0 0;
-
     .card {
       height: 16vh;
       width: calc(7vw + 1vh);
@@ -177,6 +175,22 @@
         border-radius: .5vh;
         overflow: hidden;
         .image {width: 100%; height: 100%; filter: brightness(70%);}
+        .list-icon {
+          position: absolute;
+          z-index: 100;
+          width: 100%;
+          text-align: center;
+          svg {
+            display: inline-block;
+            height: 6vh;
+            margin: .5vh;
+          }
+          img {
+            display: inline-block;
+            height: 3.5vh;
+            margin: 1.75vh;
+          }
+        }
         .audio-image {
           width: calc(100% - 2px); height: calc(100% - 2px);
           border: 1px solid rgba(0,0,0,.1);
@@ -249,7 +263,7 @@
   top: 0; left: 0;
   height: 100%; width: 100%;
   background-color: rgba(0,0,0,.3);
-  z-index: 1000;
+  z-index: 100000;
   display: none;
   .btn.inverted, .btn:hover {
     color: rgb(var(--btncolor));
@@ -321,19 +335,76 @@
     .dragover {
       opacity: .2;
     }
-    .form-field {
-      width: 30vw;
-      box-sizing: border-box;
-      margin: 10px 5vw;
-      height: 5vh;
-      font-size: 2vh;
-      text-align: center;
+    .form-group {
+      .form-field {
+        width: 30vw;
+        box-sizing: border-box;
+        margin: 10px 5vw;
+        height: 5vh;
+        font-size: 2vh;
+        text-align: center;
+      }
     }
+    .form-group.list-table {
+      position: relative;
+      text-align: left;
+      label {
+        display: inline-block;
+        width: calc(100% - 40px);
+        text-align: left;
+        margin: 0 20px 0;
+      }
+      .form-field {
+        width: calc(100% - 40px);
+        box-sizing: border-box;
+        margin: 0 20px 10px;
+        height: 5vh;
+        font-size: 2vh;
+        text-align: left;
+      }
+      .form-field.shortened {
+        width: calc(100% - 90px);
+      }
+      svg {
+        position: absolute;
+        bottom: calc(5vh / 2 - 10px); right: 20px;
+        width: 40px;
+      }
+    }
+
     .divider {
       height: 1px;
       width: 100%;
       background-color: rgba(0,0,0,.2);
       margin-bottom: 1.5vh;
+    }
+    .entries {
+      position: relative;
+      max-height: 30vh;
+      padding: 0 20px;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        th {
+          border-bottom: 2px solid rgba(0,0,0,.2);
+        }
+        td {
+          border-bottom: 1px solid rgba(0,0,0,.2);
+        }
+        .name {
+          text-align: left;
+        }
+        .icon {
+          font-size: 20px;
+          width: 30px;
+          .play {color: rgba(var(--btncolor), 1); cursor: pointer;}
+          .play.disabled {color: rgba(var(--btncolor), .2); cursor: default;}
+          .record {color: red;}
+          .remove {color: rgba(0,0,0,.3)}
+          .record:hover, .remove:hover, .play:hover {opacity: .5}
+          .play.disabled:hover {opacity: 1}
+        }
+      }
     }
     .audio {
       img {
@@ -383,4 +454,45 @@
     }
   }
 
+}
+#content .background-blur#editList {display: block}
+#content .content-dropdown {
+  display: none;
+  position: absolute;
+  margin: 1vh 0;
+  right: 0;
+  top: 5vh;
+  background-color: white;
+  border-radius: .2vw;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+  z-index: 10000;
+  .entry {
+    position: relative;
+    width: 15vw;
+    height: 4vh;
+    padding: .5vh 0;
+    line-height: 4vh;
+    cursor: pointer;
+    .icon {
+      display: block;
+      height: 4vh;
+      width: 6vh;
+      text-align: center;
+      line-height: 4vh;
+      svg,
+      img {
+        display: inline-block;
+        height: 4vh;
+      }
+    }
+
+    .type {
+      position: absolute;
+      top: 0; left: 7vh; width: calc(100% - 7vh);
+      line-height: 5vh;
+    }
+  }
+  .entry:hover {
+    background-color: rgba(0,0,0,.2);
+  }
 }

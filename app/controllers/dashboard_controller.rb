@@ -193,6 +193,14 @@ class DashboardController < ApplicationController
     if params[:audio]
       @content = TaskMedium.find_by(id: params[:audio])
     end
+    if params[:objection]
+      @liste = ObjectionList.find_by(id: params[:objection])
+      @listType = 'objection'
+    elsif params[:catchword]
+      @liste = CatchwordList.find_by(id: params[:catchword])
+      @listType = 'catchword'
+    end
+
   end
 
   def search_content

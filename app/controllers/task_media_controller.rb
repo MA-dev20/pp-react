@@ -37,7 +37,7 @@ class TaskMediaController < ApplicationController
       end
     end
     def task_medium_params
-      params.require(:task_medium).permit(:title, :audio, :video, :pdf, :image, :media_type)
+      params.require(:task_medium).permit(:title, :audio, :video, :pdf, :image, :media_type, :content_folder_id)
     end
     def set_task_medium
       @task_medium = TaskMedium.find(params[:task_medium_id])

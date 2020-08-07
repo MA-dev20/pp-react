@@ -69,6 +69,10 @@ Rails.application.routes.draw do
   put 'content_folder/:folder_id/delete', to: "content_folder#delete", as: 'delete_folder'
 
   post 'lists/new', to: 'list#create', as: 'create_list'
+  post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
+  post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
+  post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
+  post 'lists/:type/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
@@ -157,15 +161,11 @@ Rails.application.routes.draw do
   put 'company/:company_id/users/:user_id/make_user', to: 'users#user', as: 'make_user'
 
   #Customize
-  post 'lists/new', to: 'customize#new_list', as: 'new_list'
-  post 'lists/:list_id/edit', to: 'customize#edit_list', as: 'edit_list'
-  post 'lists/:list_id/entry/add', to: 'customize#list_add_entry', as: 'list_add_entry'
-  post 'lists/:list_id/sound/add', to: 'customize#list_add_sound', as: 'list_add_sound'
   post 'doanddonts/new', to: 'customize#new_doAndDont', as: "new_do_and_dont"
   post 'rating/:rating_criterium_id/edit', to: 'customize#edit_rating', as: 'edit_rating'
   put 'words/record/:id', to: 'customize#recordWord', as: "record_word"
   put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
-  get 'delete/:type/:list/:id', to: 'customize#deleteEntry', as: 'delete_entry'
+  
   get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
   get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
 
