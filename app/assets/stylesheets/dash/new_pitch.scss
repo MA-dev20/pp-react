@@ -2398,4 +2398,19 @@ input[type="file"] {
             stroke: #fff !important;
         }
     }
+
+    .card-list svg {
+        float: right;
+        color: #CFD3D6;
+        font-size: 2vh;
+        cursor: pointer;
+        position: relative;
+        top: 0.2vh;
+        width: 2.3vh;
+
+        .st41, .st2 {
+            stroke: gray !important;
+        }
+        
+    }
 }

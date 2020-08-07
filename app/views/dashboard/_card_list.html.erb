@@ -29,7 +29,10 @@
             <% else %>
                 <div class="name"><%= t.order %>. Task</div>
             <% end %>
-            <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a>
+            <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
+            <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+            </a>
             <%#= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
             <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')">
                 <i class="fas fa-copy copy" aria-hidden="true"></i>
@@ -74,7 +77,10 @@
         <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
-            <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a>
+            <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
+            <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+            </a>
             <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')">
                 <i class="fas fa-copy copy" aria-hidden="true"></i>
             </div>
