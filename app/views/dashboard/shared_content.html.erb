@@ -10,7 +10,7 @@
 
 	<div class="head">
 		<% if @folder %>
-		<h3><span onclick="redirectFolder('libary')">Libary</span> <% if @folder.content_folder && @folder.content_folder.name != 'root_folder' %><% if @folder.content_folder.content_folder && @folder.content_folder.content_folder.name != 'root_folder'%><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('shared_content')">Shared Content</span><% if @folder.content_folder && @folder.content_folder.name != 'root_folder' %><% if @folder.content_folder.content_folder && @folder.content_folder.content_folder.name != 'root_folder'%><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
 		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('shared_content')">Shared Content</span></h3>
 		<div class="search">
@@ -136,7 +136,7 @@
     } else if ( fID == 'shared_content') {
       var URL = "<%= dashboard_shared_content_path %>";
 		} else {
-			var URL = "<%= dashboard_my_content_path %>?folder_id=" + fID;
+			var URL = "<%= dashboard_shared_content_path %>?folder_id=" + fID;
 		}
 		location.replace(URL);
 	}

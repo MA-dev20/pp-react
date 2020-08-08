@@ -63,10 +63,12 @@
         </div>
         <% end %>
         <!-- </a> -->
+        <% if can? :create, Pitch %>
         <div class="card" id="newpitch">
             <%= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
             <div class="title">Create new Pitch</div>
         </div>
+        <% end %>
     </div>
 </div>
 <% if @pitch && !@game.present? %>

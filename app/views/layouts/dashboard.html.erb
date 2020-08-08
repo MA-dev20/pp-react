@@ -124,7 +124,7 @@
 						<div class="text">Nutzer</div>
 						<%= link_to '', dashboard_teams_path %>
 					</div>
-				<% else %>
+				<% elsif @admin.game_turn_ratings.count != 0 %>
 					<div	class="link <%= current_page?(dashboard_teams_path) || @team && current_page?(dashboard_team_path(@team)) || @team && current_page?(dashboard_team_stats_path(@team)) || @user && current_page?(dashboard_user_stats_path(@user)) ? 'active' : '' %>">
 						<i class="fas fa-chart-line"></i>
 						<div class="text">Statistik</div>

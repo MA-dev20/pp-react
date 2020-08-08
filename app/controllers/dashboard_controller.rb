@@ -5,6 +5,7 @@ class DashboardController < ApplicationController
   layout "dashboard"
 
   def content
+    redirect_to dashboard_shared_content_path if !can? :create, TaskMedium
   end
 
   def my_content
@@ -42,6 +43,7 @@ class DashboardController < ApplicationController
     elsif params[:objection]
       @liste = ObjectionList.find(params[:objection])
     end
+
   end
 
   def shared_content
@@ -58,6 +60,18 @@ class DashboardController < ApplicationController
         @lists << {id: sc.catchword_list_id, type: 'catchword', name: sc.catchword_list.name}
       elsif sc.objection_list
         @lists << {id: sc.objection_list_id, type: 'objection', name: sc.objection_list.name}
+      end
+    end
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media
+      @lists = []
+      @folder.catchword_lists.each do |cl|
+        @lists << {id: cl.id, type: 'catchword', name: cl.name}
+      end
+      @folder.objection_lists.each do |cl|
+        @lists << {id: cl.id, type: 'objection', name: cl.name}
       end
     end
   end

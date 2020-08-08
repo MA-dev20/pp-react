@@ -84,7 +84,7 @@ class ShareController < ApplicationController
       render json: {success: 'Erfolgreich freigegen'}
       return
     else
-      @user = User.new(email: params[:content][:email])
+      @user = User.new(email: params[:folder][:email])
       if @user.save(validate: false)
         @user.company_users.create(company: @company, role: 'user')
         if @admin.teams.count != 0
