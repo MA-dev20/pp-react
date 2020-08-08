@@ -10,37 +10,44 @@
         <div class="card" id="pitch">
           <div class="pitches-title-wrapper">
             <div class="title"><%= pitch.title %></div>
-            <%#= link_to '', delete_unsave_pitch_path(pitch), class: 'fas fa-trash remove remove-pitch remove-task', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'}%>
+            <% if (can? :edit, pitch) || (can? :create, Pitch) %>
             <div class="custom-dropdown-select">
                 <div class="dropdown-div" onclick="openDropdown(this)">
                     <i class="fa fa-ellipsis-v dropdown-icon" aria-hidden="true"></i>
                 </div>
                 <div class="dropdown-option-wrapper">
                     <div class="dropdown-option">
+                        <% if can? :edit, pitch %>
                         <span class="select-name">
                             <a href="<%=  dashboard_edit_pitch_path(pitch) %>" data-turbolinks="false">
                                 <i class="fas fa-pencil-alt"></i>Edit
                             </a>
                         </span>
                         <span class="select-name">
-                            <a href="">
+                            <a href="?share_pitch=<%= pitch.id %>">
                                 <i class="fa fa-share-alt" aria-hidden="true"></i>Share
                             </a>
                         </span>
+                        <% end %>
+                        <% if can? :create, Pitch %>
                         <span class="select-name">
                             <a href="<%= copy_pitch_path(pitch) %>">
                                 <i class="fas fa-copy" aria-hidden="true"></i>Duplicate
                             </a>
                         </span>
+                        <% end %>
+                        <% if can? :destroy, pitch %>
                         <span class="select-name">
                             <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
-                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>	
+                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>
                                 <!-- <i class="far fa-trash-alt" aria-hidden="true"></i> -->
                             </a>
                         </span>
+                        <% end %>
                     </div>
                 </div>
             </div>
+            <% end %>
           </div>
           <div class="thumb">
               <% if pitch.image? %>
@@ -75,6 +82,7 @@
         <% end %>
     </div>
 </div>
+<%= render 'dashboard/pitches/share_pitch.html.erb' %>
 <% if @pitch && !@game.present? %>
 <div class="blur">
     <div class="card" id="letspitch">

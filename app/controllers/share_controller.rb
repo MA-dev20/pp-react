@@ -99,6 +99,33 @@ class ShareController < ApplicationController
       end
     end
   end
+
+  def share_pitch
+    @user = User.find_by(email: params[:pitch][:email])
+    @pitch = Pitch.find(params[:pitch_id])
+    if @user
+      if !@user.company_users.find_by(company: @company)
+        @user.companies << @company
+      end
+      @user.shared_pitches.create(pitch: @pitch)
+      render json: {success: 'Erfolgreich freigegen'}
+      return
+    else
+      @user = User.new(email: params[:pitch][:email])
+      if @user.save(validate: false)
+        @user.company_users.create(company: @company, role: 'user')
+        if @admin.teams.count != 0
+          @user.team_users.create(team: @admin.teams.first)
+        end
+        @user.shared_pitches.create(pitch: @pitch)
+        render json: {new_user: @user.id}
+        return
+      else
+        render json: {error: 'User nicht gefunden!'}
+        return
+      end
+    end
+  end
   private
     def user_params
       params.require(:user).permit(:fname, :lname)

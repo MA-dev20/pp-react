@@ -35,6 +35,10 @@ class Ability
         can :read, Pitch, :user_id => user.id if @abilities.view_pitch != 'none'
         can :update, Pitch, :user_id => user.id if @abilities.edit_pitch != 'none'
         can :destroy, Pitch, :user_id => user.id if @abilities.edit_pitch != 'none'
+        SharedPitch.where(user: user).each do |sp|
+          can :read, Pitch, :id => sp.pitch_id
+        end
+
 
         can :read, Task, :user_id => user.id if @abilities.view_pitch != 'none'
         can :update, Task, :user_id => user.id if @abilities.edit_pitch != 'none'
@@ -43,15 +47,13 @@ class Ability
         can :read, TaskMedium, :user_id => user.id if @abilities.view_media != 'none'
         can :update, TaskMedium, :user_id => user.id if @abilities.edit_media != 'none'
         can :destroy, TaskMedium, :user_id => user.id if @abilities.edit_media != 'none'
-        if @abilities.view_media != 'none'
-          SharedContent.where(user: user).each do |sc|
-            can :read, TaskMedium, :id => sc.task_medium_id
-            can :read, CatchwordList, :id => sc.catchword_list_id
-            can :read, ObjectionList, :id => sc.objection_list_id
-          end
-          SharedFolder.where(user: user).each do |sf|
-            can :read, ContentFolder, :id => sf.content_folder_id
-          end
+        SharedContent.where(user: user).each do |sc|
+          can :read, TaskMedium, :id => sc.task_medium_id
+          can :read, CatchwordList, :id => sc.catchword_list_id
+          can :read, ObjectionList, :id => sc.objection_list_id
+        end
+        SharedFolder.where(user: user).each do |sf|
+          can :read, ContentFolder, :id => sf.content_folder_id
         end
 
         can :read, Game, :user_id => user.id if @abilities.view_pitch != 'none'

@@ -138,12 +138,13 @@
 					<%= link_to '', dashboard_content_path %>
 				</div>
 				<% end %>
+				<% if @company.pitch_videos.accessible_by(current_ability).count != 0 %>
 				<div class="link <%= current_page?(dashboard_video_path) || @turn && current_page?(dashboard_pitch_video_path(@turn)) ? 'active' : '' %>">
 					<i class="fab fa-youtube"></i>
 					<div class="text">Video Tool</div>
 					<%= link_to '', dashboard_video_path %>
 				</div>
-
+				<% end %>
 			<% end %>
 		</div>
 

@@ -28,75 +28,8 @@
 		</div>
 	</div>
 </div>
-<div class="own-videos" style="display: none">
-	<div class="card" id='videos' style="<%= params[:edit] ? 'display: none' : '' %>">
-		<h3>Eigene Videos <i class="fas fa-plus-circle add" onclick="toggleVideo()"></i></h3>
-		
-		<div class="videos" id="uploaded-videos">
-			<% @videos.each do |v| %>
-			<div class="card">
-				<div class="thumb">
-					<%= image_tag v.video.thumb.url %>
-					<div class="overlay">
-						<% if v.duration.nil? %>
-						<% min = 0 %>
-						<% sec = 0 %>
-						<% else %>
-						<% min = v.duration / 60 %>
-						<% sec = v.duration % 60 %>
-						<% end %>
-						<div class="time"><%= min.round.to_s + (sec < 10 ? ':0' : ':') + sec.round.to_s %></div>
-						<div class="play"><i class="fas fa-play"></i></div>
-					</div>
-				</div>
-				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
-				<div class="word"><%= v.name %></div>
-				<div class="user">
-					<%= image_tag v.user.avatar.url %>
-					<%= v.user.fname %> <%= v.user.lname %>
-				</div>
-			</div>
-			<% end %>
-		</div>
-	</div>
-	
-    <div class="card" id="new_video" style="display: none">
-    	<h3><i class="fas fa-arrow-left back" onclick="toggleVideo()"></i>Video hochladen</h3>
-    	<%= form_for(:video, url: new_video_path, html: {id: "uploadVideoForm"}) do |f| %>
-    		<div class="form-group">
-    			<label for="">Titel</label>
-    			<%= f.text_field :name, class: 'form-field' %>
-    		</div>
-   			<%= f.file_field :video, style: "display: none"%>
-    		<div class="add-circle" onclick="changeVideo()">
-   				<i class="fas fa-plus"></i>
-    			<svg viewbox="0 0 100 100">
-    				<circle cx='50' cy='50' r='48' fill="none" stroke='rgb(var(--custcolor))' stroke-width="4" stroke-dasharray='0'></circle>
-    			</svg>
-    		</div>
-    		<div class="btn" onclick="toggleVideo()">speichern!</div>
-    	<% end %>
-    </div>
-    
-    <% if params[:edit] && params[:video] %>
-    <% @video = Video.find(params[:video]) %>
-    <div class="card" id="edit_video">
-    	<h3><%= link_to '', dashboard_video_path, class: 'fas fa-arrow-left back' %>Edit Video</h3>
-    	<%= link_to '', delete_video_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
-    	<%= form_for(:video, url: edit_video_path(@video), html: {id: "uploadVideoForm"}) do |f| %>
-    		<div class="form-group">
-    			<label for="">Titel</label>
-    			<%= f.text_field :name, class: 'form-field' %>
-    		</div>
-    		<%= video_tag @video.video, style: "width: 100%", controls: true %>
-    		<%= f.submit 'speichern!', class: 'btn' %>
-    	<% end %>
-    </div>
-    <% end %>
-</div>
 <script>
 	new PerfectScrollbar('#pitch-videos');
-	new PerfectScrollbar('#uploaded-videos');
 
 	$("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
@@ -104,44 +37,6 @@
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
 	});
-	
-	function toggleVideo() {
-		$('#videos').toggle();
-		$('#new_video').toggle();
-	}
-	function changeVideo() {
-		$('#video_video').click();
-	}
-	$('#video_video').change(function(e) {
-		if( $('#video_name').val != '') {
-			$('.add-circle').addClass("processing");
-			var url = "<%= new_video_path %>";
-			var name = $('#video_name').val()
-			var date = new Date().getTime();
-			var filename = "video_" + date + '.mp4';
-			date = new Date().getTime();
-			var file = e.target.files[0];
-			var formData = new FormData();
-			formData.append('name', name);
-			formData.append('file', file, filename);
-			$.ajax({
-				type: "post",
-				url: url,
-				cache: false,
-				async: true,
-				contentType: false,
-				processData: false,
-				data: formData,
-				beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-				success: function(res) {
-					window.location.reload();
-				}
-			})
-		}
-	})
-	$('#uploadVideoForm').submit(function(e) {
-		e.preventDefault();
-	})
 	function favPitch(pID) {
 		var favdiv = $('fav_' + pID);
 		var url = '/games/pitches/'+pID+'/favorite';

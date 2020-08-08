@@ -3,6 +3,7 @@
   <h3>Ordner</h3>
   <% @folders.each do |f| %>
     <div class="card" id="folder_<%= f.id %>">
+      <% if can? :edit, f %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
@@ -11,6 +12,7 @@
           <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
         </div>
       </div>
+      <% end %>
       <img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
       <div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
       <div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>

@@ -2,6 +2,7 @@
   <h3>Listen</h3>
   <% @lists.each do |f| %>
     <div class="card" id='list_<%= f[:id] %>')">
+      <% if can? :edit, f %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
@@ -16,6 +17,7 @@
           </div>
         </div>
       </div>
+      <% end %>
       <div class="thumb" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
           <div class="list-icon">
             <% if f[:type] == 'catchword' %>

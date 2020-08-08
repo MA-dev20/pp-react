@@ -85,7 +85,6 @@ class DashboardController < ApplicationController
   end
 
   def index
-    redirect_to dashboard_pitches_path
   end
 
   def customize_game
@@ -309,20 +308,14 @@ class DashboardController < ApplicationController
 
   def video
 	@pitches = []
-	@admin.games.each do |p|
-	  p.game_turns.each do |t|
-	  	if t.pitch_video
-		  minutes = t.pitch_video.duration / 60
+  @company.pitch_videos.accessible_by(current_ability).each do |p|
+		  minutes = p.duration / 60
 		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-		  seconds = t.pitch_video.duration % 60
+		  seconds = p.duration % 60
 		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
-		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating}
-	  	end
-	  end
+		  rating = p.game_turn.ges_rating ? p.game_turn.ges_rating / 10.0 : '?'
+		  @pitches << {id: p.game_turn_id, video: p, duration: minutes + ':' + seconds, title: p.game_turn&.task&.title, user: p.user, rating: rating}
 	end
-	@videos = @admin.videos
-	@videos << @company.videos
   end
 
   def pitch_video
@@ -335,7 +328,7 @@ class DashboardController < ApplicationController
   end
 
   def pitches
-	@pitches = @admin.pitches
+	@pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
   @teams = @company.teams.accessible_by(current_ability)

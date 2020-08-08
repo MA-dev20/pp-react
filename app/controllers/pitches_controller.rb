@@ -1,4 +1,5 @@
 class PitchesController < ApplicationController
+  before_action :set_user, only: [:copy_pitch]
   #GET pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order
   def set_task_order
 	@pitch = Pitch.find(params[:pitch_id])
@@ -136,13 +137,27 @@ class PitchesController < ApplicationController
 
   def copy_pitch
 	@pitch = Pitch.find(params[:id])
-	@pitch_clone = @pitch.deep_clone include: :tasks
+	@pitch_clone = @pitch.deep_clone
+  @pitch_clone.user = @admin
 	@pitch_clone.save
+  @pitch.task_orders.each do |to|
+    @task_clone = to.task.deep_clone
+    @task_clone.user = @admin
+    if to.task.catchword_list
+      @list = to.task.catchword_list.deep_clone include: :catchwords
+      @list.save
+      @task_clone.catchword_list = @list
+    end
+    if to.task.objection_list
+      @list = to.task.objection_list.deep_clone include: :objections
+      @list.save
+      @task_clone.objection_list = @list
+    end
+    @task_clone.save
+    @pitch_clone.task_orders.create(task: @task_clone, order: to.order)
+  end
 	@pitch.deep_clone do |original, kopy|
 		@pitch_clone.update(image: original.image)
-	end
-	@pitch_clone.task_orders.each_with_index do |t, index|
-		t.update(order: index+1)
 	end
 	redirect_to dashboard_pitches_path
   end
@@ -447,6 +462,16 @@ class PitchesController < ApplicationController
   	def pitch_params
 		params.require(:pitch).permit(:title, :description, :pitch_sound, :show_ratings, :skip_elections, :video_path, :image, :video, :skip_rating_timer, :destroy_image, :destroy_video, :user_id)
 	end
+    def set_user
+      if user_signed_in? && company_logged_in?
+        @admin = current_user
+        @company = current_company
+      elsif user_signed_in?
+        redirect_to dash_choose_company_path
+      else
+        redirect_to root_path
+      end
+    end
 
     def task_params
 	  params.require(:task).permit(:company_id, :department_id, :team_id, :user_id, :task_type, :title, :time, :task_medium_id, :task_slide, :catchwords, :catchword_list_id, :objecitons, :objection_list, :ratings, :rating1, :rating2, :rating3, :rating4, :rating_list)
