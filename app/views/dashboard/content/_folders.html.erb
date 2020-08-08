@@ -8,7 +8,9 @@
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Edit</div>
+          <% if controller.controller_name != "backoffice" %>
           <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Share</div>
+          <% end %>
           <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
         </div>
       </div>
@@ -26,6 +28,20 @@
 </div>
 <% end %>
 <script type="text/javascript">
+  function redirectFolder(fID) {
+		if ( fID == 'libary' ) {
+			var URL = "<%= dashboard_content_path %>";
+    } else if ( fID == 'my_content' ) {
+      var URL = "<%= dashboard_my_content_path %>";
+    } else if ( fID == 'shared_content') {
+      var URL = "<%= dashboard_shared_content_path %>";
+    } else if ( fID == 'bo_libary' ) {
+      var URL = "<%= backoffice_company_content_path(@company) %>";
+		} else {
+			var URL = "?folder_id=" + fID;
+		}
+		location.replace(URL);
+	}
   function shareFolder(e) {
     var mediaID = $(e).attr('data-id');
     <% if params[:folder_id] %>

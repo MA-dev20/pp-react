@@ -10,9 +10,9 @@
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
             Edit
           </div>
-          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">
-            Share
-          </div>
+          <% if controller.controller_name != "backoffice" %>
+          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">Share</div>
+          <% end %>
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="deleteContent(this)">
             Löschen
           </div>

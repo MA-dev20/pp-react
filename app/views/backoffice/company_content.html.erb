@@ -7,12 +7,11 @@
 	}
 </script>
 <div class="card" id="content_card">
-
-	<div class="head">
+  <div class="head">
 		<% if @folder %>
-		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">My Content</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<h3><span onclick="redirectFolder('bo_libary')"><%= @company.name + "'s Libary" %></span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
-		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">My Content</span></h3>
+		<h3><span onclick="redirectFolder('bo_libary')"><%= @company.name + "'s Libary" %></span></h3>
 		<div class="search">
 			<%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
 			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
@@ -22,13 +21,11 @@
 			<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'icon add plus-cust-icon' %>
 		</span>
 	</div>
-
-	<div id="scrollcontent">
-		<%= render 'dashboard/content/folders.html.erb' %>
+  <div id="scrollcontent">
+    <%= render 'dashboard/content/folders.html.erb' %>
 		<%= render 'dashboard/content/files.html.erb' %>
 		<%= render 'dashboard/content/lists.html.erb' %>
-	</div>
-
+  </div>
 </div>
 <%= render 'dashboard/content/new.html.erb' %>
 <%= render 'dashboard/content/new_folder.html.erb' %>
@@ -36,34 +33,19 @@
 <%= render 'dashboard/content/new_list.html.erb' %>
 <%= render 'dashboard/content/edit.html.erb' %>
 <%= render 'dashboard/content/edit_list.html.erb' %>
-<%= render 'dashboard/content/share_content.html.erb' %>
-<%= render 'dashboard/content/share_list.html.erb' %>
-<%= render 'dashboard/content/share_folder.html.erb' %>
-
 <script type="text/javascript">
-	$(document).click(function (e) {
-		if ($(e.target).is('.background-blur')) {
-			$('.background-blur').hide();
-			if( $('#content_media').length > 0 ) {
-				document.getElementById('content_media').pause()
-			}
+  function toggleDropdownContent(e) {
+		if( $(e).siblings('.dropdown-Menu').is(":visible") ) {
+			$('.dropdown-Menu').hide();
+		} else {
+			$('.dropdownMenu').hide();
+			$(e).siblings('.dropdown-Menu').show();
 		}
-		if ($(e.target).is('.background-transparent')) {
-			$('.background-transparent').hide();
-		}
-		if (!$(e.target).hasClass('dropdown')) {
-			var container = $(".dropdown");
-			if (container.has(e.target).length === 0) {
-				$('.dropdown-Menu').hide();
-			}
-		}
-	});
-
-	new PerfectScrollbar('#scrollcontent');
-
-	$('#searchContent').on('keyup', function() {
+	}
+  new PerfectScrollbar('#scrollcontent');
+  $('#searchContent').on('keyup', function() {
 		var searchVal = $('#searchContent').val();
-		var URL = '<%= search_content_path %>';
+		var URL = '<%= backoffice_search_content_path(@company) %>';
 		$.ajax({
 			url: URL,
 			type: 'post',
@@ -140,13 +122,4 @@
 		})
 
 	})
-
-	function toggleDropdownContent(e) {
-		if( $(e).siblings('.dropdown-Menu').is(":visible") ) {
-			$('.dropdown-Menu').hide();
-		} else {
-			$('.dropdownMenu').hide();
-			$(e).siblings('.dropdown-Menu').show();
-		}
-	}
 </script>

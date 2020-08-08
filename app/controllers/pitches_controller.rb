@@ -36,24 +36,16 @@ class PitchesController < ApplicationController
   end
 
   def create_task
-	@pitch = Pitch.find(params[:pitch_id])
+	  @pitch = Pitch.find(params[:pitch_id])
   	@task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
-	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id, selected_card_order_id: params[:selected_card_order_id])
+	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id, selected_card_order_id: params[:selected_card_order_id])
   end
 
   def update_pitch
-	@pitch = Pitch.find(params[:id])
-	# if pitch_params[:destroy_image] == "true"
-	# 	@pitch.remove_image!
-	# end
-	# if pitch_params[:destroy_video] == "true"
-	# 	@pitch.remove_video!
-	# end
-	# if @pitch.update(pitch_params)
-	if @pitch.update(title: params[:pitch][:title], description: params[:pitch][:description], user_id: params[:pitch][:user_id])
-		# @pitch.update(destroy_image: 'false', destroy_video: 'false')
-		redirect_to dashboard_pitches_path
-	end
+	  @pitch = Pitch.find(params[:id])
+	  if @pitch.update(title: params[:pitch][:title], description: params[:pitch][:description], user_id: params[:pitch][:user_id])
+		  redirect_to dashboard_pitches_path
+	  end
   end
 
   def delete_pitch
@@ -63,7 +55,6 @@ class PitchesController < ApplicationController
 		Game.where(pitch_id: params[:id]).update(pitch_id: nil)
 	end
 	@pitch.destroy
-	# redirect_to dashboard_pitches_path
 	if params[:url].present?
 		render json: { url: params[:url] }
 	elsif params[:url] == ''

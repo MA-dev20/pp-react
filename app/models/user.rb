@@ -28,7 +28,6 @@ class User < ApplicationRecord
   has_many :ratings, dependent: :destroy
   has_many :game_turn_ratings, dependent: :destroy
   has_many :user_ratings, dependent: :destroy
-  has_one :coach, dependent: :destroy
   has_many :pitch_videos, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :videos, dependent: :destroy

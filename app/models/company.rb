@@ -20,7 +20,6 @@ class Company < ApplicationRecord
   has_many :objections, dependent: :destroy
   has_many :rating_lists, dependent: :destroy
   has_many :do_and_donts, dependent: :destroy
-  has_one :coach, dependent: :destroy
   has_many :videos, dependent: :destroy
 
 

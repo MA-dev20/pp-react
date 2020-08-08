@@ -9,9 +9,9 @@
           <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
             Edit
           </div>
-          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="shareList(this)">
-            Share
-          </div>
+          <% if controller.controller_name != "backoffice" %>
+          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="shareList(this)">Share</div>
+          <% end %>
           <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="deleteList(this)">
             Löschen
           </div>

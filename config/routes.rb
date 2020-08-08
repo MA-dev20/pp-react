@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
-  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard'
+  get 'dashboard/', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
@@ -87,9 +87,10 @@ Rails.application.routes.draw do
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"
   get 'backoffice/companies/:company_id', to: 'backoffice#company', as: "backoffice_company"
-  get 'backoffice/catchwords', to: 'backoffice#catchwords', as: 'backoffice_catchwords'
-  get 'backoffice/objections', to: 'backoffice#objections', as: 'backoffice_objections'
-  get 'backoffice/ratings', to: 'backoffice#ratings', as: 'backoffice_ratings'
+  get 'backoffice/companies/:company_id/content', to: 'backoffice#company_content', as: "backoffice_company_content"
+  get 'backoffice/companies/:company_id/teams', to: 'backoffice#company_teams', as: 'backoffice_company_teams'
+  post 'backoffice/companies/:company_id/search/content/', to: 'backoffice#search_content', as: 'backoffice_search_content'
+  get 'backoffice/abilities', to: 'backoffice#abilities'
 
   # COMPANY
   post 'companies/register', to: 'company#register', as: 'register_company'
@@ -190,4 +191,5 @@ Rails.application.routes.draw do
 
   #User Abilities
   post "company/:company_id/abilities/update/:role", to: 'user_abilities#update', as: 'update_user_abilities'
+  post 'abilities/:type/role/:role', to: 'user_abilities#update_preset', as: 'update_ability_preset'
 end

@@ -1,7 +1,47 @@
 .card#ability-card {
+  position: relative;
   height: 85vh;
   #ability-table {
     height: 70vh;
+  }
+  .dropdown {
+    position: absolute;
+    top: 0; right: 4.3vh;
+    z-index: 11;
+    .dropdown-text {
+      position: relative;
+      line-height: 8vh; font-size: 2vh;
+      text-align: right;
+      cursor: pointer;
+      i {margin-left: 1vw}
+    }
+    .dropdown-menu {
+      display: none;
+      position: relative;
+      right: 0;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+      .link {
+        position: relative;
+        line-height: 5vh;
+        font-size: 2vh;
+        border-bottom: 1px solid rgba(0,0,0,.2);
+        margin: 0 .5vw;
+        color: black;
+        padding: 0 1vw;
+        a {
+          position: absolute;
+          top: 0; left: 0;
+          height: 100%; width: 100%;
+        }
+      }
+      .link:hover {
+        background-color: rgba(0,0,0,.2);
+      }
+    }
+
+
   }
   table thead tr th,
   table tbody tr td,

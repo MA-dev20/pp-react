@@ -10,18 +10,18 @@ class DashboardController < ApplicationController
 
   def my_content
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil, user: @admin)
-    @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin)
+    @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(media_type: "pdf_image")
     @lists = []
-    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).each do |cl|
+    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'catchword', name: cl.name}
     end
-    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).each do |cl|
+    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'objection', name: cl.name}
     end
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders.accessible_by(current_ability)
-      @files = @folder.task_media.accessible_by(current_ability)
+      @files = @folder.task_media.accessible_by(current_ability).where.not(media_type: "pdf_image")
       @lists = []
       @folder.catchword_lists.accessible_by(current_ability).each do |cl|
         @lists << {id: cl.id, type: 'catchword', name: cl.name}
