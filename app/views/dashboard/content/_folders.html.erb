@@ -36,8 +36,12 @@
     } else if ( fID == 'shared_content') {
       var URL = "<%= dashboard_shared_content_path %>";
     } else if ( fID == 'bo_libary' ) {
+      <% if @company %>
       var URL = "<%= backoffice_company_content_path(@company) %>";
-		} else {
+      <% end %>
+		} else if (fID == 'bo_content') {
+      var URL = "<%= backoffice_content_path %>";
+    } else {
 			var URL = "?folder_id=" + fID;
 		}
 		location.replace(URL);

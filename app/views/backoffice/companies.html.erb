@@ -20,9 +20,9 @@
 	    <tbody>
 	      <% @companies.each do |c| %>
 	      <tr class="<%= @company && @company == c ? 'highlighted' : '' %>">
-	        <td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
-	        <td onclick="redirect(<%= c.id %>)"><%= c.users.count %></td>
-	        <td onclick="redirect(<%= c.id %>)"><%= c.games.count %></td>
+	        <td onclick="redirect('<%= backoffice_company_url(c.id) %>')"><%= c.name %></td>
+	        <td onclick="redirect('<%= backoffice_company_url(c.id) %>')"><%= c.users.count %></td>
+	        <td onclick="redirect('<%= backoffice_company_url(c.id) %>')"><%= c.games.count %></td>
 	        <td class="edit"><%= link_to '', backoffice_company_path(c.id, edit: ''), class: 'far fa-edit' %></td>
 	        <td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
 	      </tr>
@@ -33,7 +33,7 @@
 	</div>
 	<script>
 	  function redirect(cID) {
-	    var url = "<%= backoffice_companies_url %>/" + cID + '?team=all';
+	    var url = cID;
 	    location.replace(url);
 	  }
 	</script>

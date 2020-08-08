@@ -93,7 +93,7 @@
 					</div>
 				<% end %>
 				<% if can? :read, TaskMedium %>
-				<div class="link <%= current_page?(dashboard_content_path) ? 'active' : '' %>">
+				<div class="link <%= current_page?(dashboard_content_path) || current_page?(dashboard_my_content_path) || current_page?(dashboard_shared_content_path) || current_page?(dashboard_peters_content_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
 					<div class="text">Content</div>
 					<a class="navbar-link" data-href="<%= dashboard_content_path %>" href="javascript:void(0)"></a>
@@ -130,7 +130,7 @@
 					</div>
 				<% end %>
 				<% if can? :read, TaskMedium %>
-				<div class="link <%= current_page?(dashboard_content_path) ? 'active' : '' %>">
+				<div class="link <%= current_page?(dashboard_content_path) || current_page?(dashboard_my_content_path) || current_page?(dashboard_shared_content_path) || current_page?(dashboard_peters_content_path) ? 'active' : '' %>">
 					<i class="far fa-list-alt"></i>
 					<div class="text">Content</div>
 					<%= link_to '', dashboard_content_path %>

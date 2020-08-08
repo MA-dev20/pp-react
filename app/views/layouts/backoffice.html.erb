@@ -22,10 +22,10 @@
       <% if @company %>
       <div class="links">
         <%= link_to '', backoffice_companies_path, class: 'fas fa-chevron-left' %>
-        <%= link_to 'Teams', backoffice_company_teams_path(@company), class: 'link' + (params[:team] ? ' active' : '') %>
-        <%= link_to 'Pitches', backoffice_company_path(@company, pitch: 'all'), class: 'link' + (params[:pitch] ? ' active' : '') %>
+        <%= link_to 'Teams', backoffice_company_teams_path(@company), class: 'link' + (current_page?(backoffice_company_teams_path(@company)) ? ' active' : '') %>
+        <%= link_to 'Pitches', backoffice_company_pitches_path(@company), class: 'link' + (current_page?(backoffice_company_pitches_path(@company)) ? ' active' : '') %>
         <%= link_to 'Content', backoffice_company_content_path(@company), class: 'link' + (current_page?(backoffice_company_content_path(@company)) ? ' active' : '') %>
-        <%= link_to 'Rechte', backoffice_company_path(@company, abilities: 'user'), class: 'link' + (params[:abilities] ? ' active' : '') %>
+        <%= link_to 'Rechte', backoffice_company_abilities_path(@company, abilities: 'user'), class: 'link' + (controller.controller_name == 'backoffice' && controller.action_name == 'company_abilities' ? ' active' : '') %>
       </div>
       <div class="company">
         <%= @company.name %>
@@ -80,6 +80,11 @@
    				<%= link_to '', backoffice_companies_path %>
    			</div>
    			<h3>Globaler Content</h3>
+        <div class="link <%= current_page?(backoffice_content_path) ? 'active' : '' %>">
+          <i class="fas fa-book"></i>
+          <div class="text">Content</div>
+          <%= link_to '', backoffice_content_path %>
+        </div>
         <h3>Globale Einstellungen</h3>
         <div class="link <%= current_page?(backoffice_abilities_path) && params[:type] == 'coach' ? 'active' : '' %>">
           <i class="fas fa-cog"></i>

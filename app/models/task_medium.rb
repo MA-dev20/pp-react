@@ -5,7 +5,7 @@ class TaskMedium < ApplicationRecord
 	mount_uploader :pdf, PdfUploader
 
   has_many :tasks
-  belongs_to :company
+  belongs_to :company, required: false
   belongs_to :department, required: false
   belongs_to :team, required: false
   belongs_to :user
@@ -31,5 +31,8 @@ class TaskMedium < ApplicationRecord
     elsif self.pdf?
       self.title = self.pdf_identifier if !self.title || self.title == ''
 	  end
+    if self.content_folder
+      self.available_for = self.content_folder.available_for
+    end
 	end
 end

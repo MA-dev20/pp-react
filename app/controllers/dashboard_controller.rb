@@ -5,7 +5,15 @@ class DashboardController < ApplicationController
   layout "dashboard"
 
   def content
-    redirect_to dashboard_shared_content_path if !can? :create, TaskMedium
+    @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(media_type: "pdf_image").count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
+    @shared_count = @admin.shared_folders.count + @admin.shared_content.count
+    if !(can? :create, ContentFolder)
+      if @peters_count == 0
+        redirect_to dashboard_shared_content_path if @shared_count != 0
+      elsif @shared_count == 0
+        redirect_to dashboard_peters_content_path if @peters_count != 0
+      end
+    end
   end
 
   def my_content
@@ -74,6 +82,44 @@ class DashboardController < ApplicationController
         @lists << {id: cl.id, type: 'objection', name: cl.name}
       end
     end
+  end
+
+  def peters_content
+    @folders = ContentFolder.where(content_folder: nil, available_for: 'global')
+    @files = TaskMedium.where(content_folder: nil, available_for: 'global').where.not(media_type: "pdf_image")
+    @lists = []
+    CatchwordList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
+      @lists << {id: cl.id, type: 'catchword', name: cl.name}
+    end
+    ObjectionList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
+      @lists << {id: cl.id, type: 'objection', name: cl.name}
+    end
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @lists = []
+      @folder.catchword_lists.each do |cl|
+        @lists << {id: cl.id, type: 'catchword', name: cl.name}
+      end
+      @folder.objection_lists.each do |cl|
+        @lists << {id: cl.id, type: 'objection', name: cl.name}
+      end
+    end
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
+    end
+
   end
 
   def choose_company

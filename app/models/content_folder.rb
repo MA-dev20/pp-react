@@ -10,6 +10,11 @@ class ContentFolder < ApplicationRecord
   has_many :catchword_lists
   validates :name, presence: true
 
+  before_save do
+    if self.content_folder
+      self.available_for = self.content_folder.available_for
+    end
+  end
   before_destroy do
     @media = TaskMedium.where(content_folder: self)
     @catchwords = CatchwordList.where(content_folder: self)

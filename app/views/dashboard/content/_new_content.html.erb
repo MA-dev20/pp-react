@@ -107,7 +107,11 @@
   }
   $("#media-form").on('submit', function(e) {
     e.preventDefault();
+    <% if controller.controller_name == "backoffice" && controller.action_name == 'content' %>
+    var URL = "<%= create_global_media_path %>";
+    <% else %>
     var URL = "<%= create_media_path %>";
+    <% end %>
     var formData = new FormData(document.getElementById('media-form'));
     if ( $('#task_medium_media_type').val() == 'audio' ) {
       formData.append( $('#task_medium_audio').attr('name'), files[0] );

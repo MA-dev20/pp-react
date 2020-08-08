@@ -12,8 +12,8 @@
       </div>
 
       <div class="thumb" data-id="<%= u.id %>" onclick="showUser(this)">
-        <div class="list-icon">
-          <%= image_tag u.avatar.url, style: 'border-radius: 50%;' %>
+        <div class="list-avatar">
+          <%= image_tag u.avatar.url %>
         </div>
         <%= image_tag 'dash/placeholder.png', class: 'image' %>
       </div>

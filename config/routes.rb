@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   get 'dashboard/content', to: 'dashboard#content', as: 'dashboard_content'
   get 'dashboard/content/libary', to: 'dashboard#my_content', as: 'dashboard_my_content'
   get 'dashboard/content/shared', to: 'dashboard#shared_content', as: 'dashboard_shared_content'
+  get 'dashboard/content/peters', to: 'dashboard#peters_content', as: 'dashboard_peters_content'
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 
   post 'task_medium/new', to: 'task_media#create', as: 'create_media'
+  post 'task_medium/global/new', to: 'task_media#create_global', as: 'create_global_media'
   post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
   put 'task_medium/:task_medium_id/delete', to: "task_media#delete", as: 'delete_media'
 
@@ -89,8 +91,12 @@ Rails.application.routes.draw do
   get 'backoffice/companies/:company_id', to: 'backoffice#company', as: "backoffice_company"
   get 'backoffice/companies/:company_id/content', to: 'backoffice#company_content', as: "backoffice_company_content"
   get 'backoffice/companies/:company_id/teams', to: 'backoffice#company_teams', as: 'backoffice_company_teams'
+  get 'backoffice/companies/:company_id/pitches', to: 'backoffice#company_pitches', as: 'backoffice_company_pitches'
+  get 'backoffice/companies/:company_id/abilities/:abilities', to: 'backoffice#company_abilities', as: 'backoffice_company_abilities'
   post 'backoffice/companies/:company_id/search/content/', to: 'backoffice#search_content', as: 'backoffice_search_content'
-  get 'backoffice/abilities', to: 'backoffice#abilities'
+  get 'backoffice/content', to: 'backoffice#content', as: 'backoffice_content'
+  post 'backoffice/content/search', to: 'backoffice#search_global_content', as: 'backoffice_search_global_content'
+  get 'backoffice/abilities', to: 'backoffice#abilities', as: 'backoffice_abilities'
 
   # COMPANY
   post 'companies/register', to: 'company#register', as: 'register_company'

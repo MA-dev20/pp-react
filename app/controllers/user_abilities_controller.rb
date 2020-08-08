@@ -15,6 +15,8 @@ class UserAbilitiesController < ApplicationController
 
   def update_preset
     @user_ability = UserAbility.find_by(name: params[:type] + '_abilities', role: params[:role])
+    @user_ability.update(ability_params)
+    render json: {ability: @user_ability}
   end
 
   private

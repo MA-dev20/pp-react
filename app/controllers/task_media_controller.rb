@@ -20,6 +20,18 @@ class TaskMediaController < ApplicationController
       render json: {error: true}
     end
   end
+
+  def create_global
+    @task_medium = @company.task_media.new(task_medium_params)
+    @task_medium.user = @user
+    @task_medium.available_for = 'global'
+    if @task_medium.save
+      render json: {id: @task_medium.id}
+    else
+      flash[:alert] = "Konnte Media nicht speichern!"
+      render json: {error: true}
+    end
+  end
   def update
     @task_medium.update(task_medium_params)
     render json: {title: @task_medium.title}

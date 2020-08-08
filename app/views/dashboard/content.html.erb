@@ -8,16 +8,27 @@
 
     <div class="folders">
       <h3>Wähle Content</h3>
+
+      <% if can? :create, ContentFolder %>
       <div class="card" onclick="redirectContent('my_content')">
         <%= image_tag 'dash/icons/folder.svg'%>
         <div class="title">Mein Content</div>
       </div>
+      <% end %>
 
+      <% if @shared_count != 0 %>
       <div class="card" onclick="redirectContent('shared_content')">
         <%= image_tag 'dash/icons/folder.svg'%>
         <div class="title">Geteilter Content</div>
       </div>
-
+      <% end %>
+      
+      <% if @peters_count != 0 %>
+      <div class="card" onclick="redirectContent('peters_content')">
+        <%= image_tag 'logo-m.png'%>
+        <div class="title">Peter's Content</div>
+      </div>
+      <% end %>
     </div>
   </div>
 
@@ -28,8 +39,10 @@
     var URL;
     if( type == 'my_content') {
       URL = "<%= dashboard_my_content_url %>";
-    } else {
+    } else if (type == 'shared_content') {
       URL = "<%= dashboard_shared_content_url %>";
+    } else if (type == 'peters_content') {
+      URL = "<%= dashboard_peters_content_url %>";
     }
     location.replace(URL);
   }

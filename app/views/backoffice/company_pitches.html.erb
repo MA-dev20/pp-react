@@ -1,0 +1,28 @@
+<div class="card" id="content_card">
+  <div class="head">
+    <% if @pitch %>
+    <h3><span onclick="redirectPitch('bo_pitches')"><%= @company.name + "'s Pitches" %></span> <i class="fas fa-caret-right"></i> <span><%= @pitch.title %></span></h3>
+    <% else %>
+    <h3><span onclick="redirectPitch('bo_pitches')"><%= @company.name + "'s Pitches" %></span></h3>
+    <% end %>
+    <span onclick="toggleNew()">
+			<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'icon add plus-cust-icon' %>
+		</span>
+  </div>
+
+  <div class="" id="scrollcontent">
+    <%= render 'backoffice/company/pitches.html.erb' %>
+    <%= render 'backoffice/company/tasks.html.erb' %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function redirectPitch(type) {
+    if( type == 'bo_pitches') {
+      var URL = '<%= backoffice_company_pitches_path(@company) %>';
+    } else {
+      var URL = '?pitch=' + type;
+    }
+    location.replace(URL);
+  }
+</script>
