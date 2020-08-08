@@ -1,6 +1,6 @@
 <div class="card" id="pitches">
     <div class="search">
-        <i class="fas fa-search"></i>
+        <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
         <input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
     </div>
     <h3>Pitches</h3>
@@ -34,7 +34,8 @@
                         </span>
                         <span class="select-name">
                             <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
-                                <i class="far fa-trash-alt" aria-hidden="true"></i>Delete
+                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>	
+                                <!-- <i class="far fa-trash-alt" aria-hidden="true"></i> -->
                             </a>
                         </span>
                     </div>
@@ -65,7 +66,10 @@
         <!-- </a> -->
         <% if can? :create, Pitch %>
         <div class="card" id="newpitch">
-            <%= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
+            <%#= link_to image_tag('dash/icons/circle-plus-green.svg'), dashboard_new_pitch_path %>
+            <a href="<%= dashboard_new_pitch_path %>">
+                <%= inline_svg_tag 'dash/new_icons/plus_button.svg', class: 'add-new-pitch plus-cust-icon' %>
+            </a>
             <div class="title">Create new Pitch</div>
         </div>
         <% end %>
@@ -74,7 +78,8 @@
 <% if @pitch && !@game.present? %>
 <div class="blur">
     <div class="card" id="letspitch">
-        <span class="close">&times;</span>
+        <!-- <span class="close">&times;</span> -->
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
         <h1>Jetzt Pitch starten!</h1>
         <%= form_for(:game, url: new_game_path) do |f| %>
         <%= f.hidden_field :pitch_id, value: @pitch.id %>

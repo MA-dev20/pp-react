@@ -3,8 +3,8 @@
 	display: flex;
 	top: 0; left: calc(25.6vh);
 	height: 8vh; width: calc(100vw - (25.6vh - 1px));
-	z-index: 101;
-  background-color: white;
+	// z-index: 101;
+    background-color: white;
     box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
 	.form-group {
 		z-index: 10;
@@ -1425,14 +1425,33 @@
     }
 
     .close {
-        position: relative;
+        position: absolute;
         top: -2vh;
         color: #aaaaaa;
         float: right;
         font-size: 6vh;
         font-weight: bold;
+        width: 3vh;
+        /* padding: 2vh; */
+        margin: 4vh 3vh;
+        right: 0;
     }
 
+    .close-modal {
+        position: absolute;
+        top: -2vh;
+        color: #aaaaaa;
+        float: right;
+        font-size: 6vh;
+        font-weight: bold;
+        width: 3vh !important;
+        /* padding: 2vh; */
+        margin: 4vh 3vh;
+        left: unset !important;
+        right: 0 !important;
+    }
+
+    .close-modal:hover,
     .close:hover,
     .close:focus {
         color: #000;
@@ -2312,6 +2331,105 @@ input[type="file"] {
 
         .btn-ml-1 {
             margin-left: 1vh !important; 
+        }
+    }
+
+    .plus-cust-icon {
+        .st7 {
+            fill: rgb(var(--btncolor)) !important;
+            // stroke: rgb(var(--custcolor)) !important;
+        }
+    }
+
+    .back-arrow-cust {
+        top: -6vh;
+        width: 4vh;
+
+        .st9 {
+            stroke: rgb(var(--btncolor)) !important;
+        }
+    }
+
+    .add-new-pitch {
+        width: 10vh;
+        margin-top: 6.5vh;
+    }
+
+    .plus-icon-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 3vh;
+        .plus-cust-icon {
+            width: 9vh;
+        }
+    }
+
+    .video-form {
+        .plus-cust-icon {
+            width: 4vh;
+            margin-left: 1vh;
+        }
+    }
+
+    .words-wrapper {
+        .far.remove {
+            color: #CFD3D6 !important;
+        }
+    }
+
+    .popup {
+        .close-modal {
+            width: 4vh !important;
+            margin: 2vh 0;
+            right: 0 !important;
+            left: 0.3vh !important;
+        }
+    }
+
+    .trash-icon {
+        width: 2vh;
+    }
+
+    .remove-option svg {
+        width: 2.5vh;
+        top: -2px;
+
+        .st41, .st2 {
+            stroke: #fff !important;
+        }
+    }
+
+    .card-list svg {
+        float: right;
+        color: #CFD3D6;
+        font-size: 2vh;
+        cursor: pointer;
+        position: relative;
+        top: 0.2vh;
+        width: 2.3vh;
+
+        .st41, .st2 {
+            stroke: gray !important;
+        }
+        
+    }
+
+    .customize-trash-icon {
+        width: 2.8vh !important;
+        position: relative;
+        top: 0.3vh;
+    }
+
+    .select-name {
+        .delete {
+            width: 2vh;
+            position: relative;
+            top: 0.2vh;
+        }
+        .delete-span {
+            position: relative;
+            top: -0.2vh;
+            left: 0.4vh;
         }
     }
 }

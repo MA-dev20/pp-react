@@ -254,6 +254,26 @@ body {
 			margin: 0;
 		}
 	}
+	#editUser, #editTeam {
+		a {
+			text-decoration: none !important;
+		}
+	}
+	.back-cust-icon {
+		width: 3vh;
+		position: relative;
+		top: 0.5vh;
+		
+		.st9 {
+			stroke: rgb(var(--custcolor));
+		}
+	}
+	.trash-cust-icon {
+		width: 2vh;
+	}
+	.back-span {
+		cursor: pointer;
+	}
 	#teams-table,
 	#users-table {
 		margin-top: -1vh;
@@ -568,6 +588,12 @@ body {
 				width: 5vh;
 				text-align: center;
 			}
+			.search-img {
+				position: absolute;
+				top: 1.5vh;
+				left: 1vh;
+				width: 3vh;
+			}
 			.form-field {
 				width: 50%;
 				background-color: white;
@@ -604,6 +630,7 @@ body {
 				margin: 2vh;
 				color: grey;
 				font-size: 3vh;
+				width: 4vh;
 			}
 			position: relative;
 			margin-top: 1.5vh;
@@ -670,6 +697,14 @@ body {
 							position: relative;width: 5.2vh;
 						}
 						td.remove, td.play, td.accept, td.edit, td.stats {text-align: center}
+						td.stats, td.edit {
+							.edit-icon, .stats-icon {
+								width: 2vh;
+								.st2 {
+									stroke: rgb(var(--custcolor));
+								}
+							}
+						}
 						td.stats {color: #ffcc00;}
 						td.accept, td.edit, td.play{color: rgb(var(--custcolor));}
 						td.remove {color: grey;}
@@ -1622,6 +1657,8 @@ body {
 								float: right;
 								font-size: 2vh;
 								margin: 1.5vh;
+								width: 2.5vh;
+								height: 2vh;
 							}
 						}
 						.comment {
@@ -2132,5 +2169,25 @@ select:-moz-focusring {
 
 	.card-full-width {
 		padding-top: 0 !important;
+	}
+}
+
+#content {
+	#content_card {
+		.plus-cust-icon {
+			width: 5vh;
+			cursor: pointer;
+			.st7 {
+				fill: rgb(var(--btncolor)) !important;
+				// stroke: rgb(var(--custcolor)) !important;
+			}
+		}
+
+		.search-img {
+			position: absolute;
+			top: 0.8vh;
+			left: 1vh;
+			width: 2.5vh;
+		}
 	}
 }

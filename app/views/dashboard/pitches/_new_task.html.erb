@@ -77,8 +77,7 @@
 				<div class="form-group fields">
 					<%= cw.text_field :name, placeholder: 'Type your catchword', class: 'form-field' %>
 					<div class="add-cw">
-						<img class="add-cw-img cw-image"
-							src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+						<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img cw-image plus-cust-icon' %>
 					</div>
 					<div class="cw custom-select cw-dropdown" onclick="openList('catchword')">Catchword
 						<div class="sub-cs" id="cw-options">
@@ -99,7 +98,10 @@
 					<div class="hr-line"></div>
 					<div class="words-wrapper">
 						<div class="word"><%= cw.name %></div>
-						<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'fas fa-trash remove' %>
+						<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'far fa-trash-alt remove' %>
+						<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword') %>" data-method="delete">
+							<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+						</a>
 					</div>
 					<% end %>
 					<% end %>
@@ -217,7 +219,10 @@
 					<% if @task.task_medium && @task.task_medium.image? %>
 					<div class="remove-option">
 						<label><%= File.basename(@task.task_medium.image.url) %></label>
-						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'image') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
+							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+						</a>
 					</div>
 					<%= image_tag @task.task_medium.image.url, class: 'preview-img-tag' %>
 					<% else %>
@@ -237,7 +242,10 @@
 				<% end %>
 			</div>
 			<div class="popup" id="popup">
-				<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+				<div class="close" onclick="hidePopup()">
+					<!-- <i class="fas fa-times"></i> -->
+					<%= image_tag 'dash/new_icons/close.svg', class: 'close-modal' %>					
+				</div>
 
 				<div class="img-container">
 					<%= image_tag '', id: 'media_image' %>
@@ -259,7 +267,10 @@
 						<% if @task.task_medium.video_url_id.present? %>
 							<div class="remove-option">
 								<label><%= @task.task_medium.video_title %></label>
-								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'video') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
+									<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+								</a>
 							</div>
 							<% if @task.task_medium.video_url_type == 'youtube' %>
 							<iframe class="video-frame" width="420" height="170" src="https://www.youtube.com/embed/<%= @task.task_medium.video_url_id %>"></iframe>
@@ -269,7 +280,10 @@
 						<% elsif @task.task_medium.video.present? %>
 							<div class="remove-option">
 								<label><%= File.basename(@task.task_medium.video.url) %></label>
-								<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+								<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'video') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
+									<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+								</a>
 							</div>
 							<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
 						<% end %>
@@ -296,7 +310,7 @@
 								<input type="text" class="form-field" name="videoLink" id="videoLink" placeholder="Youtube/Vimeo link" onkeypress="videoLinkClicked(event)">
 								<input type="hidden" name="videoLinkImage" id="videoLinkImage">
 								<input type="hidden" name="videoLinkTitle" id="videoLinkTitle">
-								<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add add-video-link' %>
+								<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'plus-cust-icon add-video-link' %>
 							</div>
 						</div>
 					</div>
@@ -314,7 +328,10 @@
 					<% if @task.task_medium && @task.task_medium.audio? %>
 					<div class="remove-option remove-option-audio">
 						<label><%= File.basename(@task.task_medium.audio.url) %></label>
-						<%= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'fas fa-trash remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
+						<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'audio') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
+							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+						</a>
 					</div>
 					<div class="audio-play-div">
 						<%#= image_tag 'dash/icons/audio-play-icon.svg', class: 'play-audio audio-play-circle', onclick: 'playAudio()' %>
@@ -394,8 +411,7 @@
 			<div class="reaction-input-field-div">
 				<%= f.text_field :name , placeholder: "Type your reactions", class: 'form-field' %>
 				<div class="add-cw">
-					<img class="add-cw-img ol-image"
-						src="/assets/dash/icons/circle-plus-green-6f379cf9ada9e3c614b12acce45f0caaebcde37cfa1f3009a7a9fa11d6dfa257.svg">
+					<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img ol-image plus-cust-icon' %>
 				</div>
 			</div>
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reactions
@@ -418,7 +434,10 @@
 			<div class="words-wrapper">
 				<div class="word"><%= ow.name %></div>
 				<!-- <a class="fas fa-trash remove"></a> -->
-				<%= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'fas fa-trash remove' %>
+				<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'far fa-trash-alt remove' %>
+				<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection') %>" data-method="delete">
+					<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+				</a>
 			</div>
 			<% end %>
 			<% end %>

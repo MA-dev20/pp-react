@@ -7,7 +7,10 @@
             <% cTime = cmin + ':' + csec %> 
             <%= image_tag c.user.avatar.url %>
             <%= c.user.fname %> <%= c.user.lname %> - <%= cTime %>
-            <%= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
+            <%#= link_to '', destroy_comment_path(@turn, c), class: 'far fa-trash-alt delete' %>
+            <a href="<%= destroy_comment_path(@turn, c) %>">
+                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete-comment delete' %>		
+            </a>
         </div>
         <div class="comment" onclick="jumpTo(<%= c.time %>)">
             <div class="dot <%= c.positive %>"></div><%= c.text %>

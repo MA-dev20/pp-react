@@ -1,8 +1,12 @@
 <div id="new-pitch-content">
 	<% if @pitch.title.present? %>
-		<%= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow-icon' %>
+		<%#= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow-icon' %>
+		<a href="<%= dashboard_pitches_path %>">
+			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
+		</a>
 	<% else %>
-		<i class="fas fa-arrow-left back-arrow"></i>
+		<!-- <i class="fas fa-arrow-left back-arrow"></i> -->
+		<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust back-arrow' %>
 	<% end %>
 	<div class="card left">
 		<!-- <div class="vr-line"></div> -->
@@ -38,7 +42,8 @@
 				<input type="hidden" name="selected_card_order" class="selected-card-order">
 			<% end %>
 			<div class="add-task <%= 'hide' if @pitch.tasks.count == 0 %>" >
-				<%= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
+				<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
+				<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-task-img open-modal plus-cust-icon', data: { modal: "option-modal" } %>
 			</div>
 		</div>
 	</div>
@@ -84,7 +89,8 @@
 
 <div id="videoModal" class="modal hide">
 	<div class="modal-content">
-		<span class="close">&times;</span>
+		<!-- <span class="close">&times;</span> -->
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
 		<div class="heading">
 			<h1>Record your video</h1>
 			<input type="file" accept="video/*" capture>
