@@ -1,109 +1,70 @@
 <div class="pitch-videos">
-	<div class="card" >
+	<div class="card">
 		<div class="search">
 			<%= image_tag 'dash/new_icons/search.svg' %>
 			<input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
 		</div>
-		<h3>Pitch Videos</h3>
-		<div class="videos" id="pitch-videos">
+		<div class="folders">
+			<h3>Ordner</h3>
 			<% @pitches.each do |p| %>
-			<div class="card">
-			<div class="thumb">
-				<%= image_tag p[:video].video.thumb.url %>
-				<div class="overlay">
-				<div class="rating"><%= p[:rating] %></div>
-				<div class="time"><%= p[:duration] %></div>
-				<div class="play"><i class="fas fa-play"></i></div>
+				<div class="folder-card" id="folder_<%= p[:id] %>">
+					<img src="<%= asset_path 'dash/icons/folder.svg' %>" onclick="showVideos('<%= p[:id] %>')">
+					<div class="title" id="title_<%= p[:id] %>"><span><%= p[:title] %></span></div>
+					<div class="time"><%= p[:created_at].strftime("%Y-%m-%d") %></div>
 				</div>
-			</div>
-			<div class="word"><%= p[:title] %></div>
-			<div class="heart" onclick="favPitch(<%= p[:id] %>)"><i id="fav_<%= p[:id] %>" class="<%= p[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
-			<div class="user">
-				<%= image_tag p[:user].avatar.url %>
-				<%= p[:user].fname %> <%= p[:user].lname %>
-			</div>
-			<%= link_to '', dashboard_pitch_video_path(p[:id]) %>
-			</div>
 			<% end %>
 		</div>
-	</div>
-</div>
-<div class="own-videos" style="display: none">
-	<div class="card" id='videos' style="<%= params[:edit] ? 'display: none' : '' %>">
-		<h3>Eigene Videos <i class="fas fa-plus-circle add" onclick="toggleVideo()"></i></h3>
-		
-		<div class="videos" id="uploaded-videos">
-			<% @videos.each do |v| %>
-			<div class="card">
+		<% @pitches.each do |p| %>
+			<div class="videos p-videos" id="pitch_videos_<%= p[:id] %>" style="display: none">
+				<h3>Pitch Videos</h3>
+				<%
+					videos = @videos.select{|v| v[:pitch_id] == p[:id]}
+				%>
+				<% videos.each do |v| %>
+				<div class="card">
 				<div class="thumb">
-					<%= image_tag v.video.thumb.url %>
+					<%= image_tag v[:video].video.thumb.url %>
 					<div class="overlay">
-						<% if v.duration.nil? %>
-						<% min = 0 %>
-						<% sec = 0 %>
-						<% else %>
-						<% min = v.duration / 60 %>
-						<% sec = v.duration % 60 %>
-						<% end %>
-						<div class="time"><%= min.round.to_s + (sec < 10 ? ':0' : ':') + sec.round.to_s %></div>
-						<div class="play"><i class="fas fa-play"></i></div>
+					<div class="rating"><%= v[:rating] %></div>
+					<div class="time"><%= v[:duration] %></div>
+					<div class="play"><i class="fas fa-play"></i></div>
 					</div>
 				</div>
-				<%= link_to '', dashboard_video_path(edit: true, video: v.id) %>
-				<div class="word"><%= v.name %></div>
+				<div class="word"><%= v[:title] %></div>
+				<div class="heart" onclick="favPitch(<%= v[:id] %>)"><i id="fav_<%= v[:id] %>" class="<%= v[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
 				<div class="user">
-					<%= image_tag v.user.avatar.url %>
-					<%= v.user.fname %> <%= v.user.lname %>
+					<%= image_tag v[:user].avatar.url %>
+					<%= v[:user].fname %> <%= v[:user].lname %>
 				</div>
+				<%= link_to '', dashboard_pitch_video_path(v[:id]) %>
+				</div>
+				<% end %>
 			</div>
-			<% end %>
-		</div>
+		<% end %>
 	</div>
-	
-    <div class="card" id="new_video" style="display: none">
-    	<h3><i class="fas fa-arrow-left back" onclick="toggleVideo()"></i>Video hochladen</h3>
-    	<%= form_for(:video, url: new_video_path, html: {id: "uploadVideoForm"}) do |f| %>
-    		<div class="form-group">
-    			<label for="">Titel</label>
-    			<%= f.text_field :name, class: 'form-field' %>
-    		</div>
-   			<%= f.file_field :video, style: "display: none"%>
-    		<div class="add-circle" onclick="changeVideo()">
-   				<i class="fas fa-plus"></i>
-    			<svg viewbox="0 0 100 100">
-    				<circle cx='50' cy='50' r='48' fill="none" stroke='rgb(var(--custcolor))' stroke-width="4" stroke-dasharray='0'></circle>
-    			</svg>
-    		</div>
-    		<div class="btn" onclick="toggleVideo()">speichern!</div>
-    	<% end %>
-    </div>
-    
-    <% if params[:edit] && params[:video] %>
-    <% @video = Video.find(params[:video]) %>
-    <div class="card" id="edit_video">
-    	<h3><%= link_to '', dashboard_video_path, class: 'fas fa-arrow-left back' %>Edit Video</h3>
-    	<%= link_to '', delete_video_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
-    	<%= form_for(:video, url: edit_video_path(@video), html: {id: "uploadVideoForm"}) do |f| %>
-    		<div class="form-group">
-    			<label for="">Titel</label>
-    			<%= f.text_field :name, class: 'form-field' %>
-    		</div>
-    		<%= video_tag @video.video, style: "width: 100%", controls: true %>
-    		<%= f.submit 'speichern!', class: 'btn' %>
-    	<% end %>
-    </div>
-    <% end %>
 </div>
 <script>
-	new PerfectScrollbar('#pitch-videos');
-	new PerfectScrollbar('#uploaded-videos');
+	new PerfectScrollbar('.p-videos');
+	new PerfectScrollbar('.folders');
+	// new PerfectScrollbar('#uploaded-videos');
 
 	$("#searchPitch").on("keyup", function () {
-        var value = $(this).val().toLowerCase();
-        $("#pitch-videos .card .word").filter(function () {
-            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+		var value = $(this).val().toLowerCase();
+		if ($('.p-videos').is(':visible')) {
+			$(".p-videos .card .word").filter(function () {
+				$(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		} else {
+			$(".folders .folder-card .title").filter(function () {
+				$(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		}
 	});
+
+	function showVideos(pitch_id) {
+		$(`#pitch_videos_${pitch_id}`).show();
+		$('.folders').hide();
+	}
 	
 	function toggleVideo() {
 		$('#videos').toggle();

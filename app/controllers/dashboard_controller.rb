@@ -277,21 +277,27 @@ class DashboardController < ApplicationController
   end
 
   def video
-	@pitches = []
-	@admin.games.each do |p|
-	  p.game_turns.each do |t|
+  @pitches = []
+	@videos = []  
+	@admin.games.each do |g|
+	  g.game_turns.each do |t|
 	  	if t.pitch_video
-		  minutes = t.pitch_video.duration / 60
-		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-		  seconds = t.pitch_video.duration % 60
-		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
-		  @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating}
-	  	end
+        minutes = t.pitch_video.duration / 60
+        minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+        seconds = t.pitch_video.duration % 60
+        seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+        rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
+        @videos << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating, pitch_id: g.pitch.id, pitch_title: g.pitch.title, created_at: g.pitch.created_at}
+        # @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating, pitch_title: p.pitch.title, created_at: p.pitch.created_at}
+        unless @pitches.any? {|p| p[:id] == g.pitch_id}
+          pitch = g.pitch
+          @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
+        end
+      end
 	  end
 	end
-	@videos = @admin.videos
-	@videos << @company.videos
+	# @videos = @admin.videos
+	# @videos << @company.videos
   end
 
   def pitch_video
