@@ -1,71 +1,415 @@
-<%= f.hidden_field :view_crud, value: @user_abilities.view_crud %>
-<%= f.hidden_field :create_crud, value: @user_abilities.create_crud %>
-<%= f.hidden_field :edit_crud, value: @user_abilities.edit_crud %>
-<%= f.hidden_field :share_crud, value: @user_abilities.share_crud %>
+<div class="card" id="ability-card">
+  <h3>Abilities</h3>
+  <div class="dropdown" id="ability-dropdown">
+    <div class="dropdown-text" onclick="showDropdown()"><%= params[:abilities] %><i class="fas fa-caret-down"></i></div>
+    <div class="dropdown-menu">
+      <div class="link">
+        User<%= link_to '', backoffice_abilities_path(type: params[:type], abilities: 'user') %>
+      </div>
+      <div class="link">
+        Admin
+        <%= link_to '', backoffice_abilities_path(type: params[:type], abilities: 'admin') %>
+      </div>
+      <div class="link">
+        Root<%= link_to '', backoffice_abilities_path(type: params[:type], abilities: 'root') %>
+      </div>
+    </div>
+  </div>
+  <div class="table" id='ability-table'>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Company</th>
+          <th>Department</th>
+          <th>Team</th>
+          <th>User (Self)</th>
+          <th>None</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= form_for(:user_ability, url: update_ability_preset_path(params[:type], params[:abilities]), html: {id: "ability_form"}) do |f| %>
+          <%= f.hidden_field :edit_company, value: @user_abilities.edit_company %>
+          <%= f.hidden_field :view_department, value: @user_abilities.view_department %>
+          <%= f.hidden_field :create_department, value: @user_abilities.create_department %>
+          <%= f.hidden_field :edit_department, value: @user_abilities.edit_department %>
 
-<tr>
-  <td>View</td>
-  <td onclick="toggleAbility('view_crud', 'company')"><i class="far <%= @user_abilities.view_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_company"></i></td>
-  <td onclick="toggleAbility('view_crud', 'department')"><i class="far <%= @user_abilities.view_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_department"></i></td>
-  <td onclick="toggleAbility('view_crud', 'team')"><i class="far <%= @user_abilities.view_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_team"></i></td>
-  <td onclick="toggleAbility('view_crud', 'user')"><i class="far <%= @user_abilities.view_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_user"></i></td>
-  <td onclick="toggleAbility('view_crud', 'none')"><i class="far <%= @user_abilities.view_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_crud_none"></i></td>
-</tr>
-<tr>
-  <td>Create</td>
-  <td onclick="toggleAbility('create_crud', 'company')"><i class="far <%= @user_abilities.create_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_company"></i></td>
-  <td onclick="toggleAbility('create_crud', 'department')"><i class="far <%= @user_abilities.create_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_department"></i></td>
-  <td onclick="toggleAbility('create_crud', 'team')"><i class="far <%= @user_abilities.create_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_team"></i></td>
-  <td onclick="toggleAbility('create_crud', 'user')"><i class="far <%= @user_abilities.create_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_user"></i></td>
-  <td onclick="toggleAbility('create_crud', 'none')"><i class="far <%= @user_abilities.create_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="create_crud_none"></i></td>
-</tr>
-<tr>
-  <td>Edit / Destroy</td>
-  <td onclick="toggleAbility('edit_crud', 'company')"><i class="far <%= @user_abilities.edit_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_company"></i></td>
-  <td onclick="toggleAbility('edit_crud', 'department')"><i class="far <%= @user_abilities.edit_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_department"></i></td>
-  <td onclick="toggleAbility('edit_crud', 'team')"><i class="far <%= @user_abilities.edit_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_team"></i></td>
-  <td onclick="toggleAbility('edit_crud', 'user')"><i class="far <%= @user_abilities.edit_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_user"></i></td>
-  <td onclick="toggleAbility('edit_crud', 'none')"><i class="far <%= @user_abilities.edit_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_crud_none"></i></td>
-</tr>
-<tr>
-  <td>Share</td>
-  <td onclick="toggleAbility('share_crud', 'company')"><i class="far <%= @user_abilities.share_crud == "company" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_company"></i></td>
-  <td onclick="toggleAbility('share_crud', 'department')"><i class="far <%= @user_abilities.share_crud == "crud" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_department"></i></td>
-  <td onclick="toggleAbility('share_crud', 'team')"><i class="far <%= @user_abilities.share_crud == "teams" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_team"></i></td>
-  <td onclick="toggleAbility('share_crud', 'user')"><i class="far <%= @user_abilities.share_crud == "user" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_user"></i></td>
-  <td onclick="toggleAbility('share_crud', 'none')"><i class="far <%= @user_abilities.share_crud == "none" ? 'fa-check-square' : 'fa-square' %>" id="share_crud_none"></i></td>
-</tr>
+          <%= f.hidden_field :view_team, value: @user_abilities.view_team %>
+          <%= f.hidden_field :create_team, value: @user_abilities.create_team %>
+          <%= f.hidden_field :edit_team, value: @user_abilities.edit_team %>
+          <%= f.hidden_field :share_team, value: @user_abilities.share_team %>
 
+          <%= f.hidden_field :view_stats, value: @user_abilities.view_stats %>
 
-if( res.ability.view_crud ) {
-  $('#view_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_department').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_team').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_user').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_none').removeClass('fa-check-square').addClass('fa-square');
-  $('#view_crud_' + res.ability.view_crud).removeClass('fa-square').addClass('fa-check-square');
-}
-if( res.ability.create_crud ) {
-  $('#create_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_department').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_team').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_user').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_none').removeClass('fa-check-square').addClass('fa-square');
-  $('#create_crud_' + res.ability.create_crud).removeClass('fa-square').addClass('fa-check-square');
-}
-if( res.ability.edit_crud ) {
-  $('#edit_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_department').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_team').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_user').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_none').removeClass('fa-check-square').addClass('fa-square');
-  $('#edit_crud_' + res.ability.edit_crud).removeClass('fa-square').addClass('fa-check-square');
-}
-if( res.ability.share_crud ) {
-  $('#share_crud_company').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_department').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_team').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_user').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_none').removeClass('fa-check-square').addClass('fa-square');
-  $('#share_crud_' + res.ability.share_crud).removeClass('fa-square').addClass('fa-check-square');
-}
+          <%= f.hidden_field :view_pitch, value: @user_abilities.view_pitch %>
+          <%= f.hidden_field :create_pitch, value: @user_abilities.create_pitch %>
+          <%= f.hidden_field :edit_pitch, value: @user_abilities.edit_pitch %>
+          <%= f.hidden_field :share_pitch, value: @user_abilities.share_pitch %>
+
+          <%= f.hidden_field :view_media, value: @user_abilities.view_media %>
+          <%= f.hidden_field :create_media, value: @user_abilities.create_media %>
+          <%= f.hidden_field :edit_media, value: @user_abilities.edit_media %>
+          <%= f.hidden_field :share_media, value: @user_abilities.share_media %>
+
+        <tr><th colspan="5">Company</th></tr>
+        <tr>
+          <td>Edit</td>
+          <td onclick='toggleEditCompany();'>
+            <div class="toggle <%= @user_abilities.edit_company ? 'on' : 'off' %>" id='edit_company'>
+              <div class="dot"></div>
+            </div>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <script type="text/javascript">
+            function toggleEditCompany() {
+              if( $('#edit_company').hasClass('on') ) {
+                $('#user_ability_edit_company').val(0);
+              } else {
+                $('#user_ability_edit_company').val(1);
+              }
+              sendForm();
+            }
+          </script>
+        </tr>
+
+        <tr><th colspan="5">Department</th></tr>
+        <tr>
+          <td>Create</td>
+          <td onclick="toggleCreate('department')">
+            <div class="toggle <%= @user_abilities.create_department != 'none' ? 'on' : 'off' %>" id='create_department'>
+              <div class="dot"></div>
+            </div>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>View</td>
+          <td onclick="toggleAbility('view_department', 'company')"><i class="far <%= @user_abilities.view_department == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_department_company"></i></td>
+          <td onclick="toggleAbility('view_department', 'department')"><i class="far <%= @user_abilities.view_department == "department" ? 'fa-check-square' : 'fa-square' %>" id="view_department_department"></i></td>
+          <td></td>
+          <td></td>
+          <td onclick="toggleAbility('view_department', 'none')"><i class="far <%= @user_abilities.view_department == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_department_none"></i></td>
+        </tr>
+        <tr>
+          <td>Edit / Destroy</td>
+          <td onclick="toggleAbility('edit_department', 'company')"><i class="far <%= @user_abilities.edit_department == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_department_company"></i></td>
+          <td onclick="toggleAbility('edit_department', 'department')"><i class="far <%= @user_abilities.edit_department == "department" ? 'fa-check-square' : 'fa-square' %>" id="edit_department_department"></i></td>
+          <td></td>
+          <td></td>
+          <td onclick="toggleAbility('edit_department', 'none')"><i class="far <%= @user_abilities.edit_department == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_department_none"></i></td>
+        </tr>
+
+        <tr><th colspan="5">Team / Users</th></tr>
+        <tr>
+          <td>Create</td>
+          <td onclick="toggleCreate('team')">
+            <div class="toggle <%= @user_abilities.create_team != 'none' ? 'on' : 'off' %>" id='create_team'>
+              <div class="dot"></div>
+            </div>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>View</td>
+          <td onclick="toggleAbility('view_team', 'company')"><i class="far <%= @user_abilities.view_team == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_team_company"></i></td>
+          <td onclick="toggleAbility('view_team', 'department')"><i class="far <%= @user_abilities.view_team == "department" ? 'fa-check-square' : 'fa-square' %>" id="view_team_department"></i></td>
+          <td onclick="toggleAbility('view_team', 'team')"><i class="far <%= @user_abilities.view_team == "team" ? 'fa-check-square' : 'fa-square' %>" id="view_team_team"></i></td>
+          <td onclick="toggleAbility('view_team', 'user')"><i class="far <%= @user_abilities.view_team == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_team_user"></i></td>
+          <td onclick="toggleAbility('view_team', 'none')"><i class="far <%= @user_abilities.view_team == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_team_none"></i></td>
+        </tr>
+        <tr>
+          <td>Edit / Destroy</td>
+          <td onclick="toggleAbility('edit_team', 'company')"><i class="far <%= @user_abilities.edit_team == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_team_company"></i></td>
+          <td onclick="toggleAbility('edit_team', 'department')"><i class="far <%= @user_abilities.edit_team == "department" ? 'fa-check-square' : 'fa-square' %>" id="edit_team_department"></i></td>
+          <td onclick="toggleAbility('edit_team', 'team')"><i class="far <%= @user_abilities.edit_team == "team" ? 'fa-check-square' : 'fa-square' %>" id="edit_team_team"></i></td>
+          <td onclick="toggleAbility('edit_team', 'user')"><i class="far <%= @user_abilities.edit_team == "user" ? 'fa-check-square' : 'fa-square' %>" id="edit_team_user"></i></td>
+          <td onclick="toggleAbility('edit_team', 'none')"><i class="far <%= @user_abilities.edit_team == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_team_none"></i></td>
+        </tr>
+        <tr>
+          <td>Share</td>
+          <td onclick="toggleAbility('share_team', 'company')"><i class="far <%= @user_abilities.share_team == "company" ? 'fa-check-square' : 'fa-square' %>" id="share_team_company"></i></td>
+          <td onclick="toggleAbility('share_team', 'department')"><i class="far <%= @user_abilities.share_team == "department" ? 'fa-check-square' : 'fa-square' %>" id="share_team_department"></i></td>
+          <td onclick="toggleAbility('share_team', 'team')"><i class="far <%= @user_abilities.share_team == "team" ? 'fa-check-square' : 'fa-square' %>" id="share_team_team"></i></td>
+          <td onclick="toggleAbility('share_team', 'user')"><i class="far <%= @user_abilities.share_team == "user" ? 'fa-check-square' : 'fa-square' %>" id="share_team_user"></i></td>
+          <td onclick="toggleAbility('share_team', 'none')"><i class="far <%= @user_abilities.share_team == "none" ? 'fa-check-square' : 'fa-square' %>" id="share_team_none"></i></td>
+        </tr>
+
+        <tr><th colspan="5">User</th></tr>
+        <tr>
+          <td>Statistik</td>
+          <td onclick="toggleAbility('view_stats', 'company')"><i class="far <%= @user_abilities.view_stats == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_stats_company"></i></td>
+          <td onclick="toggleAbility('view_stats', 'department')"><i class="far <%= @user_abilities.view_stats == "department" ? 'fa-check-square' : 'fa-square' %>" id="view_stats_department"></i></td>
+          <td onclick="toggleAbility('view_stats', 'team')"><i class="far <%= @user_abilities.view_stats == "team" ? 'fa-check-square' : 'fa-square' %>" id="view_stats_team"></i></td>
+          <td onclick="toggleAbility('view_stats', 'user')"><i class="far <%= @user_abilities.view_stats == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_stats_user"></i></td>
+          <td onclick="toggleAbility('view_stats', 'none')"><i class="far <%= @user_abilities.view_stats == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_stats_none"></i></td>
+        </tr>
+
+        <tr><th colspan="5">Pitches</th></tr>
+        <tr>
+          <td>Create</td>
+          <td onclick="toggleCreate('pitch')">
+            <div class="toggle <%= @user_abilities.create_pitch != 'none' ? 'on' : 'off' %>" id='create_pitch'>
+              <div class="dot"></div>
+            </div>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>View</td>
+          <td onclick="toggleAbility('view_pitch', 'company')"><i class="far <%= @user_abilities.view_pitch == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_pitch_company"></i></td>
+          <td onclick="toggleAbility('view_pitch', 'department')"><i class="far <%= @user_abilities.view_pitch == "department" ? 'fa-check-square' : 'fa-square' %>" id="view_pitch_department"></i></td>
+          <td onclick="toggleAbility('view_pitch', 'team')"><i class="far <%= @user_abilities.view_pitch == "team" ? 'fa-check-square' : 'fa-square' %>" id="view_pitch_team"></i></td>
+          <td onclick="toggleAbility('view_pitch', 'user')"><i class="far <%= @user_abilities.view_pitch == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_pitch_user"></i></td>
+          <td onclick="toggleAbility('view_pitch', 'none')"><i class="far <%= @user_abilities.view_pitch == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_pitch_none"></i></td>
+        </tr>
+        <tr>
+          <td>Edit / Destroy</td>
+          <td onclick="toggleAbility('edit_pitch', 'company')"><i class="far <%= @user_abilities.edit_pitch == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_pitch_company"></i></td>
+          <td onclick="toggleAbility('edit_pitch', 'department')"><i class="far <%= @user_abilities.edit_pitch == "department" ? 'fa-check-square' : 'fa-square' %>" id="edit_pitch_department"></i></td>
+          <td onclick="toggleAbility('edit_pitch', 'team')"><i class="far <%= @user_abilities.edit_pitch == "team" ? 'fa-check-square' : 'fa-square' %>" id="edit_pitch_team"></i></td>
+          <td onclick="toggleAbility('edit_pitch', 'user')"><i class="far <%= @user_abilities.edit_pitch == "user" ? 'fa-check-square' : 'fa-square' %>" id="edit_pitch_user"></i></td>
+          <td onclick="toggleAbility('edit_pitch', 'none')"><i class="far <%= @user_abilities.edit_pitch == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_pitch_none"></i></td>
+        </tr>
+        <tr>
+          <td>Share</td>
+          <td onclick="toggleAbility('share_pitch', 'company')"><i class="far <%= @user_abilities.share_pitch == "company" ? 'fa-check-square' : 'fa-square' %>" id="share_pitch_company"></i></td>
+          <td onclick="toggleAbility('share_pitch', 'department')"><i class="far <%= @user_abilities.share_pitch == "department" ? 'fa-check-square' : 'fa-square' %>" id="share_pitch_department"></i></td>
+          <td onclick="toggleAbility('share_pitch', 'team')"><i class="far <%= @user_abilities.share_pitch == "team" ? 'fa-check-square' : 'fa-square' %>" id="share_pitch_team"></i></td>
+          <td onclick="toggleAbility('share_pitch', 'user')"><i class="far <%= @user_abilities.share_pitch == "user" ? 'fa-check-square' : 'fa-square' %>" id="share_pitch_user"></i></td>
+          <td onclick="toggleAbility('share_pitch', 'none')"><i class="far <%= @user_abilities.share_pitch == "none" ? 'fa-check-square' : 'fa-square' %>" id="share_pitch_none"></i></td>
+        </tr>
+
+        <tr><th colspan="5">Content</th></tr>
+        <tr>
+          <td>Create</td>
+          <td onclick="toggleCreate('media')">
+            <div class="toggle <%= @user_abilities.create_media != 'none' ? 'on' : 'off' %>" id='create_media'>
+              <div class="dot"></div>
+            </div>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>View</td>
+          <td onclick="toggleAbility('view_media', 'company')"><i class="far <%= @user_abilities.view_media == "company" ? 'fa-check-square' : 'fa-square' %>" id="view_media_company"></i></td>
+          <td onclick="toggleAbility('view_media', 'department')"><i class="far <%= @user_abilities.view_media == "department" ? 'fa-check-square' : 'fa-square' %>" id="view_media_department"></i></td>
+          <td onclick="toggleAbility('view_media', 'team')"><i class="far <%= @user_abilities.view_media == "team" ? 'fa-check-square' : 'fa-square' %>" id="view_media_team"></i></td>
+          <td onclick="toggleAbility('view_media', 'user')"><i class="far <%= @user_abilities.view_media == "user" ? 'fa-check-square' : 'fa-square' %>" id="view_media_user"></i></td>
+          <td onclick="toggleAbility('view_media', 'none')"><i class="far <%= @user_abilities.view_media == "none" ? 'fa-check-square' : 'fa-square' %>" id="view_media_none"></i></td>
+        </tr>
+        <tr>
+          <td>Edit / Destroy</td>
+          <td onclick="toggleAbility('edit_media', 'company')"><i class="far <%= @user_abilities.edit_media == "company" ? 'fa-check-square' : 'fa-square' %>" id="edit_media_company"></i></td>
+          <td onclick="toggleAbility('edit_media', 'department')"><i class="far <%= @user_abilities.edit_media == "department" ? 'fa-check-square' : 'fa-square' %>" id="edit_media_department"></i></td>
+          <td onclick="toggleAbility('edit_media', 'team')"><i class="far <%= @user_abilities.edit_media == "team" ? 'fa-check-square' : 'fa-square' %>" id="edit_media_team"></i></td>
+          <td onclick="toggleAbility('edit_media', 'user')"><i class="far <%= @user_abilities.edit_media == "user" ? 'fa-check-square' : 'fa-square' %>" id="edit_media_user"></i></td>
+          <td onclick="toggleAbility('edit_media', 'none')"><i class="far <%= @user_abilities.edit_media == "none" ? 'fa-check-square' : 'fa-square' %>" id="edit_media_none"></i></td>
+        </tr>
+        <tr>
+          <td>Share</td>
+          <td onclick="toggleAbility('share_media', 'company')"><i class="far <%= @user_abilities.share_media == "company" ? 'fa-check-square' : 'fa-square' %>" id="share_media_company"></i></td>
+          <td onclick="toggleAbility('share_media', 'department')"><i class="far <%= @user_abilities.share_media == "department" ? 'fa-check-square' : 'fa-square' %>" id="share_media_department"></i></td>
+          <td onclick="toggleAbility('share_media', 'team')"><i class="far <%= @user_abilities.share_media == "team" ? 'fa-check-square' : 'fa-square' %>" id="share_media_team"></i></td>
+          <td onclick="toggleAbility('share_media', 'user')"><i class="far <%= @user_abilities.share_media == "user" ? 'fa-check-square' : 'fa-square' %>" id="share_media_user"></i></td>
+          <td onclick="toggleAbility('share_media', 'none')"><i class="far <%= @user_abilities.share_media == "none" ? 'fa-check-square' : 'fa-square' %>" id="share_media_none"></i></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<script type="text/javascript">
+  new PerfectScrollbar('#ability-table');
+  function showDropdown() {
+    $(".dropdown-menu").toggle();
+  }
+  function toggleAbility(type, value) {
+    $('#user_ability_' + type).val(value);
+    sendForm();
+  }
+  function toggleCreate(type) {
+    if( $('#create_' + type).hasClass('on') ) {
+      $('#user_ability_create_' + type).val('none');
+    } else {
+      $('#user_ability_create_' + type).val('company');
+    }
+    sendForm();
+  }
+  function sendForm() {
+    $('#ability_form').submit();
+  }
+  $('#ability_form').on('submit', function(e) {
+    e.preventDefault();
+    var URL = "<%= update_ability_preset_path(params[:type], params[:abilities]) %>";
+    var formData = new FormData(document.getElementById('ability_form'));
+    $.ajax({
+      url: URL,
+      type: 'post',
+      async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        if( res.ability.edit_company ) {
+          if( $('#edit_company').hasClass('off') ) {
+            $('#edit_company').removeClass('off').addClass('on');
+          }
+        } else {
+          if( $('#edit_company').hasClass('on') ) {
+            $('#edit_company').removeClass('on').addClass('off');
+          }
+        }
+        if( res.ability.create_department == 'none') {
+          if( $('#create_department').hasClass('on') ) {
+            $('#create_department').removeClass('on').addClass('off');
+          }
+        } else {
+          if( $('#create_department').hasClass('off') ) {
+            $('#create_department').removeClass('off').addClass('on');
+          }
+        }
+        if( res.ability.create_team == 'none') {
+          if( $('#create_team').hasClass('on') ) {
+            $('#create_team').removeClass('on').addClass('off');
+          }
+        } else {
+          if( $('#create_team').hasClass('off') ) {
+            $('#create_team').removeClass('off').addClass('on');
+          }
+        }
+        if( res.ability.create_pitch == 'none') {
+          if( $('#create_pitch').hasClass('on') ) {
+            $('#create_pitch').removeClass('on').addClass('off');
+          }
+        } else {
+          if( $('#create_pitch').hasClass('off') ) {
+            $('#create_pitch').removeClass('off').addClass('on');
+          }
+        }
+        if( res.ability.create_media == 'none') {
+          if( $('#create_media').hasClass('on') ) {
+            $('#create_media').removeClass('on').addClass('off');
+          }
+        } else {
+          if( $('#create_media').hasClass('off') ) {
+            $('#create_media').removeClass('off').addClass('on');
+          }
+        }
+
+        if( res.ability.view_department ) {
+          $('#view_department_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_department_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_department_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_department_' + res.ability.view_department).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.edit_department ) {
+          $('#edit_department_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_department_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_department_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_department_' + res.ability.edit_department).removeClass('fa-square').addClass('fa-check-square');
+        }
+
+        if( res.ability.view_team ) {
+          $('#view_team_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_team_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_team_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_team_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_team_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_team_' + res.ability.view_team).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.edit_team ) {
+          $('#edit_team_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_team_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_team_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_team_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_team_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_team_' + res.ability.edit_team).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.share_team ) {
+          $('#share_team_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_team_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_team_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_team_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_team_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_team_' + res.ability.share_team).removeClass('fa-square').addClass('fa-check-square');
+        }
+
+        if( res.ability.view_stats ) {
+          $('#view_stats_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_stats_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_stats_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_stats_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_stats_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_stats_' + res.ability.view_stats).removeClass('fa-square').addClass('fa-check-square');
+        }
+
+        if( res.ability.view_pitch ) {
+          $('#view_pitch_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_pitch_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_pitch_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_pitch_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_pitch_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_pitch_' + res.ability.view_pitch).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.edit_pitch ) {
+          $('#edit_pitch_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_pitch_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_pitch_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_pitch_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_pitch_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_pitch_' + res.ability.edit_pitch).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.share_pitch ) {
+          $('#share_pitch_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_pitch_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_pitch_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_pitch_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_pitch_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_pitch_' + res.ability.share_pitch).removeClass('fa-square').addClass('fa-check-square');
+        }
+
+        if( res.ability.view_media ) {
+          $('#view_media_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_media_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_media_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_media_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_media_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#view_media_' + res.ability.view_media).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.edit_media ) {
+          $('#edit_media_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_media_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_media_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_media_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_media_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#edit_media_' + res.ability.edit_media).removeClass('fa-square').addClass('fa-check-square');
+        }
+        if( res.ability.share_media ) {
+          $('#share_media_company').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_media_department').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_media_team').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_media_user').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_media_none').removeClass('fa-check-square').addClass('fa-square');
+          $('#share_media_' + res.ability.share_media).removeClass('fa-square').addClass('fa-check-square');
+        }
+      }
+    })
+  })
+</script>

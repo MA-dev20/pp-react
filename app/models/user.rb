@@ -12,6 +12,9 @@ class User < ApplicationRecord
   has_many :catchwords, dependent: :destroy
   has_many :objection_lists, dependent: :destroy
   has_many :objections, dependent: :destroy
+  has_many :shared_folders, dependent: :destroy
+  has_many :shared_content, dependent: :destroy
+  has_many :shared_pitches, dependent: :destroy
 
   has_many :teams, dependent: :destroy
   has_many :team_users, dependent: :destroy
@@ -25,7 +28,6 @@ class User < ApplicationRecord
   has_many :ratings, dependent: :destroy
   has_many :game_turn_ratings, dependent: :destroy
   has_many :user_ratings, dependent: :destroy
-  has_one :coach, dependent: :destroy
   has_many :pitch_videos, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :videos, dependent: :destroy

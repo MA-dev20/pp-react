@@ -84,7 +84,7 @@ class CompanyController < ApplicationController
 
   private
 	def company_params
-	  params.require(:company).permit(:name, :logo, :employees, :message, :color_hex)
+	  params.require(:company).permit(:name, :logo, :employees, :message, :color_hex, :company_type)
 	end
 	def user_params
 	  params.require(:company).permit(:fname, :lname, :phone, :email, :position)

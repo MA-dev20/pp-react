@@ -5,6 +5,27 @@ class TaskMediaController < ApplicationController
     @task_medium = @company.task_media.new(task_medium_params)
     @task_medium.user = @user
     if @task_medium.save
+      if @task_medium.media_type == 'pdf'
+        path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
+    	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
+    	  Dir.chdir(path)
+    	  Dir.glob("*.png").each do |img|
+      		task_medium = TaskMedium.create(company: @task_medium.company, user: @task_medium.user, image: File.open(img), media_type: 'pdf_image')
+      		File.delete(img)
+        end
+      end
+      render json: {id: @task_medium.id}
+    else
+      flash[:alert] = "Konnte Media nicht speichern!"
+      render json: {error: true}
+    end
+  end
+
+  def create_global
+    @task_medium = @company.task_media.new(task_medium_params)
+    @task_medium.user = @user
+    @task_medium.available_for = 'global'
+    if @task_medium.save
       render json: {id: @task_medium.id}
     else
       flash[:alert] = "Konnte Media nicht speichern!"

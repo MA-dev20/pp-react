@@ -5,7 +5,11 @@
     <div class="preview"></div>
     <div class="droparea">
       <div class="info">Drag & Drop Datei</div>
-      <div class="btn inverted">Datei auswählen</div>
+      <input type="file" name="" value="" id="file_upload_field">
+      <label for="file_upload_field">
+        <div class="btn inverted">Datei auswählen</div>
+      </label>
+
     </div>
     <%= form_for :task_medium, url: create_media_path, html: {id: 'media-form'} do |f| %>
     <%= f.hidden_field :media_type, value: '' %>
@@ -24,8 +28,18 @@
     <% end %>
   </div>
 </div>
+<div class="popup" id="popup">
+	<div class="img-container">
+		<%= image_tag '', id: 'user_image' %>
+	</div>
+   	<div class="center">
+    	<div class="btn btn-green" id="crop">speichern</div>
+   	</div>
+   	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+</div>
 <script>
   var files;
+  var image_file;
   function newContent() {
     $('#new-content').toggle();
     $('.droparea').show();
@@ -38,7 +52,6 @@
     toggleNewContent();
     newContent();
   <% end %>
-
   var DropZone = $('.droparea')
 	DropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
 		e.preventDefault();
@@ -55,6 +68,10 @@
 		files = e.originalEvent.dataTransfer.files;
     handleFiles();
 	});
+  $('#file_upload_field').on('change', function(e) {
+    files = e.target.files;
+    handleFiles();
+  })
   function handleFiles() {
     if (files[0]['type'].split('/')[0] === 'audio') {
       $('#task_medium_media_type').val('audio');
@@ -68,9 +85,7 @@
 		} else if (files[0]['type'].split('/')[0] === 'image') {
       $('#task_medium_media_type').val('image');
       $('.droparea').hide();
-      var image = document.createElement('img');
-      image.src = URL.createObjectURL(files[0]);
-      $('.preview').append(image);
+      crop(URL.createObjectURL(files[0]));
     } else if (files[0]['type'].split('/')[0] === 'video') {
       $('#task_medium_media_type').val('video');
       $('.droparea').hide();
@@ -92,12 +107,16 @@
   }
   $("#media-form").on('submit', function(e) {
     e.preventDefault();
+    <% if controller.controller_name == "backoffice" && controller.action_name == 'content' %>
+    var URL = "<%= create_global_media_path %>";
+    <% else %>
     var URL = "<%= create_media_path %>";
+    <% end %>
     var formData = new FormData(document.getElementById('media-form'));
     if ( $('#task_medium_media_type').val() == 'audio' ) {
       formData.append( $('#task_medium_audio').attr('name'), files[0] );
     } else if ( $('#task_medium_media_type').val() == 'image' ) {
-      formData.append( $('#task_medium_image').attr('name'), files[0] );
+      formData.append( $('#task_medium_image').attr('name'), image_file );
     } else if ( $('#task_medium_media_type').val() == 'video' ) {
       formData.append( $('#task_medium_video').attr('name'), files[0] );
     } else if ( $('#task_medium_media_type').val() == 'pdf' ) {
@@ -120,4 +139,53 @@
     })
   })
 
+  // cropper
+  function showPopup() {
+    $('#popup').show();
+  }
+  function hidePopup() {
+    $('#popup').hide();
+  }
+	(function ($) {
+	  $.each(['show', 'hide'], function (i, ev) {
+	    var el = $.fn[ev];
+	    $.fn[ev] = function () {
+	      this.trigger(ev);
+	      return el.apply(this, arguments);
+	    };
+	  });
+  })(jQuery);
+  var image = document.getElementById('user_image');
+  function crop(src) {
+    image.src = src;
+    $('#popup').show();
+  }
+  $('#popup').on('show', function() {
+		cropper = new Cropper(image, {
+			aspectRatio: 1.77,
+		});
+	})
+  $('#popup').on('hide', function() {
+		cropper.destroy();
+		cropper = null;
+	})
+  $('#crop').on('click', function() {
+		var initialURL, canvas;
+		if(cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+      var preview = document.createElement('img');
+      preview.src = canvas.toDataURL();
+      $('.preview').append(preview);
+			canvas.toBlob(function(blob) {
+        var URL = "<%= create_media_path %>";
+				var date = new Date().getTime();
+				image_file = new window.File([blob], 'avatar_'+date+'.jpg', {type: 'image/jpg'});
+			});
+      $('#popup').hide();
+		};
+	})
 </script>

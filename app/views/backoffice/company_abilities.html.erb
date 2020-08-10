@@ -1,5 +1,20 @@
 <div class="card" id="ability-card">
   <h3>Abilities</h3>
+  <div class="dropdown" id="ability-dropdown">
+    <div class="dropdown-text" onclick="showDropdown()"><%= params[:abilities] %><i class="fas fa-caret-down"></i></div>
+    <div class="dropdown-menu">
+      <div class="link">
+        User<%= link_to '', backoffice_company_abilities_path(abilities: 'user') %>
+      </div>
+      <div class="link">
+        Admin
+        <%= link_to '', backoffice_company_abilities_path(abilities: 'admin') %>
+      </div>
+      <div class="link">
+        Root<%= link_to '', backoffice_company_abilities_path(abilities: 'root') %>
+      </div>
+    </div>
+  </div>
   <div class="table" id='ability-table'>
     <table>
       <thead>
@@ -13,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <%= form_for(:user_ability, url: update_user_abilities_path(@company, 'user'), html: {id: "ability_form"}) do |f| %>
+        <%= form_for(:user_ability, url: update_user_abilities_path(@company, params[:abilities]), html: {id: "ability_form"}) do |f| %>
           <%= f.hidden_field :edit_company, value: @user_abilities.edit_company %>
           <%= f.hidden_field :view_department, value: @user_abilities.view_department %>
           <%= f.hidden_field :create_department, value: @user_abilities.create_department %>
@@ -221,6 +236,9 @@
 </div>
 <script type="text/javascript">
   new PerfectScrollbar('#ability-table');
+  function showDropdown() {
+    $(".dropdown-menu").toggle();
+  }
   function toggleAbility(type, value) {
     $('#user_ability_' + type).val(value);
     sendForm();
@@ -238,13 +256,7 @@
   }
   $('#ability_form').on('submit', function(e) {
     e.preventDefault();
-    <% if params[:abilities] == 'user' %>
-    var URL = "<%= update_user_abilities_path(@company, 'user') %>";
-    <% elsif params[:abilities] == 'admin' %>
-    var URL = "<%= update_user_abilities_path(@company, 'admin') %>";
-    <% elsif params[:abilities] == 'root' %>
-    var URL = "<%= update_user_abilities_path(@company, 'root') %>";
-    <% end %>
+    var URL = "<%= update_user_abilities_path(@company, params[:abilities]) %>";
     var formData = new FormData(document.getElementById('ability_form'));
     $.ajax({
       url: URL,

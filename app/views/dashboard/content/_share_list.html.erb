@@ -1,0 +1,94 @@
+<% if params[:share_list] %>
+<% if params[:type] == 'catchword' %>
+  <% this_list = CatchwordList.find(params[:share_list]) %>
+<% else %>
+  <% this_list = ObjectionList.find(params[:share_list]) %>
+<% end %>
+<div class="background-blur" id="shareList" style="display: block">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeShareList()' %>
+    <h3>Liste teilen mit:</h3>
+    <%= form_for :list, url: share_list_path(params[:type], this_list), html: {id: 'shareForm'} do |f| %>
+    <div class="form-group">
+      <%= f.text_field :email, placeholder: 'E-Mail eingeben', class: 'form-field' %>
+    </div>
+    <div class="btns">
+      <div class="btn inverted" onclick='closeShareList()'>Cancel</div>
+      <%= f.submit 'teilen', class: 'btn' %>
+    </div>
+    <% end %>
+  </div>
+</div>
+<div class="background-blur" id="newUser">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
+    <h3>Ordner teilen mit:</h3>
+    <form class="" action="index.html" method="post" id="newUserForm">
+      <div class="form-group list-table">
+        <label>Vorname</label>
+        <input type="text" placeholder="Vornamen eingeben" name="user[fname]" value="" id="user_fname" class='form-field'>
+      </div>
+      <div class="form-group list-table">
+        <label>Nachname</label>
+        <input type="text" placeholder="Nachnamen eingeben" name="user[lname]" value="" id="user_lname" class='form-field'>
+      </div>
+      <div class="btns">
+        <div class="btn inverted" onclick='closeNewUser()'>Cancel</div>
+        <input type="submit" name="commt" value="erstellen" data-diavle-with="teilen" class="btn">
+      </div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+  function closeShareList() {
+    $('#shareList').hide();
+  }
+  function closeNewUser() {
+
+  }
+  $('#shareForm').on('submit', function(e) {
+    e.preventDefault();
+    var URL = '<%= share_list_path(params[:type], this_list) %>';
+    var formData = new FormData(document.getElementById('shareForm'));
+    $.ajax({
+      url: URL,
+      type: 'post',
+      cache: false,
+    	async: true,
+    	contentType: false,
+    	processData: false,
+      data: formData,
+    	beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+    	success: function (res) {
+        if( res.success ) {
+          alert(res.success);
+          closeShareList();
+        } else if ( res.new_user ) {
+          $('#newUser').show();
+          $('#newUserForm').on('submit', function(ev) {
+            ev.preventDefault();
+            var user_url = '/share/users/'+res.new_user+'/update_name';
+            userData = new FormData(document.getElementById('newUserForm'));
+            $.ajax({
+              url: user_url,
+              type: 'post',
+              cache: false,
+              async: true,
+              contentType: false,
+              processData: false,
+              data: userData,
+              beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+              success: function(user_res) {
+                closeShareList();
+                $('#newUser').hide();
+              }
+            })
+          })
+        } else if ( res.error ){
+          alert(res.error);
+        }
+  		}
+    })
+})
+</script>
+<% end %>

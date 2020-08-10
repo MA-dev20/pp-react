@@ -11,7 +11,7 @@ class TeamsController < ApplicationController
 	  redirect_to dashboard_pitches_path('', team: @team.id, pitch_id: params[:pitch_id]) if params[:team][:site] != 'teams'
 	else
 	  redirect_to dashboard_teams_path if params[:team][:site] == 'teams'
-	  redirect_to dashboard_path if params[:team][:site] != 'teams'
+	  redirect_to redirect_to dashboard_pitches_path('', pitch_id: params[:pitch_id]) != 'teams'
 	end
   end
 

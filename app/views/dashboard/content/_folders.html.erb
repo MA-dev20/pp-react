@@ -3,13 +3,18 @@
   <h3>Ordner</h3>
   <% @folders.each do |f| %>
     <div class="card" id="folder_<%= f.id %>">
+      <% if can? :edit, f %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Edit</div>
+          <% if controller.controller_name != "backoffice" %>
+          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Share</div>
+          <% end %>
           <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
         </div>
       </div>
+      <% end %>
       <img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
       <div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
       <div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
@@ -23,6 +28,32 @@
 </div>
 <% end %>
 <script type="text/javascript">
+  function redirectFolder(fID) {
+		if ( fID == 'libary' ) {
+			var URL = "<%= dashboard_content_path %>";
+    } else if ( fID == 'my_content' ) {
+      var URL = "<%= dashboard_my_content_path %>";
+    } else if ( fID == 'shared_content') {
+      var URL = "<%= dashboard_shared_content_path %>";
+    } else if ( fID == 'bo_libary' ) {
+      <% if @company %>
+      var URL = "<%= backoffice_company_content_path(@company) %>";
+      <% end %>
+		} else if (fID == 'bo_content') {
+      var URL = "<%= backoffice_content_path %>";
+    } else {
+			var URL = "?folder_id=" + fID;
+		}
+		location.replace(URL);
+	}
+  function shareFolder(e) {
+    var mediaID = $(e).attr('data-id');
+    <% if params[:folder_id] %>
+      location.replace('?folder_id=<%= params[:folder_id] %>&share_content='+mediaID);
+    <% else %>
+    location.replace('?share_folder='+mediaID);
+    <% end %>
+  }
   function deleteFolder(e) {
 		var mediaID = $(e).attr('data-id');
 		var URL = '/content_folder/'+mediaID+'/delete';

@@ -91,8 +91,8 @@
       <% end %>
     </div>
     <div class="btns">
-      <div class="btn inverted">close</div>
-      <div class="btn">speichern</div>
+      <div class="btn inverted" onclick="closeListPopup()">close</div>
+      <div class="btn" onclick="submitListForm()">speichern</div>
     </div>
   </div>
 </div>
@@ -101,6 +101,31 @@
   function closeListPopup() {
     $('#editList').hide();
   }
+  function submitListForm() {
+    $('#editListForm').submit();
+  }
+  $('#editListForm').on('submit', function(e) {
+    e.preventDefault();
+    var URL = '<%= edit_list_path(@liste) %>';
+    var formData = new FormData(document.getElementById('editListForm'));
+    $.ajax({
+      url: URL,
+      type: "post",
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: formData,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function (res) {
+        <% if params[:folder_id] %>
+          location.replace("<%= dashboard_my_content_url(folder_id: params[:folder_id]) %>");
+        <% else %>
+          location.replace("<%= dashboard_my_content_url %>");
+        <% end %>
+      }
+    })
+  })
   $('#addEntryForm').on('submit', function(e) {
     e.preventDefault();
     var URL = '<%= list_add_entry_path(@liste) %>';

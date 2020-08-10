@@ -1,41 +1,58 @@
-<div class="card" id="pitch">
-  <h3>Tasks</h3>
-  <div class="table" id="tasks-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Tasktitle</th>
-          <th>Type</th>
-          <th>Zeit</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @task_order %>
-        <% @task_order.each do |t| %>
-          <tr id="" class="taskname <%= @task && @tasks == t ? 'highlighted' : '' %>">
-            <td><%= t.task.title %></td>
-            <td><%= t.task.task_type %></td>
-            <td><%= t.task.time %></td>
-          </tr>
-        <% end %>
-        <% else %>
-        <% @tasks.each do |t| %>
-          <tr id="" class="taskname <%= @task && @tasks == t ? 'highlighted' : '' %>">
-            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.title %></td>
-            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.task_type %></td>
-            <td <%= params[:content] ? "onclick=redirect("+ t.id.to_s + ")" : "" %>><%= t.time %></td>
-          </tr>
-        <% end %>
+<% if @tasks && @tasks.count != 0 %>
+  <div class="files">
+    <h3>Tasks</h3>
+    <% @tasks.each do |f| %>
+      <div class="card" id="task_<%= f.id %>">
+        <div class="dropdown">
+          <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+          <div class="dropdown-Menu">
+            <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showTask(this)">Edit</div>
+            <div class="point" data-id="<%= f.id %>" onclick="deleteTask(this)">Löschen</div>
+          </div>
+        </div>
 
-        <% end %>
-      </tbody>
-    </table>
+        <div class="thumb">
+          <% if f.task_medium %>
+            <% if f.task_medium.media_type == 'video' %>
+              <%= image_tag f.task_medium.video.thumb.url, class: 'image' %>
+              <i class="fas fa-play-circle"></i>
+            <% elsif f.task_medium.media_type == 'image' %>
+              <%= image_tag f.task_medium.image.url, class: 'image' %>
+            <% elsif f.task_medium.media_type == 'audio' %>
+              <div class="list-icon">
+                <%= image_tag 'dash/audio.png' %>
+              </div>
+              <%= image_tag 'dash/placeholder.png', class: 'image' %>
+            <% elsif f.task_medium.media_type == 'pdf' %>
+              <div class="list-icon">
+                <%= image_tag 'dash/import-PDF.png' %>
+              </div>
+              <%= image_tag 'dash/placeholder.png', class: 'image' %>
+            <% end %>
+          <% else %>
+          <div class="list-icon">
+            <%= image_tag 'dash/no-image-icon.png' %>
+          </div>
+          <%= image_tag 'dash/placeholder.png', class: 'image' %>
+          <% end %>
+        </div>
+
+        <div class="text">
+          <div class="title" id="task_title_<%= f.id %>"><%= f.title %><div class="ellipsis">...</div></div>
+          <% if f.task_medium %>
+          <% if f.task_medium.media_type == 'video' %>
+          <div class="time"><%= image_tag 'dash/video-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+          <% elsif f.task_medium.media_type == 'audio' %>
+          <div class="time"><%= image_tag 'dash/audio.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+          <% elsif f.task_medium.media_type == 'pdf' %>
+          <div class="time"><%= image_tag 'dash/import-PDF.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+          <% else %>
+          <div class="time"><%= image_tag 'dash/image-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+          <% end %>
+          <% end %>
+          <div class="time"><%= image_tag 'dash/image-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+        </div>
+      </div>
+    <% end %>
   </div>
-</div>
-<script type="text/javascript">
-  new PerfectScrollbar('#tasks-table');
-  function redirect(tID) {
-      var url = "<%= backoffice_company_url(@company) %>?content=" + tID;
-      window.location.replace(url);
-  }
-</script>
+<% end %>

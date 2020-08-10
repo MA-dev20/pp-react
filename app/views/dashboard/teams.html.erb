@@ -86,7 +86,7 @@
 							<td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.count %></td>
 							<td onclick="redirect(<%= t.id %>)"><%= t.ges_rating / 10.0 %></td>
 							<!-- <td class="edit"><%#= link_to '', dashboard_team_path(t.id, edit: true), class: 'far fa-edit' %></td> -->
-							<!-- <td class="stats"><%#= link_to '', dashboard_team_stats_path(t.id), class: 'far fa-chart-bar' %></td> -->							
+							<!-- <td class="stats"><%#= link_to '', dashboard_team_stats_path(t.id), class: 'far fa-chart-bar' %></td> -->
 							<td class="edit">
 								<a href="<%= dashboard_team_path(t.id, edit: true) %>">
 									<%= inline_svg_tag 'dash/new_icons/edit-user.svg', class: 'edit-icon' %>
@@ -279,9 +279,7 @@
 	<% else %>
 
 	<div class="card" id="user" style="<%= @user ? 'display: none' : '' %>">
-		<h3>Nutzer
-			<span id="inactiveuser" onclick="toggleInUser()">Inactive User</span>
-		</h3>
+		<h3>Nutzer</h3>
 
 		<div class="table" id="users-table">
 			<table>
@@ -324,51 +322,11 @@
 			</table>
 		</div>
 	</div>
-	<div class="card" id="inactive-users" style="display: none">
-		<h3>
-			<!-- <i class="fas fa-arrow-left back" onclick="toggleInUser()"></i> -->
-			<span onclick="toggleInUser()" class="back-span">
-				<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
-			</span>
-			Inactive Nutzer
-		</h3>
-		<div class="table" id="users-table">
-			<table>
-				<thead>
-					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>akzeptieren</th>
-						<th>löschen</th>
-					</tr>
-				</thead>
-				<tbody>
-					<% @users.each do |u| %>
-						<tr class="username-inactive">
-							<td class="img"><%= image_tag u.avatar.url %></td>
-							<td class="name"><%= u.fname %> <%= u.lname %></td>
-							<td class="accept"><%= link_to '', make_user_path(@company, u.id), class: 'fas fa-check-circle', method: 'put' %></td>
-							<td class="remove active">
-								<%#= link_to '', destroy_user_path(u.id, site: 'dashboard'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du den Nutzer löschen willst?'} %>
-								<a href="<%= destroy_user_path(u.id, site: 'dashboard') %>" data-confirm="Bist du sicher das du den Nutzer löschen willst?">
-									<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'trash-cust-icon' %>
-								</a>
-							</td>
-						</tr>
-					<% end %>
-				</tbody>
-			</table>
-		</div>
-	</div>
 	<script>
 		new PerfectScrollbar('#users-table');
 		function toggleUser() {
 			$('#user').toggle();
 			$('#createUser').toggle();
-		}
-		function toggleInUser() {
-			$('#user').toggle();
-			$('#inactive-users').toggle();
 		}
 	</script>
 	<% end %>

@@ -12,6 +12,11 @@ class ObjectionList < ApplicationRecord
 	self.image = Random.rand(8)
   end
 
+  before_save do
+    if self.content_folder
+      self.available_for = self.content_folder.available_for
+    end
+  end
 
   def image_url
 	return 'randomPics/objections/'+(self.image + 1).to_s+'.jpg'

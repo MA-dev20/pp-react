@@ -1,5 +1,5 @@
 class UserAbilitiesController < ApplicationController
-  before_action :set_company
+  before_action :set_company, only: [:update]
 
   def update
     @user_ability = @company.user_abilities.find_by(role: params[:role])
@@ -10,6 +10,12 @@ class UserAbilitiesController < ApplicationController
       @user_ability.role = params[:role]
       @user_ability.save
     end
+    render json: {ability: @user_ability}
+  end
+
+  def update_preset
+    @user_ability = UserAbility.find_by(name: params[:type] + '_abilities', role: params[:role])
+    @user_ability.update(ability_params)
     render json: {ability: @user_ability}
   end
 

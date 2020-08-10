@@ -26,68 +26,367 @@ class BackofficeController < ApplicationController
   end
 
   def company
-    @teams = @company.teams.order(:name)
-    @team = Team.find_by(id: params[:team]) if params[:team]
-    @users = @team.users.order("lname") if @team
-    @users = @company.users.order("lname") if !@users
-    @user = @company.users.find_by(id: params[:edit_user]) if params[:edit_user]
-    @company_user = @company.company_users.find_by(user_id: params[:edit_user]) if params[:edit_user]
+  end
 
-    @pitches = @company.pitches.order(:title)
-    @pitch = Pitch.find_by(id: params[:pitch]) if params[:pitch]
-    @task_order = @pitch.task_orders.order(:order) if @pitch
-    @tasks = @company.tasks.order(:title)
-
-    @task = Task.find_by(id: params[:content]) if params[:content]
-    @medium = @task.task_medium if @task
-    @media = @company.task_media.order(:media_type) if !@medium
-
-    if params[:abilities] == 'user'
-      @user_abilities = @company.user_abilities.find_by(role: 'user')
-      @user_abilities = UserAbility.find_by(name: 'Standard', role: 'user') if !@user_abilities
-      @user_abilities = UserAbility.create(name: 'Standard', role: 'user') if !@user_abilities
+  def company_content
+    @folders = @company.content_folders.where(content_folder: nil)
+    @files = @company.task_media.where(content_folder: nil).where.not(media_type: "pdf_image")
+    @lists = []
+    @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+      entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
+      @lists << entry
     end
-    if params[:abilities] == 'admin'
-      @user_abilities = @company.user_abilities.find_by(role: 'admin')
-      @user_abilities = UserAbility.find_by(name: 'Standard', role: 'admin') if !@user_abilities
-      @user_abilities = UserAbility.create(name: 'Standard', role: 'admin') if !@user_abilities
+    @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+      entry = {type: 'objection', id: ol.id, name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+      @lists << entry
     end
-    if params[:abilities] == 'root'
-      @user_abilities = @company.user_abilities.find_by(role: 'root')
-      @user_abilities = UserAbility.find_by(name: 'Standard', role: 'root') if !@user_abilities
-      @user_abilities = UserAbility.create(name: 'Standard', role: 'root') if !@user_abilities
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @lists = []
+      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
     end
   end
 
-  def catchwords
-	CatchwordList.create(name: 'Peters Catchwords') if CatchwordList.find_by(name: 'Peters Catchwords').nil?
-	@lists = @company.catchword_lists if @company
-	@list = CatchwordList.find(params[:list_id]) if params[:list_id]
-	@lists = CatchwordList.where(company_id: nil, game_id: nil) if !@lists
-	@list = @lists.first if @lists.count != 0 && !@list
+  def company_teams
+    @teams = @company.teams
+    @users = @company.users
+    if params[:team]
+      @team = Team.find(params[:team])
+      @users = @team.users
+    end
   end
-  def objections
-	ObjectionList.create(name: 'Peters Objections') if ObjectionList.find_by(name: 'Peters Objections').nil?
-	@lists = @company.objection_lists if @company
-	@list = ObjectionList.find(params[:list_id]) if params[:list_id]
-	@lists = ObjectionList.where(company_id: nil, game_id: nil) if !@lists
-	@list = @lists.first if @lists.count != 0 && !@list
+
+  def company_pitches
+    @pitches = @company.pitches
+    if params[:pitch]
+      @pitch = Pitch.find(params[:pitch])
+      @tasks = @pitch.tasks
+    end
   end
-  def ratings
-	RatingList.create(name: 'Peters Scores') if RatingList.find_by(name: 'Peters Scores').nil?
-	@lists = @company.rating_lists if @company
-	@list = RatingList.find(params[:list_id]) if params[:list_id]
-	@lists = RatingList.where(company_id: nil) if !@lists
-	@list = @lists.first if @lists.count != 0 && !@list
+
+  def company_abilities
+    if params[:abilities]
+      @user_abilities = @company.user_abilities.find_by(role: params[:abilities])
+      @user_abilities = UserAbility.find_by(name: @company.company_type + '_abilities', role: params[:abilities]) if !@user_abilities
+      @user_abilities = UserAbility.create(name: @company.company_type + '_abilities', role: params[:abilities]) if !@user_abilities
+    end
   end
+
+  def search_content
+    if params[:search] && params[:search] != ''
+      @files = []
+      @company.task_media.search(params[:search]).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      @folders = []
+      @company.content_folders.search(params[:search]).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @lists = []
+      @company.catchword_lists.where.not(name: 'task_list').search(params[:search]).each do |cl|
+        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+      end
+      @company.objection_lists.where.not(name: 'task_list').search(params[:search]).each do |ol|
+        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      end
+    else
+      @folders = []
+      @files = []
+      @lists = []
+      @company.content_folders.where(content_folder: nil).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @company.task_media.where(content_folder: nil).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+    render json: {folders: @folders, files: @files, lists: @lists}
+  end
+
+  def content
+    @folders = @company.content_folders.where(content_folder: nil)
+    @files = @company.task_media.where(content_folder: nil).where.not(media_type: "pdf_image")
+    @lists = []
+    @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+      entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
+      @lists << entry
+    end
+    @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+      entry = {type: 'objection', id: ol.id, name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+      @lists << entry
+    end
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @lists = []
+      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
+    end
+  end
+
+  def company_teams
+    @teams = @company.teams
+    @users = @company.users
+    if params[:team]
+      @team = Team.find(params[:team])
+      @users = @team.users
+    end
+  end
+
+  def company_pitches
+    @pitches = @company.pitches
+    if params[:pitch]
+      @pitch = Pitch.find(params[:pitch])
+      @tasks = @pitch.tasks
+    end
+  end
+
+  def company_abilities
+    if params[:abilities]
+      @user_abilities = @company.user_abilities.find_by(role: params[:abilities])
+      @user_abilities = UserAbility.find_by(name: @company.company_type + '_abilities', role: params[:abilities]) if !@user_abilities
+      @user_abilities = UserAbility.create(name: @company.company_type + '_abilities', role: params[:abilities]) if !@user_abilities
+    end
+  end
+
+  def search_content
+    if params[:search] && params[:search] != ''
+      @files = []
+      @company.task_media.search(params[:search]).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      @folders = []
+      @company.content_folders.search(params[:search]).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @lists = []
+      @company.catchword_lists.where.not(name: 'task_list').search(params[:search]).each do |cl|
+        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+      end
+      @company.objection_lists.where.not(name: 'task_list').search(params[:search]).each do |ol|
+        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      end
+    else
+      @folders = []
+      @files = []
+      @lists = []
+      @company.content_folders.where(content_folder: nil).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @company.task_media.where(content_folder: nil).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+    render json: {folders: @folders, files: @files, lists: @lists}
+  end
+
+  def content
+    @folders = ContentFolder.where(available_for: 'global', content_folder: nil)
+    @files = TaskMedium.where(available_for: 'global', content_folder: nil).where.not(media_type: "pdf_image")
+    @lists = []
+    CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |cl|
+      entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
+      @lists << entry
+    end
+    ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |ol|
+      entry = {type: 'objection', id: ol.id, name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+      @lists << entry
+    end
+    if params[:folder_id]
+      @folder = ContentFolder.find(params[:folder_id])
+      @folders = @folder.content_folders
+      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @lists = []
+      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
+    end
+  end
+
+  def search_global_content
+    if params[:search] && params[:search] != ''
+      @files = []
+      TaskMedium.where(available_for: 'global').search(params[:search]).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      @folders = []
+      ContentFolder.where(available_for: 'global').search(params[:search]).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      @lists = []
+      CatchwordList.where(available_for: 'global').where.not(name: 'task_list').search(params[:search]).each do |cl|
+        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
+      end
+      ObjectionList.where(available_for: 'global').where.not(name: 'task_list').search(params[:search]).each do |ol|
+        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      end
+    else
+      @folders = []
+      @files = []
+      @lists = []
+      ContentFolder.where(available_for: 'global', content_folder: nil).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      TaskMedium.where(available_for: 'global', content_folder: nil).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image?
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |cl|
+        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
+        @lists << entry
+      end
+      ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |ol|
+        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
+        @lists << entry
+      end
+    end
+    render json: {folders: @folders, files: @files, lists: @lists}
+  end
+
 
   def abilities
-    @user_abilities = UserAbility.find_by(name: 'Standard', role: 'user')
-    @user_abilities = UserAbility.create(name: 'Standard', role: 'user') if !@user_abilities
-    @admin_abilities = UserAbility.find_by(name: 'Standard', role: 'admin')
-    @admin_abilities = UserAbility.create(name: 'Standard', role: 'admin', view_team: "user", create_team: 'user', edit_team: 'user', share_team: 'user', view_user: 'team', create_user: 'team', edit_user: 'team', share_user: 'team', view_stats: 'team', view_pitch: 'team', create_pitch: "team", edit_pitch: 'team', share_pitch: 'team', view_task: 'team', create_task: 'team', edit_task: 'team', share_task: 'team', view_media: 'team', create_media: 'team', edit_media: 'team', share_media: "team") if !@admin_abilities
-    @root_abilities = UserAbility.find_by(name: 'Standard', role: 'root')
-    @root_abilities = UserAbility.create(name: 'Standard', role: 'root', edit_company: true, view_department: 'company', create_department: 'company', edit_department: 'company', view_team: "user", create_team: 'user', edit_team: 'user', share_team: 'user', view_user: 'team', create_user: 'team', edit_user: 'team', share_user: 'team', view_stats: 'team', view_pitch: 'team', create_pitch: "team", edit_pitch: 'team', share_pitch: 'team', view_task: 'team', create_task: 'team', edit_task: 'team', share_task: 'team', view_media: 'team', create_media: 'team', edit_media: 'team', share_media: "team") if !@root_abilities
+    if params[:type] && params[:abilities]
+      @user_abilities = UserAbility.find_by(name: params[:type] + '_abilities', role: params[:abilities])
+      @user_abilities = UserAbility.create(name: params[:type] + '_abilities', role: params[:abilities]) if !@user_abilities
+    end
   end
 
   private

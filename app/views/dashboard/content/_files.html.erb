@@ -1,19 +1,24 @@
 <div class="files" style="<%= @files.count == 0 ? 'display: none' : 'display: block' %>">
   <h3>Dateien</h3>
   <% @files.each do |f| %>
-    <% if f.audio? || f.image? || f.video? %>
+    <% if f.audio? || f.image? || f.video? || f.pdf? %>
     <div class="card" id='media_<%= f.id %>'>
+      <% if can? :edit, f %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
             Edit
           </div>
+          <% if controller.controller_name != "backoffice" %>
+          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">Share</div>
+          <% end %>
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="deleteContent(this)">
             Löschen
           </div>
         </div>
       </div>
+      <% end %>
       <div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
           <% if f.media_type == 'video' %>
             <%= image_tag f.video.thumb.url, class: 'image' %>
@@ -26,6 +31,10 @@
             </div>
             <%= image_tag 'dash/placeholder.png', class: 'image' %>
           <% elsif f.media_type == 'pdf' %>
+            <div class="list-icon">
+              <%= image_tag 'dash/import-PDF.png' %>
+            </div>
+            <%= image_tag 'dash/placeholder.png', class: 'image' %>
           <% end %>
 
       </div>
@@ -35,6 +44,8 @@
           <div class="time"><%= image_tag 'dash/video-icon.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
           <% elsif f.media_type == 'audio' %>
           <div class="time"><%= image_tag 'dash/audio.png' %><%= (f.duration / 60).to_s + ':' + (f.duration % 60).to_s %> - <%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+          <% elsif f.media_type == 'pdf' %>
+          <div class="time"><%= image_tag 'dash/import-PDF.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
           <% else %>
           <div class="time"><%= image_tag 'dash/image-icon.png' %><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
           <% end %>
@@ -48,10 +59,19 @@
   <% end %>
 </div>
 <script type="text/javascript">
+  function shareMedia(e) {
+    var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+    <% if params[:folder_id] %>
+      location.replace('?folder_id=<%= params[:folder_id] %>&share_content='+mediaID);
+    <% else %>
+    location.replace('?share_content='+mediaID);
+    <% end %>
+  }
   function deleteContent(e) {
 		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
-		var URL = '/task_medium/'+mediaID+'/delete';
+    var URL = '/task_medium/'+mediaID+'/delete';
 		$.ajax({
 			url: URL,
 			type: 'put',

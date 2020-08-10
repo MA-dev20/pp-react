@@ -15,18 +15,27 @@ Rails.application.routes.draw do
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
-  get 'dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard'
+  get 'dashboard/', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
   get 'dashboard/teams/:team_id', to: 'dashboard#teams', as: 'dashboard_team'
   get 'dashboard/teams/:team_id/stats', to: 'dashboard#team_stats', as: 'dashboard_team_stats'
   get 'dashboard/users/:user_id/stats', to: 'dashboard#user_stats', as: 'dashboard_user_stats'
-  get 'dashboard/customize', to: 'dashboard#customize', as: 'dashboard_customize'
+  get 'dashboard/content', to: 'dashboard#content', as: 'dashboard_content'
+  get 'dashboard/content/libary', to: 'dashboard#my_content', as: 'dashboard_my_content'
+  get 'dashboard/content/shared', to: 'dashboard#shared_content', as: 'dashboard_shared_content'
+  get 'dashboard/content/peters', to: 'dashboard#peters_content', as: 'dashboard_peters_content'
   get 'dashboard/video', to: 'dashboard#video', as: 'dashboard_video'
   get 'dashboard/video/pitch/:turn_id', to: 'dashboard#pitch_video', as: 'dashboard_pitch_video'
   get 'dashboard/account', to: 'dashboard#account', as: 'account'
   get 'dashboard/company', to: 'dashboard#company', as: 'dash_company'
+
+  post 'share/content/:medium_id', to: 'share#share_content', as: 'share_content'
+  post 'share/list/:type/:list_id', to: 'share#share_list', as: 'share_list'
+  post 'share/folder/:folder_id', to: 'share#share_folder', as: 'share_folder'
+  post 'share/pitch/:pitch_id', to: 'share#share_pitch', as: 'share_pitch'
+  post 'share/users/:user_id/update_name', to: 'share#update_user'
 
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:id/edit_page', to: 'dashboard#select_folder', as: 'select_folder'
@@ -61,6 +70,7 @@ Rails.application.routes.draw do
   get '/pitches/:pitch_id/task/destroy', to: 'pitches#delete_task_card', as: 'delete_task_card'
 
   post 'task_medium/new', to: 'task_media#create', as: 'create_media'
+  post 'task_medium/global/new', to: 'task_media#create_global', as: 'create_global_media'
   post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
   put 'task_medium/:task_medium_id/delete', to: "task_media#delete", as: 'delete_media'
 
@@ -70,6 +80,7 @@ Rails.application.routes.draw do
 
   post 'lists/new', to: 'list#create', as: 'create_list'
   post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
+  put 'lists/:type/:list_id/delete', to: 'list#destroy', as: 'delete_list'
   post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
   post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
   post 'lists/:type/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
@@ -78,9 +89,14 @@ Rails.application.routes.draw do
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"
   get 'backoffice/companies/:company_id', to: 'backoffice#company', as: "backoffice_company"
-  get 'backoffice/catchwords', to: 'backoffice#catchwords', as: 'backoffice_catchwords'
-  get 'backoffice/objections', to: 'backoffice#objections', as: 'backoffice_objections'
-  get 'backoffice/ratings', to: 'backoffice#ratings', as: 'backoffice_ratings'
+  get 'backoffice/companies/:company_id/content', to: 'backoffice#company_content', as: "backoffice_company_content"
+  get 'backoffice/companies/:company_id/teams', to: 'backoffice#company_teams', as: 'backoffice_company_teams'
+  get 'backoffice/companies/:company_id/pitches', to: 'backoffice#company_pitches', as: 'backoffice_company_pitches'
+  get 'backoffice/companies/:company_id/abilities/:abilities', to: 'backoffice#company_abilities', as: 'backoffice_company_abilities'
+  post 'backoffice/companies/:company_id/search/content/', to: 'backoffice#search_content', as: 'backoffice_search_content'
+  get 'backoffice/content', to: 'backoffice#content', as: 'backoffice_content'
+  post 'backoffice/content/search', to: 'backoffice#search_global_content', as: 'backoffice_search_global_content'
+  get 'backoffice/abilities', to: 'backoffice#abilities', as: 'backoffice_abilities'
 
   # COMPANY
   post 'companies/register', to: 'company#register', as: 'register_company'
@@ -165,8 +181,7 @@ Rails.application.routes.draw do
   post 'rating/:rating_criterium_id/edit', to: 'customize#edit_rating', as: 'edit_rating'
   put 'words/record/:id', to: 'customize#recordWord', as: "record_word"
   put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
-  
-  get 'deletelist/:type/:list', to: 'customize#deleteList', as: 'delete_list'
+
   get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
 
   #Comments
@@ -182,4 +197,5 @@ Rails.application.routes.draw do
 
   #User Abilities
   post "company/:company_id/abilities/update/:role", to: 'user_abilities#update', as: 'update_user_abilities'
+  post 'abilities/:type/role/:role', to: 'user_abilities#update_preset', as: 'update_ability_preset'
 end

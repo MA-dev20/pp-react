@@ -1,34 +1,28 @@
-<div class="card" id="pitch">
+<% if !@pitch && @pitches.count != 0 %>
+<div class="files">
   <h3>Pitches</h3>
-  <div class="table" id="pitches-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Pitchname</th>
-          <th>Slides</th>
-          <th>Tasks</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr id="allTasks" class="pitchname <%= !@pitch ? 'highlighted' : '' %>">
-          <td onclick="redirect('all')">Alle Tasks</td>
-          <td onclick="redirect('all')" id="count"><%= @company.tasks.where(task_type: 'slide').count %></td>
-          <td onclick="redirect('all')" id="count"><%= @company.tasks.where.not(task_type: 'slide').count %></td>
-        </tr>
-        <% @pitches.each do |p| %>
-          <tr id="" class="pitchname <%= @pitch && @pitch == p ? 'highlighted' : '' %>">
-            <td onclick="redirect('<%= p.id %>')"><%= p.title %></td>
-            <td onclick="redirect('<%= p.id %>')"><%= p.tasks.where(task_type: 'slide').count %></td>
-            <td onclick="redirect('<%= p.id %>')"><%= p.tasks.where.not(task_type: 'slide').count %></td>
-          </tr>
+  <% @pitches.each do |p| %>
+    <div class="card" id="pitch_<%= p.id %>">
+      <div class="dropdown">
+        <i class="fas fa-ellipsis-v dropdown-icon"  aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
+        <div class="dropdown-Menu">
+          <div class="point" data-id="<%= p.id %>" onclick="editPitch(this)">Edit</div>
+          <div class="point" data-id="<%= p.id %>" onclick="deletePitch(this)">Löschen</div>
+        </div>
+      </div>
+      <div class="thumb" onclick="redirectPitch('<%= p.id %>')">
+        <% if p.image? %>
+        <%= image_tag p.image_url, class: 'image' %>
+        <% else %>
+        <%= image_tag 'dash/pitch_placeholder.png', class: 'image' %>
         <% end %>
-      </tbody>
-    </table>
-  </div>
+      </div>
+      <div class="text">
+        <div class="title" id="pitch_title_<%= p.id %>"><%= p.title %><div class="ellipsis">...</div></div>
+        <div class="time"><%= image_tag 'dash/image-icon.png' %><%= p.user ? p.user.fname[0] + '. ' + p.user.lname : '' %></div>
+      </div>
+    </div>
+  <% end %>
+
 </div>
-<script type="text/javascript">
-  function redirect(tID) {
-      var url = "<%= backoffice_company_url(@company) %>?pitch=" + tID;
-      window.location.replace(url);
-  }
-</script>
+<% end %>

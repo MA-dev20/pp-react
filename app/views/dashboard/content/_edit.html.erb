@@ -48,7 +48,11 @@
 		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
 		<%= form_for :task_medium, url: update_media_path(@content.id), html: {id: 'content_update-form'} do |f| %>
 		<div class="form-group">
+			<% if can? :edit, @content %>
 			<%= f.text_field :title, value: @content.title, class: 'form-field' %>
+			<% else %>
+			<h3><%= @content.title %></h3>
+			<% end %>
 		</div>
 		<% if @content.media_type == 'image' %>
 			<%= image_tag @content.image.url %>
@@ -59,11 +63,17 @@
 				<%= image_tag 'dash/audio.png' %>
 				<%= audio_tag @content.audio.url, controls: true, id: 'content_media' %>
 			</div>
+		<% elsif @content.media_type == 'pdf' %>
+		<div class="audio">
+			<iframe src="<%= @content.pdf.url %>" width="100%" height="500px"></iframe>
+		</div>
 		<% end %>
+		<% if can? :edit, @content %>
 		<div class="btns">
 			<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
 			<%= f.submit 'speichern', class: 'btn' %>
 		</div>
+		<% end %>
 		<% end %>
 	</div>
 	</div>
@@ -72,7 +82,7 @@
 		$('#content_update-form').on('submit', function(e) {
 			e.preventDefault();
 			var URL = '<%= update_media_path(@content) %>';
-			var formData = new FormData(document.getElementById('video_update-form'));
+			var formData = new FormData(document.getElementById('content_update-form'));
 			$.ajax({
 				url: URL,
 				type: "post",
@@ -84,9 +94,9 @@
 				beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 				success: function (res) {
 					<% if @content.content_folder %>
-						location.replace('<%= dashboard_customize_path %>?folder_id=<%= @content.content_folder_id %>');
+						location.replace('<%= dashboard_my_content_path(folder_id: @content.content_folder.id) %>');
 					<% else %>
-						location.replace('<%= dashboard_customize_path %>');
+						location.replace('<%= dashboard_my_content_path %>');
 					<% end %>
 				}
 			})

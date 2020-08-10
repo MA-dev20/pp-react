@@ -1,5 +1,26 @@
-<% @companies.each do |c| %>
-  <% if c.company_users.find_by(user: @admin).role != 'inactive' || c.company_users.find_by(user: @admin).role != 'inactive_user' %>
-    <%= link_to c.name, login_company_path(c.id) %>
+<div class="card" id="choose_company">
+  <h3>Wähle welches Dashboard du sehen möchtest!</h3>
+  <div class="company-list">
+  <% @companies.each do |c| %>
+    <% if c.company_users.find_by(user: @admin).role != 'inactive' || c.company_users.find_by(user: @admin).role != 'inactive_user' %>
+      <div class="company-card">
+        <div class="logo">
+          <% if c.logo? %>
+            <%= image_tag c.logo.url %>
+          <% else %>
+            <%= image_tag 'logo-m.png' %>
+          <% end %>
+        </div>
+        <div class="name">
+          <%= c.name %>
+        </div>
+        <%= link_to '', login_company_path(c.id) %>
+      </div>
+    <% end %>
   <% end %>
-<% end %>
+  </div>
+</div>
+<script type="text/javascript">
+  $('body').addClass('blur-filter');
+  new PerfectScrollbar('.company-list')
+</script>

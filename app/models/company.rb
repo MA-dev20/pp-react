@@ -11,6 +11,8 @@ class Company < ApplicationRecord
   has_many :pitches, dependent: :destroy
   has_many :tasks, dependent: :destroy
   has_many :task_media, dependent: :destroy
+  has_many :content_folders, dependent: :destroy
+  has_many :pitch_videos, dependent: :destroy
 
   has_many :catchword_lists, dependent: :destroy
   has_many :catchwords, dependent: :destroy
@@ -18,7 +20,6 @@ class Company < ApplicationRecord
   has_many :objections, dependent: :destroy
   has_many :rating_lists, dependent: :destroy
   has_many :do_and_donts, dependent: :destroy
-  has_one :coach, dependent: :destroy
   has_many :videos, dependent: :destroy
 
 

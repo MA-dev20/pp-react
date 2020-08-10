@@ -5,7 +5,7 @@ class TaskMedium < ApplicationRecord
 	mount_uploader :pdf, PdfUploader
 
   has_many :tasks
-  belongs_to :company
+  belongs_to :company, required: false
   belongs_to :department, required: false
   belongs_to :team, required: false
   belongs_to :user
@@ -19,15 +19,20 @@ class TaskMedium < ApplicationRecord
     end
   end
 
-	before_save do
+  before_save do
 	  if self.audio?
-		self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
-    self.title = self.audio_identifier if !self.title || self.title == ''
+		  self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
+      self.title = self.audio_identifier if !self.title || self.title == ''
 	  elsif self.video?
-		self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
-    self.title = self.video_identifier if !self.title || self.title == ''
-    elsif self.image
+		  self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
+      self.title = self.video_identifier if !self.title || self.title == ''
+    elsif self.image?
       self.title = self.image_identifier if !self.title || self.title == ''
+    elsif self.pdf?
+      self.title = self.pdf_identifier if !self.title || self.title == ''
 	  end
+    if self.content_folder
+      self.available_for = self.content_folder.available_for
+    end
 	end
 end

@@ -8,6 +8,7 @@ class Team < ApplicationRecord
   has_many :tasks
   has_many :task_media
 
+
   has_many :games, dependent: :destroy
   has_many :game_turns, dependent: :destroy
   has_many :game_ratings, dependent: :destroy
