@@ -96,7 +96,6 @@ class GamesController < ApplicationController
           @team.users << @user if @team
         end
         game_user_login @user
-        flash[:success] = 'Erfolgreich beigetreten!'
         redirect_to gm_join_path
         return
       elsif @user
@@ -205,6 +204,7 @@ class GamesController < ApplicationController
 	@turn = GameTurn.find(params[:turn_id])
 	@game = @turn.game
 	@task = @game.pitch.task_orders.find_by(order: @game.current_task).task
+  @turn.update(task: @task)
 	if @task.task_type == 'catchword'
 	  @turn.update(catchword: @task.catchword_list.catchwords.sample)
 	end
@@ -217,6 +217,7 @@ class GamesController < ApplicationController
   def upload_pitch
 	@turn = GameTurn.find(params[:turn_id])
 	@video = PitchVideo.new(video: params[:file])
+  @video.company = @turn.game.company
 	@video.user = current_game_user
 	@video.game_turn = @turn
 	flash[:alert] = 'Konnte Video nicht uploaden!' if !@video.save

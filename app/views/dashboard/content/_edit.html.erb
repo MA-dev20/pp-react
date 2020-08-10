@@ -115,9 +115,10 @@
 		<% end  %>
 	}
   function closeContentPopup() {
-		$('.background-blur').hide();
-		if( $('#content_media').length > 0 ) {
-			document.getElementById('content_media').pause()
-		}
+		<% if params[:folder_id] %>
+		location.replace('?folder_id=<%= params[:folder_id] %>);
+		<% else %>
+		location.replace('?');
+		<% end  %>
 	}
 </script>

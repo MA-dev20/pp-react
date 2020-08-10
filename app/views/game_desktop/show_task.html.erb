@@ -12,6 +12,9 @@
 <section id="skip">
 	Skip mit Leertaste
 </section>
+<% if @game.game_sound %>
+<%= audio_tag('game/task/task_sound.mp3', autoplay: true, id: 'theme') %>
+<% end %>
 <script type="text/javascript">
   countdown(15);
   function countdown(sec) {
