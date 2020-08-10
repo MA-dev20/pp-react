@@ -2468,4 +2468,8 @@ input[type="file"] {
             font-size: 1.7vh;
         }
     }
+
+    .folder-card:hover {
+        border-color: rgb(var(--custcolor)) !important;
+    }
 }
