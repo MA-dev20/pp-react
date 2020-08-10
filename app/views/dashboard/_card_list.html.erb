@@ -119,7 +119,7 @@
     </div>
     <% end %>
     <% if @pitch.tasks.count == 0 %>
-    <div class="left-card card add-first-task selected" onclick='addTask()'>
+    <div class="left-card card add-first-task selected open-modal" data-modal="option-modal">
         <%#= image_tag 'dash/icons/circle-plus-green.svg' %>
         <div class="plus-icon-container">
             <%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'plus-cust-icon' %>
