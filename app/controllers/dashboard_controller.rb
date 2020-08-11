@@ -403,7 +403,7 @@ class DashboardController < ApplicationController
   end
 
   def pitches
-	@pitches = @company.pitches.accessible_by(current_ability)
+  @pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
   @teams = @company.teams.accessible_by(current_ability)
@@ -421,7 +421,8 @@ class DashboardController < ApplicationController
   end
 
   def edit_pitch
-	@pitches = @admin.pitches
+  # @pitches = @admin.pitches
+  @pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
 		@task = @pitch.tasks.find(params[:task_id])
