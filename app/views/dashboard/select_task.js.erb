@@ -7,5 +7,5 @@ if ('<%= @task_type %>' === 'slide') {
     $('#selectedTask').removeClass('hide').show();
     $('#selectedTask').html("<%=j render partial: 'dashboard/pitches/new_task' %>");
 }
-$('#pitchLibraryModal').html("<%=j render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id } %>");
+$('#pitchLibraryModal').html("<%=j render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task.id, media_type: @type } %>");
 $('.selected-card-order').val('<%= @task_order.order %>');

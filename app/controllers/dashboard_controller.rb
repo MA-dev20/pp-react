@@ -465,13 +465,15 @@ class DashboardController < ApplicationController
   def select_folder
   @pitch = Pitch.find(params[:id])
   @task = Task.find(params[:task_id])
-	if params[:type] == 'first'
+  @type = params[:type]
+	if params[:order] == 'first'
 		@folders = @admin.content_folders.where(content_folder: nil)
-    	@files = @admin.task_media.where(content_folder: nil)
+    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
 	else
 		@folder = ContentFolder.find(params[:folder_id])
 		@folders = @folder.content_folders
-		@files = @folder.task_media.order(:title)
+    # @files = @folder.task_media.order(:title)
+		@files = @folder.task_media.where.not("#{params[:type].to_sym}" => nil).order(:title)
 	end
 	# if params[:folder_id]
     #   @folder = ContentFolder.find(params[:folder_id])
@@ -484,6 +486,18 @@ class DashboardController < ApplicationController
 	respond_to do |format|
 		format.js { render 'select_folder'}
 	end
+  end
+
+  def show_library_modal
+    @type = params[:type]
+    @pitch = Pitch.find(params[:id])
+    @task = Task.find(params[:task_id])
+    @folders = @admin.content_folders.where(content_folder: nil)
+    # @files = @admin.task_media.where(content_folder: nil)
+    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
+    respond_to do |format|
+      format.js { render 'show_library_modal'}
+    end
   end
 
   def add_media_content
@@ -501,12 +515,13 @@ class DashboardController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:selected_task_id])
 	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
-	@task_type = @task.task_type
+  @task_type = @task.task_type
+  @type = @task.task_medium.media_type
 	@admin = current_user
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
 	@folders = @admin.content_folders.where(content_folder: nil)
-    @files = @admin.task_media.where(content_folder: nil)
+  @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
 	respond_to do |format|
 		format.js { render 'select_task'}
 	end

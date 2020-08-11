@@ -236,7 +236,7 @@
 						<%= t.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
 						<%= t.hidden_field :media_type, value: 'image' %>
 						<label class="btn reversed upload" id="image_upload_btn">Upload</label>
-						<label class="btn reversed upload image-library library" id="">Image library</label>
+						<label class="btn reversed upload image-library" onclick="showLibraryModal('image', <%= @task.id %>)" id="">Image library</label>
 					</div>
 				</div>
 				<% end %>
@@ -301,7 +301,7 @@
 						<div class="">
 							<label class="btn reversed upload" id="video_upload_btn">Upload</label>
 							<div class="btn reversed upload open-modal record-video btn-ml-1">Record</div>
-							<label class="btn reversed upload library btn-ml-1" id="">Library</label>
+							<label class="btn reversed upload btn-ml-1" onclick="showLibraryModal('video', <%= @task.id %>)" id="">Library</label>
 						</div>
 						<div class="video-form">
 							<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -356,7 +356,7 @@
 						<div class="">
 							<label class="btn reversed upload" id="audio_upload_btn">Upload</label>
 							<div class="btn reversed upload record btn-ml-1">Record</div>
-							<label class="btn reversed upload library btn-ml-1" id="">Library</label>
+							<label class="btn reversed upload btn-ml-1" onclick="showLibraryModal('audio', <%= @task.id %>)" id="">Library</label>
 						</div>
 					</div>
 				</div>
@@ -454,9 +454,23 @@
 
 <script>
 
-	$('.library').on('click', function() {
-		$('#libraryModal').show();
-	})
+	// $('.library').on('click', function() {
+	// 	$('#libraryModal').show();
+	// })
+
+	function showLibraryModal(type, task_id) {
+		$.ajax({
+            url: '<%= show_library_modal_path(@pitch) %>',
+            type: 'GET',
+            dataType: "script",
+            data: {
+				type: type,
+				task_id: task_id
+            },
+            success: function (res) {
+            }
+        })
+	}
 
 	function processVimeoVideo(url) {
 		var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/;

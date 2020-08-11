@@ -23,7 +23,7 @@
 				<%= t.file_field :image, class: 'pdf-image-fileinput', id: 'pdf_task_medium_image', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
 				<label class="btn reversed upload btn-margin" id="pdf_image_upload_btn">Upload</label>
-				<label class="btn reversed upload image-library library btn-margin btn-ml-1" id="">Image library</label>
+				<label class="btn reversed upload image-library btn-margin btn-ml-1" onclick="showLibraryModal('image', <%= @task.id %>)" id="">Image library</label>
 			</div>
 		</div>
 		<% end %>
@@ -80,7 +80,7 @@
 				<div class="btn-wrapper">
 					<label class="btn reversed upload btn-margin" id="pdf_video_upload_btn">Upload</label>
 					<div class="btn reversed upload record-pdf-video btn-margin btn-ml-1">Record</div>
-					<label class="btn reversed upload library btn-margin btn-ml-1" id="">Library</label>
+					<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('video', <%= @task.id %>)" id="">Library</label>
 				</div>
 				<div class="video-form">
 					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -121,7 +121,7 @@
 			<%= t.hidden_field :media_type, value: 'audio' %>
 			<label class="btn reversed upload btn-margin" id="pdf_audio_upload_btn">Upload</label>
 			<div class="btn reversed record-audio btn-margin btn-ml-1">Record</div>
-			<label class="btn reversed upload library btn-margin btn-ml-1" id="">Library</label>
+			<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('audio', <%= @task.id %>)" id="">Library</label>
 		</div>
 	</div>
 	<% end %>
@@ -145,9 +145,24 @@
 
 <script>
 
-	$('.library').on('click', function() {
-		$('#libraryModal').show();
-	})
+	function showLibraryModal(type, task_id) {
+		$.ajax({
+            url: '<%= show_library_modal_path(@pitch) %>',
+            type: 'GET',
+            dataType: "script",
+            data: {
+				type: type,
+				task_id: task_id
+            },
+            success: function (res) {
+            }
+        })
+	}
+	// $('.library').on('click', function() {
+	
+	// 	$('#libraryModal').show();
+	// })
+	
 	// Audio upload and drag, drop
 
 	var pdfAudioDropZone = $('.pdf-audio-drop-zone')
