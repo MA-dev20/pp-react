@@ -527,6 +527,8 @@ class DashboardController < ApplicationController
   else
     if @task.task_medium.present?
       @type = @task.task_medium.media_type
+    else
+      @type = @task.pdf_type
     end
   end
   @type ||= ''
