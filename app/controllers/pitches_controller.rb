@@ -274,7 +274,6 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id].present?
 		@task = @pitch.tasks.find(params[:task_id])
-		debugger
 		if params[:task_medium_id].present?
 			@task.task_medium.update(media_params)
 		else
