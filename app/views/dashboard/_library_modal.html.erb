@@ -16,7 +16,7 @@
 		<div class="card" id="content_card">
 			<div class="head">
 				<% if @folder %>
-				<h3><span onclick="openFolder(null, 'first')">Libary</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="openFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+				<h3><span onclick="openFolder(null, '<%= task_id %>', 'first')">Libary</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="openFolder('<%= @folder.content_folder_id %>', '<%= task_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 				<% else %>
 				<h3>Mein Content</h3>
 				<div class="search">
@@ -32,7 +32,7 @@
 				<h3>Ordner</h3>
 				<% folders.each do |f| %>
 					<div class="card">
-						<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="openFolder('<%= f.id %>')">
+						<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="openFolder('<%= f.id %>', '<%= task_id %>')">
 						<div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
 						<div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
 					</div>
@@ -131,14 +131,15 @@
 <script type="text/javascript">
 	new PerfectScrollbar('#scrollcontent');
 
-	function openFolder(folder_id, type = '') {
+	function openFolder(folder_id, task_id, type = '' ) {
         $.ajax({
             url: '<%= select_folder_path(@pitch) %>',
             type: 'GET',
             dataType: "script",
             data: {
                 folder_id: folder_id,
-				type: type
+				type: type,
+				task_id: task_id
             },
             success: function (res) {
             }

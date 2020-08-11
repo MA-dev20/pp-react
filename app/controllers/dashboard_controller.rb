@@ -463,7 +463,8 @@ class DashboardController < ApplicationController
   end
 
   def select_folder
-	@pitch = Pitch.find(params[:id])
+  @pitch = Pitch.find(params[:id])
+  @task = Task.find(params[:task_id])
 	if params[:type] == 'first'
 		@folders = @admin.content_folders.where(content_folder: nil)
     	@files = @admin.task_media.where(content_folder: nil)
