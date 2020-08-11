@@ -2472,4 +2472,26 @@ input[type="file"] {
     .folder-card:hover {
         border-color: rgb(var(--custcolor)) !important;
     }
+
+    #videoModal {
+        .form-group {
+            margin-bottom: 0;
+            input {
+                width: 80%;
+                box-sizing: border-box;
+                margin: 10px 3vw;
+                height: 5vh;
+                font-size: 2vh;
+                text-align: center;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            .btn {
+                width: 16vh;
+            }
+        }
+    }
 }

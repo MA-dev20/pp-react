@@ -92,7 +92,10 @@
 		<!-- <span class="close">&times;</span> -->
         <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
 		<div class="heading">
-			<h1>Record your video</h1>
+			<!-- <h1>Record your video</h1> -->
+			<div class="form-group">
+				<input class="form-field video-modal-title" type="text" id="task_medium_title">
+			</div>
 			<input type="file" accept="video/*" capture>
 		</div>
 		<div class="inner-content">
@@ -204,6 +207,7 @@
 					var globalForm = new FormData();
 					globalForm.append('task_medium[video]', file);
 					globalForm.append('task_medium[media_type]', 'video');
+					globalForm.append('task_medium[title]', $('.video-modal-title').val());
 					if ($('.selected .slide-title').length)
 						sendPdfMedia(globalForm);
 					else

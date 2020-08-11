@@ -274,11 +274,12 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id].present?
 		@task = @pitch.tasks.find(params[:task_id])
+		debugger
 		if params[:task_medium_id].present?
 			@task.task_medium.update(media_params)
 		else
 			@task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user)
-      @task_medium.update(media_params)
+      		@task_medium.update(media_params)
 			@task.update(task_medium: @task_medium)
 		end
 		if @task.pdf_type == 'video'
@@ -469,6 +470,6 @@ class PitchesController < ApplicationController
 	end
 
 	def media_params
-	  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type)
+	  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type, :title)
 	end
 end
