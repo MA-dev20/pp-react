@@ -20,8 +20,8 @@
             
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size %>,
-                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
             <div class="buttons">
                 <button style="position: relative; top: 2vh;" data-pitch-id="<%= pitch.id %>"
