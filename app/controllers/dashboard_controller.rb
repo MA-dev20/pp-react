@@ -354,15 +354,44 @@ class DashboardController < ApplicationController
   end
 
   def video
-	@pitches = []
+# <<<<<<< HEAD
+  # @pitches = []
+	# @videos = []  
+	# @admin.games.each do |g|
+	#   g.game_turns.each do |t|
+	#   	if t.pitch_video
+  #       minutes = t.pitch_video.duration / 60
+  #       minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+  #       seconds = t.pitch_video.duration % 60
+  #       seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+  #       rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
+  #       @videos << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating, pitch_id: g.pitch.id, pitch_title: g.pitch.title, created_at: g.pitch.created_at}
+  #       # @pitches << {id: t.id, video: t.pitch_video, duration: minutes + ':' + seconds, title: t&.task&.title, user: t.user, rating: rating, pitch_title: p.pitch.title, created_at: p.pitch.created_at}
+  #       unless @pitches.any? {|p| p[:id] == g.pitch_id}
+  #         pitch = g.pitch
+  #         @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
+  #       end
+  #     end
+	#   end
+	# end
+# 	# @videos = @admin.videos
+# 	# @videos << @company.videos
+# =======
+  @pitches = []
+	@videos = []    
   @company.pitch_videos.accessible_by(current_ability).each do |p|
 		  minutes = p.duration / 60
 		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
 		  seconds = p.duration % 60
 		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
 		  rating = p.game_turn.ges_rating ? p.game_turn.ges_rating / 10.0 : '?'
-		  @pitches << {id: p.game_turn_id, video: p, duration: minutes + ':' + seconds, title: p.game_turn&.task&.title, user: p.user, rating: rating}
+      @videos << {id: p.game_turn_id, video: p, duration: minutes + ':' + seconds, title: p.game_turn&.task&.title, user: p.user, rating: rating, pitch_id: p.game_turn.game.pitch_id}
+      unless @pitches.any? {|p| p[:id] == p.game_turn.game.pitch_id}
+        pitch = p.game_turn.game.pitch
+        @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
+      end
 	end
+# >>>>>>> feature-pitch-tasks
   end
 
   def pitch_video
@@ -375,7 +404,7 @@ class DashboardController < ApplicationController
   end
 
   def pitches
-	@pitches = @company.pitches.accessible_by(current_ability)
+  @pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
   @teams = @company.teams.accessible_by(current_ability)
@@ -393,7 +422,8 @@ class DashboardController < ApplicationController
   end
 
   def edit_pitch
-	@pitches = @admin.pitches
+  # @pitches = @admin.pitches
+  @pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
 		@task = @pitch.tasks.find(params[:task_id])
@@ -434,14 +464,17 @@ class DashboardController < ApplicationController
   end
 
   def select_folder
-	@pitch = Pitch.find(params[:id])
-	if params[:type] == 'first'
+  @pitch = Pitch.find(params[:id])
+  @task = Task.find(params[:task_id])
+  @type = params[:type]
+	if params[:order] == 'first'
 		@folders = @admin.content_folders.where(content_folder: nil)
-    	@files = @admin.task_media.where(content_folder: nil)
+    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
 	else
 		@folder = ContentFolder.find(params[:folder_id])
 		@folders = @folder.content_folders
-		@files = @folder.task_media.order(:title)
+    # @files = @folder.task_media.order(:title)
+		@files = @folder.task_media.where.not("#{params[:type].to_sym}" => nil).order(:title)
 	end
 	# if params[:folder_id]
     #   @folder = ContentFolder.find(params[:folder_id])
@@ -454,6 +487,18 @@ class DashboardController < ApplicationController
 	respond_to do |format|
 		format.js { render 'select_folder'}
 	end
+  end
+
+  def show_library_modal
+    @type = params[:type]
+    @pitch = Pitch.find(params[:id])
+    @task = Task.find(params[:task_id])
+    @folders = @admin.content_folders.where(content_folder: nil)
+    # @files = @admin.task_media.where(content_folder: nil)
+    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
+    respond_to do |format|
+      format.js { render 'show_library_modal'}
+    end
   end
 
   def add_media_content
@@ -471,12 +516,13 @@ class DashboardController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:selected_task_id])
 	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
-	@task_type = @task.task_type
+  @task_type = @task.task_type
+  @type = @task.task_medium.media_type
 	@admin = current_user
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
 	@folders = @admin.content_folders.where(content_folder: nil)
-    @files = @admin.task_media.where(content_folder: nil)
+  @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
 	respond_to do |format|
 		format.js { render 'select_task'}
 	end

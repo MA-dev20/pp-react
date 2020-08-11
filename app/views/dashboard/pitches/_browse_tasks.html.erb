@@ -20,8 +20,8 @@
             
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size %>,
-                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size %>
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
             <div class="buttons">
                 <button style="position: relative; top: 2vh;" data-pitch-id="<%= pitch.id %>"
@@ -114,8 +114,11 @@
                         <% end %>
                     <% end %>
                     <div class="buttons">
-                        <%#= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
+                        <% if @pitch.tasks.present? %>
                         <div class="btn reversed" onclick="addTaskWithAjax('<%= copy_task_path(@pitch, task.id) %>')">Use this task</div>
+                        <% else %>
+                        <%= link_to 'Use this task', copy_task_path(@pitch, task.id), class: 'btn reversed' %>
+                        <% end %>
                     </div>
                 </div>
                 <% end %>

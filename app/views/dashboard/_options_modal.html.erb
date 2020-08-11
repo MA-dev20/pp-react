@@ -14,17 +14,28 @@
                 </div>
                 <div class="card-content">
                     <div class="modal-card task-div">
-                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTaskWithAjax()" %>
+                        <% if @pitch.tasks.present? %>
+                            <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTaskWithAjax()" %>
+                        <% else %>
+                            <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTask()" %>
+                        <% end %>
                         <label>Task</label>
                     </div>
                     <div class="modal-card import-div">
                         <%= image_tag 'dash/import-PDF.png', class: 'card-img import-PDF' %>
                         <label>Import</label>
                     </div>
+                    <% if @pitches.count == 1 && @pitches.first.tasks.count == 0 %>
+                    <div class="modal-card browse-div" style="opacity: 0.4">
+                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img' %>
+                        <label>No pitch Exists</label>
+                    </div>
+                    <% else %>
                     <div class="modal-card browse-div">
                         <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img task-pitch' %>
                         <label>Browse</label>
                     </div>
+                    <% end %>
                 </div>
             </div>
             <div class="heading">

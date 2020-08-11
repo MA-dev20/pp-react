@@ -306,7 +306,7 @@ class PitchesController < ApplicationController
 		pdf_type = params[:pdf_type] || 'image'
 		@task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: @task_medium, valide: true, pdf_type: pdf_type)
 	end
-	if params[:selected_card_order]
+	if params[:selected_card_order].present?
 		task_orders = TaskOrder.all.where("task_orders.pitch_id = ? and task_orders.order > ?", @pitch.id, params[:selected_card_order]).order(:order)
 		if task_orders.present?
 			set_order_id = task_orders.first.order

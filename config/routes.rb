@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:id/edit_page', to: 'dashboard#select_folder', as: 'select_folder'
+  get '/dashboard/pitches/:id/edit_page/show_modal', to: 'dashboard#show_library_modal', as: 'show_library_modal'
   get '/dashboard/pitches/:id/add_media', to: 'dashboard#add_media_content', as: 'add_media_content'
   get '/dashboard/pitches/:pitch_id/edit', to: 'dashboard#edit_pitch', as: 'dashboard_edit_pitch'
   get '/dashboard/:pitch_id/task/:task_id/select', to: 'dashboard#select_task', as: 'dashboard_select_task'

@@ -1,42 +1,111 @@
 <div class="pitch-videos">
-	<div class="card" >
+	<div class="card">
 		<div class="search">
 			<%= image_tag 'dash/new_icons/search.svg' %>
 			<input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
 		</div>
-		<h3>Pitch Videos</h3>
-		<div class="videos" id="pitch-videos">
+		<div class="folders">
+			<h3>Ordner</h3>
 			<% @pitches.each do |p| %>
-			<div class="card">
-			<div class="thumb">
-				<%= image_tag p[:video].video.thumb.url %>
-				<div class="overlay">
-				<div class="rating"><%= p[:rating] %></div>
-				<div class="time"><%= p[:duration] %></div>
-				<div class="play"><i class="fas fa-play"></i></div>
+				<div class="folder-card" id="folder_<%= p[:id] %>">
+					<img src="<%= asset_path 'dash/icons/folder.svg' %>" onclick="showVideos('<%= p[:id] %>')">
+					<div class="title" id="title_<%= p[:id] %>"><span><%= p[:title] %></span></div>
+					<div class="time"><%= p[:created_at].strftime("%Y-%m-%d") %></div>
 				</div>
-			</div>
-			<div class="word"><%= p[:title] %></div>
-			<div class="heart" onclick="favPitch(<%= p[:id] %>)"><i id="fav_<%= p[:id] %>" class="<%= p[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
-			<div class="user">
-				<%= image_tag p[:user].avatar.url %>
-				<%= p[:user].fname %> <%= p[:user].lname %>
-			</div>
-			<%= link_to '', dashboard_pitch_video_path(p[:id]) %>
-			</div>
 			<% end %>
 		</div>
+		
+		<% @pitches.each do |p| %>
+			<div class="videos p-videos" id="pitch_videos_<%= p[:id] %>" style="display: none">
+				<h3>Pitch Videos</h3>
+				<%
+					videos = @videos.select{|v| v[:pitch_id] == p[:id]}
+				%>
+				<% videos.each do |v| %>
+				<div class="card">
+				<div class="thumb">
+					<%= image_tag v[:video].video.thumb.url %>
+					<div class="overlay">
+					<div class="rating"><%= v[:rating] %></div>
+					<div class="time"><%= v[:duration] %></div>
+					<div class="play"><i class="fas fa-play"></i></div>
+					</div>
+				</div>
+				<div class="word"><%= v[:title] %></div>
+				<div class="heart" onclick="favPitch(<%= v[:id] %>)"><i id="fav_<%= v[:id] %>" class="<%= v[:video].favorite ? 'fas' : 'far' %> fa-heart" ></i></div>
+				<div class="user">
+					<%= image_tag v[:user].avatar.url %>
+					<%= v[:user].fname %> <%= v[:user].lname %>
+				</div>
+				<%= link_to '', dashboard_pitch_video_path(v[:id]) %>
+				</div>
+				<% end %>
+			</div>
+		<% end %>
 	</div>
 </div>
 <script>
+	new PerfectScrollbar('.p-videos');
+	new PerfectScrollbar('.folders');
+	// new PerfectScrollbar('#uploaded-videos');
 	new PerfectScrollbar('#pitch-videos');
 
 	$("#searchPitch").on("keyup", function () {
-        var value = $(this).val().toLowerCase();
-        $("#pitch-videos .card .word").filter(function () {
-            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+		var value = $(this).val().toLowerCase();
+		if ($('.p-videos').is(':visible')) {
+			$(".p-videos .card .word").filter(function () {
+				$(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		} else {
+			$(".folders .folder-card .title").filter(function () {
+				$(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		}
 	});
+
+	function showVideos(pitch_id) {
+		$(`#pitch_videos_${pitch_id}`).show();
+		$('.folders').hide();
+	}
+	
+	function toggleVideo() {
+		$('#videos').toggle();
+		$('#new_video').toggle();
+	}
+	function changeVideo() {
+		$('#video_video').click();
+	}
+	$('#video_video').change(function(e) {
+		if( $('#video_name').val != '') {
+			$('.add-circle').addClass("processing");
+			var url = "<%= new_video_path %>";
+			var name = $('#video_name').val()
+			var date = new Date().getTime();
+			var filename = "video_" + date + '.mp4';
+			date = new Date().getTime();
+			var file = e.target.files[0];
+			var formData = new FormData();
+			formData.append('name', name);
+			formData.append('file', file, filename);
+			$.ajax({
+				type: "post",
+				url: url,
+				cache: false,
+				async: true,
+				contentType: false,
+				processData: false,
+				data: formData,
+				beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				success: function(res) {
+					window.location.reload();
+				}
+			})
+		}
+	})
+	$('#uploadVideoForm').submit(function(e) {
+		e.preventDefault();
+	})
+
 	function favPitch(pID) {
 		var favdiv = $('fav_' + pID);
 		var url = '/games/pitches/'+pID+'/favorite';

@@ -2432,4 +2432,44 @@ input[type="file"] {
             left: 0.4vh;
         }
     }
+
+    .folder-card {
+        position: relative;
+        height: 12vh;
+        width: 7vw;
+        margin: 0 1vw 2vh 0;
+        float: left;
+        padding: 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: none;
+        cursor: pointer;
+        background-color: white;
+        border-radius: 1vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            height: 5vh;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: 2vh;
+            width: 100%;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .time {
+            font-size: 1.7vh;
+        }
+    }
+
+    .folder-card:hover {
+        border-color: rgb(var(--custcolor)) !important;
+    }
 }
