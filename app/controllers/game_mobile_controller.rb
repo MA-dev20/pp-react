@@ -122,15 +122,15 @@ class GameMobileController < ApplicationController
 	    end
     elsif params[:comment]
       if @admin.avatar?
-  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url, reverse: true
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url
   	  else
-  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
+  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize
   	  end
     elsif params[:emoji_comment]
       if @admin.avatar?
-  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], user_avatar: @admin.avatar.url, reverse: true
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], user_avatar: @admin.avatar.url
   	  else
-        ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
+        ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, emoji: true, emoji_icon: params[:emoji_comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize
   	  end
     end
   end
@@ -306,6 +306,7 @@ class GameMobileController < ApplicationController
     elsif params[:state] == 'play'
       @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
+      @turn.update(task: @task)
 	    if @task.task_type == 'catchword'
 		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
 	    end

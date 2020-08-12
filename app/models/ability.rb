@@ -32,6 +32,7 @@ class Ability
         can :update, User, :id => user.id
         can :destroy, User, :id => user.id if @abilities.edit_team != 'none'
 
+        can :read, Pitch, :available_for => 'global'
         can :read, Pitch, :user_id => user.id if @abilities.view_pitch != 'none'
         can :update, Pitch, :user_id => user.id if @abilities.edit_pitch != 'none'
         can :destroy, Pitch, :user_id => user.id if @abilities.edit_pitch != 'none'
@@ -44,6 +45,7 @@ class Ability
         can :update, Task, :user_id => user.id if @abilities.edit_pitch != 'none'
         can :destroy, Task, :user_id => user.id if @abilities.edit_pitch != 'none'
 
+        can :read, TaskMedium, :available_for => 'global'
         can :read, TaskMedium, :user_id => user.id if @abilities.view_media != 'none'
         can :update, TaskMedium, :user_id => user.id if @abilities.edit_media != 'none'
         can :destroy, TaskMedium, :user_id => user.id if @abilities.edit_media != 'none'
@@ -74,9 +76,17 @@ class Ability
             can :update, Task, :team_id => tu.team_id if @abilities.edit_pitch != 'none' && @abilities.edit_pitch != 'user'
             can :destroy, Task, :team_id => tu.team_id if @abilities.edit_pitch != 'none' && @abilities.edit_pitch != 'user'
 
-            can :read, TaskMedium, :team_id => tu.team_id if @abilities.view_media != 'none' && @abilities.view_media != 'user'
+            can :read, TaskMedium, :team_id => tu.team_id, :available_for => 'team' if @abilities.view_media != 'none' && @abilities.view_media != 'user'
             can :update, TaskMedium, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
             can :destroy, TaskMedium, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
+
+            can :read, CatchwordList, :team_id => tu.team_id, :available_for => 'team' if @abilities.view_media != 'none' && @abilities.view_media != 'user'
+            can :update, CatchwordList, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
+            can :destroy, CatchwordList, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
+
+            can :read, ObjectionList, :team_id => tu.team_id, :available_for => 'team' if @abilities.view_media != 'none' && @abilities.view_media != 'user'
+            can :update, ObjectionList, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
+            can :destroy, ObjectionList, :team_id => tu.team_id if @abilities.edit_media != 'none' && @abilities.edit_media != 'user'
 
             tu.team.team_users.each do |u|
               can :read, User, :id => u.user_id if @abilities.view_team != 'none' && @abilities.view_team != 'user'
@@ -102,7 +112,7 @@ class Ability
               can :destroy, User, :id => u.user_id if @abilities.edit_team == 'department' || @abilities.edit_team == 'company'
             end
 
-            can :read, Pitch, :department_id => du.department_id if @abilities.view_pitch == 'department' || @abilities.view_pitch == 'company'
+            can :read, Pitch, :department_id => du.department_id, :available_for => 'department' if @abilities.view_pitch == 'department' || @abilities.view_pitch == 'company'
             can :update, Pitch, :department_id => du.department_id if @abilities.edit_pitch == 'department' || @abilities.edit_pitch == 'company'
             can :destroy, Pitch, :department_id => du.department_id if @abilities.edit_pitch == 'department' || @abilities.edit_pitch == 'company'
 
@@ -110,9 +120,17 @@ class Ability
             can :update, Task, :department_id => du.department_id if @abilities.edit_task == 'department' || @abilities.edit_task == 'company'
             can :destroy, Task, :department_id => du.department_id if @abilities.edit_task == 'department' || @abilities.edit_task == 'company'
 
-            can :read, TaskMedia, :department_id => du.department_id if @abilities.view_media == 'department' || @abilities.view_media == 'company'
+            can :read, TaskMedia, :department_id => du.department_id, :available_for => 'department' if @abilities.view_media == 'department' || @abilities.view_media == 'company'
             can :update, TaskMedia, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
             can :destroy, TaskMedia, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
+
+            can :read, CatchwordList, :department_id => du.department_id, :available_for => 'department' if @abilities.view_media == 'department' || @abilities.view_media == 'company'
+            can :update, CatchwordList, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
+            can :destroy, CatchwordList, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
+
+            can :read, ObjectionList, :department_id => du.department_id, :available_for => 'department' if @abilities.view_media == 'department' || @abilities.view_media == 'company'
+            can :update, ObjectionList, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
+            can :destroy, ObjectionList, :department_id => du.department_id if @abilities.edit_media == 'department' || @abilities.edit_media == 'company'
           end
         end
 

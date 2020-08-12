@@ -5,54 +5,54 @@ class GameDesktopController < ApplicationController
   before_action :check_state, only: [:game]
 
   def join
-	@game = Game.find(params[:game_id])
-	game_login @game
-	redirect_to gd_game_path
+  	@game = Game.find(params[:game_id])
+  	game_login @game
+  	redirect_to gd_game_path
   end
 
   def game
-	@order = @pitch.task_orders
-	@turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
-	@turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
-	@task = @pitch.task_orders.find_by(order: @game.current_task).task if @game.current_task != 0 && !@game.current_task.nil?
-  @turn = @game.game_turns.find_by(task: @task) if !@turn
-	if @turn && @game.show_ratings == 'all'
-	  @turn_ratings = @turn.game_turn_ratings.all
-	  @ges_rating = @turn.ges_rating
-	elsif @turn && @game.show_ratings == 'one'
-	  @rat_user = @game.rating_user
-	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
-	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
-	end
-	@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
-  @game_users = @game.game_users.where(play: true).order(best_rating: :desc)
-	if @game.show_ratings == 'one'
-	  @rat_user = @game.rating_user
-	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
-	end
-  if @game.state == 'bestlist' && @game.show_ratings == 'one'
-    @ratings = [];
-    @game.game_users.each do |u|
-      if u.user_id != @game.rating_user
-        @turns = @game.game_turns.where(user_id: u.user_id)
-        @best_rating = 0
-        @turns.each do |t|
-          this_rating = t.ratings.where(user_id: @game.rating_user).average(:rating) if t.ratings.where(user_id: @game.rating_user).count != 0
-          this_rating = 0 if t.ratings.where(user_id: @game.rating_user).count == 0
-          if this_rating  > @best_rating
-            @best_rating = this_rating
+  	@order = @pitch.task_orders
+  	@turn1 = GameTurn.find_by(id: @game.turn1) if @game.turn1
+  	@turn2 = GameTurn.find_by(id: @game.turn2) if @game.turn2
+  	@task = @pitch.task_orders.find_by(order: @game.current_task).task if @game.current_task != 0 && !@game.current_task.nil?
+    @turn = @game.game_turns.find_by(task: @task) if !@turn
+  	if @turn && @game.show_ratings == 'all'
+  	  @turn_ratings = @turn.game_turn_ratings.all
+  	  @ges_rating = @turn.ges_rating
+  	elsif @turn && @game.show_ratings == 'one'
+  	  @rat_user = @game.rating_user
+  	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
+  	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
+  	end
+  	@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
+    @game_users = @game.game_users.where(play: true).order(best_rating: :desc)
+  	if @game.show_ratings == 'one'
+  	  @rat_user = @game.rating_user
+  	  @turns = @turns.sort_by{ |e| -(e.ratings.where(user_id: @rat_user).count != 0 ? e.ratings.where(user_id: @rat_user).average(:rating) : 0) }
+  	end
+    if @game.state == 'bestlist' && @game.show_ratings == 'one'
+      @ratings = [];
+      @game.game_users.each do |u|
+        if u.user_id != @game.rating_user
+          @turns = @game.game_turns.where(user_id: u.user_id)
+          @best_rating = 0
+          @turns.each do |t|
+            this_rating = t.ratings.where(user_id: @game.rating_user).average(:rating) if t.ratings.where(user_id: @game.rating_user).count != 0
+            this_rating = 0 if t.ratings.where(user_id: @game.rating_user).count == 0
+            if this_rating  > @best_rating
+              @best_rating = this_rating
+            end
+          end
+          if u.user.avatar?
+            @ratings << {user_id: u.user_id, rating: @best_rating.to_i, avatar: u.user.avatar.url}
+          else
+            @ratings << {user_id: u.user_id, rating: @best_rating.to_i, name: u.user.fname[0].capitalize + u.user.lname[0].capitalize}
           end
         end
-        if u.user.avatar?
-          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, avatar: u.user.avatar.url}
-        else
-          @ratings << {user_id: u.user_id, rating: @best_rating.to_i, name: u.user.fname[0].capitalize + u.user.lname[0].capitalize}
-        end
       end
+      @ratings = @ratings.sort_by{|e| -e[:rating]}
     end
-    @ratings = @ratings.sort_by{|e| -e[:rating]}
-  end
-	render @state
+  	render @state
   end
 
   def repeat

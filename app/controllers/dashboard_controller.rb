@@ -47,6 +47,7 @@ class DashboardController < ApplicationController
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
     elsif params[:catchword]
+      @listType = 'catchword'
       @liste = CatchwordList.find(params[:catchword])
     elsif params[:objection]
       @liste = ObjectionList.find(params[:objection])
