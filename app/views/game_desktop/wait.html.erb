@@ -34,7 +34,7 @@
 
 <% if @game.game_sound %>
 <%= audio_tag 'game/ringdoor.mp3', autoplay: false, loop: false, id: 'ring' %>
-<%= audio_tag(wait_sound, autoplay: true, loop: false, id: 'theme') %>
+<%= audio_tag 'game/wait/theme_loop.mp3', id: 'theme', autoplay: true, loop: true %>
 <script>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('ring').volume = 0.5;

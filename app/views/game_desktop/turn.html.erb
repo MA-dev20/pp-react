@@ -21,7 +21,7 @@
 	Skip mit Leertaste
 </section>
 <% if @game.game_sound %>
-<%= audio_tag(turn_sound, autoplay: true, id: 'theme') %>
+<%= audio_tag 'game/turn/theme_loop.mp3', id: 'theme', autoplay: true, loop: true %>
 <script>
 	document.getElementById('theme').volume = 0.2;
 </script>

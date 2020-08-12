@@ -34,14 +34,14 @@
 		FEHLER
 		<% else %>
 			<%= @game.team ? @game.team.name : @game.user.fname + "'s Pitch" %>
-			<% if @admin == @game.user %>
+			<% if @admin == @game.user && current_page?(gm_game_path) && current_page?(gm_choosen_path) %>
 				<svg class="menu" onclick="toggleMenu()" viewbox="0 0 144 144"><use xlink:href="#menuIcon" /></svg>
 			<% elsif @game && @admin && @game.game_users.find_by(user_id: @admin.id) %>
         <%= link_to '', gm_logout_path(@admin.id), class: 'nav-i fas fa-sign-out-alt', data: {confirm: 'Bist du sicher das du den Pitch verlassen möchtest?'} %>
 			<% end %>
 		<% end %>
 	</section>
-	<% if @pitch && @game.state != 'play' && @game.state != 'feedback' && @game.state != 'rate' && !current_page?(gm_login_path) && !current_page?(gm_join_path)%>
+	<% if @pitch && @game.state != 'play' && @game.state != 'feedback' && @game.state != 'rate' && current_page?(gm_game_path) && current_page?(gm_choosen_path) %>
 	<section id="comment-menu">
 		<i class="far fa-comment" onclick="toggleComment()"></i>
 	</section>

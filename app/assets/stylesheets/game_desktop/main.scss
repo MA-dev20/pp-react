@@ -445,7 +445,7 @@ body {
 			border: none;
 			border-radius: 0;
 			top: 58.5vh;
-			left: calc(50vw - 23vh);
+			left: calc(50vw - 23vh - 75px);
 			z-index: 100;
 		}
 		.circle-right {
@@ -1561,13 +1561,13 @@ body {
 }
 @keyframes switchHand {
 	0% {
-		left: calc(50vw - 23vh);
+		transform: translateX(0);
 	}
 	50% {
-		left: calc(50vw + 23vh);
+		transform: translateX(46vh);
 	}
 	100% {
-		left: calc(50vw - 23vh);
+		transform: translateX(0);
 	}
 }
 @keyframes fadeInMiddle {

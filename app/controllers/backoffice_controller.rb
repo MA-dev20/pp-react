@@ -30,7 +30,7 @@ class BackofficeController < ApplicationController
 
   def company_content
     @folders = @company.content_folders.where(content_folder: nil)
-    @files = @company.task_media.where(content_folder: nil).where.not(media_type: "pdf_image")
+    @files = @company.task_media.where(content_folder: nil).where.not(is_pdf: true)
     @lists = []
     @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
       entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
@@ -43,7 +43,7 @@ class BackofficeController < ApplicationController
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
-      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @files = @folder.task_media.where.not(is_pdf: true)
       @lists = []
       @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
         entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
@@ -156,7 +156,7 @@ class BackofficeController < ApplicationController
 
   def content
     @folders = @company.content_folders.where(content_folder: nil)
-    @files = @company.task_media.where(content_folder: nil).where.not(media_type: "pdf_image")
+    @files = @company.task_media.where(content_folder: nil).where.not(is_pdf: true)
     @lists = []
     @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
       entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
@@ -169,7 +169,7 @@ class BackofficeController < ApplicationController
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
-      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @files = @folder.task_media.where.not(is_pdf: true)
       @lists = []
       @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
         entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
@@ -282,7 +282,7 @@ class BackofficeController < ApplicationController
 
   def content
     @folders = ContentFolder.where(available_for: 'global', content_folder: nil)
-    @files = TaskMedium.where(available_for: 'global', content_folder: nil).where.not(media_type: "pdf_image")
+    @files = TaskMedium.where(available_for: 'global', content_folder: nil).where.not(is_pdf: true)
     @lists = []
     CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |cl|
       entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
@@ -295,7 +295,7 @@ class BackofficeController < ApplicationController
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
-      @files = @folder.task_media.where.not(media_type: "pdf_image")
+      @files = @folder.task_media.where.not(is_pdf: true)
       @lists = []
       @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
         entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}

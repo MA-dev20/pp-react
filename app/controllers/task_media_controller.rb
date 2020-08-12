@@ -10,7 +10,7 @@ class TaskMediaController < ApplicationController
     	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
     	  Dir.chdir(path)
     	  Dir.glob("*.png").each do |img|
-      		task_medium = TaskMedium.create(company: @task_medium.company, user: @task_medium.user, image: File.open(img), media_type: 'pdf_image')
+      		task_medium = TaskMedium.create(company: @task_medium.company, user: @task_medium.user, image: File.open(img), media_type: 'image', is_pdf: true, task_medium: @task_medium)
       		File.delete(img)
         end
       end
@@ -22,8 +22,7 @@ class TaskMediaController < ApplicationController
   end
 
   def create_global
-    @task_medium = @company.task_media.new(task_medium_params)
-    @task_medium.user = @user
+    @task_medium = @user.task_media.new(task_medium_params)
     @task_medium.available_for = 'global'
     if @task_medium.save
       render json: {id: @task_medium.id}

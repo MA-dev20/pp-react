@@ -79,7 +79,7 @@
 	Beenden mit Leertaste
 </section>
 <% if @game.game_sound %>
-<%= audio_tag bestlist_sound, id: 'theme' %>
+<%= audio_tag 'game/bestlist/theme_loop.mp3', id: 'theme', autoplay: true, loop: true %>
 <script>
 	document.getElementById('theme').volume = 0.2;
 	document.getElementById('theme').play();

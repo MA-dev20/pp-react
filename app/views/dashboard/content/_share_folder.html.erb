@@ -5,8 +5,38 @@
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeShareFolder()' %>
     <h3>Ordner teilen mit:</h3>
     <%= form_for :folder, url: share_folder_path(this_folder), html: {id: 'shareForm'} do |f| %>
-    <div class="form-group">
+    <%= f.hidden_field :team_id, value: this_folder.team_id %>
+    <%= f.hidden_field :available_for, value: this_folder.available_for %>
+    <%= f.hidden_field :department_id, value: this_folder.department_id %>
+    <div class="form-group list-table">
+      <label for="">E-Mail eingeben</label>
       <%= f.text_field :email, placeholder: 'E-Mail eingeben', class: 'form-field' %>
+    </div>
+    <div class="form-group list-table">
+      <label for="">Gruppe auswählen</label>
+      <div class="dropdown" id="ability-dropdown">
+        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_folder.available_for == 'user' ? "Teilen mit: " : this_folder.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_folder.team_id).name : 'Geteilt mit Company' %></span><i class="fas fa-caret-down"></i></div>
+        <div class="dropdown-menu" id="userDropdown">
+          <div class="link">
+            Team
+            <div class="teams">
+              <% @admin.teams.each do |t| %>
+              <div class="link" onclick="shareTeam('<%= t.id %>', '<%= t.name %>')">
+                <%= t.name %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+          <% if @admin.departments.count != 0 %>
+          <div class="link" onclick="shareBig('departemnt')">
+            Department
+          </div>
+          <% end %>
+          <div class="link" onclick="shareBig('company')">
+            Company
+          </div>
+        </div>
+      </div>
     </div>
     <div class="btns">
       <div class="btn inverted" onclick='closeShareFolder()'>Cancel</div>
@@ -15,32 +45,23 @@
     <% end %>
   </div>
 </div>
-<div class="background-blur" id="newUser">
-  <div class="content-popup">
-    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
-    <h3>Ordner teilen mit:</h3>
-    <form class="" action="index.html" method="post" id="newUserForm">
-      <div class="form-group list-table">
-        <label>Vorname</label>
-        <input type="text" placeholder="Vornamen eingeben" name="user[fname]" value="" id="user_fname" class='form-field'>
-      </div>
-      <div class="form-group list-table">
-        <label>Nachname</label>
-        <input type="text" placeholder="Nachnamen eingeben" name="user[lname]" value="" id="user_lname" class='form-field'>
-      </div>
-      <div class="btns">
-        <div class="btn inverted" onclick='closeNewUser()'>Cancel</div>
-        <input type="submit" name="commt" value="erstellen" data-diavle-with="teilen" class="btn">
-      </div>
-    </form>
-  </div>
-</div>
 <script type="text/javascript">
+  function showDropdown() {
+    $('#userDropdown').toggle();
+  }
+  function shareBig(type) {
+    $('#folder_available_for').val(type);
+    $('.dropdown-text span').text(type);
+    $('#userDropdown').toggle();
+  }
+  function shareTeam(teamID, teamName) {
+    $('#folder_available_for').val('team');
+    $('#folder_team_id').val(teamID);
+    $('.dropdown-text span').text("Team: "+teamName);
+    $('#userDropdown').toggle();
+  }
   function closeShareFolder() {
     $('#shareFolder').hide();
-  }
-  function closeNewUser() {
-
   }
   $('#shareForm').on('submit', function(e) {
     e.preventDefault();
@@ -59,27 +80,8 @@
         if( res.success ) {
           alert(res.success);
           closeShareFolder();
-        } else if ( res.new_user ) {
-          $('#newUser').show();
-          $('#newUserForm').on('submit', function(ev) {
-            ev.preventDefault();
-            var user_url = '/share/users/'+res.new_user+'/update_name';
-            formData = new FormData(document.getElementById('newUserForm'));
-            $.ajax({
-              url: user_url,
-              type: 'post',
-              cache: false,
-              async: true,
-              contentType: false,
-              processData: false,
-              data: formData,
-              beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-              success: function(user_res) {
-                closeShareFolder();
-                $('#newUser').hide();
-              }
-            })
-          })
+        } else if ( res.new_users ) {
+          location.replace('?new_users=true')
         } else if ( res.error ){
           alert(res.error);
         }

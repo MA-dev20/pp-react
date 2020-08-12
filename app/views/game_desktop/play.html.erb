@@ -198,6 +198,7 @@
 		$('.word').css('line-height','8vh');
 	}
 	<% end %>
+
 	function startTimer(duration, display) {
 
 		var timer = duration, minutes, seconds;
@@ -280,7 +281,40 @@
 		}
 		return {pause: pause , resume: resume, add10: add10, add20: add20, add30: add30 }
 	};
+	MyApp.o_timer = startObjectionTimer();
 	function startObjectionTimer() {
+		var timer = 15;
+		var setTimer = setInterval(function() {
+			timer--;
+		}, 1000);
+		var pause = function() { clearInterval(setTimer) };
+		var start = function() {
+			clearInterval(setTimer);
+			timer = 15;
+			setTimer = setInterval(function() {
+				timer--;
+				console.log('O_Timer: '+timer)
+				<% if @game.game_sound %>
+				if (timer == 3) {
+					document.getElementById('o_end').play();
+				}
+				<% end %>
+				if (timer == 0) {
+					<% if @game.game_sound %>
+					document.getElementById('o_theme').pause();
+					document.getElementById('theme').play();
+					<% end %>
+					$('.objection').fadeOut();
+					clearInterval(setTimer);
+					MyApp.timer.resume();
+				}
+			}, 1000);
+		};
+		return {pause: pause , start: start}
+	}
+	function startObjection(userDiv) {
+		$('#content .objection').remove();
+		$('#content').prepend(userDiv);
 		if( $('.objection:first-child .text').text().length < 10 ) {
 			$('.objection .text').css('font-size', '25vh')
 			$('.objection .text').css('line-height', '25vh')
@@ -311,51 +345,17 @@
 				document.getElementById('objection_sound').play();
 				$('#objection_sound').on('ended', function() {
 					$('#objection_bar').addClass('active');
-					var objectionTimer = setInterval(function() {
-						seconds--;
-						<% if @game.game_sound %>
-						if (seconds == 3) {
-							document.getElementById('o_end').play();
-						}
-						<% end %>
-						if (seconds == 0) {
-							<% if @game.game_sound %>
-							document.getElementById('o_theme').pause();
-							document.getElementById('theme').play();
-							<% end %>
-							$('.objection').fadeOut();
-							clearInterval(objectionTimer);
-							MyApp.timer.resume();
-						}
-					}, 1000);
+					MyApp.o_timer.start();
 				});
 			} else {
 				setTimeout(function() {
-				var seconds = parseInt(15 % 60, 10), secs;
-				$('#objection_bar').addClass('active');
-				var objectionTimer = setInterval(function() {
-					seconds--;
-					secs = seconds < 10 ? '0' + seconds : seconds;
-					$('.otimer').text('00:' + secs);
-					<% if @game.game_sound %>
-					if (seconds == 3) {
-						document.getElementById('o_end').play();
-					}
-					<% end %>
-					if (seconds == 0) {
-						<% if @game.game_sound %>
-						document.getElementById('o_theme').pause();
-						document.getElementById('theme').play();
-						<% end %>
-						$('.objection').fadeOut();
-						clearInterval(objectionTimer);
-						MyApp.timer.resume();
-					}
-				}, 1000);
+					MyApp.o_timer.start();
+					$('#objection_bar').addClass('active');
 				}, 2000);
 			}
 		})
 	}
+
 	function redirect() {
 		window.location.replace('<%= gd_set_state_path('', state: 'rate') %>');
 	}

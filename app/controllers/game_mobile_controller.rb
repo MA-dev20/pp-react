@@ -179,13 +179,14 @@ class GameMobileController < ApplicationController
   def set_task_user
     @task = @pitch.tasks.find(params[:task_id])
     @user = User.find_by(id: params[:turn_id])
+    @turn = @game.game_turns.find_by(user: @user, team: @game.team, task: @task, play: true, played: false)
+    @turn = @game.game_turns.create(user: @user, team: @game.team, task: @task, play: true, played: false) if !@turn
     @turns = @game.game_turns.where(task: @task, played: false)
     @turns.each do |t|
-      t.destroy
+      t.destroy if t != @turn
     end
-    @turn = @game.game_turns.create(user: @user, team: @game.team, task: @task, play: true, played: false)
     if @game.current_task == @pitch.task_orders.find_by(task: @task).order
-        @game.update(current_turn: @turn.id, state: 'turn')
+      @game.update(current_turn: @turn.id, state: 'turn') if @game.current_turn != @turn.id
     end
     if params[:show_task]
       redirect_to gm_game_path

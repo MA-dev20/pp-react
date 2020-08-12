@@ -44,16 +44,18 @@
 				</script> -->
 			</div>
 			<% end %>
-			<% if files.count != 0 %>
+			<% if files && files.count != 0 %>
 			<div class="files">
 				<h3>Dateien</h3>
 				<% files.where.not("#{media_type.to_sym}" => nil).each do |f| %>
-					<% if f[f.media_type.to_sym].present? %>			
+					<% if f[f.media_type.to_sym].present? %>
 					<div class="card" onclick="addMediaContent('<%= task_id %>', '<%= f.id  %>', '<%= f.media_type %>')">
 						<div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>">
 								<% if f.media_type == 'video' %>
+									<% if f.video? %>
 									<%= image_tag f.video.thumb.url,  class: 'image' %>
 									<i class="fas fa-play-circle"></i>
+									<% end %>
 								<% elsif f.media_type == 'image' %>
 									<% if f.image.present? %>
 									<%= image_tag f.image.url,  class: 'image' %>
@@ -164,7 +166,7 @@
 			uploadMediaContent(task_id, media_id, media_type);
 		}
 	}
-	
+
 	function uploadMediaContent(task_id, media_id, media_type) {
         $.ajax({
             url: '<%= add_media_content_path(@pitch) %>',
@@ -175,7 +177,7 @@
 				media_id: media_id,
 				media_type: media_type,
 				selected_media_type: $('.active.option').text() !== "" ? $('.active.option').text().trim().toLowerCase() : "",
-				pdf_media_type: $('.selected').find('.slide-title .name').text() !== "" ? $('.selected').find('.slide-title .name').text().split('-')[1].trim().toLowerCase() : ""				
+				pdf_media_type: $('.selected').find('.slide-title .name').text() !== "" ? $('.selected').find('.slide-title .name').text().split('-')[1].trim().toLowerCase() : ""
             },
             success: function (res) {
 			var URL = `/dashboard/pitches/${res.id}/edit?task_id=${res.task_id}`;
@@ -187,7 +189,7 @@
     $('.close').on('click', function() {
         $('#libraryModal').hide();
 	})
-	
+
 	$('#searchContent').on('keyup', function() {
 		var searchVal = $('#searchContent').val();
 
