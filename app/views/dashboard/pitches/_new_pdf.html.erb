@@ -143,6 +143,37 @@
 </div>
 
 
+<div id="audioRecordModal" class="modal hide">
+		<div class="modal-content">
+			<%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
+			<div class="heading">
+				<!-- <h1>Record your video</h1> -->
+				<div class="form-group">
+					<input class="form-field audio-modal-title" type="text" id="task_medium_title" placeholder="Title">
+				</div>
+				<input type="file" accept="audio/*" capture>
+			</div>
+			<div class="inner-content">
+				<div class="video audio-content">
+					<%= image_tag 'dash/audio.png', class: 'audio-png' %>
+					<audio src="" id="audioRecorder" autoplay></audio>
+					<audio src="" class="hide" id="audioPlayer" controls></audio>
+					<div class="navigator audio-navigator">
+						<div class="stop" id="stopPdfAudio"><i class="far fa-stop-circle"></i></div>
+						<div id="record_pdf_audio" class="videorecord audio-record-icon"><i class="far fa-dot-circle"></i></div>
+						<div class="play" id="playPdfAudio" onclick="playVideo()"><i class="far fa-play-circle"></i>
+						</div>
+					</div>
+				</div>
+				<div class="buttons">
+					<a href="" class="btn reversed" id="closePdfAudioModal">Cancel</a>
+					<a href="" class="btn" id="pdfAudioUpload">Upload</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 <script>
 
 	function showLibraryModal(type, task_id) {
@@ -206,9 +237,116 @@
 	})
 
 
+
+
+
+
+	var audioRecorder = document.getElementById('audioRecorder');
+	var audioPlayer = document.getElementById('audioPlayer');
+	var audioFile = NaN;
+	var audioMediaRecorder;
+	var audio_upload_click = false;
+	var handleAudioSuccess = function (stream) {
+		$('audio-record-icon i').removeClass('fa-dot-circle');
+		$('.audio-record-icon i').addClass('fa-stop-circle');
+		$('.audio-record-icon').addClass('pulse');
+		$('#audioRecorder').show();
+		$('#audioPlayer').hide();
+		const options = { mimeType: 'audio/webm' };
+		const pdfAudioChunks = [];
+		audioMediaRecorder = new MediaRecorder(stream);
+		audioRecorder.srcObject = stream;
+		audioMediaRecorder.start();
+		audioMediaRecorder.addEventListener('start', function () {
+			console.log('stream started..');
+		})
+		audioMediaRecorder.addEventListener('dataavailable', function (e) {
+			if (e.data.size > 0) {
+				console.log('streaming ...');
+				pdfAudioChunks.push(e.data);
+			}
+			
+
+		});
+		audioMediaRecorder.addEventListener('stop', function () {
+			stream.getTracks().forEach(track => track.stop())
+			console.log('stream stopped');
+			var blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+			audioPdfURL = URL.createObjectURL(blob);
+			// file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+			// let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
+			audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
+			audioFile = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
+			
+			audioPlayer.src = audioPdfURL;
+			$('#audioPlayer').show();
+			$('#audioRecorder').hide();
+			audioRecorder.load();
+			console.log('stream saved');
+			$('.audio-record-icon i').removeClass('fa-stop-circle');
+			$('.audio-record-icon i').addClass('fa-dot-circle');
+			$('.audio-record-icon').removeClass('pulse');
+			$('#stopPdfAudio').css('display', 'inline-block');
+			$('#playPdfAudio').css('display', 'inline-block');
+			$('.audio-navigator').hide();
+			$('#audioPlayer').attr('style', 'display: block !important');
+			stream = NaN;
+
+			if (audio_upload_click) {
+				var pdfAudioGlobalForm = new FormData();
+				pdfAudioGlobalForm.append('task_medium[audio]', audioFile);
+				pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+				// if ($('.selected .slide-title').length)
+				sendPdfMedia(pdfAudioGlobalForm);
+				// else
+					// sendMedia(globalForm);
+			}
+		});
+		document.getElementById('stopPdfAudio').addEventListener('click', function () {
+			audioMediaRecorder.stop();
+		})
+		document.getElementById('pdfAudioUpload').addEventListener('click', function (e) {
+			e.preventDefault();
+			if (audioFile) {
+				$('#audioRecordModal').hide()
+				if ($('#record_pdf_audio').hasClass('pulse')) {
+					audio_upload_click = true;
+					audioMediaRecorder.stop();
+				} else {
+					audio_upload_click = false;
+					var pdfAudioGlobalForm = new FormData();
+					pdfAudioGlobalForm.append('task_medium[audio]', audioFile);
+					pdfAudioGlobalForm.append('task_medium[media_type]', 'audio');
+					pdfAudioGlobalForm.append('task_medium[title]', $('.audio-modal-title').val());
+					// if ($('.selected .slide-title').length)
+						sendPdfMedia(pdfAudioGlobalForm);
+					// else
+						// sendMedia(globalForm);
+				}
+			} else {
+				// $('#audioRecordModal').hide()
+				// audio_upload_click = false;
+			}
+		})
+	}
+
+	document.getElementById('record_pdf_audio').addEventListener('click', function () {
+		if ($('#record_pdf_audio').hasClass('pulse')) {
+			audioMediaRecorder.stop();
+		} else {
+			navigator.mediaDevices.getUserMedia({ audio: true }).then(handleAudioSuccess).catch(function (err) { console.log(err) });
+		}
+	})
+
+	$('.record-audio').on('click', function() {
+		$('#audioRecordModal').show();
+	})
+
+
+
 	var pdfAudioChunks;
 	var audioRecording = false;
-	$('.record-audio').on('click', function (e) {
+	$('.record-audio1').on('click', function (e) {
 		if (audioRecording) {
 			$(e.target).text('Uploading...');
 			if (audio_rec.state === 'recording')

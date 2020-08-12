@@ -1459,6 +1459,7 @@
         cursor: pointer;
     }
 
+    #audioRecordModal .modal-content,
     #videoModal .modal-content,
     #loaderModal .modal-content {
         width: 72vh;
@@ -2471,5 +2472,69 @@ input[type="file"] {
 
     .folder-card:hover {
         border-color: rgb(var(--custcolor)) !important;
+    }
+
+    #audioRecordModal,
+    #videoModal {
+        .form-group {
+            margin-bottom: 0;
+            input {
+                width: 80%;
+                box-sizing: border-box;
+                margin: 10px 3vw;
+                height: 5vh;
+                font-size: 2vh;
+                text-align: center;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            .btn {
+                width: 16vh;
+            }
+        }
+    }
+
+    #audioRecordModal .modal-content {
+        height: 52vh !important;
+
+        #audioPlayer {
+            position: relative;
+            top: 24vh;
+            left: 6vh;
+            width: 80%;
+        }
+
+        .buttons {
+            bottom: unset !important;
+
+            .btn {
+                position: unset !important;
+                width: 19vh !important;
+            }
+
+            .btn.reversed {
+                margin-right: 2vh !important;
+            }
+
+            #pdfAudioUpload {
+                margin-left: 0 !important;
+            }
+        }
+    }
+    .audio-content {
+        height: 35vh !important;
+        background-color: transparent !important;
+        .navigator {
+            background-color: transparent !important;
+        }
+        .audio-png {
+            width: 17vh !important;
+            position: absolute;
+            top: 18%;
+            left: 38%;
+        }
     }
 }

@@ -191,10 +191,15 @@ class PitchesController < ApplicationController
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
 	@folders = @admin.content_folders.where(content_folder: nil)
-    @files = @admin.task_media.where(content_folder: nil)
-	respond_to do |format|
-		format.js { render 'dashboard/delete_task_card'}
+	@files = @admin.task_media.where(content_folder: nil)
+	if (@pitch.tasks.count == 0)
+		render json: { url: dashboard_edit_pitch_path(@pitch), count: @pitch.tasks.count }
+	else
+		respond_to do |format|
+			format.js { render 'dashboard/delete_task_card'}
+		end
 	end
+
   end
 
   def customize
@@ -260,10 +265,10 @@ class PitchesController < ApplicationController
   	  path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
   	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
   	  Dir.chdir(path)
-  	  Dir.glob("*.png").each do |img|
-  		task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user, image: File.open(img), media_type: 'image', is_pdf: true, task_medium: @task_medium)
-  		File.delete(img)
-  		task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
+  	  Dir.glob("*.png").reverse.each do |img|
+    		task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user, image: File.open(img), media_type: 'image', is_pdf: true, task_medium: @task_medium)
+    		File.delete(img)
+    		task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
   	  end
   	  @task = @pitch.tasks.last
   	  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
@@ -278,7 +283,7 @@ class PitchesController < ApplicationController
 			@task.task_medium.update(media_params)
 		else
 			@task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user)
-      @task_medium.update(media_params)
+      		@task_medium.update(media_params)
 			@task.update(task_medium: @task_medium)
 		end
 		if @task.pdf_type == 'video'
@@ -469,6 +474,6 @@ class PitchesController < ApplicationController
 	end
 
 	def media_params
-	  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type)
+	  params.require(:task_medium).permit(:audio, :video, :pdf, :image, :media_type, :title)
 	end
 end
