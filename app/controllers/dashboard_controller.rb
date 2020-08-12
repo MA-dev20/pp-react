@@ -517,12 +517,27 @@ class DashboardController < ApplicationController
 	@task = Task.find(params[:selected_task_id])
 	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
   @task_type = @task.task_type
-  @type = @task.task_medium.media_type
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists
+  @cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
-	@folders = @admin.content_folders.where(content_folder: nil)
-  @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
+  @folders = @admin.content_folders.where(content_folder: nil)
+  @files = ''
+  @type = ''
+  if @task.task_type != 'slide'
+    @type = @task.task_type if @task.task_type == 'image' || @task.task_type == 'video' || @task.task_type == 'audio'
+  else
+    if @task.task_medium.present?
+      @type = @task.task_medium.media_type
+    else
+      @type = @task.pdf_type
+    end
+  end
+  @type ||= ''
+  if @type    
+    @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
+  else
+    @files = @admin.task_media.where(content_folder: nil)
+  end
 	respond_to do |format|
 		format.js { render 'select_task'}
 	end
