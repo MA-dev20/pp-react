@@ -271,7 +271,6 @@ class PitchesController < ApplicationController
   end
 
   def create_task_media_content
-	debugger
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id].present?
 		@task = @pitch.tasks.find(params[:task_id])
