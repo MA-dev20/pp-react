@@ -116,6 +116,7 @@
 		</div>
 	</div>
 </div>
+
 <div id="pitchLibraryModal">
 	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task&.id, media_type: 'image' } %>
 </div>
@@ -139,6 +140,7 @@
 		formData.append("list[list_id]", ListID);
 		commitList(type, formData);
 	}
+
 	var recorder = document.getElementById('recorder');
 	var player = document.getElementById('player');
 	var file = NaN;
