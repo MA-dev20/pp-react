@@ -740,6 +740,12 @@
 				selected_task_id: task_id,
 			},
 			success: function (res) {
+				if (res) {
+					res = JSON.parse(res)
+					if (res.count === 0){
+						window.location.replace(res.url);
+					}
+				}
 			}
 		})
 	}

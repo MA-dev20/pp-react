@@ -191,10 +191,15 @@ class PitchesController < ApplicationController
 	@cw_lists = @admin.catchword_lists
 	@ol_list = @admin.objection_lists
 	@folders = @admin.content_folders.where(content_folder: nil)
-    @files = @admin.task_media.where(content_folder: nil)
-	respond_to do |format|
-		format.js { render 'dashboard/delete_task_card'}
+	@files = @admin.task_media.where(content_folder: nil)
+	if (@pitch.tasks.count == 0)
+		render json: { url: dashboard_edit_pitch_path(@pitch), count: @pitch.tasks.count }	
+	else
+		respond_to do |format|
+			format.js { render 'dashboard/delete_task_card'}
+		end
 	end
+
   end
 
   def customize
