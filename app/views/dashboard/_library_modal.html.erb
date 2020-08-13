@@ -37,14 +37,9 @@
 						<div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
 					</div>
 				<% end %>
-				<!-- <script type="text/javascript">
-					<% folders.each do |f| %>
-						checkOverflow('title_<%= f.id %>');
-					<% end %>
-				</script> -->
 			</div>
 			<% end %>
-			<% if files.count != 0 %>
+			<% if files.count != 0 && media_type.present? %>
 			<div class="files">
 				<h3>Dateien</h3>
 				<% files.where.not("#{media_type.to_sym}" => nil).each do |f| %>

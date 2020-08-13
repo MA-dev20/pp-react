@@ -532,8 +532,8 @@ class DashboardController < ApplicationController
       @type = @task.pdf_type
     end
   end
-  @type ||= ''
-  if @type    
+  @type ||= nil
+  if @type.present?    
     @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
   else
     @files = @admin.task_media.where(content_folder: nil)
