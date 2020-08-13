@@ -9,8 +9,8 @@ class Ability
     else
       user.company_users.each do |cu|
         @abilities = cu.company.user_abilities.find_by(role: cu.role)
-        @abilities = UserAbility.where(role: cu.role, name: cu.company_type + '_abilities').first if !@abilities
-        @abilities = UserAbility.create(name: cu.company_type + '_abilities', role: cu.role) if !@abilities
+        @abilities = UserAbility.where(role: cu.role, name: cu.company.company_type + '_abilities').first if !@abilities
+        @abilities = UserAbility.create(name: cu.company.company_type + '_abilities', role: cu.role) if !@abilities
 
         can :create, Department if @abilities.create_department != 'none'
         can :create, Team if @abilities.create_team != 'none'
