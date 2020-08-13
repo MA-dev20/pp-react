@@ -60,7 +60,7 @@ class GameDesktopController < ApplicationController
 
   def ended
 	game_logout
-	redirect_to dashboard_path
+	redirect_to dashboard_pitches_path
   end
 
   def set_slide

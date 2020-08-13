@@ -3,7 +3,7 @@
   <% @files.each do |f| %>
     <% if f.audio? || f.image? || f.video? || f.pdf? %>
     <div class="card" id='media_<%= f.id %>'>
-      <% if can? :edit, f %>
+      <% if (can? :edit, f) && !current_page?(dashboard_peters_content_path) %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">

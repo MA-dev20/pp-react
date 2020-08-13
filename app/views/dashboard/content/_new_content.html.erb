@@ -174,8 +174,8 @@
 		if(cropper) {
 			canvas = cropper.getCroppedCanvas({
 				fillColor: "white",
-				width: 500,
-				height: 500,
+        maxWidth: 1920,
+        maxHeight: 1080,
 			});
       var preview = document.createElement('img');
       preview.src = canvas.toDataURL();

@@ -10,9 +10,20 @@ class ContentFolder < ApplicationRecord
   has_many :catchword_lists
   validates :name, presence: true
 
-  before_save do
-    if self.content_folder
-      self.available_for = self.content_folder.available_for
+  after_update do
+    if self.previous_changes["available_for"]
+      self.content_folders.each do |cf|
+        cf.update(available_for: self.available_for)
+      end
+      self.task_media.each do |tm|
+        tm.update(available_for: self.available_for)
+      end
+      self.objection_lists.each do |ol|
+        ol.update(available_for: self.available_for)
+      end
+      self.catchword_lists.each do |cl|
+        cl.update(available_for: self.available_for)
+      end
     end
   end
   before_destroy do

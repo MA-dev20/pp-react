@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   has_many :company_users, dependent: :destroy
   has_many :companies, through: :company_users
+  has_many :department_users, dependent: :destroy
+  has_many :departments, through: :department_users
   has_many :catchwords, dependent: :destroy
   has_many :task_media, dependent: :destroy
   has_many :content_folders, dependent: :destroy
@@ -35,6 +37,5 @@ class User < ApplicationRecord
   has_many :pitches
   has_many :tasks
 
-  ROLES = %w[company_admin department_admin admin user].freeze
   BO_ROLES = %w[root sales].freeze
 end

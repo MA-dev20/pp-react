@@ -412,6 +412,8 @@
       opacity: .2;
     }
     .form-group {
+      position: relative;
+      z-index: 11;
       .form-field {
         width: 30vw;
         box-sizing: border-box;
@@ -419,6 +421,68 @@
         height: 5vh;
         font-size: 2vh;
         text-align: center;
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+        z-index: 11;
+        .dropdown-text {
+          position: relative;
+          line-height: 5vh; font-size: 2vh;
+          padding: 0 10px;
+          text-align: left;
+          border: 1px solid rgba(0,0,0,.2);
+          border-radius: 5px;
+          cursor: pointer;
+          width: calc(100% - 40px);
+          box-sizing: border-box;
+          margin: 0 20px 10px;
+          height: 5vh;
+          font-size: 2vh;
+          text-align: left;
+          i {margin-left: 1vw}
+        }
+        .dropdown-menu {
+          display: none;
+          position: absolute;
+          right: 0;
+          background-color: white;
+          border-radius: 5px;
+          box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+          .link {
+            position: relative;
+            line-height: 5vh;
+            font-size: 2vh;
+            border-bottom: 1px solid rgba(0,0,0,.2);
+            margin: 0 .5vw;
+            color: black;
+            padding: 0 1vw;
+            cursor: pointer;
+            .teams {
+              position: absolute;
+              left: 100%;
+              top: 0;
+              background-color: white;
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+              .link {
+                display: none;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                line-height: 3vh;
+                height: 3vh;
+                font-size: 1.5vh;
+                width: 10vw;
+              }
+            }
+          }
+          .link:hover {
+            background-color: rgba(0,0,0,.2);
+            .teams {
+              .link {display: block;}
+            }
+          }
+        }
       }
     }
     .form-group.list-table {
@@ -499,8 +563,7 @@
       top: 0; right: 0;
       margin: 15px;
       height: 25px;
-
-
+      z-index: 12;
     }
     video,
     img {

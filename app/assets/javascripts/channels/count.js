@@ -64,8 +64,7 @@ jQuery(document).ready(function() {
 				  if(data['objection_sound'] != "") {
 					  userDiv += '<audio src="'+data['objection_sound']+'" id="objection_sound" />'
 				  }
-				  $('#content').prepend(userDiv);
-				  startObjectionTimer();
+				  startObjection(userDiv);
 			  }
 				if ( data["addTime"] == true ) {
 					if(data["time"] == 10) {

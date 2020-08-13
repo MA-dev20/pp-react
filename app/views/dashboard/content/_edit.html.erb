@@ -116,7 +116,7 @@
 	}
   function closeContentPopup() {
 		<% if params[:folder_id] %>
-		location.replace('?folder_id=<%= params[:folder_id] %>);
+		location.replace('?folder_id=<%= params[:folder_id] %>');
 		<% else %>
 		location.replace('?');
 		<% end  %>
