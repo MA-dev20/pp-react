@@ -4,11 +4,12 @@ class CompanyController < ApplicationController
   def register
 	if Company.find_by(name: company_params[:name]).nil?
 	  @company = Company.new(company_params)
+    @user = User.find_by(email: user_params[:email])
+    @user = User.new(user_params) if !@user
 	  if @company.save
-	    @user = @company.users.new(user_params)
-	    @user.role = 'company_admin'
-		begin
+	  begin
 	    if @user.save!(:validate => false)
+      @company.company_users.create(user: @user, role: 'root')
 		  UserMailer.after_register(@user).deliver
 		  @root = User.where(bo_role: "root").all
 		  @root.each do |r|

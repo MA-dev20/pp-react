@@ -373,8 +373,13 @@ class DashboardController < ApplicationController
 	@team = Team.find(params[:team]) if params[:team]
   end
   def new_pitch
-	@pitch = @admin.pitches.create(company: @company)
-	redirect_to dashboard_edit_pitch_path(@pitch)
+	  if params[:global]
+      @pitch = @admin.pitches.create(available_for: 'global_hold')
+      redirect_to backoffice_pitches_path(edit_pitch: @pitch.id)
+    else
+      @pitch = @admin.pitches.create(company: @company)
+      redirect_to dashboard_edit_pitch_path(@pitch)
+    end
   end
 
   def edit_pitch

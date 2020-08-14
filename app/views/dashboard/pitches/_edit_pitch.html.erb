@@ -1,0 +1,775 @@
+<% if @pitch %>
+<div id="new-pitch-content">
+	<% if @pitch.title.present? %>
+		<a href="<%= dashboard_pitches_path %>">
+			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
+		</a>
+	<% else %>
+		<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust back-arrow' %>
+	<% end %>
+	<div class="card left">
+		<div class="tasks" id="tasksScrollBar">
+			<div id="cardList">
+				<%= render partial: 'card_list' %>
+			</div>
+			<%= form_for :task_medium, url: create_task_media_path(@pitch), html: {id: "add_pdf_form"} do |t| %>
+			<div class="menu-box">
+				<div class="menu" onclick="addTask()">Add task</div>
+				<div class="menu task-pitch">Add task from existing pitch</div>
+				<label for="task_medium_pdf" class="menu">Import PDF</label>
+			</div>
+			<%= t.file_field :pdf, accept: '.pdf'%>
+			<%= t.hidden_field :media_type, value: 'pdf' %>
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_content_form"} do |t| %>
+				<input class="pdf-image-file-field" accept="image/*" type="file" name="task_medium[image]">
+				<%= t.hidden_field :media_type, value: 'image' %>
+				<input type="hidden" name="pdf_type" value="image">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_video_form"} do |t| %>
+				<input class="pdf-video-file-field" accept="video/*" type="file" name="task_medium[video]">
+				<%= t.hidden_field :media_type, value: 'video' %>
+				<input type="hidden" name="pdf_type" value="video">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
+			<% end %>
+			<%= form_for :task_medium, url: create_task_media_content_path(@pitch), html: {id: "add_pdf_audio_form"} do |t| %>
+				<input class="pdf-video-file-field" accept="audio/*" type="file" name="task_medium[audio]">
+				<%= t.hidden_field :media_type, value: 'audio' %>
+				<input type="hidden" name="pdf_type" value="audio">
+				<input type="hidden" name="selected_card_order" class="selected-card-order">
+			<% end %>
+			<div class="add-task <%= 'hide' if @pitch.tasks.count == 0 %>" >
+				<%#= image_tag 'dash/icons/circle-plus-green.svg', class: 'add-task-img open-modal', data: { modal: "option-modal" } %>
+				<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-task-img open-modal plus-cust-icon', data: { modal: "option-modal" } %>
+			</div>
+		</div>
+	</div>
+
+	<div class="card right">
+		<% if @task && @task.task_type == 'slide' %>
+		<div id="selectedSlide">
+			<%= render partial: 'dashboard/pitches/new_pdf' %>
+		</div>
+		<div id="selectedTask" class="hide">
+			<%= render partial: 'dashboard/pitches/new_task', locals: { pitch: @pitch, task: @task } %>
+		</div>
+		<% elsif @task %>
+		<div id="selectedSlide" class="hide">
+			<%= render partial: 'dashboard/pitches/new_pdf' %>
+		</div>
+		<div id="selectedTask">
+			<%= render partial: 'dashboard/pitches/new_task', locals: { pitch: @pitch, task: @task } %>
+		</div>
+		<% end %>
+		<%= render partial: 'dashboard/pitches/browse_tasks', locals: { pitches: @pitches } %>
+	</div>
+
+	<%= render partial: 'pitch_modal', locals: { pitch: @pitch } %>
+
+	<%= render partial: 'options_modal', locals: { pitch: @pitch } %>
+
+</div>
+
+<div id="loaderModal" class="modal hide">
+	<div class="modal-content">
+		<div class="inner-content">
+			<div class="loader-img">
+				<div id="loading-bar-spinner" class="spinner">
+					<div class="spinner-icon"></div>
+				</div>
+				<div class="progress-ratio"></div>
+			</div>
+			<div class="btn reversed upload record cancel-upload hide" style="display: none">Cancel Upload</div>
+		</div>
+	</div>
+</div>
+
+<div id="videoModal" class="modal hide">
+	<div class="modal-content">
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
+		<div class="heading">
+			<div class="form-group">
+				<input class="form-field video-modal-title" type="text" id="task_medium_title" placeholder="Title">
+			</div>
+			<input type="file" accept="video/*" capture>
+		</div>
+		<div class="inner-content">
+			<div class="video">
+				<video src="" id="recorder" autoplay></video>
+				<video src="" id="player"></video>
+				<div class="navigator">
+					<div class="stop" id="stopVideo"><i class="far fa-stop-circle"></i></div>
+					<div id="record_video" class="videorecord"><i class="far fa-dot-circle"></i></div>
+					<div class="play" id="playVideo" onclick="playVideo()"><i class="far fa-play-circle"></i>
+					</div>
+				</div>
+			</div>
+			<div class="buttons">
+				<a href="" class="btn reversed" id="clodeVideoModal">Cancel</a>
+				<a href="" class="btn" id="videoUpload">Upload</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="pitchLibraryModal">
+	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task&.id, media_type: 'image' } %>
+</div>
+<script>
+
+	$('.selected-card-order').val('<%= @task&.task_orders&.first&.order %>')
+
+	$('#clodeVideoModal').on('click', function (e) {
+		e.preventDefault();
+		$('#videoModal').hide();
+	});
+
+	$('#add_ol_form').on('submit', function (e) {
+		e.preventDefault();
+		var formData = new FormData(document.getElementById('add_ol_form'));
+		commitList('objection', formData);
+	})
+
+	function sendList(type, ListID) {
+		var formData = new FormData();
+		formData.append("list[list_id]", ListID);
+		commitList(type, formData);
+	}
+
+	var recorder = document.getElementById('recorder');
+	var player = document.getElementById('player');
+	var file = NaN;
+	var mediaRecorder;
+	var video_upload_click = false;
+	var handleSuccess = function (stream) {
+		$('.videorecord i').removeClass('fa-dot-circle');
+		$('.videorecord i').addClass('fa-stop-circle');
+		$('.videorecord').addClass('pulse');
+		$('#recorder').show();
+		$('#player').hide();
+		const options = { mimeType: 'video/webm' };
+		const recordedChunks = [];
+		mediaRecorder = new MediaRecorder(stream, options);
+		recorder.srcObject = stream;
+		mediaRecorder.start();
+		mediaRecorder.addEventListener('start', function () {
+			console.log('stream started..');
+		})
+		mediaRecorder.addEventListener('dataavailable', function (e) {
+			if (e.data.size > 0) {
+				console.log('streaming ...');
+				recordedChunks.push(e.data);
+			}
+		});
+		mediaRecorder.addEventListener('stop', function () {
+			stream.getTracks().forEach(track => track.stop())
+			console.log('stream stopped');
+			var blob = new Blob(recordedChunks);
+			videoURL = URL.createObjectURL(blob);
+			file = new window.File([blob], ["video", (new Date() + '').slice(4, 28), '.webm'].join(''))
+			player.src = videoURL;
+			$('#player').show();
+			$('#recorder').hide();
+			recorder.load();
+			console.log('stream saved');
+			$('.videorecord i').removeClass('fa-stop-circle');
+			$('.videorecord i').addClass('fa-dot-circle');
+			$('.videorecord').removeClass('pulse');
+			$('#stopVideo').css('display', 'inline-block');
+			$('#playVideo').css('display', 'inline-block');
+			stream = NaN;
+
+			if (video_upload_click) {
+				var globalForm = new FormData();
+				globalForm.append('task_medium[video]', file);
+				globalForm.append('task_medium[media_type]', 'video');
+				if ($('.selected .slide-title').length)
+					sendPdfMedia(globalForm);
+				else
+					sendMedia(globalForm);
+			}
+		});
+		document.getElementById('stopVideo').addEventListener('click', function () {
+			mediaRecorder.stop();
+		})
+		document.getElementById('videoUpload').addEventListener('click', function (e) {
+			e.preventDefault();
+			if (file != NaN) {
+				$('#videoModal').hide()
+				if ($('#record_video').hasClass('pulse')) {
+					video_upload_click = true;
+					mediaRecorder.stop();
+				} else {
+					video_upload_click = false;
+					var globalForm = new FormData();
+					globalForm.append('task_medium[video]', file);
+					globalForm.append('task_medium[media_type]', 'video');
+					globalForm.append('task_medium[title]', $('.video-modal-title').val());
+					if ($('.selected .slide-title').length)
+						sendPdfMedia(globalForm);
+					else
+						sendMedia(globalForm);
+				}
+			} else {
+				$('#videoModal').hide()
+				video_upload_click = false;
+			}
+		})
+	}
+	document.getElementById('record_video').addEventListener('click', function () {
+		if ($('#record_video').hasClass('pulse')) {
+			mediaRecorder.stop();
+		} else {
+			navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(handleSuccess).catch(function (err) { alert('Kann Video nicht aufnehmen!') });
+		}
+	})
+	function playVideo() {
+		var player = document.getElementById('player');
+		if ($('#playVideo i').hasClass("fa-play-circle")) {
+			$('#playVideo i').addClass('fa-pause-circle');
+			$('#playVideo i').removeClass('fa-play-circle');
+			player.play();
+			player.addEventListener('ended', function () {
+				$('#playVideo i').addClass('fa-play-circle');
+				$('#playVideo i').removeClass('fa-pause-circle');
+			})
+		} else {
+			$('#playVideo i').addClass('fa-play-circle');
+			$('#playVideo i').removeClass('fa-pause-circle');
+			player.pause();
+		}
+	}
+
+</script>
+<div class="blur hide warning-card-wrapper">
+	<div class="card" id="warningCard">
+		<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+		<h1>Sure you want to switch task format?</h1>
+		<p>In this case your uploaded media will be replaced.</p>
+		<div class="buttons">
+			<button class="btn reversed cancel-btn" data-value="cancel">Cancel</button>
+			<button class="btn reversed ok-btn" data-value="ok">Ok</button>
+		</div>
+	</div>
+</div>
+
+<div class="blur hide warning-card-wrapper2">
+	<div class="card" id="warningCard2">
+		<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+		<h1>Want to leave without saving?</h1>
+		<div class="buttons">
+			<button class="btn reversed cancel-btn save-pitch" data-value="cancel">Save Pitch</button>
+			<button class="btn reversed ok-btn yes-btn">Yes</button>
+			<!-- <a class="btn reversed ok-btn yes-btn" href="<%= delete_unsave_pitch_path(@pitch.id) %>">Yes</a> -->
+		</div>
+	</div>
+</div>
+
+<script>
+
+	var global_event = '';
+	var global_file = '';
+	var global_method = '';
+	var global_media_type = '';
+	var global_media_id = '';
+	var global_task_id = '';
+	var field_id = '';
+	var mediaDeleted = false;
+	var cwListId = 0;
+	var cropper = null;
+	var pitchCropper = null;
+	var pdfCropper = null;
+	var selected_card_id = 0;
+	var xhr = null;
+	var nav_url = null;
+
+	$(document).click(function (e) {
+		e.stopPropagation();
+
+		//check if the clicked area is dropDown or not
+		if (!$(e.target).hasClass('media-type-options')) {
+			var container = $(".media-options");
+			if (container.has(e.target).length === 0) {
+				$('.media-options').hide();
+			}
+		}
+
+		if (!$(e.target).hasClass('ol')) {
+			var container = $("#ol-options");
+			if (container.has(e.target).length === 0) {
+				$('#ol-options').hide();
+			}
+		}
+
+		if (!$(e.target).hasClass('cw-dropdown')) {
+			var container = $("#cw-options");
+			if (container.has(e.target).length === 0) {
+				$('#cw-options').hide();
+			}
+		}
+
+		if ($(e.target).is('.navbar-link'))  {
+			nav_url = $(e.target).attr('data-href');
+			$('#pitchModal').hide();
+			$('.warning-card-wrapper2').show();
+		}
+	})
+
+	// $(document).on('click', function(e) {
+	// 	if ($(e.target).is('.navbar-link'))  {
+	// 		$('.warning-card-wrapper2').show();
+	// 	}
+	// })
+
+	$('.library').on('click', function() {
+		$('#libraryModal').show();
+	})
+
+	$('.yes-btn').on('click', function() {
+		$('#pitchModal').hide();
+		$('.warning-card-wrapper2').hide();
+		var url = "<%= delete_unsave_pitch_path(@pitch.id) %>";
+        $.ajax({
+			url: url,
+			type: 'get',
+			data: { url: nav_url },
+			dataType: "json",
+			success: function (res) {
+				window.location = res.url;
+			}
+		})
+	})
+
+	$('.exit-btn').on('click', function() {
+		$('#pitchModal').hide();
+		$('.warning-card-wrapper2').show();
+		nav_url = null;
+	})
+
+	$('.back-arrow').on('click', function() {
+		$('#pitchModal').hide();
+		$('.warning-card-wrapper2').show();
+		nav_url = null;
+	})
+
+	$('.save-pitch').on('click', function() {
+		$('.warning-card-wrapper2').hide();
+		$('.done-btn').click();
+		nav_url = null;
+	})
+
+	$('.warning-card-wrapper .btn').unbind().on('click', function () {
+		let response = $(this).attr('data-value') === 'ok';
+		if (response) {
+			deleteMedia(global_method === 'cw' ? 'cw' : '');
+			mediaDeleted = true
+			if (global_method === 'upload') {
+				$(`#${field_id}`).click();
+			} else if (global_method === 'imageDragDrop')
+				handleImageUpload(global_event);
+			else if (global_method === 'videoDragDrop')
+				handleVideoUpload(global_event);
+			else if (global_method === 'audioDragDrop')
+				handleAudioUpload(global_event);
+			else if (global_method === 'video')
+				$('#videoModal').show()
+			else if (global_method === 'audio')
+				$('.record').click();
+			else if (global_method === 'cw')
+				submitCwForm();
+			else if (global_method === 'catchwordList')
+				sendList('catchword', cwListId);
+			else if (global_method === 'videoUrl')
+				handleVideoLinkClicked(global_event);
+			else if (global_method === 'library')
+				uploadMediaContent(global_task_id, global_media_id, global_media_type)
+		}
+		field_id, global_event, global_method, global_file = '';
+		cwListId = 0;
+		$('.warning-card-wrapper').hide();
+		return false;
+	})
+
+	function handleImageUpload(e) {
+		let file_input = $(e.currentTarget).find('.image-fileinput');
+		file_input[0].files = global_file;
+		let file_name = $(file_input).val().split('\\').pop();
+		let file_data = $(file_input)[0].files[0];
+		let mimeType = file_data['type'];
+		if (mimeType.split('/')[0] === 'image') {
+			let url_object = URL.createObjectURL(file_data);
+			$(e.currentTarget).siblings('.preview').find('img')[0].src = url_object;
+			// $('.left-card.selected img')[0].src = url_object;
+			// $(e.currentTarget).siblings('.preview').show();
+			// $(e.currentTarget).hide();
+			// $('.image-drop-zone').hide();
+			// $('#add_image_form').submit();
+
+			var image = document.getElementById('media_image');
+			var files = file_input[0].files;
+			var done = function (url) {
+				inputAvatar.value = '';
+				image.src = url;
+				$('#popup').show();
+			};
+			var reader, file, url;
+			if (files && files.length > 0) {
+				file = files[0];
+				if (URL) {
+					done(URL.createObjectURL(file));
+				} else if (FileReader) {
+					reader = new FileReader();
+					reader.onload = function (e) {
+						done(reader.result);
+					}
+					reader.readAsDataURL(file);
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+	function loadFile(e, type = '') {
+		const id = $(e.target).attr('id');
+		let mediaOption = $(`#${id}`).closest('.media-option').find('.preview');
+		let file = event.target.files[0];
+		if (type === 'video') {
+			let $that = $(event.currentTarget);
+			let $preview = $(event.currentTarget).siblings('.preview');
+			let $video_tag = $preview.find('video');
+			$video_tag[0].src = URL.createObjectURL(file);
+			$video_tag.show();
+		} else {
+			$(e.target).closest('.image-drop-zone').hide();
+			let $img = $(mediaOption).find('img');
+			let url_object = URL.createObjectURL(file);
+			$img[0].src = url_object;
+			if (type === 'task-img')
+				$('.left-card.selected img')[0].src = url_object;
+		}
+		$(mediaOption).show();
+	}
+
+	function removePitchMedia(e, type = '') {
+		if (type === 'video') {
+			$('.pitch-video-file').attr('src', '');
+			$('.video-preview').hide();
+			$('#pitch_video').val('');
+			$('.destroy-video').val(true);
+		} else {
+			$('.image-preview').hide();
+			$('#pitch_image').val('');
+			$('.destroy-image').val(true);
+		}
+	}
+
+	function loadMetaData(e) {
+		if ($(e.target)[0].duration === Infinity) {
+			$(e.target).siblings('.time').text('');
+		} else {
+			const video_duration = new Date($(e.target)[0].duration * 1000).toISOString().substr(11, 8)
+			$(e.target).siblings('.time').text(video_duration);
+		}
+	}
+
+	$('.task-pitch').click(function () {
+		$('.option-modal').hide();
+		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
+		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
+
+		//Browse pitch tasks
+		$('.pitches-header').text('Pitches');
+		$('.pitch-tasks-list .ps__rail-y').hide();
+		$('.pitch-list .ps__rail-y').show();
+		$('#searchPitch').attr('data-pitch-id', '');
+	})
+
+	$('.open-modal').click(function (e) {
+		if (!$(`.${$(this).data("modal")}`).is(':visible'))
+			$('.audio-play-div').css('display', 'none');
+		else
+			$('.audio-play-div').show();
+		$('.remove-option').hide();
+		$('.sub-cs').hide();
+		$(`.${$(this).data("modal")}`).toggle();
+	})
+
+	$('.close').click(function () {
+		$('.audio-play-div').show();
+		$('.remove-option').show();
+		$('.modal').hide()
+	})
+
+	function allowDrop(ev) {
+		ev.preventDefault();
+		$('.selected').removeClass('selected');
+		$(ev.target).closest('.card').addClass("drop-here");
+	}
+	function leaveDrop(ev) {
+		$(`#${selected_card_id}`).addClass('selected');
+		$(ev.target).closest('.card').removeClass("drop-here");
+	}
+	function drag(e) {
+		selected_card_id = $('.selected').attr('id');
+		e.dataTransfer.setData('ID', e.target.getAttribute('data-id'));
+	}
+	function dropOrder(e, order) {
+		e.preventDefault();
+		var tID = e.dataTransfer.getData('ID');
+		setTaskOrder(tID, order);
+	}
+
+	function setTaskOrder(tId, order) {
+		var url = '/pitches/<%= @pitch.id %>/tasks/' + tId + '/setTaskOrder/' + order;
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: "script",
+			success: function (res) {
+				// selectDragDropTask(res.id);
+			},
+		})
+	}
+
+	// Options modal
+
+	$('.import-PDF').on('click', function () {
+		$('#task_medium_pdf').click();
+	})
+
+	$('#task_medium_pdf').on('change', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_form'));
+		sendMediaPDF(globalForm);
+	})
+
+	$('.pdf-image').on('click', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	$('.pdf-image-file-field').on('change', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_content_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	$('.pdf-video').on('click', function () {
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_video_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	$('.pdf-audio').on('click', function () {
+		// $('.pdf-audio-play-div').show();
+		$('.option-modal').hide();
+		var globalForm = new FormData(document.getElementById('add_pdf_audio_form'));
+		sendMediaPdfContent(globalForm);
+	})
+
+	function sendMediaPdfContent(globalForm) {
+		var url = "<%= create_task_media_content_path(@pitch) %>";
+		$('#loaderModal').show();
+		$.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#loaderModal').hide();
+				// <% if @pitch.tasks.count != 0 %>
+				// 	selectDragDropTask(<%= @pitch.tasks.last.id %>);
+				// <% end %>
+			}
+		})
+	}
+
+	function sendMediaPDF(globalForm) {
+		var url = "<%= create_task_media_url(@pitch) %>";
+		$('#loaderModal').show();
+		$.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+
+				xhr.upload.addEventListener("progress", function(evt) {
+				if (evt.lengthComputable) {
+					var percentComplete = evt.loaded / evt.total;
+					percentComplete = parseInt(percentComplete * 100);
+					console.log(percentComplete);
+					if (percentComplete === 100) {
+					}
+					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
+					$('.progress-ratio').text(percentComplete+'%')
+				}
+				}, false);
+				return xhr;
+			},
+			url: url,
+			type: 'post',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: globalForm,
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				$('#loaderModal').hide();
+				// <% if @pitch.tasks.count != 0 %>
+				// 	selectDragDropTask(<%= @pitch.tasks.last.id %>);
+				// <% end %>
+				// $(`#task_${res.task_id}`).addClass('selected');
+				// selectTask(res.task_id);
+			}
+		})
+	}
+
+	// End Options modal
+
+	new PerfectScrollbar('#tasksScrollBar');
+
+	function addTask() {
+		window.location.replace("<%= create_task_path(@pitch) %>");
+	}
+
+	function addTaskWithAjax(url = '', type = '') {
+		if (!url) {
+			url = '<%= create_task_path(@pitch) %>'
+		}
+        $.ajax({
+            url: url,
+            type: 'GET',
+			dataType: "json",
+			data: {
+				type: type,
+				selected_card_order_id: $('.selected').attr('data-order-id'),
+			},
+            success: function (res) {
+                var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + res.task_id;
+                window.location.replace(URL);
+            }
+        })
+	}
+
+	function selectDragDropTask(task_id) {
+      <% if @task %>
+        var globalForm = new FormData(document.getElementById('new_task_form'));
+        $.ajax({
+            url: '<%= update_task_path(@pitch, @task) %>',
+            type: 'post',
+            cache: false,
+            async: true,
+            contentType: false,
+            processData: false,
+            data: globalForm,
+            beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+            success: function (res) {
+                var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+                window.location.replace(URL);
+                // showTaskMedia("<%= @task.task_type %>");
+            }
+        })
+            <% else %>
+            var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+        window.location.replace(URL);
+      <% end %>
+    }
+
+	function updateValues(task_id, value, type) {
+		$.ajax({
+			url: '<%= dashboard_update_values_path(@pitch, task_id: @task.present? ? @task : '') %>',
+			type: 'GET',
+			dataType: "script",
+			data: {
+				selected_task_id: task_id,
+				value: value,
+				type: type
+			},
+			success: function (res) {
+				if (type === 'title') {
+					$(`#task_${task_id} .task-name`).text(value);
+				} else {
+					if (value) {
+						$(`#task_${task_id} .${type}`).text(value);
+					} else {
+						$(`#task_${task_id} .${type}`).text('-');
+					}
+				}
+			}
+		})
+	}
+
+	function deleteTask(task_id) {
+		$.ajax({
+			url: '<%= delete_task_card_path(@pitch) %>',
+			type: 'GET',
+			dataType: "script",
+			beforeSend: function(){
+				return confirm("Willst du die Aufgabe wirklich löschen?");
+			},
+			data: {
+				selected_task_id: task_id,
+			},
+			success: function (res) {
+				if (res) {
+					res = JSON.parse(res)
+					if (res.count === 0){
+						window.location.replace(res.url);
+					}
+				}
+			}
+		})
+	}
+	function selectTask(task_id) {
+		$('.browse-tasks-partial').hide();
+	  <% if @task %>
+		$.ajax({
+			url: '<%= dashboard_select_task_path(@pitch, @task) %>',
+			type: 'GET',
+			dataType: "script",
+			data: {
+				selected_task_id: task_id,
+				title: $('#task_title').val()
+			},
+			success: function (res) {
+				$('.left-card').removeClass('selected');
+				$(`#task_${task_id}`).addClass('selected');
+				// alert('test');
+			// 	// var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+			// 	// window.location.replace(URL);
+			// 	// showTaskMedia("<%= @task.task_type %>");
+			}
+		})
+			<% else %>
+			var URL = '<%= dashboard_edit_pitch_path(@pitch) %>?task_id=' + task_id;
+		window.location.replace(URL);
+	  <% end %>
+	}
+
+</script>
+<% end %>

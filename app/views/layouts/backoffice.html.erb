@@ -85,6 +85,11 @@
           <div class="text">Content</div>
           <%= link_to '', backoffice_content_path %>
         </div>
+        <div class="link <%= current_page?(backoffice_pitches_path) ? 'active' : '' %>">
+          <i class="fas fa-book"></i>
+          <div class="text">Pitches</div>
+          <%= link_to '', backoffice_pitches_path %>
+        </div>
         <h3>Globale Einstellungen</h3>
         <div class="link <%= current_page?(backoffice_abilities_path) && params[:type] == 'coach' ? 'active' : '' %>">
           <i class="fas fa-cog"></i>

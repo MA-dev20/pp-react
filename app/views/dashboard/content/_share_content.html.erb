@@ -16,6 +16,14 @@
       <div class="dropdown" id="ability-dropdown">
         <div class="dropdown-text" onclick="showDropdown()"><span><%= this_media.available_for == 'user' ? "Teilen mit: " : this_media.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_media.team_id).name : 'Geteilt mit Company' %></span><i class="fas fa-caret-down"></i></div>
         <div class="dropdown-menu" id="userDropdown">
+          <% if @admin.bo_role == 'root' %>
+            <div class="link" onclick="shareBig('global')">
+              Global
+            </div>
+          <% end %>
+          <div class="link" onclick="shareBig('company')">
+            Company
+          </div>
           <div class="link">
             Team
             <div class="teams">
@@ -25,14 +33,6 @@
               </div>
               <% end %>
             </div>
-          </div>
-          <% if @admin.departments.count != 0 %>
-          <div class="link" onclick="shareBig('departemnt')">
-            Department
-          </div>
-          <% end %>
-          <div class="link" onclick="shareBig('company')">
-            Company
           </div>
         </div>
       </div>

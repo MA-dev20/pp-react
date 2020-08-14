@@ -1,46 +1,67 @@
 <% if params[:share_pitch] %>
 <% this_pitch = Pitch.find(params[:share_pitch]) %>
-<div class="background-blur" id="shareContent" style="display: block">
+<div class="background-blur" id="sharePitch" style="display: block">
   <div class="content-popup">
-    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeShareContent()' %>
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeSharePitch()' %>
     <h3>Pitch teilen mit:</h3>
     <%= form_for :pitch, url: share_pitch_path(this_pitch), html: {id: 'shareForm'} do |f| %>
-    <div class="form-group">
+    <%= f.hidden_field :available_for, value: this_pitch.available_for %>
+    <%= f.hidden_field :team_id, value: this_pitch.team_id %>
+    <%= f.hidden_field :department_id, value: this_pitch.department_id %>
+    <div class="form-group list-table">
+      <label for="">E-Mail eingeben</label>
       <%= f.text_field :email, placeholder: 'E-Mail eingeben', class: 'form-field' %>
     </div>
+    <div class="form-group list-table">
+      <label for="">Gruppe auswählen</label>
+      <div class="dropdown" id="ability-dropdown">
+        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_pitch.available_for == 'user' ? "Teilen mit: " : this_pitch.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_pitch.team_id).name : 'Geteilt mit Company' %></span><i class="fas fa-caret-down"></i></div>
+        <div class="dropdown-menu" id="userDropdown">
+          <div class="link">
+            Team
+            <div class="teams">
+              <% @admin.teams.each do |t| %>
+              <div class="link" onclick="shareTeam('<%= t.id %>', '<%= t.name %>')">
+                <%= t.name %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+          <% if @admin.departments.count != 0 %>
+          <div class="link" onclick="shareBig('departemnt')">
+            Department
+          </div>
+          <% end %>
+          <div class="link" onclick="shareBig('company')">
+            Company
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="btns">
-      <div class="btn inverted" onclick='closeShareContent()'>Cancel</div>
+      <div class="btn inverted" onclick='closeSharePitch()'>Cancel</div>
       <%= f.submit 'teilen', class: 'btn' %>
     </div>
     <% end %>
   </div>
 </div>
-<div class="background-blur" id="newUser">
-  <div class="content-popup">
-    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
-    <h3>Pitch teilen mit:</h3>
-    <form class="" action="index.html" method="post" id="newUserForm">
-      <div class="form-group list-table">
-        <label>Vorname</label>
-        <input type="text" placeholder="Vornamen eingeben" name="user[fname]" value="" id="user_fname" class='form-field'>
-      </div>
-      <div class="form-group list-table">
-        <label>Nachname</label>
-        <input type="text" placeholder="Nachnamen eingeben" name="user[lname]" value="" id="user_lname" class='form-field'>
-      </div>
-      <div class="btns">
-        <div class="btn inverted" onclick='closeNewUser()'>Cancel</div>
-        <input type="submit" name="commt" value="erstellen" data-diavle-with="teilen" class="btn">
-      </div>
-    </form>
-  </div>
-</div>
 <script type="text/javascript">
-  function closeShareContent() {
-    $('#shareContent').hide();
+  function showDropdown() {
+    $('#userDropdown').toggle();
   }
-  function closeNewUser() {
-
+  function shareBig(type) {
+    $('#pitch_available_for').val(type);
+    $('.dropdown-text span').text(type);
+    $('#userDropdown').toggle();
+  }
+  function shareTeam(teamID, teamName) {
+    $('#pitch_available_for').val('team');
+    $('#pitch_team_id').val(teamID);
+    $('.dropdown-text span').text("Team: "+teamName);
+    $('#userDropdown').toggle();
+  }
+  function closeSharePitch() {
+    $('#sharePitch').hide();
   }
   $('#shareForm').on('submit', function(e) {
     e.preventDefault();
@@ -58,33 +79,72 @@
     	success: function (res) {
         if( res.success ) {
           alert(res.success);
-          closeShareContent();
-        } else if ( res.new_user ) {
-          $('#newUser').show();
-          $('#newUserForm').on('submit', function(ev) {
-            ev.preventDefault();
-            var user_url = '/share/users/'+res.new_user+'/update_name';
-            userData = new FormData(document.getElementById('newUserForm'));
-            $.ajax({
-              url: user_url,
-              type: 'post',
-              cache: false,
-              async: true,
-              contentType: false,
-              processData: false,
-              data: userData,
-              beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-              success: function(user_res) {
-                closeShareContent();
-                $('#newUser').hide();
-              }
-            })
-          })
+          closeSharePitch();
+        } else if ( res.new_users ) {
+          location.replace('?new_users=true')
         } else if ( res.error ){
           alert(res.error);
         }
   		}
     })
 })
+</script>
+<% end %>
+<% if params[:new_users] %>
+<% new_users = @company.users.where(fname: nil) %>
+<div class="background-blur" id="newUser" style="display: block">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
+    <h3>Diese User existieren noch nicht:</h3>
+    <form class="" action="index.html" method="post" id="newUserForm">
+    <table>
+      <thead>
+        <tr>
+          <th>E-Mail</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+        </tr>
+      </thead>
+    <% new_users.each do |nu| %>
+      <tbody>
+        <tr>
+          <td><%= nu.email %></td>
+          <td><input type="text" name="users[<%= nu.id %>][fname]" value="" placeholder="Vornamen eingeben"></td>
+          <td><input type="text" name="users[<%= nu.id %>][lname]" value="" placeholder="Nachnamen eingeben"></td>
+        </tr>
+      </tbody>
+    <% end %>
+    </table>
+    <div class="form-group">
+      <div class="btn" onclick="submitNewUser()">speichern</div>
+    </div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+  function closeNewUser() {
+
+  }
+  function submitNewUser() {
+    $('#newUserForm').submit();
+  }
+  $('#newUserForm').on('submit', function(ev) {
+    ev.preventDefault();
+    var user_url = '/share/users/update_name';
+    formData = new FormData(document.getElementById('newUserForm'));
+    $.ajax({
+      url: user_url,
+      type: 'post',
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: formData,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        location.replace('?');
+      }
+    })
+  })
 </script>
 <% end %>
