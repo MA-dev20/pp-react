@@ -10,37 +10,17 @@
         <div class="card" id="pitch">
           <div class="pitches-title-wrapper">
             <div class="title"><%= pitch.title %></div>
-            <% if (can? :edit, pitch) || (can? :create, Pitch) %>
+            <% if (can? :edit, pitch) %>
             <div class="custom-dropdown-select">
                 <div class="dropdown-div" onclick="openDropdown(this)">
                     <i class="fa fa-ellipsis-v dropdown-icon" aria-hidden="true"></i>
                 </div>
                 <div class="dropdown-option-wrapper">
                     <div class="dropdown-option">
-                        <% if can? :edit, pitch %>
-                        <span class="select-name">
-                            <a href="<%=  dashboard_edit_pitch_path(pitch) %>" data-turbolinks="false">
-                                <i class="fas fa-pencil-alt"></i>Edit
-                            </a>
-                        </span>
-                        <span class="select-name">
-                            <a href="?share_pitch=<%= pitch.id %>">
-                                <i class="fa fa-share-alt" aria-hidden="true"></i>Share
-                            </a>
-                        </span>
-                        <% end %>
-                        <% if can? :create, Pitch %>
-                        <span class="select-name">
-                            <a href="<%= copy_pitch_path(pitch) %>">
-                                <i class="fas fa-copy" aria-hidden="true"></i>Duplicate
-                            </a>
-                        </span>
-                        <% end %>
                         <% if can? :destroy, pitch %>
                         <span class="select-name">
                             <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
                                 <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>
-                                <!-- <i class="far fa-trash-alt" aria-hidden="true"></i> -->
                             </a>
                         </span>
                         <% end %>
@@ -69,14 +49,28 @@
             </div>
         </div>
         <% end %>
-        <!-- </a> -->
-        <% if can? :create, Pitch %>
-        <div class="card" id="newpitch">
-            <a href="<%= dashboard_new_pitch_path(global: true) %>">
-                <%= inline_svg_tag 'dash/new_icons/plus_button.svg', class: 'add-new-pitch plus-cust-icon' %>
-            </a>
-            <div class="title">Create new Pitch</div>
-        </div>
-        <% end %>
     </div>
 </div>
+<script type="text/javascript">
+  $(document).click(function (e) {
+      if ($(e.target).is('.blur')) {
+          $('.blur').hide();
+      }
+
+  if (!$(e.target).hasClass('dropdown-icon')) {
+    var container = $(".dropdown-div");
+    if (container.has(e.target).length === 0) {
+      $('.dropdown-option-wrapper').hide();
+    }
+      }
+  });
+
+  function openDropdown(e) {
+      if ($(e).siblings('.dropdown-option-wrapper').is(':visible')) {
+          $('.dropdown-option-wrapper').hide();
+      } else {
+          $('.dropdown-option-wrapper').hide();
+          $(e).siblings('.dropdown-option-wrapper').show();
+      }
+  }
+</script>

@@ -197,10 +197,7 @@ class BackofficeController < ApplicationController
   end
 
   def pitches
-    @pitches = Pitch.where(available_for: 'global_hold')
-    Pitch.where(available_for: 'global').each do |p|
-      @pitches << p
-    end
+    @pitches = Pitch.where(available_for: 'global')
     if params[:edit_pitch]
       @pitch = Pitch.find_by(id: params[:edit_pitch])
     end
