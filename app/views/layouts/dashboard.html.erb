@@ -165,7 +165,6 @@
 	<% if @inactive_users %>
 		<div class="modal-blur">
 			<div class="card inactive_user">
-				<div class="close" onclick="redirectInactive()"><%= image_tag 'icons/close.svg' %></div>
 				<h3>Inactive User</h3>
 				<%= form_for(:users, url: activate_users_path(@company), html: {id: "inactive_user_form"}) do |f| %>
 					<div id="inactive_user-table">
@@ -185,7 +184,7 @@
 									<td><%= iu.user.fname %></td>
 									<td><%= iu.user.lname %></td>
 									<td><%= iu.user.email %></td>
-									<td><input type="checkbox" name="users[user_id]" value="<%= iu.user_id %>" id='user_<%= iu.user_id %>' checked></td>
+									<td><input type="checkbox" name="users[user_id]" value="<%= iu.user_id %>" id='user_<%= iu.user_id %>' ></td>
 								</tr>
 								<% end %>
 							</tbody>

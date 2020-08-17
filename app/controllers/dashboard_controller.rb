@@ -59,10 +59,10 @@ class DashboardController < ApplicationController
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @lists = []
-    @company.catchword_lists.where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
+    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
       @lists << {id: list.id, type: 'catchword', name: list.name}
     end
-    @company.objection_lists.where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
+    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
       @lists << {id: list.id, type: 'objection', name: list.name}
     end
     if params[:folder_id]
@@ -76,6 +76,20 @@ class DashboardController < ApplicationController
       @folder.objection_lists.each do |cl|
         @lists << {id: cl.id, type: 'objection', name: cl.name}
       end
+    end
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @listType = 'catchword'
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
     end
   end
 
@@ -227,8 +241,13 @@ class DashboardController < ApplicationController
   @users_count = @company.users.accessible_by(current_ability).count
 	@users = @team.users.accessible_by(current_ability).order('lname') if params[:team_id] && params[:edit] != "true"
   @users = @company.users.accessible_by(current_ability).order('lname') if !@users
-	@user = User.find(params[:edit_user]) if params[:edit_user]
-  @role = @user.company_users.find_by(company: @company).role if @user
+  if params[:edit_user]
+     @user = User.find(params[:edit_user])
+     @role = @user.company_users.find_by(company: @company).role if @user
+     if !(can? :edit, @user)
+       redirect_to dashboard_teams_path
+     end
+  end
   end
 
   def user_stats

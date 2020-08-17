@@ -47,33 +47,33 @@
 	<div class="content-popup">
 		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
 		<%= form_for :task_medium, url: update_media_path(@content.id), html: {id: 'content_update-form'} do |f| %>
-		<div class="form-group">
-			<% if can? :edit, @content %>
-			<%= f.text_field :title, value: @content.title, class: 'form-field' %>
-			<% else %>
-			<h3><%= @content.title %></h3>
-			<% end %>
-		</div>
-		<% if @content.media_type == 'image' %>
-			<%= image_tag @content.image.url %>
-		<% elsif @content.media_type == 'video' %>
-			<%= video_tag @content.video.url, controls: true, id: 'content_media'%>
-		<% elsif @content.media_type == 'audio' %>
-			<div class="audio">
-				<%= image_tag 'dash/audio.png' %>
-				<%= audio_tag @content.audio.url, controls: true, id: 'content_media' %>
+			<div class="form-group">
+				<% if can? :edit, @content %>
+					<%= f.text_field :title, value: @content.title, class: 'form-field' %>
+				<% else %>
+					<h3><%= @content.title %></h3>
+				<% end %>
 			</div>
-		<% elsif @content.media_type == 'pdf' %>
-		<div class="audio">
-			<iframe src="<%= @content.pdf.url %>" width="100%" height="500px"></iframe>
-		</div>
-		<% end %>
-		<% if can? :edit, @content %>
-		<div class="btns">
-			<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
-			<%= f.submit 'speichern', class: 'btn' %>
-		</div>
-		<% end %>
+			<% if @content.media_type == 'image' %>
+				<%= image_tag @content.image.url %>
+			<% elsif @content.media_type == 'video' %>
+				<%= video_tag @content.video.url, controls: true, id: 'content_media'%>
+			<% elsif @content.media_type == 'audio' %>
+				<div class="audio">
+					<%= image_tag 'dash/audio.png' %>
+					<%= audio_tag @content.audio.url, controls: true, id: 'content_media' %>
+				</div>
+			<% elsif @content.media_type == 'pdf' %>
+				<div class="audio">
+					<iframe src="<%= @content.pdf.url %>" width="100%" height="500px"></iframe>
+				</div>
+			<% end %>
+			<% if can? :edit, @content %>
+				<div class="btns">
+					<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
+					<%= f.submit 'speichern', class: 'btn' %>
+				</div>
+			<% end %>
 		<% end %>
 	</div>
 	</div>

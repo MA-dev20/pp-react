@@ -87,11 +87,12 @@
 <%= audio_tag 'game/play/aufbau.mp3', id: 'start' %>
 <%= audio_tag 'game/play/word.mp3', loop: true, id: 'word_load' %>
 <%= audio_tag 'game/play/dong.mp3', id: 'dong' %>
-<%= audio_tag 'game/play/theme.wav', loop: true, id: 'theme' %>
+<%= audio_tag 'game/play/play_catchword.mp3', loop: true, id: 'theme' %>
 <%= audio_tag 'game/play/countdown.mp3', id: 'countdown' %>
 <%= audio_tag 'game/play/objection_ring.mp3', id: 'o_start' %>
 <%= audio_tag 'game/play/objection_theme.mp3', loop: true, id: 'o_theme' %>
 <%= audio_tag 'game/play/objection_end.mp3', id: 'o_end' %>
+<%= audio_tag 'game/play/addseconds.mp3', id: 'add_s' %>
 <% end %>
 <% if @catchword && @catchword.sound? %>
 	<%= audio_tag @catchword.sound.url, id: 'word_sound' %>
@@ -100,8 +101,10 @@
 	<% if @game.game_sound %>
 	document.getElementById('word_load').volume = 0.5;
 	document.getElementById('dong').volume = .5;
-	document.getElementById('theme').volume = .2;
-	document.getElementById('countdown').volume = .3;
+	document.getElementById('theme').volume = .1;
+	document.getElementById('o_end').volume = .3;
+	document.getElementById('o_theme').volume = .3;
+	document.getElementById('o_start').volume = .3;
 	<% end %>
 	<% if @task.task_medium && @task.task_medium.video? %>
 	$('#task_video').on('ended', function() {
@@ -141,7 +144,7 @@
 				$('#timeroverlay').hide();
 				clearInterval(beginTimer);
 				<% if @catchword %>
-					<% if @catchword.sound? %>
+					<% if @game.game_sound %>
 					document.getElementById('word_load').play();
 					<% end %>
 				$('#word').html("<%= @catchword.name %>");
@@ -196,6 +199,11 @@
 	}
 	if(<%= @catchword.name.length %> > 33) {
 		$('.word').css('line-height','8vh');
+	}
+	if(<%= @catchword.name.length %> > 66) {
+		$('.word').css('line-height','8vh');
+		$('.word').css('height','24vh');
+
 	}
 	<% end %>
 
@@ -259,6 +267,9 @@
 			timer = timer + 10;
 			$('#addTime').text('+10s');
 			$('#addTime').fadeIn();
+			<% if @game.game_sound %>
+			document.getElementById('add_s').play();
+			<% end %>
 			setTimeout(function() {
 				$('#addTime').fadeOut();
 			},1500);
@@ -267,6 +278,9 @@
 			timer = timer + 20;
 			$('#addTime').text('+20s');
 			$('#addTime').fadeIn();
+			<% if @game.game_sound %>
+			document.getElementById('add_s').play();
+			<% end %>
 			setTimeout(function() {
 				$('#addTime').fadeOut();
 			},1500);
@@ -275,6 +289,9 @@
 			timer = timer + 30;
 			$('#addTime').text('+30s');
 			$('#addTime').fadeIn();
+			<% if @game.game_sound %>
+			document.getElementById('add_s').play();
+			<% end %>
 			setTimeout(function() {
 				$('#addTime').fadeOut();
 			},1500);
@@ -341,17 +358,19 @@
 		document.getElementById('o_theme').play();
 		<% end %>
 		$('.objection').on('animationend', function() {
-			if ($('#objection_sound').length > 0) {
-				document.getElementById('objection_sound').play();
-				$('#objection_sound').on('ended', function() {
-					$('#objection_bar').addClass('active');
-					MyApp.o_timer.start();
-				});
-			} else {
-				setTimeout(function() {
-					MyApp.o_timer.start();
-					$('#objection_bar').addClass('active');
-				}, 2000);
+			if( !$('#objection_bar').hasClass('active') ) {
+				if ($('#objection_sound').length > 0) {
+					document.getElementById('objection_sound').play();
+					$('#objection_sound').on('ended', function() {
+						$('#objection_bar').addClass('active');
+						MyApp.o_timer.start();
+					});
+				} else {
+					setTimeout(function() {
+						MyApp.o_timer.start();
+						$('#objection_bar').addClass('active');
+					}, 2000);
+				}
 			}
 		})
 	}

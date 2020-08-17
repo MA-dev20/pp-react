@@ -89,51 +89,30 @@
 	Skip mit Leertaste
 </section>
 <% if @game.game_sound %>
-<%= audio_tag 'game/rating/rating_bar.mp3', id: 'ratingBarSound' %>
-<%= audio_tag 'game/rating/swoosh.mp3', id: 'swoosh' %>
-<%= audio_tag 'game/rating/party.wav', id: 'party' %>
-<%= audio_tag 'game/rating/theme.wav', loop: true, id: 'theme' %>
-<%= audio_tag(rating_sound, id: 'VOrating') %>
+<%= audio_tag 'game/rating/intro.mp3', id: 'intro', autoplay: true %>
+<%= audio_tag 'game/rating/calculate.mp3', id: 'calculateSound'%>
+<%= audio_tag 'game/rating/bling.mp3', id: 'blingSound' %>
+<%= audio_tag 'game/rating/theme.mp3', id: 'theme' %>
 <% end %>
 <script>
 	<% if @game.game_sound %>
-	document.getElementById('theme').volume = 0.2;
-	document.getElementById('party').volume = 0.2;
-	document.getElementById('VOrating').volume = 0.2;
-	var playCount = 0;
-	setTimeout(function() {
-		document.getElementById('VOrating').play();
-	},1000);
-	document.getElementById('ratingBarSound').addEventListener("ended", function() {
-		playCount++;
-		if (playCount < <%= @turn_ratings.count %>) {
-			document.getElementById('ratingBarSound').play();
-		} else {
-			document.getElementById('swoosh').play();
-			setTimeout(function() {
-				document.getElementById('party').play();
-			}, 3900);
-			setTimeout(function() {
-				document.getElementById('party').volume = 0.15;
-			}, 10000);
-			setTimeout(function() {
-				document.getElementById('party').volume = 0.1;
-			}, 11000);
-			setTimeout(function() {
-				document.getElementById('party').volume = 0.05;
-			}, 12000);
-			setTimeout(function() {
-				document.getElementById('theme').play();
-			}, 13000);
-		}
-	});
+	document.getElementById('theme').volume = 0.1;
+	document.getElementById('blingSound').volume = 0.3;
+	document.getElementById('calculateSound').volume = 0.3;
 	<% end %>
+	function endAnimation() {
+		<% if @game.game_sound %>
+		document.getElementById('calculateSound').pause();
+		document.getElementById('theme').play();
+		<% end %>
+	}
 	<% if @turn_ratings.count == 1 %>
 	$('#rating1').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		$('#bar1').css('opacity', '1');
 		<% if @game.game_sound %>
-		document.getElementById('ratingBarSound').play();
+		document.getElementById('calculateSound').play();
 		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
@@ -142,8 +121,13 @@
 		}, 100)
     });
 	$('#bar1').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar1);
 		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		$('#rating1').addClass('ready');
+		endAnimation();
 		var i = 0.05;
 		MyApp.bar = setInterval(function() {
 			$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %> * i).toFixed(1));
@@ -163,8 +147,10 @@
 	$('#rating2').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		$('#bar1').css('opacity', '1');
+		$('#bar2').css('opacity', '1');
 		<% if @game.game_sound %>
-		document.getElementById('ratingBarSound').play();
+		document.getElementById('calculateSound').play();
 		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
@@ -174,8 +160,12 @@
 		}, 100)
     });
 	$('#bar1').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar1);
 		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		$('#rating1').addClass('ready');
 		var i = 0.1;
 		MyApp.bar2 = setInterval(function() {
 			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
@@ -183,8 +173,13 @@
 		}, 100)
 	});
 	$('#bar2').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar2);
 		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+		$('#rating2').addClass('ready');
+		endAnimation();
 		var i = 0.05;
 		MyApp.bar = setInterval(function() {
 			$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %> * i).toFixed(1));
@@ -205,8 +200,11 @@
 	$('#rating3').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		$('#bar1').css('opacity', '1');
+		$('#bar2').css('opacity', '1');
+		$('#bar3').css('opacity', '1');
 		<% if @game.game_sound %>
-		document.getElementById('ratingBarSound').play();
+		document.getElementById('calculateSound').play();
 		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
@@ -217,8 +215,12 @@
 		}, 100)
     });
 	$('#bar1').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar1);
 		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		$('#rating1').addClass('ready');
 		var i = 0.1;
 		MyApp.bar2 = setInterval(function() {
 			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
@@ -227,8 +229,12 @@
 		}, 100)
 	});
 	$('#bar2').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar2);
 		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+		$('#rating2').addClass('ready');
 		var i = 0.1;
 		MyApp.bar3 = setInterval(function() {
 			$('#rating3').text(Number(<%= @rating3.rating / 10.0 %> * i).toFixed(1));
@@ -236,8 +242,13 @@
 		}, 100)
 	});
 	$('#bar3').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar3);
 		$('#rating3').text(Number(<%= @rating3.rating / 10.0 %>).toFixed(1));
+		$('#rating3').addClass('ready');
+		endAnimation();
 		var i = 0.05;
 		MyApp.bar = setInterval(function() {
 			$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %> * i).toFixed(1));
@@ -259,8 +270,12 @@
 	$('#rating4').text('?');
 	$('#ges_rating').text('?');
 	$('#bar1').on("animationstart", function() {
+		$('#bar1').css('opacity', '1');
+		$('#bar2').css('opacity', '1');
+		$('#bar3').css('opacity', '1');
+		$('#bar4').css('opacity', '1');
 		<% if @game.game_sound %>
-		document.getElementById('ratingBarSound').play();
+		document.getElementById('calculateSound').play();
 		<% end %>
 		var i = 0.1;
 		MyApp.bar1 = setInterval(function() {
@@ -272,8 +287,12 @@
 		}, 100)
     });
 	$('#bar1').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar1);
 		$('#rating1').text(Number(<%= @rating1.rating / 10.0 %>).toFixed(1));
+		$('#rating1').addClass('ready');
 		var i = 0.1;
 		MyApp.bar2 = setInterval(function() {
 			$('#rating2').text(Number(10 - <%= 10 - @rating2.rating / 10.0 %> * i).toFixed(1));
@@ -283,8 +302,12 @@
 		}, 100)
 	});
 	$('#bar2').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar2);
 		$('#rating2').text(Number(<%= @rating2.rating / 10.0 %>).toFixed(1));
+		$('#rating2').addClass('ready');
 		var i = 0.1;
 		MyApp.bar3 = setInterval(function() {
 			$('#rating3').text(Number(<%= @rating3.rating / 10.0 %> * i).toFixed(1));
@@ -293,8 +316,12 @@
 		}, 100)
 	});
 	$('#bar3').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar3);
 		$('#rating3').text(Number(<%= @rating3.rating / 10.0 %>).toFixed(1));
+		$('#rating3').addClass('ready');
 		var i = 0.1;
 		MyApp.bar4 = setInterval(function() {
 			$('#rating4').text(Number(10 - <%= 10 - @rating4.rating / 10.0 %> * i).toFixed(1));
@@ -302,8 +329,13 @@
 		}, 100)
 	});
 	$('#bar4').on("animationend", function() {
+		<% if @game.game_sound %>
+		document.getElementById('blingSound').play();
+		<% end %>
 		clearInterval(MyApp.bar4);
 		$('#rating4').text(Number(<%= @rating4.rating / 10.0 %>).toFixed(1));
+		$('#rating4').addClass('ready');
+		endAnimation();
 		var i = 0.05;
 		MyApp.bar = setInterval(function() {
 			$('#ges_rating').text(Number(<%= @ges_rating.nil? ? 0 : @ges_rating / 10.0 %> * i).toFixed(1));

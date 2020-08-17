@@ -96,6 +96,7 @@
 <% end %>
 <% if params[:new_users] %>
 <% new_users = @company.users.where(fname: nil) %>
+<% if new_users.count != 0 %>
 <div class="background-blur" id="newUser" style="display: block">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
@@ -126,6 +127,7 @@
     </form>
   </div>
 </div>
+<% end %>
 <script type="text/javascript">
   function closeNewUser() {
 
