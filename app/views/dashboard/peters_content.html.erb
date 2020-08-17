@@ -10,9 +10,9 @@
 
 	<div class="head">
 		<% if @folder %>
-		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('peters_content')">Peter's Content</span><% if @folder.content_folder && @folder.content_folder.name != 'root_folder' %><% if @folder.content_folder.content_folder && @folder.content_folder.content_folder.name != 'root_folder'%><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<h3><span onclick="redirectFolder('libary')">Content Bibliothek</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('peters_content')">Peter's Content</span><% if @folder.content_folder && @folder.content_folder.name != 'root_folder' %><% if @folder.content_folder.content_folder && @folder.content_folder.content_folder.name != 'root_folder'%><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
-		<h3><span onclick="redirectFolder('libary')">Libary</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('peters_content')">Peter's Content</span></h3>
+		<h3><span onclick="redirectFolder('libary')">Content Bibliothek</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('peters_content')">Peter's Content</span></h3>
 		<div class="search">
 			<i class="fas fa-search"></i>
 			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
@@ -54,7 +54,7 @@
 		$.ajax({
 			url: URL,
 			type: 'post',
-			data: { search: searchVal },
+			data: { search: searchVal, level: 'peters' },
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function (res) {
 				var foldersDiv = '<h3>Ordner</h3>';

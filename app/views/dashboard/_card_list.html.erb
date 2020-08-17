@@ -9,7 +9,7 @@
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
             <% if t.task.task_type.present? %>
                 <% if ((t.task.task_type == 'catchword' && t.task&.catchword_list&.catchwords.present?) || (t.task.task_medium.present? && t.task.task_medium.media_type == 'video' && t.task.task_medium.video_url_id.present?) || (t.task.task_medium.present? &&  (t.task.task_medium.video.present? || t.task.task_medium.audio.present? || t.task.task_medium.image.present?))) %>
-                    <% if t.task.title.present? %>    
+                    <% if t.task.title.present? %>
                         <input type="hidden" class="exclamation-triangle" value="0">
                         <i class="fas fa-exclamation-triangle" style="display: none"></i>
                     <% else %>
@@ -25,13 +25,13 @@
                 <i class="fas fa-exclamation-triangle"></i>
             <% end %>
             <% if t.task.task_medium.present? %>
-                <div class="name"><%= t.order %>. Task - <%= t.task.task_medium.media_type.titleize %></div>
+                <div class="name"><%= t.order %>. Aufgabe - <%= t.task.task_medium.media_type == 'image' ? 'Bild' : t.task.task_medium.media_type.titleize %></div>
             <% else %>
-                <div class="name"><%= t.order %>. Task</div>
+                <div class="name"><%= t.order %>. Aufgabe</div>
             <% end %>
             <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
             <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
-                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
             </a>
             <%#= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
             <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')">
@@ -40,8 +40,6 @@
         </div>
         <div class="task-subtitle task-name">
             <%= t.task.title %>
-            <%# media_type = t.task.task_medium&.media_type&.titleize %>
-            <%#= media_type = media_type.present? ? media_type : t.task.task_type&.titleize %>
         </div>
         <% if t.task.task_medium && t.task.task_medium.video? %>
         <% image_url = t.task.task_medium.video.thumb.url %>
@@ -76,10 +74,10 @@
         <% else %>
         <div class="task-title slide-title">
             <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
-            <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
+            <div class="name"><%= t.order %>. Folie - <%= t.task.pdf_type.titleize == 'image' ? 'Bild' : t.task.pdf_type.titleize.titleize %></div>
             <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
             <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
-                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
             </a>
             <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')">
                 <i class="fas fa-copy copy" aria-hidden="true"></i>

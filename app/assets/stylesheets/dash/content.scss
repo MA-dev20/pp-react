@@ -110,7 +110,8 @@
   }
   .files,
   .lists,
-  .folders  {
+  .folders,
+  .standard  {
     clear: left;
     text-align: left;
     h3 {
@@ -148,7 +149,7 @@
           display: none;
           position: absolute;
           z-index: 11;
-          width: 70px;
+          width: 90px;
           background-color: white;
           border-radius: 5px;
           overflow: hidden;
@@ -174,7 +175,8 @@
       border-color: rgb(var(--custcolor));
     }
   }
-  .folders {
+  .folders,
+  .standard {
     .card {
       height: auto;
       font-size: 1.5vh;

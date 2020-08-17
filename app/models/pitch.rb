@@ -3,6 +3,7 @@ class Pitch < ApplicationRecord
 	belongs_to :department, required: false
 	belongs_to :team, required: false
 	belongs_to :user
+	has_many :games
   has_many :task_orders, dependent: :destroy
 	has_many :tasks, through: :task_orders
 	has_many :shared_pitches, dependent: :destroy

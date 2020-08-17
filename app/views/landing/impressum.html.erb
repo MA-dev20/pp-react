@@ -31,24 +31,24 @@
 </section>
 <section id="impressum">
 	<h1>Angaben gemäß §5 TMG:</h1>
-	
+
 	<h3>Peter Pitch GmbH</h3>
 	<p>Sonnenstraße 130</p>
 	<p>44139 Dortmund</p>
 	<p>Deutschland</p>
-	
+
 	<h3>Geschäftsführer:</h3>
 	<p>Christian Panne, David Neuendorf</p>
-	
+
 	<h3>Kontakt:</h3>
 	<p>Email: <%= mail_to 'info@peterpitch.com' %></p>
-	
+
 	<h3>Streitschlichtung:</h3>
 	<p>Alle Angebote richten sich ausschließlich an Unternehmer im Sinne des §14 BGB.</p>
 	<p>Plattform der EU-Kommission zur Online Streitbeilegung für Verbraucher:</p>
 	<p><a href="https://webgate.ec.europa.eu/odr/">https://webgate.ec.europa.eu/odr/</a></p>
 	<p>Gemäß § 36 VSBG weisen wir darauf hin, dass wir nicht an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilnehmen und hierzu auch nicht verpflichtet sind.</p>
-	
+
 </section>
 <section id="footer" class="wow fadeIn">
     <div class="logo">
@@ -77,8 +77,9 @@
     </div>
 </section>
 <div class="fullscreen-modal" id="loginModal">
-    
-    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+  <div class="close" onclick="showLoginModal()">
+    <%= image_tag 'icons/close.svg' %>
+  </div>
     <div class="card">
     <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
         <h2>Login</h2>
@@ -104,7 +105,7 @@
     }
 	function showNavLinks() {
         if($('#navLinks').is(":hidden")) {
-            $('#navLinks').show();   
+            $('#navLinks').show();
         } else {
             $('#navLinks').hide();
         }

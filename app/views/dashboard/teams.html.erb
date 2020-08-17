@@ -132,8 +132,8 @@
 <div class="right">
 	<div class="search">
         <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
-		<input type="text" placeholder="User suchen" id="searchUsers" class="form-field">
-		<button class="btn btn-green" onclick="toggleUser()">User erstellen</button>
+		<input type="text" placeholder="Nutzer suchen" id="searchUsers" class="form-field">
+		<button class="btn btn-green" onclick="toggleUser()">Nutzer erstellen</button>
 	</div>
 	<% if @user %>
 	<div class="card" id="editUser">
@@ -141,7 +141,7 @@
 		<a href="<%= dashboard_teams_path %>" class="link">
 			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back back-cust-icon' %>
 		</a>
-		Edit User</h3>
+		Nutzer bearbeiten</h3>
 		<%#= link_to '', destroy_user_path(@user, site: 'dashboard'), class: 'far fa-trash-alt deleteEdit', data: {confirm: 'Bist du sicher das du diesen User löschen möchtest?'} %>
 		<a href="<%= destroy_user_path(@user, site: 'dashboard') %>" data-confirm="Bist du sicher das du diesen User löschen möchtest?">
 			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteEdit' %>
@@ -172,6 +172,27 @@
 				<label for="">E-Mail</label>
 				<%= f.email_field :email, class: 'form-field' %>
 			</div>
+			<% if @role != 'sroot' && (@company.company_users.find_by(user: @admin).role == 'sroot' || (@role != 'root' && @company.company_users.find_by(user: @admin).role == 'root')) %>
+			<div class="form-group">
+				<input type="hidden" name="user[role]" id="user_role" value="<%= @role %>">
+				<div class="dropdown">
+					<div class="dropdown-label">Rolle</div>
+					<div class="dropdown-text" id="role_text" onclick="toggleRoleDropdown()">
+						<%= @role == 'user' ? 'Nutzer' : '' %>
+						<%= @role == 'admin' ? 'Admin' : '' %>
+						<%= @role == 'root' ? 'Root' : '' %>
+						<i class="fas fa-caret-down"></i>
+					</div>
+					<div class="dropdown-menu" id="role_dropdown">
+						<% if @company.company_users.find_by(user: @admin).role == 'sroot' %>
+						<div class="link" onclick="setRole('root')">Root</div>
+						<% end %>
+						<div class="link" onclick="setRole('admin')">Admin</div>
+						<div class="link" onclick="setRole('user')">Nutzer</div>
+					</div>
+				</div>
+			</div>
+			<% end %>
 			<%= f.submit 'speichern!', class: 'btn btn-green' %>
 		<% end %>
 	</div>
@@ -182,7 +203,7 @@
     	<div class="center">
 	    	<div class="btn btn-green" id="crop">speichern</div>
     	</div>
-    	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+    	<div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
 	</div>
 	<script>
 		function toggleUser() {
@@ -275,6 +296,26 @@
 		})
 
 	}
+	function toggleRoleDropdown() {
+		$('#role_dropdown').toggle();
+	}
+	function setRole(role) {
+		$('#user_role').val(role);
+		if(role == 'user') {
+			$('#role_text').html('Nutzer <i class="fas fa-caret-down"></i>');
+		} else if(role == 'admin') {
+			$('#role_text').html('Admin <i class="fas fa-caret-down"></i>');
+		} else if(role == 'root') {
+			$('#role_text').html('Root <i class="fas fa-caret-down"></i>');
+		}
+		$('.dropdown-menu').hide();
+	}
+	$(document).click(function (e) {
+		if ($(e.target).is('.dropdown-menu .link') || $(e.target).is('.dropdown-text')) {
+		} else {
+			$('.dropdown-menu').hide();
+		}
+	});
 	</script>
 	<% else %>
 
@@ -289,7 +330,7 @@
 						<th>Name</th>
 						<th>Pitches</th>
 						<th>Score</th>
-						<th>Role</th>
+						<th>Rolle</th>
 						<th></th>
 						<th></th>
 					</tr>

@@ -6,15 +6,15 @@ class ListController < ApplicationController
     if params[:list][:type] == 'catchword'
       @list = @company.catchword_lists.new(list_params)
       @list.user = @user
-      @list.save
-      redirect_to dashboard_my_content_path(catchword: @list.id)
-      return
     else
       @list = @company.objection_lists.new(list_params)
       @list.user = @user
+    end
+    if @list.name == ''
+      render json: {no_title: true}
+    else
       @list.save
-      redirect_to dashboard_my_content_path(objection: @list.id)
-      return
+      render json: {id: @list.id}
     end
   end
   def update

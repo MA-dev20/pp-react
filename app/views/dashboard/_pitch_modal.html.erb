@@ -1,8 +1,8 @@
 <div id="pitchModal" class="pitch-modal modal hide">
     <div class="modal-content pitch-modal-content">
-        <%= image_tag 'dash/new_icons/close.svg', class: 'close' %>		
+        <%= image_tag 'dash/new_icons/close.svg', class: 'close' %>
         <div class="heading">
-            <h1>Headline</h1>
+            <h1>Pitch speichern</h1>
         </div>
         <%= form_for :pitch, url: update_pitch_path(@pitch), method: 'put', html: {id: 'pitchForm'} do |f| %>
         <%#= f.hidden_field :destroy_image, class: 'destroy-image' %>
@@ -11,22 +11,22 @@
         <div class="inner-content">
             <div class="left-section">
                 <div class="pitch-title">
-                    <label for="">Pitch</label>
+                    <label for="">Pitchname</label>
                     <div class="form-group">
-                        <%= f.text_field :title, class: "form-field pitch-title", placeholder: 'Pitch title', required: true, onkeyup: 'handleBtnDisable(this)' %>
+                        <%= f.text_field :title, class: "form-field pitch-title", placeholder: 'Pitchname hier eingeben', required: true, onkeyup: 'handleBtnDisable(this)' %>
                     </div>
                 </div>
                 <div class="pitch-description">
-                    <label for="">Description</label>
+                    <label for="">Beschreibung</label>
                     <div class="form-group">
-                        <%= f.text_area :description, class: 'form-field', placeholder: 'Pitch description' %>
+                        <%= f.text_area :description, class: 'form-field', placeholder: 'Pitch-Beschreibung hier eingeben' %>
                     </div>
                 </div>
                 <div class="hr-line"></div>
             </div>
             <div class="right-section">
                 <div class="picture media-option">
-                    <label for="">Pitch image</label>
+                    <label for="">Pitchbild</label>
                     <%#= f.file_field :image, onchange: "loadFile(event)", accept: 'image/*', class: 'pitch-uploadfile' %>
                     <div class="preview pitch-image-preview"
                         style="display: <%= pitch.image.url.present? ? 'block' : 'none' %>">
@@ -47,7 +47,7 @@
                     </div>
                     <div class="dropzone-container pitch-image-drop-zone"
                         style="<%= 'display: none;' if pitch.image.url.present? %>">
-                        <label class="dropzone-text">Drag and Drop file from your Computer</label>
+                        <label class="dropzone-text">Datei hier hinziehen und ablegen</label>
                         <div class="label-btn">
                             <%= f.file_field :image, class: 'image-fileinput', accept: 'image/*' %>
                             <%#= t.hidden_field :media_type, value: 'image' %>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="popup" id="popupImage">
-					<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+					          <div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
                     <div class="img-container">
                         <%= image_tag '', id: 'pitch_media_image' %>
                     </div>
@@ -69,9 +69,9 @@
                 <!-- <div class="hr-line"></div> -->
                 <div class="btn-wrapper pitch-modal-submit-wrapper">
                     <% if @pitch.title.present? %>
-                    <%= f.submit 'Save', class: "submit-btn btn" %>
+                    <%= f.submit 'speichern', class: "submit-btn btn" %>
                     <% else %>
-                    <%= f.submit 'Save', class: "submit-btn btn op disable-btn", 'disabled': 'true' %>
+                    <%= f.submit 'speichern', class: "submit-btn btn op disable-btn", 'disabled': 'true' %>
                     <% end %>
                 </div>
             </div>
@@ -87,7 +87,7 @@
     //         $('#pitchModal').hide();
     //     }
     // });
-    
+
     $('.pitch-image-upload-btn').on('click', function (e) {
         $('#pitch_image').click();
     })
@@ -115,7 +115,7 @@
             $('.submit-btn').removeClass('op disable-btn');
         }
     }
-    
+
     var pitchImageDropZone = $('.pitch-image-drop-zone')
 	pitchImageDropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
 		e.preventDefault();
@@ -127,9 +127,9 @@
 	pitchImageDropZone.on('dragleave dragend drop', function () {
 		$(this).removeClass('is-dragover');
     })
-    
+
     pitchImageDropZone.on('drop', function (e) {
-		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {		
+		if (e.originalEvent.dataTransfer.files[0]['type'].split('/')[0] === 'image') {
             handlePitchImageUpload(e);
 		}
 	});
@@ -173,7 +173,7 @@
 			};
 		});
 	})(jQuery);
-    
+
 	function handlePitchImageUpload(e) {
 		let file_input = $(e.currentTarget).find('#pitch_image');
 		file_input[0].files = e.originalEvent.dataTransfer.files;
@@ -206,7 +206,7 @@
 			}
 		}
     }
-    
+
     $('#popupImage').on('show', function () {
 		if (!pitchCropper) {
 			pitchCropper = new Cropper(previewImage, {
@@ -243,7 +243,7 @@
 			});
 		};
     })
-    
+
     function sendPitchMedia(pitchForm) {
 		var url = "<%= create_pitch_media_url(@pitch) %>";
 		$('.cancel-upload').css('display', 'block');
@@ -275,7 +275,7 @@
 			success: function (res) {
 				$('#loaderModal').hide();
 				$('.cancel-upload').css('display', 'none');
-				
+
 				pitchForm = new FormData();
 			}
 		})
@@ -290,6 +290,6 @@
 	})
 	}
 
-	
+
 
 </script>

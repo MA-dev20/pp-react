@@ -1,13 +1,14 @@
 <div class="background-blur" id="new-content">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newContent()' %>
-    <h3>Content hochladen</h3>
+    <h3>Content hinzufügen</h3>
+    <h5>Hier kannst du Bild, Video, Audio oder PDF-Dateien hochladen</h5>
     <div class="preview"></div>
     <div class="droparea">
-      <div class="info">Drag & Drop Datei</div>
+      <div class="info">Datei hier hinziehen</div>
       <input type="file" name="" value="" id="file_upload_field">
       <label for="file_upload_field">
-        <div class="btn inverted">Datei auswählen</div>
+        <div class="btn inverted">Upload vom Computer</div>
       </label>
 
     </div>
@@ -19,11 +20,11 @@
     <%= f.file_field :pdf %>
     <%= f.file_field :video %>
     <div class="form-group">
-      <%= f.text_field :title, class: 'form-field', placeholder: 'Namen eingeben' %>
+      <%= f.text_field :title, class: 'form-field', placeholder: 'Deteiname hier eingeben' %>
     </div>
     <div class="btns">
-      <div class="btn inverted" onclick="newContent()">cancel</div>
-      <%= f.submit 'speichern', class: 'btn' %>
+      <div class="btn inverted" onclick="newContent()">Abbrechen</div>
+      <div class="btn" onclick="submitContent()">Speichern</div>
     </div>
     <% end %>
   </div>
@@ -35,7 +36,7 @@
    	<div class="center">
     	<div class="btn btn-green" id="crop">speichern</div>
    	</div>
-   	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+   	<div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
 </div>
 <script>
   var files;
@@ -107,6 +108,9 @@
   }
   $("#media-form").on('submit', function(e) {
     e.preventDefault();
+    submitContent();
+  })
+  function submitContent() {
     <% if controller.controller_name == "backoffice" && controller.action_name == 'content' %>
     var URL = "<%= create_global_media_path %>";
     <% else %>
@@ -134,10 +138,16 @@
       processData: false,
       beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
       success: function(res) {
-        location.reload();
+        if( res.no_title ) {
+          $('#task_medium_title').val('');
+          $('#task_medium_title').css("border-color", 'red');
+          formData = new FormData();
+        } else {
+          location.reload();
+        }
       }
     })
-  })
+  }
 
   // cropper
   function showPopup() {

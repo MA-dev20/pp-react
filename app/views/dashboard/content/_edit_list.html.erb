@@ -2,7 +2,7 @@
 <div class="background-blur" id="editList">
   <div class="content-popup">
     <% if @listType == 'catchword' %>
-    <h3>Catchwortliste bearbeiten</h3>
+    <h3>Textliste bearbeiten</h3>
     <% else %>
     <h3>Einwandliste bearbeiten</h3>
     <% end %>
@@ -10,7 +10,7 @@
     <%= form_for :list, url: edit_list_path(@liste), html: {id: 'editListForm'} do |f| %>
       <%= f.hidden_field :type, value: @listType %>
       <div class="form-group list-table">
-        <label for="">Titel bearbeiten</label>
+        <label for="">Name der Liste bearbeiten</label>
         <%= f.text_field :name, value: @liste.name, placeholder: 'Titel eingeben', class: 'form-field' %>
       </div>
     <% end %>
@@ -18,12 +18,12 @@
       <%= f.hidden_field :type, value: @listType %>
       <div class="form-group list-table">
         <% if @listType == 'catchword' %>
-        <label for="">Catchwort hinzufügen</label>
-        <%= f.text_field :name, placeholder: 'Catchwort eingeben', class: 'form-field shortened' %>
+        <label for="">Text hinzufügen</label>
+        <%= f.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field shortened' %>
         <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
         <% else %>
         <label for="">Einwand hinzufügen</label>
-        <%= f.text_field :name, placeholder: 'Einwand eingeben', class: 'form-field shortened' %>
+        <%= f.text_field :name, placeholder: 'Einwand hier eingeben', class: 'form-field shortened' %>
         <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
 
         <% end %>
@@ -49,7 +49,7 @@
               <td class="icon">
                 <!-- <i class="far fa-trash-alt remove"></i> -->
                 <span>
-                  <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
+                  <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
                 </span>
               </td>
             </tr>
@@ -78,7 +78,7 @@
             <td class="icon">
               <!-- <i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i> -->
               <span data-id="<%= o.id %>" onclick="deleteEntry(this)">
-                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
               </span>
             </td>
           </tr>
@@ -91,7 +91,7 @@
       <% end %>
     </div>
     <div class="btns">
-      <div class="btn inverted" onclick="closeListPopup()">close</div>
+      <div class="btn inverted" onclick="closeListPopup()">Abbrechen</div>
       <div class="btn" onclick="submitListForm()">speichern</div>
     </div>
   </div>

@@ -110,7 +110,7 @@
    	<% if flash[:alert] %>
    	<div class="modal-blur">
    		<div class="modal card">
-   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+        <div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
    			<h3>Ups, da gabe es einen Fehler!</h3>
    			<%= flash[:alert] %>
    		</div>

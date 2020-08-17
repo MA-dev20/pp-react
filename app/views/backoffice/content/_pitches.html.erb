@@ -41,11 +41,11 @@
             </div>
 
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
-                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
+                Folien: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Aufgaben: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
             <div class="pitch-buttons">
-                <%= link_to 'Pitch', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
+                <%= link_to 'Jetzt pitchen', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
             </div>
         </div>
         <% end %>

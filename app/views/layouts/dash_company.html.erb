@@ -15,7 +15,7 @@
 	  --custcolor: <%= @company.color1[0] %>,<%= @company.color1[1] %>, <%= @company.color1[2] %>;
 	  --btncolor: <%= @company.color2[0] %>,<%= @company.color2[1] %>, <%= @company.color2[2] %>;
 	}
-	
+
 </style>
   <body>
    	<section id="navbar">
@@ -49,11 +49,11 @@
 				<%= link_to '', destroy_user_session_path, method: 'delete' %>
   			</div>
    		</div>
-   		
+
    	</section>
    	<section id="sidebar">
    		<%= image_tag @admin.avatar? ? @admin.avatar.url : 'dash/wolf.png', class: 'avatar' %>
-   		
+
    		<div class="links">
    			<div class="link <%= current_page?(company_dash_path) ? 'active' : '' %>">
    				<i class="fas fa-book-open"></i>
@@ -78,7 +78,7 @@
    	<% if flash[:alert] %>
    	<div class="modal-blur">
    		<div class="modal card">
-   			<div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div>
+   			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
    			<h3>Ups, da gabe es einen Fehler!</h3>
    			<%= flash[:alert] %>
    		</div>

@@ -146,7 +146,7 @@
 	<div class="startnow wow fadeIn" data-wow-delay=".2s" data-wow-duration='1s'>
     Jetzt mit Peter Pitch durchstarten!
     <%= link_to "Demo vereinbaren", contact_path("", subject: "demo"), class: 'btn btn-white' %>
-    
+
 </div>
 </div>
 </section>
@@ -177,8 +177,7 @@
     </div>
 </section>
 <div class="fullscreen-modal" id="loginModal">
-    
-    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+    <div class="close" onclick="showLoginModal()"><%= image_tag 'icons/close.svg' %></div>
     <div class="card">
     <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
         <h2>Login</h2>
@@ -221,7 +220,7 @@
     }
 	function showNavLinks() {
         if($('#navLinks').is(":hidden")) {
-            $('#navLinks').show();   
+            $('#navLinks').show();
         } else {
             $('#navLinks').hide();
         }

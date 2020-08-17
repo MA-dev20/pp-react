@@ -20,27 +20,26 @@
                         <% if can? :edit, pitch %>
                         <span class="select-name">
                             <a href="<%=  dashboard_edit_pitch_path(pitch) %>" data-turbolinks="false">
-                                <i class="fas fa-pencil-alt"></i>Edit
+                                <i class="fas fa-pencil-alt"></i>Bearbeiten
                             </a>
                         </span>
                         <span class="select-name">
                             <a href="?share_pitch=<%= pitch.id %>">
-                                <i class="fa fa-share-alt" aria-hidden="true"></i>Share
+                                <i class="fa fa-share-alt" aria-hidden="true"></i>Freigeben
                             </a>
                         </span>
                         <% end %>
                         <% if can? :create, Pitch %>
                         <span class="select-name">
                             <a href="<%= copy_pitch_path(pitch) %>">
-                                <i class="fas fa-copy" aria-hidden="true"></i>Duplicate
+                                <i class="fas fa-copy" aria-hidden="true"></i>Duplizieren
                             </a>
                         </span>
                         <% end %>
                         <% if can? :destroy, pitch %>
                         <span class="select-name">
                             <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
-                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>
-                                <!-- <i class="far fa-trash-alt" aria-hidden="true"></i> -->
+                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Löschen</span>
                             </a>
                         </span>
                         <% end %>
@@ -61,12 +60,12 @@
             </div>
 
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
-                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
+                Folien: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Aufgaben: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
             <div class="pitch-buttons">
                 <%#= link_to 'Edit', dashboard_edit_pitch_path(pitch), class: 'btn reversed', data: { turbolinks: false } %>
-                <%= link_to 'Pitch', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
+                <%= link_to 'Jetzt pitchen', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
             </div>
         </div>
         <% end %>

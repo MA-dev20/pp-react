@@ -51,7 +51,7 @@
 		<div class="point">
 			<div class="point"></div>
 			<div class="text">
-				Zum Zwecke der Bereitstellung unseres Angebots werden alle hierfür erforderlichen Daten von Peter Pitch verarbeitet. So können wir gewährleisten, unseren Kunden und potentiellen Kunden den bestmöglichen Service zu bieten. 
+				Zum Zwecke der Bereitstellung unseres Angebots werden alle hierfür erforderlichen Daten von Peter Pitch verarbeitet. So können wir gewährleisten, unseren Kunden und potentiellen Kunden den bestmöglichen Service zu bieten.
 			</div>
 		</div>
 		<div class="point">
@@ -147,7 +147,7 @@
 		</div>
 		<h3>Rechtsgrundlage</h3>
 		<div class="text">
-			Die Verarbeitung der bei der Registrierung eingegebenen Daten erfolgt auf Grundlage Deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst eine von Dir erteilte Einwilligung jederzeit widerrufen. Dazu reicht eine formlose Mitteilung per E-Mail an uns. Die Rechtmäßigkeit der bereits erfolgten Datenverarbeitung bleibt vom Widerruf unberührt. 
+			Die Verarbeitung der bei der Registrierung eingegebenen Daten erfolgt auf Grundlage Deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst eine von Dir erteilte Einwilligung jederzeit widerrufen. Dazu reicht eine formlose Mitteilung per E-Mail an uns. Die Rechtmäßigkeit der bereits erfolgten Datenverarbeitung bleibt vom Widerruf unberührt.
 		</div>
 		<h3>Dauer der Datenspeicherung</h3>
 		<div class="text">
@@ -293,8 +293,9 @@
     </div>
 </section>
 <div class="fullscreen-modal" id="loginModal">
-    
-    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+  <div class="close" onclick="showLoginModal()">
+    <%= image_tag 'icons/close.svg' %>
+  </div>
     <div class="card">
     <%= form_for(:user, as: User, url: session_path(User)) do |f| %>
         <h2>Login</h2>
@@ -320,7 +321,7 @@
     }
 	function showNavLinks() {
         if($('#navLinks').is(":hidden")) {
-            $('#navLinks').show();   
+            $('#navLinks').show();
         } else {
             $('#navLinks').hide();
         }

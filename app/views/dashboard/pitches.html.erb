@@ -47,7 +47,7 @@
             <%= f.hidden_field :game_sound, value: true %>
             <div class="toggle-my-ratings toggle-my-ratings-1">
                 <div class="toggle toggle-game right-side" onclick="soundCheck()"><div class="dot"></div></div>
-                <div class="text">Pitch sound</div>
+                <div class="text">Musik abspielen</div>
             </div>
             <%= f.submit 'weiter!', class: 'btn btn-green' %>
         </div>
@@ -58,13 +58,11 @@
             <%= link_to '', dashboard_pitches_path('', pitch_id: @pitch.id), class: 'fas fa-arrow-left back' %>
             <span>Team erstellen!</span>
         </h3>
-        <!-- <h1>Team erstellen!</h1> -->
         <%= form_for(:team, url: new_team_path(pitch_id: @pitch.id)) do |f| %>
         <%= f.hidden_field :site, value: 'pitch' %>
         <div class="form-group">
             <label for="">
-                Name
-                Name
+                Teamname
                 <% if flash[:team_name] %>
                 <span class="right red">
                     <%= flash[:team_name] %>
@@ -73,7 +71,7 @@
             </label>
             <%= f.text_field :name, class: 'form-field' %>
         </div>
-        <%= f.submit 'erstellen!', class: 'btn btn-green' %>
+        <%= f.submit 'Team erstellen!', class: 'btn btn-green' %>
         <% end %>
     </div>
 </div>
@@ -101,9 +99,9 @@
             <div class="checkbox-container">
                 <%= f.hidden_field :game_sound, value: true %>
                 <div class="form-group">
-                    <label for="">Pitch Sound</label>
+                    <label for="">Musik abspielen</label>
                     <div class="skip-election-group">
-                        <label for="">Pitch Sound 1</label>
+                        <label for="">Musik abspielen</label>
                         <i class="far fa-check-square" onclick="changeSound()" id="pitch_sound"></i>
                     </div>
                 </div>

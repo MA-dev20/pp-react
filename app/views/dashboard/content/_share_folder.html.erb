@@ -15,7 +15,7 @@
     <div class="form-group list-table">
       <label for="">Gruppe auswählen</label>
       <div class="dropdown" id="ability-dropdown">
-        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_folder.available_for == 'user' ? "Teilen mit: " : this_folder.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_folder.team_id).name : 'Geteilt mit Company' %></span><i class="fas fa-caret-down"></i></div>
+        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_folder.available_for == 'user' ? "Teilen mit: " : this_folder.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_folder.team_id).name : this_folder.available_for == 'company' ? 'Geteilt mit Company' : 'Global Content' %></span><i class="fas fa-caret-down"></i></div>
         <div class="dropdown-menu" id="userDropdown">
           <% if @admin.bo_role == 'root' %>
             <div class="link" onclick="shareBig('global')">
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="btns">
-      <div class="btn inverted" onclick='closeShareFolder()'>Cancel</div>
+      <div class="btn inverted" onclick='closeShareFolder()'>Abbrechen</div>
       <%= f.submit 'teilen', class: 'btn' %>
     </div>
     <% end %>
