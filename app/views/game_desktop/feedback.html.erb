@@ -31,6 +31,15 @@
 <section id="skip">
 	Skip mit Leertaste
 </section>
+<% if @game.game_sound %>
+<%= audio_tag 'game/feedbackIntro.mp3', id: 'intro', autoplay: true, onended: "playTheme()" %>
+<%= audio_tag 'game/feedback.mp3', id: "theme", loop: true %>
+<script type="text/javascript">
+	function playTheme() {
+		document.getElementById('theme').play();
+	}
+</script>
+<% end %>
 <script type="text/javascript">
 	function redirect() {
 		window.location.replace('<%= gd_set_slide_path(@game.current_task + 1) %>');
