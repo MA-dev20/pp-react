@@ -16,7 +16,7 @@
 		<div class="card" id="content_card">
 			<div class="head">
 				<% if @folder %>
-				<h3><span onclick="openFolder(null, '<%= task_id %>', '<%= media_type %>', 'first')">Libary</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="openFolder('<%= @folder.content_folder_id %>', '<%= task_id %>', '<%= media_type %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+				<h3><span onclick="openFolder(null, '<%= task_id %>', '<%= media_type %>', 'first')">Content Bibliothek</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="openFolder('<%= @folder.content_folder_id %>', '<%= task_id %>', '<%= media_type %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 				<% else %>
 				<h3>Mein Content</h3>
 				<div class="search">

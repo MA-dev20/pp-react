@@ -75,13 +75,13 @@
             </div>
         </div>
         <div class="right">
-            <%= image_tag 'landing/PeterPitchIsometric.png', alt: 'Vertriebstraining' %>     
+            <%= image_tag 'landing/PeterPitchIsometric.png', alt: 'Vertriebstraining' %>
         </div>
     </div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape1', alt: '' %>
     <%= image_tag 'landing/shape.svg', class: 'shape s153', id: 'shape2', alt: '' %>
-    
-    
+
+
     <div class="wie-geil-ist-das animated fadeIn" data-wow-delay=".2s">
         <h2>Wie geil ist das denn?</h2>
         <h5>Nimm den Spaß in deinem Unternehmen ernst und verwandel deine Meetings in wahre Performance-Booster. Mit Peter Pitch treibst du das Mitarbeiter-Rudel zusammen und machst sogar aus den wackeligsten Welpen wahre Wölfe. Stage is yours!</h5>
@@ -93,13 +93,13 @@
     </div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape3', alt: '' %>
     <%= image_tag 'landing/shape.svg', class: 'shape s87 right219', id: 'shape4', alt: '' %>
-    
+
     <div class="dots">
         <div class="dot blue wow fadeIn"></div>
         <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
         <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
     </div>
-    
+
     <section id="hiw">
         <h2 class="wow fadeIn" data-wow-delay=".2s">So funktioniert's</h2>
         <div class="categories wow fadeInUp" data-wow-delay=".2s">
@@ -177,7 +177,7 @@
             <%= image_tag 'logos/tremonia.png', alt: 'TremoniaMedia' %>
         </div>
     </div>
-    
+
     <section id="product">
     <div class="image-text left" onmouseover="startGami()" onmouseout="stopGami()" ontouchstart="startGami()" ontouchend="stopGami()">
         <div class="image wow fadeInLeft" data-wow-delay=".2s" >
@@ -257,7 +257,7 @@
 				};
 				var animPerf;
 				animPerf = bodymovin.loadAnimation(params);
-				
+
 				function startPerf() {animPerf.play()}
 				function stopPerf() {animPerf.pause()}
 			</script>
@@ -305,7 +305,7 @@
     		<div class="line"><div class="dot"></div></div>
     		<div class="shadow"></div>
     	</div>
-    	
+
     	<div class="right wow fadeInRight">
     		<div class="text">
     			<h5>Corporate Wording</h5>
@@ -320,7 +320,7 @@
         <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
         <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
     </div>
-    
+
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape8', alt: '' %>
     <div class="testimonials wow fadeIn" data-wow-delay=".2s">
        <div class="heading">
@@ -376,7 +376,7 @@
         <div class="question-section">
             <div class="question">
                 <div class="q" onclick="showFAQ('q1')">
-                    Warum sollte ich Peter Pitch nutzen? 
+                    Warum sollte ich Peter Pitch nutzen?
                     <i class="fas fa-plus" id="plus1"></i>
                     <i class="fas fa-minus" id="minus1"></i>
                 </div>
@@ -421,7 +421,7 @@
                     <i class="fas fa-minus" id="minus5"></i>
                 </div>
                 <div class="text fadeIn" id="q5">
-                    Kontaktiere das Peter Pitch-Team für dein individuelles 
+                    Kontaktiere das Peter Pitch-Team für dein individuelles
                     <%= link_to 'Angebot.', contact_path %>
                 </div>
             </div>
@@ -445,7 +445,7 @@
             Unsere Server stehen in Deutschland und Peter Pitch wurde auch dort entwickelt. Deine Daten sind in Rechenzentren gespeichert die nach den höchsten Industrienormen PCI DSS Level 1 und ISO 9001/ISO 27001 zertifiziert sind.
         </div>
     </div>
-    
+
     <div class="ssl">
         <%= image_tag 'landing/ssl.png', alt: 'SSL' %>
         <h2>SSL Zertifizierung</h2>
@@ -457,7 +457,7 @@
         <%= image_tag 'landing/gdpr.png', alt: 'Datenschutz' %>
         <h2>Datenschutz auf Onlinebanking Niveau</h2>
         <div class="text">
-            Peter Pitch ist DSGVO konform! Unsere Kundendaten und User Informationen werden mit den besten Verschlüsselungsalgorithmen übertragen, die derzeit verfügbar sind.  
+            Peter Pitch ist DSGVO konform! Unsere Kundendaten und User Informationen werden mit den besten Verschlüsselungsalgorithmen übertragen, die derzeit verfügbar sind.
         </div>
     </div>
     </div>
@@ -531,8 +531,9 @@
 </div>
 <% end %>
 <div class="fullscreen-modal" id="loginModal">
-    
-    <div class="close"><i class="fas fa-times" onclick="showLoginModal()"></i></div>
+  <div class="close" onclick="showLoginModal()">
+    <%= image_tag 'icons/close.svg' %>
+  </div>
     <div class="card">
     <%= form_for(:user, as: User, url: user_session_path) do |f| %>
         <h2>Login</h2>
@@ -557,7 +558,7 @@
     </div>
 </div>
 <div class="fullscreen-modal" id="dontLeaveModal">
-	<div class="close" onclick="hideDontLeaveModal()"><i class="fas fa-times"></i></div>
+  <div class="close" onclick="hideDontLeaveModal()"><%= image_tag 'icons/close.svg' %></div>
 	<div class="card">
 	<h3>Verlass uns noch nicht.</h3>
 	<div class="text">Erhalte eine kostenlose Demo mit nur einem Klick.</div>
@@ -571,7 +572,7 @@
 		$('body').on('mouseleave', function() {
 			if($('#loginModal').is(':hidden')) {
 				$('#dontLeaveModal').show();
-			  	$('body').off('mouseleave');	
+			  	$('body').off('mouseleave');
 			}
 		})
 	}, 20000)
@@ -596,10 +597,10 @@
     		pagination: {
       			el: '.swiper-pagination',
     		},
-  		})	
+  		})
 	}
-  	
-  
+
+
     function playVideo() {
 		$('#picVideo').hide();
 		$('#vidVideo').show();
@@ -621,7 +622,7 @@
     }
     function showNavLinks() {
         if($('#navLinks').is(":hidden")) {
-            $('#navLinks').show();   
+            $('#navLinks').show();
         } else {
             $('#navLinks').hide();
         }

@@ -1,7 +1,7 @@
 <div class="background-blur" id="new-folder">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newFolder()' %>
-    <h3>Ordner hinzufügen</h3>
+    <h3>Ordner erstellen</h3>
     <%= form_for :content_folder, url: new_folder_path, html: {id: 'new_folder-form'} do |f| %>
       <div class="audio">
         <%= image_tag 'dash/icons/folder.svg' %>
@@ -13,8 +13,8 @@
         <%= f.text_field :name, value: '', placeholder: 'Ordnernamen eingeben', class: 'form-field' %>
       </div>
       <div class="btns">
-				<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
-				<%= f.submit 'speichern', class: 'btn' %>
+				<div class="btn inverted" onclick='closeContentPopup()'>Abbrechen</div>
+        <div class="btn" onclick='submitFolder()'>speichern</div>
 			</div>
     <% end %>
   </div>
@@ -25,6 +25,9 @@
   }
   $('#new_folder-form').on('submit', function(e) {
     e.preventDefault();
+    submitFolder();
+  })
+  function submitFolder() {
     var URL = '<%= new_folder_path %>';
     var formData = new FormData(document.getElementById('new_folder-form'));
     if( $('#content_folder_name').val() == '' ) {
@@ -43,6 +46,7 @@
     		success: function (res) {
           if( res.error ) {
             $('#content_folder_name').css('border-color', 'red');
+            formData = new FormData();
           } else {
             $('#content_folder_name').val('');
             location.reload();
@@ -50,5 +54,5 @@
     		}
       })
     }
-  })
+  }
 </script>

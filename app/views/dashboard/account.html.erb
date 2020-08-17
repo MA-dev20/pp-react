@@ -8,7 +8,7 @@
 			</label>
 			<%= f.file_field :avatar, id: 'user_avatar' %>
 		</div>
-		
+
 		<div class="form-group half-left">
 			<label for="">Vorname</label>
 			<%= f.text_field :fname, value: @admin.fname, class: "form-field" %>
@@ -22,7 +22,7 @@
 			<%= f.email_field :email, value: @admin.email, class: 'form-field', autocomplete: false %>
 		</div>
 		<div class="form-group half-right">
-			<label for="">Passwort</label>
+			<label for="">Passwort ändern</label>
 			<%= f.password_field :password, autocomplete: "new-password", class: 'form-field' %>
 		</div>
 		<%= f.submit 'speichern!', class: 'btn btn-green' %>
@@ -35,7 +35,7 @@
    	<div class="center">
     	<div class="btn btn-green" id="crop">speichern</div>
    	</div>
-   	<div class="close" onclick="hidePopup()"><i class="fas fa-times"></i></div>
+   	<div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
 </div>
 <script>
 	function showPopup() {
@@ -55,7 +55,7 @@
 	})(jQuery);
 	var inputAvatar = document.getElementById('user_avatar');
 	var image = document.getElementById('user_image');
-	
+
 	inputAvatar.addEventListener('change', function(e) {
 		var files = e.target.files;
 		var done = function(url) {
@@ -79,7 +79,7 @@
 	})
 	$('#popup').on('show', function() {
 		cropper = new Cropper(image, {
-			aspectRatio: 1,	
+			aspectRatio: 1,
 		});
 	})
 	$('#popup').on('hide', function() {
@@ -123,6 +123,6 @@
 				$('#popup').hide();
 			}
 		})
-		
+
 	}
 </script>

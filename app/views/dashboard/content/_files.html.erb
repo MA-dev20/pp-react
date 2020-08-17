@@ -8,10 +8,10 @@
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
-            Edit
+            Bearbeiten
           </div>
           <% if controller.controller_name != "backoffice" %>
-          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">Share</div>
+          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">Freigeben</div>
           <% end %>
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="deleteContent(this)">
             Löschen
@@ -80,7 +80,10 @@
 				if( res.id ) {
 					$('#media_' + res.id).hide();
 				} else if (res.error) {
-					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
+          if ( $('.modal-blur').length > 0 ) {
+            $('.modal-blur').remove();
+          }
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Fehler!</h3>'+res.error+'</div></div>'
 					$('body').append(userDiv);
 				}
 			}

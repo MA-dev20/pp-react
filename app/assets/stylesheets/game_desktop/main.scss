@@ -569,6 +569,10 @@ body {
 					border-radius: 2.5vh;
 					display: inline-block;
 					padding: 0 2.5vh;
+					border: 1px solid transparent;
+				}
+				.rating.ready {
+					border: 1px solid rgb(var(--custcolor));
 				}
 				.bar {
 					position: absolute;
@@ -576,6 +580,7 @@ body {
 					width: 100%;
 					height: 40vh;
 					margin: 0;
+					opacity: 0;
 					svg {
 						position: absolute;
 						bottom: 0;
@@ -894,14 +899,14 @@ body {
 				left: 42.5vw;
 				.rating {animation-delay: 6s;}
 				.avatar {
-					animation-delay: 8.4s;
+					animation-delay: 8.3s;
 				}
 				svg {
 					animation-name: zoomHeight1;
 					animation-delay: 6s;
 				}
 				.rang {
-					animation-delay: 8.4s;
+					animation-delay: 8.3s;
 				}
 			}
 			.second {
@@ -912,7 +917,7 @@ body {
 				}
 				.avatar {
 					top: calc(7.5vh + 2.5vw);
-					animation-delay: 6.4s;
+					animation-delay: 6.3s;
 				}
 				svg {
 					animation-name: zoomHeight2;
@@ -922,7 +927,7 @@ body {
 					font-size: 5vw;
 					line-height: 8vw;
 					width: 13vw;
-					animation-delay: 6.4s;
+					animation-delay: 6.3s;
 				}
 			}
 			.third {
@@ -933,7 +938,7 @@ body {
 				}
 				.avatar {
 					top: calc(7.5vh + 5.5vw);
-					animation-delay: 4.4s;
+					animation-delay: 4.3s;
 				}
 				svg {
 					animation-name: zoomHeight3;
@@ -943,7 +948,7 @@ body {
 					font-size: 3vw;
 					line-height: 5vw;
 					width: 17vw;
-					animation-delay: 4.4s;
+					animation-delay: 4.3s;
 				}
 			}
 			@keyframes zoomHeight1 {

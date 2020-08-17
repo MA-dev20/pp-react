@@ -121,29 +121,34 @@ class ShareController < ApplicationController
   end
 
   def share_pitch
-    @user = User.find_by(email: params[:pitch][:email])
     @pitch = Pitch.find(params[:pitch_id])
-    if @user
-      if !@user.company_users.find_by(company: @company)
-        @user.companies << @company
-      end
-      @user.shared_pitches.create(pitch: @pitch)
-      render json: {success: 'Erfolgreich freigegen'}
-      return
-    else
-      @user = User.new(email: params[:pitch][:email])
-      if @user.save(validate: false)
-        @user.company_users.create(company: @company, role: 'user')
-        if @admin.teams.count != 0
-          @user.team_users.create(team: @admin.teams.first)
+    if params[:pitch][:email] != ''
+      @new_users = []
+      params[:pitch][:email].split(' ').each do |email|
+        @user = User.find_by(email: email)
+        if @user
+          if !@user.company_users.find_by(company: @company)
+            @user.companies << @company
+          end
+          @user.shared_pitches.create(pitch: @pitch)
+        else
+          @user = User.new(email: email)
+          @user.save(validate: false)
+          @user.company_users.create(company: @company, role: 'user')
+          @user.shared_pitches.create(pitch: @pitch)
+          @new_users << @user
         end
-        @user.shared_pitches.create(pitch: @pitch)
-        render json: {new_user: @user.id}
-        return
-      else
-        render json: {error: 'User nicht gefunden!'}
-        return
       end
+    elsif params[:pitch][:available_for]
+      @pitch.update(pitch_params)
+    else
+      render json: {error: 'Fehler beim teilen!'}
+      return
+    end
+    if @new_users
+      render json: {new_users: @new_users}
+    else
+      render json: {success: 'Content erfolgreich geteilt'}
     end
   end
   private
@@ -158,6 +163,9 @@ class ShareController < ApplicationController
     end
     def list_params
       params.require(:list).permit(:available_for, :department_id, :team_id)
+    end
+    def pitch_params
+      params.require(:pitch).permit(:available_for, :department_id, :team_id)
     end
     def set_user
       if user_signed_in? && company_logged_in?

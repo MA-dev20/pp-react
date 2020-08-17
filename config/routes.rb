@@ -96,6 +96,7 @@ Rails.application.routes.draw do
   get 'backoffice/companies/:company_id/abilities/:abilities', to: 'backoffice#company_abilities', as: 'backoffice_company_abilities'
   post 'backoffice/companies/:company_id/search/content/', to: 'backoffice#search_content', as: 'backoffice_search_content'
   get 'backoffice/content', to: 'backoffice#content', as: 'backoffice_content'
+  get 'backoffice/pitches', to: 'backoffice#pitches', as: 'backoffice_pitches'
   post 'backoffice/content/search', to: 'backoffice#search_global_content', as: 'backoffice_search_global_content'
   get 'backoffice/abilities', to: 'backoffice#abilities', as: 'backoffice_abilities'
 

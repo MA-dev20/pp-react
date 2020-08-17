@@ -1,72 +1,84 @@
 <% if @liste %>
 <div class="background-blur" id="editList">
   <div class="content-popup">
-    <% if @listType == 'catchword' %>
-    <h3>Catchwortliste bearbeiten</h3>
-    <% else %>
-    <h3>Einwandliste bearbeiten</h3>
-    <% end %>
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeListPopup()' %>
-    <%= form_for :list, url: edit_list_path(@liste), html: {id: 'editListForm'} do |f| %>
-      <%= f.hidden_field :type, value: @listType %>
-      <div class="form-group list-table">
-        <label for="">Titel bearbeiten</label>
-        <%= f.text_field :name, value: @liste.name, placeholder: 'Titel eingeben', class: 'form-field' %>
-      </div>
-    <% end %>
-    <%= form_for :list, url: list_add_entry_path(@liste), html: {id: 'addEntryForm'} do |f| %>
-      <%= f.hidden_field :type, value: @listType %>
-      <div class="form-group list-table">
-        <% if @listType == 'catchword' %>
-        <label for="">Catchwort hinzufügen</label>
-        <%= f.text_field :name, placeholder: 'Catchwort eingeben', class: 'form-field shortened' %>
-        <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
-        <% else %>
-        <label for="">Einwand hinzufügen</label>
-        <%= f.text_field :name, placeholder: 'Einwand eingeben', class: 'form-field shortened' %>
-        <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+    <% if can? :edit, @liste %>
+      <% if @listType == 'catchword'%>
+        <h3>Textliste bearbeiten</h3>
+      <% else %>
+        <h3>Einwandliste bearbeiten</h3>
+      <% end %>
 
-        <% end %>
-      </div>
+      <%= form_for :list, url: edit_list_path(@liste), html: {id: 'editListForm'} do |f| %>
+        <%= f.hidden_field :type, value: @listType %>
+        <div class="form-group list-table">
+          <label for="">Name der Liste bearbeiten</label>
+          <%= f.text_field :name, value: @liste.name, placeholder: 'Titel eingeben', class: 'form-field' %>
+        </div>
+      <% end %>
+      <%= form_for :list, url: list_add_entry_path(@liste), html: {id: 'addEntryForm'} do |f| %>
+        <%= f.hidden_field :type, value: @listType %>
+        <div class="form-group list-table">
+          <% if @listType == 'catchword' %>
+            <label for="">Text hinzufügen</label>
+            <%= f.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field shortened' %>
+            <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+          <% else %>
+            <label for="">Einwand hinzufügen</label>
+            <%= f.text_field :name, placeholder: 'Einwand hier eingeben', class: 'form-field shortened' %>
+            <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <h3><%= @liste.name %></h3>
     <% end %>
     <div class="entries">
       <% if @listType == 'catchword' %>
-      <table>
-        <thead>
-          <tr>
-            <th class='name'>Name</th>
-            <th class="icon"></th>
-            <th class="icon"></th>
-            <th class="icon"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @liste.catchwords.each do |c| %>
-            <tr id="entry_<%= c.id %>">
-              <td class='name'><%= c.name %></td>
-              <td class="icon"><i class="far fa-play-circle play <%= c.sound? ? '' : 'disabled' %>" data-id="<%= c.id %>" onclick="playSound(this)"></i></td>
-              <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
-              <td class="icon">
-                <!-- <i class="far fa-trash-alt remove"></i> -->
-                <span>
-                  <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
-                </span>
-              </td>
+        <table>
+          <thead>
+            <tr>
+              <th class='name'>Name</th>
+              <th class="icon"></th>
+
+              <% if can? :edit, @liste %>
+              <th class="icon"></th>
+              <th class="icon"></th>
+              <% end %>
+
             </tr>
-            <% if c.sound? %>
-              <%= audio_tag c.sound.url, id: 'sound_' + c.id.to_s %>
+          </thead>
+          <tbody>
+            <% @liste.catchwords.each do |c| %>
+              <tr id="entry_<%= c.id %>">
+                <td class='name'><%= c.name %></td>
+                <td class="icon"><i class="far fa-play-circle play <%= c.sound? ? '' : 'disabled' %>" data-id="<%= c.id %>" onclick="playSound(this)"></i></td>
+                <% if can? :edit, @liste %>
+                <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
+                <td class="icon">
+                  <!-- <i class="far fa-trash-alt remove"></i> -->
+                  <span>
+                    <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
+                  </span>
+                </td>
+                <% end %>
+              </tr>
+              <% if c.sound? %>
+                <%= audio_tag c.sound.url, id: 'sound_' + c.id.to_s %>
+              <% end %>
             <% end %>
-          <% end %>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
       <% else %>
       <table>
         <thead>
           <tr>
             <th class='name'>Name</th>
             <th class="icon"></th>
+            <% if can? :edit, @liste %>
             <th class="icon"></th>
             <th class="icon"></th>
+            <% end %>
           </tr>
         </thead>
         <tbody>
@@ -74,13 +86,15 @@
           <tr id="entry_<%= o.id %>">
             <td class='name'><%= o.name %></td>
             <td class="icon"><i class="far fa-play-circle play <%= o.sound? ? '' : 'disabled' %>" data-id="<%= o.id %>" onclick="playSound(this)"></i></td>
+            <% if can? :edit, @liste %>
             <td class="icon"><i class="far fa-dot-circle record" data-id="<%= o.id %>" onclick="recordSound(this)"></i></td>
             <td class="icon">
               <!-- <i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i> -->
               <span data-id="<%= o.id %>" onclick="deleteEntry(this)">
-                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>		
+                <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
               </span>
             </td>
+            <% end %>
           </tr>
           <% if o.sound? %>
             <%= audio_tag o.sound.url, id: 'sound_' + o.id.to_s %>
@@ -90,10 +104,12 @@
       </table>
       <% end %>
     </div>
+    <% if can? :edit, @liste %>
     <div class="btns">
-      <div class="btn inverted" onclick="closeListPopup()">close</div>
+      <div class="btn inverted" onclick="closeListPopup()">Abbrechen</div>
       <div class="btn" onclick="submitListForm()">speichern</div>
     </div>
+    <% end %>
   </div>
 </div>
 <script type="text/javascript">

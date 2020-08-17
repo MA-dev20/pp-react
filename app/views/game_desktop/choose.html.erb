@@ -36,7 +36,7 @@
 	Skip mit Leertaste
 </section>
 <% if @game.game_sound %>
-<%= audio_tag(choose_sound, autoplay: true, id: 'theme') %>
+<%= audio_tag 'game/choose/choose_theme.mp3', autoplay: true, id: 'theme' %>
 <%= audio_tag("game/ping_choosen.mp3", id: 'ping') %>
 <script>
 	document.getElementById('theme').volume = 0.2;

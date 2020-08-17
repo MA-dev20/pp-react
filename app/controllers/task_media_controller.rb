@@ -4,7 +4,7 @@ class TaskMediaController < ApplicationController
   def create
     @task_medium = @company.task_media.new(task_medium_params)
     @task_medium.user = @user
-    if @task_medium.save
+    if task_medium_params[:title] != '' && @task_medium.save
       if @task_medium.media_type == 'pdf'
         path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
     	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
@@ -15,6 +15,8 @@ class TaskMediaController < ApplicationController
         end
       end
       render json: {id: @task_medium.id}
+    elsif task_medium_params[:title] == ''
+      render json: {no_title: true}
     else
       flash[:alert] = "Konnte Media nicht speichern!"
       render json: {error: true}

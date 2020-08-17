@@ -23,6 +23,7 @@ class UsersController < ApplicationController
 
   def edit
 	authorize! :update, @user
+  @user.company_users.find_by(company: @admin_company).update(role: params[:user][:role]) if params[:user][:role]
 	flash[:alert] = 'Konnte User nicht updaten!' if !@user.update(user_params)
 	if params[:user][:password] && params[:site] == 'account'
 	  @user.update(password: params[:user][:password])
@@ -147,9 +148,13 @@ class UsersController < ApplicationController
     @company = Company.find(params[:company_id])
   end
 	def check_user
-	  if user_signed_in?
+	  if user_signed_in? && company_logged_in?
 	    @admin = current_user
-	  else
+      @admin_company = current_company
+	  elsif user_signed_in?
+      flash[:alert] = 'Wähle Unternehmen um dein Dashboard zu sehen!'
+      redirect_to dash_choose_company_path
+    else
 	    flash[:alert] = 'Logge dich ein um dein Dashboard zu sehen!'
 	    redirect_to root_path
 	  end

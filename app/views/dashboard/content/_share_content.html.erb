@@ -8,14 +8,22 @@
     <%= f.hidden_field :available_for, value: this_media.available_for %>
     <%= f.hidden_field :team_id, value: this_media.team_id %>
     <div class="form-group list-table">
-      <label for="">Email eingeben</label>
-      <%= f.text_field :email, placeholder: 'E-Mail eingeben', class: 'form-field' %>
+      <label for="">E-Mail eingeben. (Um mehrere E-Mail Adressen einzugeben, trenne sie durch Leerzeichen)</label>
+      <%= f.text_field :email, placeholder: 'mustermann@peterpitch.com', class: 'form-field' %>
     </div>
     <div class="form-group list-table">
-      <label for="">Gruppe auswählen</label>
+      <label for="">oder freigeben für</label>
       <div class="dropdown" id="ability-dropdown">
-        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_media.available_for == 'user' ? "Teilen mit: " : this_media.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_media.team_id).name : 'Geteilt mit Company' %></span><i class="fas fa-caret-down"></i></div>
+        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_media.available_for == 'user' ? "Teilen mit: " : this_media.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_media.team_id).name : this_media.available_for == 'company' ? 'Geteilt mit Company' : 'Global Content' %></span><i class="fas fa-caret-down"></i></div>
         <div class="dropdown-menu" id="userDropdown">
+          <% if @admin.bo_role == 'root' %>
+            <div class="link" onclick="shareBig('global')">
+              Global
+            </div>
+          <% end %>
+          <div class="link" onclick="shareBig('company')">
+            <%= @company.name %>
+          </div>
           <div class="link">
             Team
             <div class="teams">
@@ -26,20 +34,12 @@
               <% end %>
             </div>
           </div>
-          <% if @admin.departments.count != 0 %>
-          <div class="link" onclick="shareBig('departemnt')">
-            Department
-          </div>
-          <% end %>
-          <div class="link" onclick="shareBig('company')">
-            Company
-          </div>
         </div>
       </div>
     </div>
 
     <div class="btns">
-      <div class="btn inverted" onclick='closeShareContent()'>Cancel</div>
+      <div class="btn inverted" onclick='closeShareContent()'>Abbrechen</div>
       <%= f.submit 'teilen', class: 'btn' %>
     </div>
     <% end %>
@@ -51,7 +51,11 @@
   }
   function shareBig(type) {
     $('#content_available_for').val(type);
-    $('.dropdown-text span').text(type);
+    if( type == 'company' ) {
+      $('.dropdown-text span').text("<%= @company.name %>");
+    } else {
+      $('.dropdown-text span').text("Globaler Content");
+    }
     $('#userDropdown').toggle();
   }
   function shareTeam(teamID, teamName) {
@@ -92,10 +96,12 @@
 <% end %>
 <% if params[:new_users] %>
 <% new_users = @company.users.where(fname: nil) %>
+<% if new_users.count != 0 %>
 <div class="background-blur" id="newUser" style="display: block">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
-    <h3>Diese User existieren noch nicht:</h3>
+    <h3>Nutzer existieren nicht.</h3>
+    <h5>Diese E-Mail Adressen haben noch keinen Peter Pitch Account. Gebe Vor-und Nachnamen ein, um sie deinem Dashboard hinzuzufügen.</h5>
     <form class="" action="index.html" method="post" id="newUserForm">
     <table>
       <thead>
@@ -121,6 +127,7 @@
     </form>
   </div>
 </div>
+<% end %>
 <script type="text/javascript">
   function closeNewUser() {
 

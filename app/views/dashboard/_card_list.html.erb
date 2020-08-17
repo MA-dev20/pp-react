@@ -25,9 +25,9 @@
             <i class="fas fa-exclamation-triangle"></i>
         <% end %>
         <% if t.task.task_medium.present? %>
-            <div class="name"><%= t.order %>. Task - <%= t.task.task_medium.media_type.titleize %></div>
+            <div class="name"><%= t.order %>. Aufgabe - <%= t.task.task_medium.media_type == 'image' ? 'Bild' : t.task.task_medium.media_type.titleize %></div>
         <% else %>
-            <div class="name"><%= t.order %>. Task</div>
+            <div class="name"><%= t.order %>. Aufgabe</div>
         <% end %>
         <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
         <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
@@ -76,7 +76,7 @@
     <% else %>
     <div class="task-title slide-title">
         <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
-        <div class="name"><%= t.order %>. Slide - <%= t.task.pdf_type.titleize %></div>
+        <div class="name"><%= t.order %>. Folie - <%= t.task.pdf_type.titleize == 'image' ? 'Bild' : t.task.pdf_type.titleize %></div>
         <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
         <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
             <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		

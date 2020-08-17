@@ -32,7 +32,9 @@
 <% if flash[:alert] %>
 <div class="popup">
 	<h1>FEHLER!</h1>
-	<i class="fas fa-times close" onclick="toggleModal()"></i>
+	<div class="close" onclick="toggleModal()">
+		<%= image_tag 'icons/close.svg' %>
+	</div>
 	<div class="text">Bitte warte bis das Spiel gestartet wurde</div>
 </div>
 <script>

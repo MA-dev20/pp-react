@@ -263,7 +263,7 @@ body {
 		width: 3vh;
 		position: relative;
 		top: 0.5vh;
-		
+
 		.st9 {
 			stroke: rgb(var(--custcolor));
 		}
@@ -972,6 +972,44 @@ body {
 		width: 100%;
 		margin-bottom: 1.5vh;
 		clear: left;
+		.dropdown {
+			position: relative;
+			width: auto;
+			.dropdown-label {
+				line-height: 2.5vh;
+				text-align: left;
+			}
+			.dropdown-text {
+				display: inline-block;
+				line-height: 5vh;
+				height: 5vh;
+				border-radius: .8vh;
+				padding: 0 10px;
+				border: 1px solid rgba(0,0,0,.2);
+			}
+			.dropdown-menu {
+				display: none;
+				position: absolute;
+				top: 100%;
+				left: 0;
+				z-index: 100;
+				background-color: white;
+				border-radius: 5px;
+				text-align: left;
+				box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+				.link {
+					position: relative;
+					left: 0;
+					line-height: 20px;
+					font-size: 15px;
+					padding: 5px;
+					cursor: pointer;
+				}
+				.link:hover {
+					background-color: rgba(0,0,0,.2);
+				}
+			}
+		}
 		label {
 			font-weight: 300;
 			margin: 0;
@@ -1196,19 +1234,19 @@ body {
 	}
 	.form-group.avatar {
 		label {
-			height: 15vh;
-			width: 15vh;
+			height: 10vh;
+			width: 10vh;
 			border-radius: 50%;
 			background-color: rgba(var(--custcolor), .5);
-			margin: 0 calc(50% - 7.5vh);
+			margin: 0 calc(50% - 5vh);
 			img {
-				height: 14vh;
-				width: 14vh;
+				height: 9vh;
+				width: 9vh;
 				border-radius: 50%;
 				margin: .5vh;
 			}
 			.hover {
-				line-height: 15vh;
+				line-height: 10vh;
 			}
 		}
 	}
@@ -1942,6 +1980,11 @@ body {
 			color: rgba(172,172,172,.5);
 			font-size: 3vh;
 			cursor: pointer;
+			img {
+				margin: 1vh;
+				height: 3vh;
+				width: 3vh;
+			}
 		}
 		.close:hover {
 			opacity: .5;
@@ -1988,7 +2031,6 @@ body {
 			border: 1px solid rgb(var(--custcolor));
 			cursor: pointer;
 			text-decoration: none;
-			font-family: 'BarackPro-Solid' !important;
 			background-color: rgb(var(--custcolor));
 			-webkit-appearance: none !important;
 			-moz-appearance: none !important;

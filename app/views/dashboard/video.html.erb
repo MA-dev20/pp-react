@@ -2,7 +2,7 @@
 	<div class="card">
 		<div class="search">
 			<%= image_tag 'dash/new_icons/search.svg' %>
-			<input type="text" placeholder="Pitch suche" id="searchPitch" class="form-field">
+			<input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
 		</div>
 		<div class="folders">
 			<h3>Ordner</h3>
@@ -14,7 +14,7 @@
 				</div>
 			<% end %>
 		</div>
-		
+
 		<% @pitches.each do |p| %>
 			<div class="videos p-videos" id="pitch_videos_<%= p[:id] %>" style="display: none">
 				<h3>Pitch Videos</h3>
@@ -67,7 +67,7 @@
 		$(`#pitch_videos_${pitch_id}`).show();
 		$('.folders').hide();
 	}
-	
+
 	function toggleVideo() {
 		$('#videos').toggle();
 		$('#new_video').toggle();

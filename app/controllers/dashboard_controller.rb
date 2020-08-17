@@ -59,10 +59,10 @@ class DashboardController < ApplicationController
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @lists = []
-    @company.catchword_lists.where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
+    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
       @lists << {id: list.id, type: 'catchword', name: list.name}
     end
-    @company.objection_lists.where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
+    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
       @lists << {id: list.id, type: 'objection', name: list.name}
     end
     if params[:folder_id]
@@ -76,6 +76,20 @@ class DashboardController < ApplicationController
       @folder.objection_lists.each do |cl|
         @lists << {id: cl.id, type: 'objection', name: cl.name}
       end
+    end
+    if params[:audio]
+      @content = TaskMedium.find(params[:audio])
+    elsif params[:image]
+      @content = TaskMedium.find(params[:image])
+    elsif params[:pdf]
+      @content = TaskMedium.find(params[:pdf])
+    elsif params[:video]
+      @content = TaskMedium.find(params[:video])
+    elsif params[:catchword]
+      @listType = 'catchword'
+      @liste = CatchwordList.find(params[:catchword])
+    elsif params[:objection]
+      @liste = ObjectionList.find(params[:objection])
     end
   end
 
@@ -101,6 +115,86 @@ class DashboardController < ApplicationController
         @lists << {id: cl.id, type: 'objection', name: cl.name}
       end
     end
+  end
+
+  def search_content
+    level = params[:level]
+    if level == 'root'
+      files = TaskMedium.accessible_by(current_ability)
+      folders = ContentFolder.accessible_by(current_ability)
+      cw = CatchwordList.accessible_by(current_ability).where.not(name: 'task_list')
+      ol = ObjectionList.accessible_by(current_ability).where.not(name: 'task_list')
+    elsif level == 'user'
+      files = TaskMedium.accessible_by(current_ability)
+      folders = ContentFolder.accessible_by(current_ability)
+      cw = CatchwordList.accessible_by(current_ability).where.not(name: 'task_list')
+      ol = ObjectionList.accessible_by(current_ability).where.not(name: 'task_list')
+    elsif level == 'shared'
+      files = @company.task_media.where.not(user: @admin)..accessible_by(current_ability)
+      folders = @company.content_folders.where.not(user: @admin)..accessible_by(current_ability)
+      cw = @company.catchword_lists.where.not(user: @admin)..accessible_by(current_ability).where.not(name: 'task_list')
+      ol = @company.objection_lists.where.not(user: @admin).accessible_by(current_ability).where.not(name: 'task_list')
+    elsif level == 'peters'
+      files = TaskMedium.where(available_for: 'global')
+      folders = ContentFolder.where(available_for: 'global')
+      cw = CatchwordList.where(available_for: 'global').where.not(name: 'task_list')
+      ol = ObjectionList.where(available_for: 'global').where.not(name: 'task_list')
+    end
+    @files = []
+    @folders = []
+    @lists = []
+    if params[:search] && params[:search] != ''
+      files.search(params[:search]).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image? && !file.is_pdf
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      folders.search(params[:search]).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      cw.search(params[:search]).each do |list|
+        @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+      end
+      ol.search(params[:search]).each do |list|
+        @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+      end
+    else
+      if level == 'root'
+        render json: {standard: true}
+        return
+      end
+      files.where(content_folder: nil).each do |file|
+        if file.media_type == 'video' && file.video?
+          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'image' && file.image? && !file.is_pdf
+          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        elsif file.media_type == 'audio' && file.audio?
+          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
+        end
+      end
+      folders.where(content_folder: nil).each do |folder|
+        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+        @folders << @folder
+      end
+      cw.where(content_folder: nil).each do |list|
+        @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+      end
+      ol.where(content_folder: nil).each do |list|
+        @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+      end
+    end
+    render json: {folders: @folders, files: @files, lists: @lists}
   end
 
   def choose_company
@@ -147,12 +241,19 @@ class DashboardController < ApplicationController
   @users_count = @company.users.accessible_by(current_ability).count
 	@users = @team.users.accessible_by(current_ability).order('lname') if params[:team_id] && params[:edit] != "true"
   @users = @company.users.accessible_by(current_ability).order('lname') if !@users
-	@user = User.find(params[:edit_user]) if params[:edit_user]
+  if params[:edit_user]
+     @user = User.find(params[:edit_user])
+     @role = @user.company_users.find_by(company: @company).role if @user
+     if !(can? :edit, @user)
+       redirect_to dashboard_teams_path
+     end
+  end
   end
 
   def user_stats
 	@user = User.find(params[:user_id])
 	if @user.game_turn_ratings.count == 0
+    flash[:alert_head] = 'Keine Statistik vorhanden'
 	  flash[:alert] = 'Der Spieler hat noch nicht gepitcht!'
     if can? :read, Team
       redirect_to dashboard_teams_path
@@ -260,73 +361,6 @@ class DashboardController < ApplicationController
 	@team_users = @team.users.sort_by{|e| -e[:ges_rating]}
   end
 
-  def search_content
-    if params[:search] && params[:search] != ''
-      @files = []
-      @company.task_media.accessible_by(current_ability).search(params[:search]).each do |file|
-        if file.media_type == 'video' && file.video?
-          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'image' && file.image?
-          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'audio' && file.audio?
-          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        end
-      end
-      @folders = []
-      @company.content_folders.accessible_by(current_ability).search(params[:search]).each do |folder|
-        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
-        @folders << @folder
-      end
-      @lists = []
-      @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list').search(params[:search]).each do |cl|
-        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
-      end
-      @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list').search(params[:search]).each do |ol|
-        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
-      end
-    else
-      @folders = []
-      @company.content_folders.accessible_by(current_ability).where(content_folder: nil).each do |folder|
-        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
-        @folders << @folder
-      end
-      @files = []
-      @company.task_media.accessible_by(current_ability).where(content_folder: nil).each do |file|
-        if file.media_type == 'video' && file.video?
-          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'image' && file.image?
-          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'audio' && file.audio?
-          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        end
-      end
-      @lists = []
-      @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(name: 'task_list').each do |cl|
-        this_task = Task.find_by(catchword_list: cl)
-        if cl.name
-          @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
-        elsif this_task
-          @lists << {id: cl.id, name: this_task.title, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
-        end
-      end
-      @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(name: 'task_list').each do |ol|
-        this_task = Task.find_by(objection_list: ol)
-        if ol.name
-          @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
-        elsif this_task
-          @lists << {id: ol.id, name: this_task.title, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
-        end
-      end
-    end
-    render json: {folders: @folders, files: @files, lists: @lists}
-  end
-
   def account
   end
 
@@ -336,15 +370,15 @@ class DashboardController < ApplicationController
   def video
     @pitches = []
   	@videos = []
-    @company.pitch_videos.accessible_by(current_ability).each do |p|
-  		  minutes = p.duration / 60
+    @company.pitch_videos.accessible_by(current_ability).each do |v|
+  		  minutes = v.duration / 60
   		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-  		  seconds = p.duration % 60
+  		  seconds = v.duration % 60
   		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-  		  rating = p.game_turn.ges_rating ? p.game_turn.ges_rating / 10.0 : '?'
-        @videos << {id: p.game_turn_id, video: p, duration: minutes + ':' + seconds, title: p.game_turn&.task&.title, user: p.user, rating: rating, pitch_id: p.game_turn.game.pitch_id}
-        unless @pitches.any? {|p| p[:id] == p.game_turn.game.pitch_id}
-          pitch = p.game_turn.game.pitch
+  		  rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
+        @videos << {id: v.game_turn_id, video: v, duration: minutes + ':' + seconds, title: v.game_turn&.task&.title, user: v.user, rating: rating, pitch_id: v.game_turn.game.pitch_id}
+        unless @pitches.any? {|p| p[:id] == v.game_turn.game.pitch_id}
+          pitch = v.game_turn.game.pitch
           @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
         end
   	end
@@ -373,8 +407,13 @@ class DashboardController < ApplicationController
 	@team = Team.find(params[:team]) if params[:team]
   end
   def new_pitch
-	@pitch = @admin.pitches.create(company: @company)
-	redirect_to dashboard_edit_pitch_path(@pitch)
+	  if params[:global]
+      @pitch = @admin.pitches.create(available_for: 'global_hold')
+      redirect_to backoffice_pitches_path(edit_pitch: @pitch.id)
+    else
+      @pitch = @admin.pitches.create(company: @company)
+      redirect_to dashboard_edit_pitch_path(@pitch)
+    end
   end
 
   def edit_pitch
@@ -490,7 +529,7 @@ class DashboardController < ApplicationController
   end
 
   @type ||= nil
-  if @type.present?    
+  if @type.present?
     @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
   else
     @files = @admin.task_media.where(content_folder: nil)

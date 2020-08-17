@@ -12,21 +12,49 @@
         <svg viewbox="0 0 144 144" onclick="toggleNewContent()"><use xlink:href="#handIconBlack" /></svg>
       </div>
       <div class="form-group">
-        <%= f.text_field :name, placeholder: 'Titel eingeben', class: 'form-field' %>
+        <%= f.text_field :name, placeholder: 'Name der Liste hier eingeben', class: 'form-field' %>
       </div>
       <div class="btns">
-        <div class="btn inverted" onclick="newList('close')">close</div>
-        <%= f.submit 'erstellen', class: 'btn' %>
+        <div class="btn inverted" onclick="newList('close')">Abbrechen</div>
+        <div class="btn" onclick="submitList()">Erstellen</div>
       </div>
     <% end %>
   </div>
 </div>
 <script>
+  $('#new-list-form').on('submit', function(e) {
+    e.preventDefault();
+    submitList();
+  })
+  function submitList() {
+    var URL = '<%= create_list_path %>';
+    var formData = new FormData(document.getElementById('new-list-form'));
+    $.ajax({
+      url: URL,
+      type: 'post',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        if( res.no_title ) {
+          $('#list_name').css('border-color', 'red');
+        } else {
+          <% if params[:folder_id] %>
+          location.replace('?folder_id=<%= params[:folder_id] %>&' + $('#list_type').val() + '=' + res.id);
+          <% else %>
+          location.replace('?' + $('#list_type').val() + '=' + res.id);
+          <% end %>
+        }
+      }
+    })
+  }
   function newList(type) {
     if( type == 'close' ) {
       $('#new-list').hide();
     } else if( type == 'catchword') {
-      $('#new-list h3').text('Neue Catchwortliste')
+      $('#new-list h3').text('Neue Textliste')
       $('#list_type').val(type);
       $('#new-list').show();
       $('#objection_image').hide();

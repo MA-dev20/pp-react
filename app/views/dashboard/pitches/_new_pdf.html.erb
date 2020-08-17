@@ -11,19 +11,19 @@
 			<label><%= File.basename(@task.task_medium.image.url) %></label>
 			<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'image'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 			<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'image') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
-				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 			</a>
 		</div>
 		<%= image_tag @task.task_medium.image.url, class: 'pdf-image-tag' %>
 	<% else %>
 		<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_image_form'} do |t| %>
 		<div class="dropzone-container pdf-image-drop-zone">
-			<label class="dropzone-text">Drag and Drop file from your Computer</label>
+			<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 			<div class="label-btn media-btns-container">
 				<%= t.file_field :image, class: 'pdf-image-fileinput', id: 'pdf_task_medium_image', accept: 'image/*' %>
 				<%= t.hidden_field :media_type, value: 'image' %>
 				<label class="btn reversed upload btn-margin" id="pdf_image_upload_btn">Upload</label>
-				<label class="btn reversed upload image-library btn-margin btn-ml-1" onclick="showLibraryModal('image', <%= @task.id %>)" id="">Image library</label>
+				<label class="btn reversed upload image-library btn-margin btn-ml-1" onclick="showLibraryModal('image', <%= @task.id %>)" id="">Image Bibliothek</label>
 			</div>
 		</div>
 		<% end %>
@@ -34,7 +34,7 @@
 			<label><%= File.basename(@task.task_medium.video.url) %></label>
 			<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 			<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'video') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
-				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 			</a>
 		</div>
 		<%= video_tag @task.task_medium.video.url, controls: true, class: 'pdf-video-tag' %>
@@ -49,8 +49,8 @@
 						<label><%= @task.task_medium.video_title %></label>
 						<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 						<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'video') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
-							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
-						</a>	
+							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+						</a>
 					</div>
 					<% if @task.task_medium.video_url_type == 'youtube' %>
 					<iframe class="video-frame" width="420" height="170" src="https://www.youtube.com/embed/<%= @task.task_medium.video_url_id %>"></iframe>
@@ -62,7 +62,7 @@
 						<label><%= File.basename(@task.task_medium.video.url) %></label>
 						<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'video'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 						<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'video') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
-							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+							<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 						</a>
 					</div>
 					<%= video_tag @task.task_medium.video.url, controls: true, class: 'video-tag' %>
@@ -71,16 +71,16 @@
 				<video class="pdf-video-tag" src="" controls></video>
 			<% end %>
 		</div>
-		<div class="dropzone-container pdf-video-drop-zone" 
+		<div class="dropzone-container pdf-video-drop-zone"
 		style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
-			<label class="dropzone-text">Drag and Drop file from your Computer</label>
+			<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 			<div class="label-btn media-btns-container">
 				<%= t.file_field :video, accept: 'video/*', class: 'pdf-video-field', id: 'pdf_task_medium_video' %>
 				<%= t.hidden_field :media_type, value: 'video' %>
 				<div class="btn-wrapper">
 					<label class="btn reversed upload btn-margin" id="pdf_video_upload_btn">Upload</label>
-					<div class="btn reversed upload record-pdf-video btn-margin btn-ml-1">Record</div>
-					<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('video', <%= @task.id %>)" id="">Library</label>
+					<div class="btn reversed upload record-pdf-video btn-margin btn-ml-1">Aufnehmen</div>
+					<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('video', <%= @task.id %>)" id="">Video Bibliothek</label>
 				</div>
 				<div class="video-form">
 					<label for="">You can also past a link to your video on Youtube or Vimeo</label>
@@ -101,7 +101,7 @@
 			<label><%= File.basename(@task.task_medium.audio.url) %></label>
 			<%#= link_to '', delete_task_media_path(@pitch, task_id: @task.id, type: 'audio'), method: :delete, class: 'far fa-trash-alt remove', data: {confirm: 'Willst du die Aufgabe wirklich löschen?'} %>
 			<a href="<%= delete_task_media_path(@pitch, task_id: @task.id, type: 'audio') %>" data-method="delete" data-confirm="Willst du die Aufgabe wirklich löschen?">
-				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>		
+				<%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 			</a>
 		</div>
 		<div class="preview audio-preview">
@@ -115,13 +115,13 @@
 	<% else %>
 	<%= form_for :task_medium, url: create_task_media_content_path(@pitch, task_id: @task.id, task_medium_id: @task&.task_medium&.id), html: {id: 'add_pdf_audio_content_form'} do |t| %>
 	<div class="dropzone-container pdf-audio-drop-zone">
-		<label class="dropzone-text">Drag and Drop file from your Computer</label>
+		<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 		<div class="label-btn media-btns-container">
 			<%= t.file_field :audio, accept: '.mp3,.wav', class: 'pdf-audio-field', id: 'pdf_task_medium_audio' %>
 			<%= t.hidden_field :media_type, value: 'audio' %>
 			<label class="btn reversed upload btn-margin" id="pdf_audio_upload_btn">Upload</label>
-			<div class="btn reversed record-audio btn-margin btn-ml-1">Record</div>
-			<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('audio', <%= @task.id %>)" id="">Library</label>
+			<div class="btn reversed record-audio btn-margin btn-ml-1">Aufnehmen</div>
+			<label class="btn reversed upload btn-margin btn-ml-1" onclick="showLibraryModal('audio', <%= @task.id %>)" id="">Audio Bibliothek</label>
 		</div>
 	</div>
 	<% end %>
@@ -131,7 +131,6 @@
 
 <div class="popup" id="popupPdfImage">
 	<div class="close" onclick="hidePdfPopup()">
-		<!-- <i class="fas fa-times"></i> -->
         <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal' %>
 	</div>
 	<div class="img-container">
@@ -190,10 +189,10 @@
         })
 	}
 	// $('.library').on('click', function() {
-	
+
 	// 	$('#libraryModal').show();
 	// })
-	
+
 	// Audio upload and drag, drop
 
 	var pdfAudioDropZone = $('.pdf-audio-drop-zone')
@@ -233,7 +232,7 @@
 
 	$('#pdf_task_medium_audio').on('change', function () {
 		var globalForm = new FormData(document.getElementById('add_pdf_audio_content_form'));
-		sendPdfMedia(globalForm);		
+		sendPdfMedia(globalForm);
 	})
 
 
@@ -265,7 +264,7 @@
 				console.log('streaming ...');
 				pdfAudioChunks.push(e.data);
 			}
-			
+
 
 		});
 		audioMediaRecorder.addEventListener('stop', function () {
@@ -277,7 +276,7 @@
 			// let audio_blob = new Blob(pdfAudioChunks, { type: 'audio/x-mpeg-3' });
 			audio_blob = new Blob(pdfAudioChunks, { type: 'audio/webm' });
 			audioFile = new window.File([audio_blob], ["audio", (new Date() + '').slice(4, 28), '.mp3'].join(''))
-			
+
 			audioPlayer.src = audioPdfURL;
 			$('#audioPlayer').show();
 			$('#audioRecorder').hide();
@@ -391,7 +390,7 @@
 			document.getElementById('pdf-task-audio').pause();
 			$('.pdf-audio-play-div .audio-pause-circle').hide();
 			$('.pdf-audio-play-div .audio-play-circle').show();
-		} 
+		}
 	}
 
 	function stopPdfAudio() {
@@ -404,7 +403,7 @@
 
 	// Image upload and drag, drop
 
-	$('#pdf_image_upload_btn').on('click', function (e) {		
+	$('#pdf_image_upload_btn').on('click', function (e) {
 		$('#pdf_task_medium_image').click();
 	})
 
@@ -553,7 +552,7 @@
 		e.preventDefault();
 		e.stopPropagation();
 	})
-	
+
 	pdfVideoDropZone.on('dragover dragenter', function () {
 		$(this).addClass('is-dragover');
 	})
@@ -683,7 +682,7 @@
 					$('#loaderModal').hide();
 					$('#pdfVideoLinkTitle').val(data[0].title);
 					$('#pdfVideoLinkImage').val(data[0].thumbnail_large);
-					$('#add_pdf_video_content_form').submit();					
+					$('#add_pdf_video_content_form').submit();
 				}
 			});
 		}

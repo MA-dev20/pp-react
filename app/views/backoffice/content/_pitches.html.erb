@@ -1,0 +1,76 @@
+<div class="card" id="pitches">
+    <div class="search">
+        <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
+        <input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
+    </div>
+    <h3>Pitches</h3>
+    <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
+    <div class="pitches" id="pitch-list">
+        <% @pitches.each do |pitch| %>
+        <div class="card" id="pitch">
+          <div class="pitches-title-wrapper">
+            <div class="title"><%= pitch.title %></div>
+            <% if (can? :edit, pitch) %>
+            <div class="custom-dropdown-select">
+                <div class="dropdown-div" onclick="openDropdown(this)">
+                    <i class="fa fa-ellipsis-v dropdown-icon" aria-hidden="true"></i>
+                </div>
+                <div class="dropdown-option-wrapper">
+                    <div class="dropdown-option">
+                        <% if can? :destroy, pitch %>
+                        <span class="select-name">
+                            <a href="<%= delete_unsave_pitch_path(pitch) %>" data-confirm='Willst du die Aufgabe wirklich löschen?'>
+                                <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %><span class="delete-span">Delete</span>
+                            </a>
+                        </span>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+          </div>
+          <div class="thumb">
+              <% if pitch.image? %>
+              <%= image_tag pitch.image.url, class: 'pitch-placeholder-img' %>
+              <% else %>
+              <%= image_tag 'dash/pitch_placeholder.png', class: 'pitch-placeholder-img' %>
+              <% end %>
+            </div>
+            <div class="autor">
+              <i class="fas fa-user"></i><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+            </div>
+
+            <div class="subtitle">
+                Folien: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Aufgaben: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
+            </div>
+            <div class="pitch-buttons">
+                <%= link_to 'Jetzt pitchen', dashboard_pitches_path('', pitch_id: pitch.id), class: 'btn' %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
+<script type="text/javascript">
+  $(document).click(function (e) {
+      if ($(e.target).is('.blur')) {
+          $('.blur').hide();
+      }
+
+  if (!$(e.target).hasClass('dropdown-icon')) {
+    var container = $(".dropdown-div");
+    if (container.has(e.target).length === 0) {
+      $('.dropdown-option-wrapper').hide();
+    }
+      }
+  });
+
+  function openDropdown(e) {
+      if ($(e).siblings('.dropdown-option-wrapper').is(':visible')) {
+          $('.dropdown-option-wrapper').hide();
+      } else {
+          $('.dropdown-option-wrapper').hide();
+          $(e).siblings('.dropdown-option-wrapper').show();
+      }
+  }
+</script>

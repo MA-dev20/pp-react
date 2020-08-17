@@ -18,6 +18,7 @@ class Ability
         can :create, Pitch if @abilities.create_pitch != 'none'
         can :create, Task if @abilities.create_pitch != 'none'
         can :create, TaskMedium if @abilities.create_media != 'none'
+        can :create, ContentFolder if @abilities.create_media != 'none'
         can :create, Game if @abilities.view_pitch != 'none'
 
         can :read, Department, :user_id => user.id if @abilities.view_department != 'none'

@@ -7,9 +7,9 @@
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
-          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Edit</div>
+          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Bearbeiten</div>
           <% if controller.controller_name != "backoffice" %>
-          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Share</div>
+          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Freigeben</div>
           <% end %>
           <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
         </div>
@@ -65,7 +65,7 @@
 				if( res.id ) {
 					$('#folder_' + res.id).hide();
 				} else if (res.error) {
-					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><i class="fas fa-times"></i></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Ups, da gabe es einen Fehler!</h3>'+res.error+'</div></div>'
 					$('body').append(userDiv);
 				}
 			}
