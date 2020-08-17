@@ -2537,4 +2537,12 @@ input[type="file"] {
             left: 38%;
         }
     }
+
+    #tasksScrollBar {
+        overflow-x: auto;
+    }
+    
+    #tasksScrollBar::-webkit-scrollbar {
+        display: none;
+    }
 }
