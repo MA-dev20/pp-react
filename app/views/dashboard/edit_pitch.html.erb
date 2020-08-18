@@ -512,18 +512,18 @@
 	function allowDrop(ev) {
 		ev.preventDefault();
 		console.log(ev.pageY);
-		if (ev.pageY < 150) {
+		if (ev.pageY < 160) {
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "400");		
-		} else if (ev.pageY > 650) {
+		} else if (ev.pageY > 630) {
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "400");		
 		} 
 		// else {
 		// 	$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
 		// }
-		if (ev.pageY > 150 && ev.pageY < 650) {
+		if (ev.pageY > 160 && ev.pageY < 630) {
 			$('.selected').removeClass('selected');
 			$(ev.target).closest('.card').addClass("drop-here");
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
+			$("#tasksScrollBar").stop(true);		
 		}
 		
 	}
