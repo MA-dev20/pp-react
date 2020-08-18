@@ -513,7 +513,7 @@
 		ev.preventDefault();
 		console.log(ev.pageY);
 		if (ev.pageY < 150) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "300");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "slow");		
 		} else if (ev.pageY > 650) {
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "slow");		
 		} else {
