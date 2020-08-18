@@ -513,14 +513,19 @@
 		ev.preventDefault();
 		console.log(ev.pageY);
 		if (ev.pageY < 150) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "slow");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "400");		
 		} else if (ev.pageY > 650) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "slow");		
-		} else {
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "400");		
+		} 
+		// else {
+		// 	$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
+		// }
+		if (ev.pageY > 150 && ev.pageY < 650) {
+			$('.selected').removeClass('selected');
+			$(ev.target).closest('.card').addClass("drop-here");
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
 		}
-		$('.selected').removeClass('selected');
-		$(ev.target).closest('.card').addClass("drop-here");
+		
 	}
 	function leaveDrop(ev) {
 		$(`#${selected_card_id}`).addClass('selected');
