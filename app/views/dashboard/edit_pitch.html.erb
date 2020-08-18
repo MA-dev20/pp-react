@@ -511,8 +511,21 @@
 
 	function allowDrop(ev) {
 		ev.preventDefault();
-		$('.selected').removeClass('selected');
-		$(ev.target).closest('.card').addClass("drop-here");
+		console.log(ev.pageY);
+		if (ev.pageY < 150) {
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "400");		
+		} else if (ev.pageY > 650) {
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "400");		
+		} 
+		// else {
+		// 	$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
+		// }
+		if (ev.pageY > 150 && ev.pageY < 650) {
+			$('.selected').removeClass('selected');
+			$(ev.target).closest('.card').addClass("drop-here");
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
+		}
+		
 	}
 	function leaveDrop(ev) {
 		$(`#${selected_card_id}`).addClass('selected');
@@ -655,7 +668,7 @@
 
 	// End Options modal
 
-	new PerfectScrollbar('#tasksScrollBar');
+	// new PerfectScrollbar('#tasksScrollBar');
 
 	function addTask() {
 		window.location.replace("<%= create_task_path(@pitch) %>");

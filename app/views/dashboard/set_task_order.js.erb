@@ -1,6 +1,6 @@
 $('#cardList').html("");
 <% @pitch.task_orders.order(:order).each do |t| %>
-    $('#cardList').append("<%=j render partial: 'dashboard/card_list', locals: { t: t } %>");
+    $('#cardList').html("<%=j render partial: 'dashboard/card_list', locals: { t: t } %>");
 <% end %>
 $("#task_<%= @task.id %>").addClass('selected');
 if ('<%= @task.task_type %>' === 'slide') {

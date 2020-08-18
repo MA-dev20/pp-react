@@ -191,7 +191,7 @@
     $("#searchPitch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $("#pitch-list .card .title").filter(function () {
-            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).closest('.card').toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
     function changeSound() {
