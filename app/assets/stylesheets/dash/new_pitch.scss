@@ -2540,6 +2540,7 @@ input[type="file"] {
 
     #tasksScrollBar {
         overflow-x: auto;
+        scroll-behavior: smooth;
     }
     
     #tasksScrollBar::-webkit-scrollbar {
