@@ -516,7 +516,7 @@
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "fast");		
 		}
 		if (ev.pageY > 650) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#tasksScrollBar").height() }, "fast");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "fast");		
 		}
 		$('.selected').removeClass('selected');
 		$(ev.target).closest('.card').addClass("drop-here");
