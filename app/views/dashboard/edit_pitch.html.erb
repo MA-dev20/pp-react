@@ -512,11 +512,12 @@
 	function allowDrop(ev) {
 		ev.preventDefault();
 		console.log(ev.pageY);
-		if (ev.pageY < 130) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "slow");		
-		}
-		if (ev.pageY > 650) {
+		if (ev.pageY < 150) {
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "300");		
+		} else if (ev.pageY > 650) {
 			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "slow");		
+		} else {
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: env.pageY }, "slow");		
 		}
 		$('.selected').removeClass('selected');
 		$(ev.target).closest('.card').addClass("drop-here");
