@@ -1,3 +1,9 @@
+<div class="objection-bg">
+	<div class="objection-card">
+		<%= image_tag 'game/illus/polygon_right.png', id: 'pol1' %>
+		<%= image_tag 'game/illus/polygon_left.png', id: 'pol2' %>
+	</div>
+</div>
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div id="count_channel" data-game-id='<%= @game.id %>'></div>
 <% if @task.task_type == 'catchword' %>
@@ -321,7 +327,7 @@
 					document.getElementById('o_theme').pause();
 					document.getElementById('theme').play();
 					<% end %>
-					$('.objection').fadeOut();
+					$('.objection-bg').fadeOut();
 					clearInterval(setTimer);
 					MyApp.timer.resume();
 				}
@@ -330,8 +336,9 @@
 		return {pause: pause , start: start}
 	}
 	function startObjection(userDiv) {
-		$('#content .objection').remove();
-		$('#content').prepend(userDiv);
+		$('objection-bg .objection-card .objection').remove();
+		$('.objection-bg .objection-card').prepend(userDiv);
+		$('.objection-bg').fadeIn();
 		if( $('.objection:first-child .text').text().length < 10 ) {
 			$('.objection .text').css('font-size', '25vh')
 			$('.objection .text').css('line-height', '25vh')
