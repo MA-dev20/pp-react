@@ -513,10 +513,10 @@
 		ev.preventDefault();
 		console.log(ev.pageY);
 		if (ev.pageY < 130) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "fast");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "slow");		
 		}
 		if (ev.pageY > 650) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "fast");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "slow");		
 		}
 		$('.selected').removeClass('selected');
 		$(ev.target).closest('.card').addClass("drop-here");
