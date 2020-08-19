@@ -378,7 +378,7 @@ class DashboardController < ApplicationController
       video_present = false
       @game.game_turns.each do |gt|
         if gt.pitch_video.present?
-          video_present = false
+          video_present = true
           v = gt.pitch_video
           minutes = v.duration / 60
           minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
