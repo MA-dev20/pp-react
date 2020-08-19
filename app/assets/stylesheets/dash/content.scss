@@ -113,6 +113,7 @@
   .users, .files, .companies, .lists, .folders, .standard  {
     clear: left;
     text-align: left;
+    padding: 0 .5vw;
     h3 {
       text-align: left;
       font-weight: bold;
@@ -123,7 +124,7 @@
     .card {
       position: relative;
       text-align: center;
-      width: 7vw;
+      width: 9vw;
       margin: 0 1vw 2vh 0;
       float: left;
       padding: 0;
@@ -167,11 +168,11 @@
         }
       }
     }
+    .card:hover {
+      box-shadow: 0 0 10px 0 rgba(0,0,0,.1)
+    }
     .card:nth-child(2) {
       margin-left: 0;
-    }
-    .card:hover {
-      border-color: rgb(var(--custcolor));
     }
   }
   .folders,
@@ -180,15 +181,17 @@
       height: auto;
       font-size: 1.5vh;
       font-weight: 600;
+      box-sizing: content-box;
       img {
-        height: 5vh;
-        margin-top: 1vh;
+        height: 6vh;
+        margin-top: 1.25vh;
         display: inline-block;
       }
       .title {
         position: relative;
-        line-height: 2vh;
-        max-height: 4vh;
+        font-size: 1.5vh;
+        line-height: 2.5vh;
+        max-height: 5vh;
         overflow-y: hidden;
         .ellipsis {
           display: none;
@@ -200,21 +203,25 @@
       }
 
       .author {
+        position: relative;
+        text-align: left;
         line-height: 2vh;
-        top: 7.5vh;
         font-size: 1.3vh;
         color: rgba(0,0,0,.5);
+        width: calc(100% - 1vh); left: .5vh;
       }
     }
   }
   .files, .companies, .users,
   .lists {
-    padding: 1vh 0 0 0;
+    padding-top: 1vh;
     .card {
-      height: 16vh;
-      width: calc(7vw + 1vh);
+      height: 17vh;
+      width: 9vw;
       color: #0e0e0e;
       overflow: visible;
+      box-sizing: content-box;
+      border-radius: .5vh;
       .dropdown {
         z-index: 11;
         i {
@@ -223,10 +230,12 @@
       }
       .thumb {
         position: absolute;
-        left: .5vh;  top: .5vh;
-        width: 7vw;
-        height: 7vh;
+        left: 0;  top: 0;
+        width: 100%;
+        height: 9vh;
         border-radius: .5vh;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
         overflow: hidden;
         .image {width: 100%; height: 100%; filter: brightness(70%);}
         .list-logo, .list-avatar {
@@ -270,7 +279,7 @@
           border-radius: .5vh;
           background-color: rgba(0,0,0,.9);
           img {
-            height: 4vh;
+            height: 6vh;
             margin: 1.5vh
           }
         }
@@ -286,20 +295,19 @@
       }
       .text {
         position: absolute;
-        top: 8vh; left: 0;
-        width: 100%; height: 8vh;
-        font-size: 1.5vh; line-height: 2vh;
+        top: 9vh; left: 0;
+        width: 100%; height: 8vh; line-height: 2.5vh;
         text-align: left;
         overflow: hidden;
         text-overflow: ellipsis;
         .title, .time {
+          font-size: 1.5vh;
           position: relative;
-          width: 7vw; left: .5vh;
-
+          width: calc(100% - 1vh); left: .5vh;
         }
         .stats {
           position: relative;
-          width: 7vw; left: .5vh;
+          width: calc(100% - 1vh); left: .5vh;
           line-height: 2vh;
           .dropdown {
             position: absolute;
@@ -332,11 +340,11 @@
         }
         .title {
           top: 0;
-          width: 7vw;
+          width: 100%;
           text-overflow: ellipsis;
           height: 5.5vh;
-          line-height: 2.5vh;
           font-size: 1.5vh;
+          line-height: 2.5vh;
           text-align: center;
           font-weight: 600;
           overflow: hidden;
@@ -350,7 +358,7 @@
         }
         .time {
           top: 0vh;
-          font-size: 1.3vh;
+          font-size: 1.5vh;
           color: rgba(0,0,0,.5);
           height: 2vh;
           text-overflow: ellipsis;

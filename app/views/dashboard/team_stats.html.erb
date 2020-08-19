@@ -1,3 +1,12 @@
+<% content_for :heading do |d| %>
+<div class="back">
+	<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_teams_path %>
+</div>
+
+	<div class="heading">
+		Team Statistiken
+	</div>
+<% end %>
 <div class="head">
 	<div class="text"><%= @team.name %>'s Statistik</div>
 </div>
@@ -60,9 +69,9 @@
 	<div class="scrollChart disabled" id="scrollChartRight" onclick="scrollChartRight()">
 		<i class="fas fa-chevron-circle-right"></i>
 	</div>
-	
+
 	<div class="divider"></div>
-	
+
 	<div class="card" id="bestlist">
 		<h3>Bestenliste</h3>
 		<div class="divider"></div>
@@ -88,7 +97,7 @@
 
 
 <script>
-	$(document).ready(function() {	
+	$(document).ready(function() {
 		$('.rating-criteria').slick({
 			slidesToShow: 5,
 			slidesToScroll: 1,
@@ -102,12 +111,12 @@
 	})
 	$('#worst').css("color", ratingColor(<%= @games.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 100.0 %>));
 	$('#best').css("color", ratingColor(<%= @games.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 100.0 %>));
-	
+
 	ratecircle('#ges', 'ges_text', <%= @team.ges_rating / 100.0 %>);
 	<% @team_ratings.each do |r| %>
 		ratecircle('#rating_<%= r[:id] %>', 'text_<%= r[:id] %>', <%= r[:rating] / 100.0 %>);
 	<% end %>
-	
+
 	var ctx = document.getElementById("myChart");
 	var datapoints = [];
 	var label = [];
@@ -155,7 +164,7 @@
                 hoverRadius: 9,
                 datapoints: datapoints6,
                 extra: datapoints6,
-				
+
 			}],
 		},
 		options: {
@@ -204,7 +213,7 @@
 			},
 		}
 	});
-	
+
 	function setChart(id) {
 		$('.rating-criteria .active').removeClass('active');
 		datapoints = [NaN];
@@ -216,7 +225,7 @@
 				datapoints[i] = {value: <%= cd[:ges] %>, data: json_data};
 				label[i] = ["<%= cd[:date] %>", "<%= cd[:time] %>"];
 				i++;
-			<% end %>		
+			<% end %>
 		} else {
 			i = 0;
 			<% @chartdata.each do |cd| %>

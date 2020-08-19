@@ -1,3 +1,9 @@
+<% content_for :heading do |d| %>
+
+	<div class="heading">
+		Pitch Videos
+	</div>
+<% end %>
 <div class="card pitch-video">
 	<div class="left">
 		<div class="user">
@@ -8,8 +14,8 @@
 			<h3 class="pitch-video-title"><%= @turn&.task&.title %></h3>
 		</div>
 		<div class="media-wrapper">
-			<% 
-				card_class = (@task.task_type == 'audio' || @task.task_type == 'image') ? 'card-full-width' : '' 
+			<%
+				card_class = (@task.task_type == 'audio' || @task.task_type == 'image') ? 'card-full-width' : ''
 			%>
 			<div class="card <%= @task.task_type == 'catchword' ? 'card-cw' : '' %> <%= card_class %>">
 				<div class="length">
@@ -28,18 +34,18 @@
 						<i class="fa fa-play-circle play-audio audio-play-circle" onclick="playAudio()"></i>
 						<i class="pause-audio fas fa-pause-circle audio-pause-circle" onclick="pauseAudio()"></i>
 					</div>
-					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>				
+					<%= audio_tag @task.task_medium.audio.url, id: 'task-audio', class: 'audio-tag', onended: 'stopAudio()' %>
 				<% elsif @task.task_type == 'image' %>
 					<%= image_tag @task.task_medium.image.url %>
 				<% elsif @task.task_type == 'catchword' %>
 					<h2><%= @turn.catchword.name %></h2>
-				<% end %>	
-				
+				<% end %>
+
 			</div>
 		</div>
 		<%#= link_to '', delete_pitch_path(@video), class: 'far fa-trash-alt deleteList', data: {confirm: 'Bist du sicher das du das Video löschen möchtest?'} %>
 		<a href="<%= delete_pitch_path(@video) %>" data-confirm="Bist du sicher das du das Video löschen möchtest?">
-			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteList deleteVideo' %>		
+			<%= image_tag 'dash/new_icons/trash.svg', class: 'deleteList deleteVideo' %>
 		</a>
 		<% if @ratings.count != 0 %>
 		<div class="ratings">
@@ -118,7 +124,7 @@
 		<div class="comments">
 			<h5>Kommentare</h5>
 			<div class="card" id="comment-card">
-				<%= render 'comment_list' %>				
+				<%= render 'comment_list' %>
 			</div>
 			<div class="comment-form">
 				<div class="time">0:00</div>
@@ -157,7 +163,7 @@
 		$(".ratings").toggle();
 	}
 	var mouseDown = false;
-	document.body.onmousedown = function() { 
+	document.body.onmousedown = function() {
   		mouseDown = true;
 	}
 	document.body.onmouseup = function() {
@@ -260,7 +266,7 @@
 			document.getElementById('task-audio').pause();
 			$('.audio-play-div .audio-pause-circle').hide();
 			$('.audio-play-div .audio-play-circle').show();
-		} 
+		}
 	}
 
 	function stopAudio() {

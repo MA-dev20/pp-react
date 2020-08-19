@@ -1,13 +1,26 @@
-<div id="new-pitch-content">
+<% content_for :heading do |d| %>
+<div class="back">
 	<% if @pitch.title.present? %>
-		<%#= link_to '', dashboard_pitches_path, class: 'fas fa-arrow-left back-arrow-icon' %>
 		<a href="<%= dashboard_pitches_path %>">
-			<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
+		<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
 		</a>
 	<% else %>
-		<!-- <i class="fas fa-arrow-left back-arrow"></i> -->
 		<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust back-arrow' %>
 	<% end %>
+</div>
+	<div class="heading">
+		Pitch erstellen
+	</div>
+	<div class="btn-group">
+		<% if @pitch.title.present? %>
+			<%= link_to 'Schließen', dashboard_pitches_path, class: 'btn reversed'%>
+		<% else %>
+			<a href="javascript:void(0)" class="btn reversed exit-btn">Schließen</a>
+		<% end %>
+		<button class="btn done-btn open-modal" data-modal="pitch-modal">Speichern</button>
+	</div>
+<% end %>
+<div id="new-pitch-content">
 	<div class="card left">
 		<!-- <div class="vr-line"></div> -->
 		<div class="tasks" id="tasksScrollBar">
@@ -123,7 +136,7 @@
 <script>
 
 	$('.selected-card-order').val('<%= @task&.task_orders&.first&.order %>')
-	
+
 	$('#clodeVideoModal').on('click', function (e) {
 		e.preventDefault();
 		$('#videoModal').hide();
@@ -512,16 +525,16 @@
 	function allowDrop(ev) {
 		ev.preventDefault();
 		if (ev.pageY < 160) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "400");		
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: 0 }, "400");
 		} else if (ev.pageY > 630) {
-			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "400");		
-		} 
+			$("#tasksScrollBar").stop(true, false).animate({ scrollTop: $("#cardList").height() }, "400");
+		}
 		if (ev.pageY > 160 && ev.pageY < 630) {
 			$('.selected').removeClass('selected');
 			$(ev.target).closest('.card').addClass("drop-here");
-			$("#tasksScrollBar").stop(true);		
+			$("#tasksScrollBar").stop(true);
 		}
-		
+
 	}
 	function leaveDrop(ev) {
 		$(`#${selected_card_id}`).addClass('selected');

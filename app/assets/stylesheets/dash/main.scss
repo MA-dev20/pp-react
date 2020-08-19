@@ -51,6 +51,84 @@ body {
 	line-height: 8vh;
 	background-color: white;
 	box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.1);
+	text-align: center;
+	z-index: 101;
+	.search {
+		position: absolute;
+		top: 0;
+		left: 5vw;
+		height: 5vh;
+		width: 20vw;
+		margin: 1.5vh;
+		border-radius: 5px;
+		border: 1px solid rgba(0,0,0,.2);
+		svg {
+			position: absolute;
+			left: 0; top: 0;
+			height: 3vh; margin: 1vh;
+		}
+		input {
+			position: absolute;
+			left: 0;
+			margin: 1vh 6vh;
+			height: 3vh;
+			font-size: 2vh;
+			width: calc(100% - 12vh);
+			border: none;
+		}
+	}
+	.btn-group {
+		z-index: 10;
+		position: absolute;
+		right: 0;
+		top: 0;
+		height: 8vh;
+		text-align: center;
+		.btn {
+			float: left;
+			font-family: "Nunito", sans-serif;
+			display: inline-block;
+			margin: 1vh .25vw;
+			text-decoration: none;
+			width: auto;
+			text-align: center;
+			font-weight: bold; font-size: 1.7vh;
+			cursor: pointer;
+			height: 5.5vh; line-height: 5.5vh;
+			border: 1px solid rgb(var(--btncolor)); border-radius: 6vh;
+			padding: 0 3vh;
+
+    }
+		.btn:hover, .btn.reversed {
+			color: rgb(var(--btncolor));
+			background-color: transparent;
+		}
+		.btn, .btn.reversed:hover {
+			color: white;
+			background-color: rgb(var(--btncolor));
+		}
+	}
+	.back {
+		position: absolute;
+		left: 0; top: 0;
+		height: 4vh; margin: 2vh 1vh;
+		line-height: 4vh;
+		.back-arrow-icon,
+		.back-arrow {
+			display: inline-block;
+		  cursor: pointer;
+      height: 100%;
+      .st9 {
+          stroke: rgb(var(--btncolor)) !important;
+      }
+		}
+	}
+	.heading {
+		position: relative;
+		display: inline-block;
+		font-size: 2.5vh;
+		font-weight: bold;
+	}
 	.company {
 		width: 20vw;
 		margin: 3.5vh auto;
@@ -59,40 +137,13 @@ body {
 		font-size: 3.5vh;
 		font-weight: bold;
 	}
-	.links {
-		.fas {
-			float: left;
-			line-height: 3.5vh;
-			margin: 3.5vh 2vw 3.5vh 2vw;
-			font-size: 1.85vh;
-			line-height: 2vh;
-			font-size: 2vh;
-			color: rgb(var(--custcolor));
-			text-decoration: none;
-		}
-		.fas:hover {
-			transform: scale(1.2);
-		}
-		.link {
-			float: left;
-			margin: 3.5vh 1vw;
-			font-size: 1.85vh;
-			line-height: 2vh;
-			cursor: pointer;
-			color: black;
-			text-decoration: none;
-		}
-		.link.active, .link:hover {
-			border-bottom: 2px solid rgb(var(--custcolor));
-		}
-	}
 	.dropdown {
 		position: absolute;
 		top: 0;
 		right: 0;
-		line-height: 3.5vh;
+		line-height: 3vh;
 		font-size: 1.85vh;
-		margin: 3.5vh 5.9vh;
+		margin: 2.5vh 2vw;
 		z-index: 100;
 		cursor: pointer;
 	}

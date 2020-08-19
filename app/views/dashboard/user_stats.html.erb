@@ -1,3 +1,11 @@
+<% content_for :heading do |d| %>
+<div class="back">
+	<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_teams_path %>
+</div>
+	<div class="heading">
+		<%= @user.fname %>'s Statistik
+	</div>
+<% end %>
 <div class="head">
 	<%= image_tag @user.avatar.url, class: 'avatar' %>
 	<div class="text"><%= @user.fname %> <%= @user.lname %>'s Statistik</div>

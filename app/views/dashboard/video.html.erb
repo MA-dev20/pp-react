@@ -1,3 +1,8 @@
+<% content_for :heading do |d| %>
+	<div class="heading">
+		Pitch Videos
+	</div>
+<% end %>
 <div class="pitch-videos">
 	<div class="card">
 		<div class="search">
@@ -5,7 +10,6 @@
 			<input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
 		</div>
 		<div class="folders">
-			<h3>Ordner</h3>
 			<% @pitches.each do |p| %>
 				<div class="folder-card" id="folder_<%= p[:id] %>" onclick="showVideos('<%= p[:id] %>')">
 					<img src="<%= asset_path 'dash/icons/folder.svg' %>">

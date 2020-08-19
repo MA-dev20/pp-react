@@ -1,3 +1,8 @@
+<% content_for :heading do |d| %>
+	<div class="heading">
+		Pitches
+	</div>
+<% end %>
 <%= render 'dashboard/pitches/pitches.html.erb' %>
 <%= render 'dashboard/pitches/share_pitch.html.erb' %>
 <% if @pitch && !@game.present? %>

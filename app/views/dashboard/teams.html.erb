@@ -1,3 +1,13 @@
+<% content_for :heading do |d| %>
+<% if @team || @user %>
+<div class="back">
+	<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_teams_path %>
+</div>
+<% end %>
+	<div class="heading">
+		Nutzerübersicht
+	</div>
+<% end %>
 <div class="left">
 	<div class="search">
         <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>

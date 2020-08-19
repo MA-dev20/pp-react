@@ -32,10 +32,10 @@ class DashboardController < ApplicationController
       @files = @folder.task_media.accessible_by(current_ability).where.not(is_pdf: true)
       @lists = []
       @folder.catchword_lists.accessible_by(current_ability).each do |cl|
-        @lists << {id: cl.id, type: 'catchword', name: cl.name}
+        @lists << {id: cl.id, type: 'catchword', name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
       end
       @folder.objection_lists.accessible_by(current_ability).each do |cl|
-        @lists << {id: cl.id, type: 'objection', name: cl.name}
+        @lists << {id: cl.id, type: 'objection', name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
       end
     end
     if params[:audio]
@@ -119,7 +119,13 @@ class DashboardController < ApplicationController
 
   def search_content
     level = params[:level]
-    if level == 'root'
+    @folder = ContentFolder.find_by(id: params[:folder]) if params[:folder]
+    if @folder
+      files = TaskMedium.where(content_folder: @folder)
+      folders = ContentFolder.where(content_folder: @folder)
+      cw = CatchwordList.where(content_folder: @folder).where.not(name: 'task_list')
+      ol = ObjectionList.where(content_folder: @folder).where.not(name: 'task_list')
+    elsif level == 'root'
       files = TaskMedium.accessible_by(current_ability)
       folders = ContentFolder.accessible_by(current_ability)
       cw = CatchwordList.accessible_by(current_ability).where.not(name: 'task_list')
@@ -154,6 +160,9 @@ class DashboardController < ApplicationController
         elsif file.media_type == 'audio' && file.audio?
           @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
           @files << @file
+        elsif file.media_type == 'pdf' && file.pdf?
+          @file = {id: file.id, type: "pdf", title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+          @files << @file
         end
       end
       folders.search(params[:search]).each do |folder|
@@ -171,27 +180,58 @@ class DashboardController < ApplicationController
         render json: {standard: true}
         return
       end
-      files.where(content_folder: nil).each do |file|
-        if file.media_type == 'video' && file.video?
-          @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'image' && file.image? && !file.is_pdf
-          @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
-        elsif file.media_type == 'audio' && file.audio?
-          @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
-          @files << @file
+      if @folder
+        files.each do |file|
+          if file.media_type == 'video' && file.video?
+            @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'image' && file.image? && !file.is_pdf
+            @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'audio' && file.audio?
+            @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'pdf' && file.pdf?
+            @file = {id: file.id, type: "pdf", title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          end
         end
-      end
-      folders.where(content_folder: nil).each do |folder|
-        @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
-        @folders << @folder
-      end
-      cw.where(content_folder: nil).each do |list|
-        @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
-      end
-      ol.where(content_folder: nil).each do |list|
-        @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        folders.each do |folder|
+          @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+          @folders << @folder
+        end
+        cw.each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        end
+        ol.each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        end
+      else
+        files.each do |file|
+          if file.media_type == 'video' && file.video?
+            @file = {id: file.id, type: "video", thumb: file.video.thumb.url, title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'image' && file.image? && !file.is_pdf
+            @file = {id: file.id, type: "image", thumb: file.image.url, title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'audio' && file.audio?
+            @file = {id: file.id, type: "audio", title: file.title, duration: (file.duration / 60).to_s + ':' + (file.duration % 60).to_s, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          elsif file.media_type == 'pdf' && file.pdf?
+            @file = {id: file.id, type: "pdf", title: file.title, author: file.user.fname[0] + '. ' + file.user.lname}
+            @files << @file
+          end
+        end
+        folders.where(content_folder: nil).each do |folder|
+          @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
+          @folders << @folder
+        end
+        cw.where(content_folder: nil).each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        end
+        ol.where(content_folder: nil).each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        end
       end
     end
     render json: {folders: @folders, files: @files, lists: @lists}

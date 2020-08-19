@@ -1,3 +1,11 @@
+<% content_for :heading do |d| %>
+	<div class="back">
+		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_path %>
+	</div>
+	<div class="heading">
+		Account bearbeiten
+	</div>
+<% end %>
 <div class="card" id="account">
 	<h3><%= @admin.fname %> <%= @admin.lname %></h3>
 	<%= form_for(:user, url: edit_user_path(@admin, site: "account"), html: {autocomplete: "off"}) do |f| %>

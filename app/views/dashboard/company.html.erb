@@ -1,3 +1,8 @@
+<% content_for :heading do |d| %>
+	<div class="heading">
+		<%= @company.name %>
+	</div>
+<% end %>
 <div class="card" id="letspitch">
 	<h3><%= @company.name %></h3>
 	<%= form_for(:company, url: edit_company_path(@company, site: 'company_dash')) do |f| %>

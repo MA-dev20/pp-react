@@ -19,20 +19,9 @@
 </style>
 
 <body>
-	<% if @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) %>
-	<section id="new-pitch-navbar">
-		<h1>Pitch erstellen</h1>
-		<div class="btn-group">
-			<% if @pitch.title.present? %>
-				<%= link_to 'Schließen', dashboard_pitches_path, class: 'btn reversed'%>
-			<% else %>
-				<a href="javascript:void(0)" class="btn reversed exit-btn">Schließen</a>
-			<% end %>
-			<button class="btn done-btn open-modal" data-modal="pitch-modal">Speichern</button>
-		</div>
-	</section>
-	<% else %>
 	<section id="navbar">
+		<%= content_for :heading %>
+		<% if !(@pitch && current_page?(dashboard_edit_pitch_path(@pitch))) %>
 		<div class="dropdown" onclick="toggleDropdown()">
 			Hallo, <%= @admin.fname %> <%= @admin.lname %>
 			<i class="fas fa-caret-down dropdown-img"></i>
@@ -59,9 +48,8 @@
 				<%= link_to '', destroy_user_session_path, method: 'delete' %>
 			</div>
 		</div>
-
+		<% end %>
 	</section>
-	<% end %>
 	<section id="sidebar">
 		<%= image_tag @admin.avatar.url, class: 'avatar', id: 'sidebarAvatar', href: dashboard_path %>
 

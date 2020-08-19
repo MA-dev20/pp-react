@@ -1,3 +1,15 @@
+<% content_for :heading do |d| %>
+<% if @folder && @folder.content_folder %>
+	<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_shared_content_path(folder_id: @folder.content_folder_id) %>
+<% elsif @folder %>
+<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_shared_content_path %>
+<% else %>
+<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_content_path %>
+<% end %>
+	<div class="heading">
+		Geteilter Content
+	</div>
+<% end %>
 <script type="text/javascript">
 	function checkOverflow(ID) {
 		element = document.getElementById(ID);
