@@ -375,18 +375,24 @@ class DashboardController < ApplicationController
     game_hash = PitchVideo.joins(game_turn: :game).group("game_turns.game_id").count
     game_hash.each do |game_id, videos_count|
       @game = Game.find(game_id)
+      video_present = false
       @game.game_turns.each do |gt|
-        v = gt.pitch_video
-        minutes = v.duration / 60
-  		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-  		  seconds = v.duration % 60
-  		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-        rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
-        @videos << {id: gt.id, video: v, duration: minutes + ':' + seconds, title: gt&.task&.title, user: v.user, rating: rating, pitch_id: count}
+        if gt.pitch_video.present?
+          video_present = false
+          v = gt.pitch_video
+          minutes = v.duration / 60
+          minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+          seconds = v.duration % 60
+          seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+          rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
+          @videos << {id: gt.id, video: v, duration: minutes + ':' + seconds, title: gt&.task&.title, user: v.user, rating: rating, pitch_id: count}
+        end
       end
-      pitch = @game.pitch
-      @pitches << {id: count, title: pitch.title, team_name: @game&.team&.name, created_at: @game.created_at}
-      count += 1
+      if video_present
+        pitch = @game.pitch
+        @pitches << {id: count, title: pitch.title, team_name: @game&.team&.name, created_at: @game.created_at}
+        count += 1
+      end
     end
 
 
