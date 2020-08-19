@@ -49,8 +49,10 @@
     border: 1px solid rgba(var(--custcolor));
   }
 }
-.card#content_card {
+#content .card#content_card {
   height: 80vh;
+  background-color: transparent;
+  box-shadow: none;
   .head {
     text-align: left;
     height: 7vh;
