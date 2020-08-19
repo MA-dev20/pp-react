@@ -2436,9 +2436,10 @@ input[type="file"] {
 
     .folder-card {
         position: relative;
-        height: 12vh;
-        width: 7vw;
+        height: 13vh;
+        width: 8vw;
         margin: 0 1vw 2vh 0;
+        padding: 0 2.2vh;
         float: left;
         padding: 0;
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -2457,7 +2458,7 @@ input[type="file"] {
         }
 
         .title {
-            font-size: 2vh;
+            font-size: 1.5vh;
             width: 100%;
             text-align: center;
             overflow: hidden;
@@ -2466,7 +2467,7 @@ input[type="file"] {
         }
 
         .time {
-            font-size: 1.7vh;
+            font-size: 1.5vh;
         }
     }
 
