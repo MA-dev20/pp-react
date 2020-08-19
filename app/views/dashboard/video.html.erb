@@ -7,8 +7,8 @@
 		<div class="folders">
 			<h3>Ordner</h3>
 			<% @pitches.each do |p| %>
-				<div class="folder-card" id="folder_<%= p[:id] %>">
-					<img src="<%= asset_path 'dash/icons/folder.svg' %>" onclick="showVideos('<%= p[:id] %>')">
+				<div class="folder-card" id="folder_<%= p[:id] %>" onclick="showVideos('<%= p[:id] %>')">
+					<img src="<%= asset_path 'dash/icons/folder.svg' %>">
 					<div class="title" id="title_<%= p[:id] %>"><span><%= p[:title] %></span></div>
 					<div class="sub-title"><span><%= p[:team_name] %></span></div>
 					<div class="time"><%= p[:created_at].strftime("%Y-%m-%d") %></div>
