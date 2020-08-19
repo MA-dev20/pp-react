@@ -369,19 +369,50 @@ class DashboardController < ApplicationController
 
   def video
     @pitches = []
-  	@videos = []
-    @company.pitch_videos.accessible_by(current_ability).each do |v|
-  		  minutes = v.duration / 60
-  		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-  		  seconds = v.duration % 60
-  		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-  		  rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
-        @videos << {id: v.game_turn_id, video: v, duration: minutes + ':' + seconds, title: v.game_turn&.task&.title, user: v.user, rating: rating, pitch_id: v.game_turn.game.pitch_id}
-        unless @pitches.any? {|p| p[:id] == v.game_turn.game.pitch_id}
-          pitch = v.game_turn.game.pitch
-          @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
+    @videos = []
+    count = 0
+
+    game_hash = PitchVideo.joins(game_turn: :game).group("game_turns.game_id").count
+    game_hash.each do |game_id, videos_count|
+      @game = Game.find(game_id)
+      video_present = false
+      @game.game_turns.each do |gt|
+        if gt.pitch_video.present?
+          video_present = true
+          v = gt.pitch_video
+          minutes = v.duration / 60
+          minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+          seconds = v.duration % 60
+          seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+          rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
+          @videos << {id: gt.id, video: v, duration: minutes + ':' + seconds, title: gt&.task&.title, user: v.user, rating: rating, pitch_id: count}
         end
-  	end
+      end
+      if video_present
+        pitch = @game.pitch
+        @pitches << {id: count, title: pitch.title, team_name: @game&.team&.name, created_at: @game.created_at}
+        count += 1
+      end
+    end
+
+
+    # Game.find(23).game_turns.first.pitch
+    # video_hash = PitchVideo.joins(game_turn: [game: :pitch]).group("games.pitch_id").count
+    # video_hash.each do |pitch_id, videos_count|
+    #   pitch = Pitch.find(pitch_id)
+    # end
+    # @company.pitch_videos.accessible_by(current_ability).each do |v|
+  	# 	  minutes = v.duration / 60
+  	# 	  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
+  	# 	  seconds = v.duration % 60
+  	# 	  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
+  	# 	  rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
+    #     @videos << {id: v.game_turn_id, video: v, duration: minutes + ':' + seconds, title: v.game_turn&.task&.title, user: v.user, rating: rating, pitch_id: v.game_turn.game.pitch_id}
+    #     unless @pitches.any? {|p| p[:id] == v.game_turn.game.pitch_id}
+    #       pitch = v.game_turn.game.pitch
+    #       @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
+    #     end
+  	# end
   end
 
   def pitch_video
