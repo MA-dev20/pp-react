@@ -1,19 +1,12 @@
 class UsersController < ApplicationController
   before_action :check_user, except: [:edit_avatar]
-  before_action :set_user, only: [:edit, :edit_avatar, :destroy, :root, :admin, :user]
-  before_action :set_company, only: [:activate_users, :create, :root, :admin, :user]
+  before_action :set_user, only: [:set_role, :edit, :edit_avatar, :destroy, :send_password]
+  before_action :set_company, only: [:set_role, :activate_users, :create]
   def create
 	authorize! :create, User
 	@user = User.new(user_params)
   @user.companies << @company
-	password = SecureRandom.urlsafe_base64(8)
-	@user.password = password
 	if @user.save
-	  begin
-	  UserMailer.after_create(@user, password).deliver
-	  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
-	    flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
-	  end
 	  redirect_to dashboard_teams_path
 	else
 	  flash[:alert] = 'Konnte User nicht speichern!'
@@ -32,6 +25,23 @@ class UsersController < ApplicationController
 	redirect_to backoffice_company_path(@user.company_id) if params[:site] == 'backoffice_company'
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
 	redirect_to account_path if params[:site] == 'account'
+  end
+
+  def send_password
+    password = SecureRandom.urlsafe_base64(8)
+    if @user.update(password: password)
+      begin
+  	  UserMailer.after_create(@user, password).deliver
+  	  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+  	    flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
+  	  end
+      flash[:info_head] = 'Passwort gesendet!'
+      flash[:info] = 'Prima. Wir haben dem Nutzer sein Passwort in einer Mail zukommen lassen.'
+  	  redirect_to dashboard_teams_path(edit_user: @user)
+    else
+      flash[:alert] = 'Konnte Passwort nicht ändern!'
+  	  redirect_to dashboard_teams_path(edit_user: @user)
+    end
   end
 
   def new_password
@@ -57,86 +67,17 @@ class UsersController < ApplicationController
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard'
   end
 
-  def activate_users
-    if params[:users]
-      params[:users].each do |u|
-        @user = User.find(u[1].to_i)
-        @company_user = CompanyUser.find_by(company: @company, user: @user)
-        if !@company_user.update(role: 'user')
-          render json: {error: true}
-          return
-        end
-      end
-    end
-    @company.company_users.where(role: 'inactive').each do |cu|
-      @user = cu.user
-      if @user.company_users.count == 1
-        @user.destroy
-      else
-        cu.destroy
-      end
-    end
-    render json: {success: true}
-    return
-  end
-
-  def root
+  def set_role
     @company_user = CompanyUser.find_by(company: @company, user: @user)
-	  @company_user.update(role: 'root')
-    @ability = Ability.new(@user)
-    if !@ability.can?(:create, @company.teams)
-      @user.teams.where(company: @company).each do |t|
-        t.destroy
-      end
-    end
-	  render json: {user: @user, role: @company_user.role}
-  end
-
-  def admin
-    @company_user = CompanyUser.find_by(company: @company, user: @user)
-    if @company_user.role == 'root' && @company.company_users.where(role: 'root').count > 1
-	    @company_user.update(role: 'admin')
-      @ability = Ability.new(@user)
-      if !@ability.can?(:create, @company.teams)
-        @user.teams.where(company: @company).each do |t|
-          t.destroy
-        end
-      end
-    else
+    if @company_user.role == 'sroot' && @company.company_users.where(role: 'sroot').count == 1
       flash[:alert] = 'Ein User muss Company Admin bleiben!'
       render json: {error: true}
-    end
-	  render json: {user: @user, role: @company_user.role}
-  end
-
-  def user
-    @company_user = CompanyUser.find_by(company: @company, user: @user)
-    if @company_user.role == 'root' && @company.company_users.where(role: 'root').count > 1
-  	  if @company_user.role == 'inactive'
-  	    password = SecureRandom.urlsafe_base64(8)
-  	    @user.update(password: password)
-        @company_user.update(role: 'user')
-  	    begin
-  	      UserMailer.after_create(@user, password).deliver
-  	    rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
-  	      flash[:alert] = 'Falsche Mail-Adresse? Konnte Mail nicht senden!'
-          render json: {error: true}
-  	    end
-  	  else
-  	    @company_user.update(role: "user")
-        @ability = Ability.new(@user)
-        if !@ability.can?(:create, @company.teams)
-          @user.teams.where(company: @company).each do |t|
-            t.destroy
-          end
-        end
-  	  end
+    else
+      @company_user.update(role: params[:user][:role])
       render json: {user: @user, role: @company_user.role}
-    else
-      flash[:alert] = 'Ein User muss Company Admin bleiben!'
-      render json: {error: true}
     end
   end
+
   private
 	def user_params
 	  params.require(:user).permit(:fname, :lname, :email, :avatar)

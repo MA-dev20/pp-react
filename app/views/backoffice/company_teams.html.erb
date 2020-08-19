@@ -1,13 +1,28 @@
 <div class="card" id="content_card">
   <div class="head">
     <% if @team %>
-      <h3><span onclick="redirectTeam('bo_teams')"><%= @company.name + "'s Teams" %></span> <i class="fas fa-caret-right"></i> <span><%= @team.name %></span></h3>
+      <h3>
+        <span onclick="redirectTeam('bo_teams')"><%= @company.name + "'s Teams" %></span> <i class="fas fa-caret-right"></i>
+        <span onclick="redirectTeam('<%= @team.id %>')"><%= @team.name %></span>
+      <% if @user %>
+        <i class="fas fa-caret-right"></i>
+        <span><%= @user.fname[0] + '. ' + @user.lname %></span>
+      <% end %>
+      </h3>
     <% else %>
-      <h3><span onclick="redirectTeam('bo_teams')"><%= @company.name + "'s Teams" %></span></h3>
+      <h3>
+        <span onclick="redirectTeam('bo_teams')"><%= @company.name + "'s Teams" %></span>
+        <% if @user %>
+          <i class="fas fa-caret-right"></i>
+          <span><%= @user.fname[0] + '. ' + @user.lname %></span>
+        <% end %>
+      </h3>
+      <% if !@user %>
       <div class="search">
         <%= image_tag 'dash/new_icons/search.svg', class: 'search-img' %>
   			<input type="text" placeholder="Content durchsuchen" id="searchTeams" class="form-field">
       </div>
+      <% end %>
     <% end %>
     <span onclick="toggleNew()">
 			<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'icon add plus-cust-icon' %>
@@ -15,8 +30,12 @@
   </div>
 
   <div class="" id="scrollcontent">
+    <% if params[:user] %>
+    <%= render 'backoffice/company/edit_user.html.erb' %>
+    <% else %>
     <%= render 'backoffice/company/teams.html.erb' %>
     <%= render 'backoffice/company/users.html.erb' %>
+    <% end %>
   </div>
 
 </div>

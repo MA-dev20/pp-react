@@ -170,13 +170,12 @@ Rails.application.routes.draw do
   #USER
   post 'company/:company_id/users/create', to: 'users#create', as: 'new_user'
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
+  get 'users/:user_id/send_password', to: 'users#send_password', as: 'user_send_password'
   post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
   post 'company/:company_id/users/activate_users', to: 'users#activate_users', as: 'activate_users'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
-  put 'company/:company_id/users/:user_id/make_root', to: 'users#root', as: 'make_root'
-  put 'company/:company_id/users/:user_id/make_admin', to: 'users#admin', as: 'make_admin'
-  put 'company/:company_id/users/:user_id/make_user', to: 'users#user', as: 'make_user'
+  put 'company/:company_id/users/:user_id/set_role', to: 'users#set_role'
 
   #Customize
   post 'doanddonts/new', to: 'customize#new_doAndDont', as: "new_do_and_dont"

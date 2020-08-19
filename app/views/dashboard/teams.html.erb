@@ -191,6 +191,7 @@
 						<div class="link" onclick="setRole('user')">Nutzer</div>
 					</div>
 				</div>
+				<%= link_to 'Passwort zusenden!', user_send_password_path(@user), class: 'mail-link' %>
 			</div>
 			<% end %>
 			<%= f.submit 'speichern!', class: 'btn btn-green' %>

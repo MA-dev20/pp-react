@@ -77,6 +77,9 @@ class BackofficeController < ApplicationController
       @team = Team.find(params[:team])
       @users = @team.users
     end
+    if params[:user]
+      @user = User.find(params[:user])
+    end
   end
 
   def company_pitches

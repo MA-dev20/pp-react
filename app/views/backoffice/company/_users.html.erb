@@ -1,5 +1,5 @@
 <% if @users.count != 0 %>
-<div class="files">
+<div class="users">
   <h3>Users</h3>
   <% @users.each do |u| %>
     <div class="card" id="user_<%= u.id %>">
@@ -19,8 +19,22 @@
       </div>
       <div class="text">
           <div class="title" id="user_name_<%= u.id %>"><%= u.fname + ' ' + u.lname %><div class="ellipsis">...</div></div>
+          <div class="stats">Role: <span><%= u.company_users.find_by(company: @company).role %></span></div>
+          <div class="stats">Pitches erstelt: <span><%= u.pitches.count %></span></div>
+          <div class="stats">Pitches gespielt: <span><%= u.game_turns.count %></span></div>
+          <div class="stats">Zuletzt aktiv: <span><%= u.last_sign_in_at ? u.last_sign_in_at.strftime('%d.%m.%Y') : ' - ' %></span></div>
       </div>
     </div>
   <% end %>
 </div>
+<script type="text/javascript">
+  function showUser(e) {
+    var userID = $(e).attr('data-id');
+    <% if params[:team] %>
+      location.replace('?team=<%= params[:team] %>&user=' + userID);
+    <% else %>
+      location.replace('?user=' + userID);
+    <% end %>
+  }
+</script>
 <% end %>

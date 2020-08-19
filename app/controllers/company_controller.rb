@@ -62,7 +62,12 @@ class CompanyController < ApplicationController
 
   def edit
 	authorize! :update, @company
-  @company.update(company_params)
+  if params[:company][:company_color] == "1" || @company.color1 != [69, 177, 255]
+    @company.update(company_params)
+  else
+    @company.update(company_params)
+    @company.update(color1: [69, 177, 255], color2: [29, 218, 175])
+  end
 	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice_company'
 	redirect_to dash_company_path if params[:site] == 'company_dash'
   end

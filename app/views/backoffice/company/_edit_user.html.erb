@@ -1,0 +1,100 @@
+<% if @user %>
+<div class="companies">
+  <h3>Unternehmen</h3>
+  <% @user.company_users.each do |cu| %>
+  <% role = @role = @user.company_users.find_by(company: cu.company).role %>
+  <div class="card" id="company_<%= cu.company.id %>">
+    <div class="thumb" data-id="<%= cu.company.id %>" onclick="redirectCompany(this)">
+      <div class="list-logo">
+        <% if cu.company.logo? %>
+        <%= image_tag cu.company.logo.url %>
+        <% else %>
+        NO LOGO
+        <% end %>
+      </div>
+      <%= image_tag 'dash/placeholder.png', class: 'image' %>
+    </div>
+    <div class="text">
+      <div class="title"><%= cu.company.name %></div>
+      <div class="stats">Rolle:
+        <div class="dropdown">
+  				<div class="dropdown-text" data-id='<%= cu.company_id %>' id="dropdown_text_<%= cu.company_id %>" onclick="toggleRoleDropdown(this)">
+  					<%= role == 'user' ? 'Nutzer' : '' %>
+  					<%= role == 'admin' ? 'Admin' : '' %>
+  					<%= role == 'root' ? 'Root' : '' %>
+            <%= role == 'sroot' ? 'Super' : '' %>
+  					<i class="fas fa-caret-down"></i>
+  				</div>
+  				<div class="dropdown-menu" id="dropdown_<%= cu.company_id %>">
+            <div class="link" onclick="setRole('<%= cu.company_id %>', 'sroot')">Super Root</div>
+  					<div class="link" onclick="setRole('<%= cu.company_id %>', 'root')">Root</div>
+  					<div class="link" onclick="setRole('<%= cu.company_id %>', 'admin')">Admin</div>
+  					<div class="link" onclick="setRole('<%= cu.company_id %>', 'user')">Nutzer</div>
+  				</div>
+  			</div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+</div>
+<div class="edit_user">
+  <%= form_for :user, url: edit_user_path(@company, @user), html: {id: 'editUserForm'} do |f| %>
+  <table>
+    <thead>
+      <tr>
+        <th>Vorname</th>
+        <th>Nachname</th>
+        <th>E-Mail</th>
+        <th>Pitches erstellt</th>
+        <th>Pitches gespielt</th>
+        <th>Sign-In Count</th>
+        <th>Letzter Login</th>
+        <th>Erstellt am</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><%= f.text_field :fname, value: @user.fname %></td>
+        <td><%= f.text_field :lname, value: @user.lname %></td>
+        <td><%= f.text_field :email, value: @user.email %></td>
+        <td><%= @user.pitches.count %></td>
+        <td><%= @user.game_turns.count %></td>
+        <td><%= @user.sign_in_count %></td>
+        <td><%= @user.last_sign_in_at %></td>
+        <td><%= @user.created_at %></td>
+      </tr>
+    </tbody>
+  </table>
+  <% end %>
+</div>
+<script type="text/javascript">
+  function toggleRoleDropdown(e) {
+    var companyID = $(e).attr('data-id');
+    $('#dropdown_'+companyID).toggle();
+  }
+  function setRole(companyID, role) {
+    var formData = new FormData();
+    formData.append("user[role]", role);
+    var URL = '/company/'+companyID+'/users/<%= @user.id %>/set_role';
+    $.ajax({
+      url: URL,
+      type: 'put',
+      data: formData,
+      cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+      beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        if( res.error ) {
+          location.reload();
+        } else {
+          formData = new FormData();
+          $('#dropdown_'+companyID).toggle();
+          $('#dropdown_text_'+companyID).text(res.role);
+        }
+			}
+    })
+  }
+</script>
+<% end %>

@@ -258,6 +258,9 @@ body {
 		a {
 			text-decoration: none !important;
 		}
+		.mail-link {
+			text-decoration: underline rgb(var(--btncolor)) !important;
+		}
 	}
 	.back-cust-icon {
 		width: 3vh;
@@ -971,12 +974,14 @@ body {
 		}
 	}
 	.form-group {
+		position: relative;
 		width: 100%;
 		margin-bottom: 1.5vh;
 		clear: left;
 		.dropdown {
-			position: relative;
-			width: auto;
+			position: absolute;
+			display: inline-block;
+			width: 50%;
 			.dropdown-label {
 				line-height: 2.5vh;
 				text-align: left;
@@ -1011,6 +1016,14 @@ body {
 					background-color: rgba(0,0,0,.2);
 				}
 			}
+		}
+		.mail-link {
+			position: absolute;
+			left: 50%;
+			line-height: 7.5vh;
+			text-align: right;
+			width: 50%;
+			color: black;
 		}
 		label {
 			font-weight: 300;
@@ -1976,15 +1989,15 @@ body {
 			position: absolute;
 			top: 0;
 			right: 0;
-			height: 5vh;
-			width: 5vh;
-			line-height: 5vh;
+			height: 6vh;
+			width: 6vh;
+			line-height: 6vh;
 			text-align: center;
 			color: rgba(172,172,172,.5);
 			font-size: 3vh;
 			cursor: pointer;
 			img {
-				margin: 1vh;
+				margin: 1.5vh;
 				height: 3vh;
 				width: 3vh;
 			}

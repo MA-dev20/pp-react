@@ -234,6 +234,14 @@
 			<%= flash[:alert] %>
 		</div>
 	</div>
+	<% elsif flash[:info] %>
+	<div class="modal-blur">
+		<div class="modal card">
+			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
+			<h3><%= flash[:info_head] ? flash[:info_head] : 'Info' %></h3>
+			<%= flash[:info] %>
+		</div>
+	</div>
 	<% end %>
 	<%= render 'layouts/svgs.html.erb' %>
 </body>

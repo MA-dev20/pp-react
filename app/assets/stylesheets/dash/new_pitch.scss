@@ -14,22 +14,20 @@
 			margin: .25vh .25vw .25vh 0;
 			width: 10vw;
 		}
-		.btn {
-			width: 8vw;
-			font-weight: bold;
-        }
 	}
 	.btn-group {
 		z-index: 10;
 		position: absolute;
 		right: 0;
 		height: 8vh;
+		text-align: center;
 		.btn {
 			float: left;
+			font-family: "Nunito", sans-serif;
 			display: inline-block;
 			margin: 1vh .25vw;
 			text-decoration: none;
-			width: 3vw;
+			width: auto;
 			text-align: center;
 			font-weight: bold; font-size: 1.7vh;
 			cursor: pointer;
@@ -37,9 +35,6 @@
 			border: 1px solid rgb(var(--btncolor)); border-radius: 6vh;
 			padding: 0 3vh;
 
-    }
-    .done-btn {
-      width: 6vw;
     }
 		.btn:hover, .btn.reversed {
 			color: rgb(var(--btncolor));
@@ -469,7 +464,7 @@
         // .ps__thumb-y {
         //     // top: 25vh !important;
         //     // bottom: 100vh !important;
-        // } 
+        // }
 
         .ps--active-y > .ps__rail-y {
             display: block;
@@ -1340,7 +1335,7 @@
                 position: absolute;
                 bottom: 0;
                 .submit-btn {
-                    width: 6vw;
+                    width: auto;
                 }
             }
         }
@@ -1685,7 +1680,8 @@
         }
 
         .pitch-image-upload-btn {
-            width: 6vh !important;
+						font-size: 1.7vh;
+            width: auto;
         }
 
         .op {
@@ -2331,7 +2327,7 @@ input[type="file"] {
         }
 
         .btn-ml-1 {
-            margin-left: 1vh !important; 
+            margin-left: 1vh !important;
         }
     }
 
@@ -2412,7 +2408,7 @@ input[type="file"] {
         .st41, .st2 {
             stroke: gray !important;
         }
-        
+
     }
 
     .customize-trash-icon {
@@ -2542,7 +2538,7 @@ input[type="file"] {
         overflow-x: auto;
         scroll-behavior: smooth;
     }
-    
+
     #tasksScrollBar::-webkit-scrollbar {
         display: none;
     }
