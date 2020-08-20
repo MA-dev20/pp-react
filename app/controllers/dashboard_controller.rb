@@ -452,7 +452,10 @@ class DashboardController < ApplicationController
   @pitches = @company.pitches.accessible_by(current_ability)
 	@pitch = Pitch.find(params[:pitch_id])
 	if params[:task_id]
-		@task = @pitch.tasks.find(params[:task_id])
+    @task = @pitch.tasks.find_by(id: params[:task_id])
+    unless @task.present?
+      @task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
+    end
 		if params[:selected_card_order_id].present?
 			if params[:type].present?
 				task = Task.find(params[:selected_task_id])
