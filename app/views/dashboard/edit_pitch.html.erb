@@ -702,6 +702,12 @@
         })
 	}
 
+	if (window.location.href.split('?task_id=').length > 1) {
+		$('#tasksScrollBar').animate({	
+			scrollTop: $(`#task_${window.location.href.split('?task_id=')[1]}`).offset().top - $('#tasksScrollBar').offset().top - 200	
+		}, 50);
+	}
+
 	function selectDragDropTask(task_id) {
       <% if @task %>
         var globalForm = new FormData(document.getElementById('new_task_form'));
