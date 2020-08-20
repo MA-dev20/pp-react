@@ -1,22 +1,21 @@
 <% content_for :heading do |d| %>
+	<div class="search">
+		<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
+		<input type="text" placeholder="Inhalte durchsuchen" id="searchContent">
+	</div>
 	<div class="heading">
-		Content Bibiothek
+		Inhalte
 	</div>
 <% end %>
 <div class="card" id="content_card">
 
   <div class="head">
-    <h3>Content Bibliothek</h3>
-    <div class="search">
-			<i class="fas fa-search"></i>
-			<input type="text" placeholder="Content durchsuchen" id="searchContent" class="form-field">
-		</div>
-  </div>
+    <h3>Wähle Inhalte</h3>
+	</div>
 
   <div class="scollcontent">
 
     <div class="standard">
-      <h3>Wähle Content</h3>
 
       <% if can? :create, ContentFolder %>
       <div class="card" onclick="redirectContent('my_content')">

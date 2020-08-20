@@ -618,8 +618,12 @@ body {
 			display: inline-block;
 			position: absolute;
 			left: 0;
-			height: 30px;
+			height: 30px; line-height: 30px;
+			font-size: 25px;
+			width: 30px;
+			text-align: center;
 			margin: 0 10px;
+			color: rgb(var(--custcolor));
 		}
 		.next {
 			position: absolute;
@@ -1414,3 +1418,14 @@ body {
 	}
 }
 *:focus {outline: none;}
+svg {
+	.st0 {
+		stroke: rgb(var(--custcolor));
+	}
+	.st1 {
+		fill: rgb(var(--btncolor));
+	}
+	.st2 {
+		stroke: rgb(var(--btncolor));
+	}
+}

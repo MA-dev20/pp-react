@@ -151,6 +151,18 @@ class ShareController < ApplicationController
       render json: {success: 'Content erfolgreich geteilt'}
     end
   end
+
+  def release_pitch_video
+    @video = PitchVideo.find(params[:video_id])
+    if @video.released
+      @video.update(released: false)
+      flash[:info] = 'Video Freigabe aufgehoben!'
+    else
+      @video.update(released: true)
+      flash[:info] = 'Video freigegeben!'
+    end
+    redirect_to dashboard_pitch_video_path(@video.game_turn)
+  end
   private
     def user_params
       params.require(:user).permit(:fname, :lname)

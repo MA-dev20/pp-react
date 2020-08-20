@@ -26,7 +26,28 @@ class UsersController < ApplicationController
 	redirect_to dashboard_teams_path if params[:site] == 'dashboard_teams'
 	redirect_to account_path if params[:site] == 'account'
   end
-
+  def activate_users
+    if params[:users]
+      params[:users].each do |u|
+        @user = User.find(u[1].to_i)
+        @company_user = CompanyUser.find_by(company: @company, user: @user)
+        if !@company_user.update(role: 'user')
+          render json: {error: true}
+          return
+        end
+      end
+    end
+    @company.company_users.where(role: 'inactive').each do |cu|
+      @user = cu.user
+      if @user.company_users.count == 1
+        @user.destroy
+      else
+        cu.destroy
+      end
+    end
+    render json: {success: true}
+    return
+  end
   def send_password
     password = SecureRandom.urlsafe_base64(8)
     if @user.update(password: password)

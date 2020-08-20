@@ -1,14 +1,18 @@
 <% content_for :heading do |d| %>
+<div class="back" onclick='hideVideos(this)' id='navBack' style='display: none'>
+	<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon' %>
+
+</div>
+<div class="search">
+	<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
+	<input type="text" placeholder="Pitch Videos durchsuchen" id="searchPitch" class="form-field">
+</div>
 	<div class="heading">
 		Pitch Videos
 	</div>
 <% end %>
 <div class="pitch-videos">
 	<div class="card">
-		<div class="search">
-			<%= image_tag 'dash/new_icons/search.svg' %>
-			<input type="text" placeholder="Pitch suchen" id="searchPitch" class="form-field">
-		</div>
 		<div class="folders">
 			<% @pitches.each do |p| %>
 				<div class="folder-card" id="folder_<%= p[:id] %>" onclick="showVideos('<%= p[:id] %>')">
@@ -22,7 +26,6 @@
 
 		<% @pitches.each do |p| %>
 			<div class="videos p-videos" id="pitch_videos_<%= p[:id] %>" style="display: none">
-				<h3>Pitch Videos</h3>
 				<%
 					videos = @videos.select{|v| v[:pitch_id] == p[:id]}
 				%>
@@ -68,9 +71,17 @@
 		}
 	});
 
+	function hideVideos(e) {
+		pitch_id = $(e).attr("data-id");
+		$(`#pitch_videos_${pitch_id}`).hide();
+		$('.folders').show();
+		$('#navBack').hide();
+	}
 	function showVideos(pitch_id) {
 		$(`#pitch_videos_${pitch_id}`).show();
 		$('.folders').hide();
+		$('#navBack').attr('data-id', pitch_id);
+		$('#navBack').show();
 	}
 
 	function toggleVideo() {

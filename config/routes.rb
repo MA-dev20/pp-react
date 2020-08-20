@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   post 'share/folder/:folder_id', to: 'share#share_folder', as: 'share_folder'
   post 'share/pitch/:pitch_id', to: 'share#share_pitch', as: 'share_pitch'
   post 'share/users/update_name', to: 'share#update_user'
+  get 'share/pitch/:video_id/release', to: "share#release_pitch_video", as: 'release_pitch_video'
 
   get '/dashboard/pitches', to: 'dashboard#pitches', as: 'dashboard_pitches'
   get '/dashboard/pitches/:id/edit_page', to: 'dashboard#select_folder', as: 'select_folder'

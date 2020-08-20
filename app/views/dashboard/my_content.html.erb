@@ -1,19 +1,31 @@
 <% content_for :heading do |d| %>
+	<% if @folder && @folder.content_folder %>
 	<div class="back">
-		<% if @folder && @folder.content_folder %>
 		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_my_content_path(folder_id: @folder.content_folder_id) %>
-		<% elsif @folder %>
-		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_my_content_path %>
-		<% else %>
-		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_content_path %>
-		<% end %>
 	</div>
 	<div class="search">
 			<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
-			<input type="text" placeholder="Content durchsuchen" id="searchContent">
+			<input type="text" placeholder="<%= @folder.name %> durchsuchen" id="searchContent">
 	</div>
+	<% elsif @folder %>
+	<div class="back">
+		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_my_content_path %>
+	</div>
+	<div class="search">
+			<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
+			<input type="text" placeholder="<%= @folder.name %> durchsuchen" id="searchContent">
+	</div>
+	<% else %>
+	<div class="back">
+		<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_content_path %>
+	</div>
+	<div class="search">
+			<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
+			<input type="text" placeholder="Meine Inhalte durchsuchen" id="searchContent">
+	</div>
+	<% end %>
 	<div class="heading">
-		My Content
+		Meine Inhalte
 	</div>
 <% end %>
 <script type="text/javascript">
@@ -28,9 +40,9 @@
 
 	<div class="head">
 		<% if @folder %>
-		<h3><span onclick="redirectFolder('libary')">Content Bibliothek</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">Mein Content</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
+		<h3><span onclick="redirectFolder('libary')">Inhalte</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">Meine Inhalte</span> <% if @folder.content_folder %><% if @folder.content_folder.content_folder %><i class="fas fa-caret-right"></i> <span>...</span> <% end %><i class="fas fa-caret-right"></i> <span onclick="redirectFolder('<%= @folder.content_folder_id %>')"><%= @folder.content_folder.name %></span> <% end %><i class="fas fa-caret-right"></i> <span><%= @folder.name %></span></h3>
 		<% else %>
-		<h3><span onclick="redirectFolder('libary')">Content Bibliothek</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">Mein Content</span></h3>
+		<h3><span onclick="redirectFolder('libary')">Inhalte</span> <i class="fas fa-caret-right"></i> <span onclick="redirectFolder('my_content')">Meine Inhalte</span></h3>
 		<% end %>
 		<span onclick="toggleNewContent()">
 			<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'icon add plus-cust-icon' %>

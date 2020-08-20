@@ -2,6 +2,10 @@
 	<div class="heading">
 		Pitches
 	</div>
+	<div class="search">
+		<%= inline_svg_tag 'dash/new_icons/search.svg', class: 'search-icon' %>
+		<input type="text" placeholder="Pitches durchsuchen" id="searchPitch">
+	</div>
 <% end %>
 <%= render 'dashboard/pitches/pitches.html.erb' %>
 <%= render 'dashboard/pitches/share_pitch.html.erb' %>
@@ -54,8 +58,8 @@
                 <div class="toggle toggle-game right-side" onclick="soundCheck()"><div class="dot"></div></div>
                 <div class="text">Musik abspielen</div>
             </div>
-            <%= f.submit 'weiter!', class: 'btn btn-green' %>
         </div>
+				<%= f.submit 'weiter!', class: 'btn btn-green' %>
         <% end %>
     </div>
     <div class="card" id="newteam">

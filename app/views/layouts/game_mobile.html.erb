@@ -72,12 +72,12 @@
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<div class="link" onclick="toggleBestlist()">
-				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#statsIcon" /></svg>
+				<%= inline_svg_tag 'icons/podium.svg', class: 'icon podium' %>
 				Bestenliste
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<div class="link" onclick="toggleRatingMenu()">
-				<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#statsIcon" /></svg>
+				<i class="icon fas fa-cog"></i>
 				Spielregeln
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
@@ -250,7 +250,7 @@
 				<% if params[:show_task] %>
 					<div class="user" style="color: #69DEA9">
 						<div class="avatar">
-							<i class="fas fa-random" style="color: rgb(var(--btncolor))" ></i>
+							<%= inline_svg_tag 'icons/random.svg', class: 'icon random' %>
 						</div>
 						<div class="name" style="color: rgb(var(--btncolor)); font-size: 15px;">Nutzer zufällig auswählen!</div>
 						<%= link_to '', gm_set_state_path(state: 'turn') %>

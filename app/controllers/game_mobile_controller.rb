@@ -199,29 +199,58 @@ class GameMobileController < ApplicationController
 
   def set_slide
 	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
-    while @task_order && !@task_order.task.valide
-      @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
-    end
-    if @task_order
-  	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+    if @task_order && @task_order.task.valide
+      if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
         @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
-    		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
-    		redirect_to gm_game_path
-    		return
+        ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+        redirect_to gm_game_path
+        return
       elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
         @game.update(current_task: @task_order.order, state: 'slide') if @game.current_task != @task_order.order
-    	  redirect_to gm_game_path
-    		return
-    	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
+        redirect_to gm_game_path
+        return
+      elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
         @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
-    		redirect_to gm_set_state_path(state: 'show_task')
-    		return
+        redirect_to gm_set_state_path(state: 'show_task')
+        return
       else
         @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
         redirect_to gm_game_path
-    		return
+        return
       end
-  	else
+    elsif @task_order
+      while @task_order && !@task_order.task.valide
+        @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)
+        if @task_order && @task_order.task.valide
+      	  if @game.state == 'slide' && @task_order.task.task_type == 'slide' && @game.current_task != @task_order.order
+            @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+        		ActionCable.server.broadcast "game_#{@game.id}_channel", game_state: 'changed'
+        		redirect_to gm_game_path
+        		return
+          elsif @task_order.task.task_type == 'slide' && @game.state != "slide"
+            @game.update(current_task: @task_order.order, state: 'slide') if @game.current_task != @task_order.order
+        	  redirect_to gm_game_path
+        		return
+        	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
+            @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+        		redirect_to gm_set_state_path(state: 'show_task')
+        		return
+          else
+            @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
+            redirect_to gm_game_path
+        		return
+          end
+      	else
+          if @game.show_ratings == 'one' || @game.show_ratings == 'all'
+            redirect_to gm_set_state_path(state: 'bestlist')
+            return
+          else
+            redirect_to gm_set_state_path(state: 'ended')
+            return
+          end
+        end
+      end
+    else
       if @game.show_ratings == 'one' || @game.show_ratings == 'all'
         redirect_to gm_set_state_path(state: 'bestlist')
         return

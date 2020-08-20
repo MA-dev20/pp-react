@@ -54,6 +54,14 @@ class Ability
         can :update, Task, :user_id => user.id if @abilities.edit_pitch != 'none'
         can :destroy, Task, :user_id => user.id if @abilities.edit_pitch != 'none'
 
+        can :read, PitchVideo, :user_id => user.id
+        can :read, PitchVideo, :user_id => user.id
+        can :read, PitchVideo, :user_id => user.id
+
+        GameTurn.where(user: user).each do |turn|
+          can :read, PitchVideo, :game_turn_id => turn.id, :released => true
+        end
+
         can :read, TaskMedium, :available_for => 'global'
         can :read, TaskMedium, :user_id => user.id if @abilities.view_media != 'none'
         can :update, TaskMedium, :user_id => user.id if @abilities.edit_media != 'none'
@@ -63,6 +71,7 @@ class Ability
         can :read, Game, :user_id => user.id if @abilities.view_pitch != 'none'
         can :update, Game, :user_id => user.id if @abilities.view_pitch != 'none'
         can :destroy, Game, :user_id => user.id if @abilities.view_pitch != 'none'
+
 
         TeamUser.where(user: user).each do |tu|
           if tu.team.company == @company
