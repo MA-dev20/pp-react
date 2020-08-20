@@ -113,10 +113,11 @@
       </thead>
     <% new_users.each do |nu| %>
       <tbody>
-        <tr>
+        <tr id="new_user_<%= nu.id %>">
           <td><%= nu.email %></td>
-          <td><input type="text" name="users[<%= nu.id %>][fname]" value="" placeholder="Vornamen eingeben"></td>
-          <td><input type="text" name="users[<%= nu.id %>][lname]" value="" placeholder="Nachnamen eingeben"></td>
+          <td><input type="text" id="user_fname_<%= nu.id %>" name="users[<%= nu.id %>][fname]" value="" placeholder="Vornamen eingeben" class="form-field"></td>
+          <td><input type="text" id="user_lname_<%= nu.id %>" name="users[<%= nu.id %>][lname]" value="" placeholder="Nachnamen eingeben" class="form-field"></td>
+          <td class="remove" onclick="deleteUser(this)" data-id="<%= nu.id %>"><%= inline_svg_tag 'icons/trash.svg' %></td>
         </tr>
       </tbody>
     <% end %>
@@ -132,8 +133,29 @@
   function closeNewUser() {
 
   }
+  function deleteUser(e) {
+    var userID = $(e).attr('data-id')
+    $('#new_user_' + userID).hide();
+  }
+
   function submitNewUser() {
-    $('#newUserForm').submit();
+    var formVal = true;
+    <% new_users.each do |user| %>
+      if( $("#new_user_<%= user.id %>").is(':visible') ) {
+      if ( $('#user_fname_<%= user.id %>').val() == '' || $('#user_lname_<%= user.id %>').val() == '' ) {
+        formVal = false;
+        if( $('#user_fname_<%= user.id %>').val() == '' ) {
+            $('#user_fname_<%= user.id %>').css("border-color", "red")
+        }
+        if( $('#user_lname_<%= user.id %>').val() == '' ) {
+            $('#user_lname_<%= user.id %>').css("border-color", "red")
+        }
+      }
+      }
+    <% end %>
+    if( formVal ) {
+      $('#newUserForm').submit();
+    }
   }
   $('#newUserForm').on('submit', function(ev) {
     ev.preventDefault();
