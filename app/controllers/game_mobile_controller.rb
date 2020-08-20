@@ -122,9 +122,9 @@ class GameMobileController < ApplicationController
 	    end
     elsif params[:comment]
       if @admin.avatar?
-  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url, reverse: true
   	  else
-  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize
+  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
   	  end
     elsif params[:emoji_comment]
       if @admin.avatar?

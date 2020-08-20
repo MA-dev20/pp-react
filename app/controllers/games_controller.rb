@@ -84,7 +84,7 @@ class GamesController < ApplicationController
       end
     else
       if @user && @game_user
-        game_user_login @user
+        game_user_login @game_user
         flash[:success] = 'Erfolgreich beigetreten!'
         redirect_to gm_game_path
         return
@@ -95,7 +95,8 @@ class GamesController < ApplicationController
           @team = @game.team
           @team.users << @user if @team
         end
-        game_user_login @user
+        @game_user = @game.game_users.create(user: @user, play: true)
+        game_user_login @game_user
         redirect_to gm_join_path
         return
       elsif @user
@@ -105,7 +106,8 @@ class GamesController < ApplicationController
           @team = @game.team
           @team.users << @user if @team
         end
-        game_user_login @user
+        @game_user = @game.game_users.create(user: @user, play: true)
+        game_user_login @game_user
         redirect_to gm_new_name_path(@user)
         return
       else
@@ -115,7 +117,8 @@ class GamesController < ApplicationController
           @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
           @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
           @team.users << @user if @team
-          game_user_login @user
+          @game_user = @game.game_users.create(user: @user, play: true)
+          game_user_login @game_user
           redirect_to gm_new_name_path(@user)
           return
         else

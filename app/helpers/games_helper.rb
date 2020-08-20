@@ -27,11 +27,11 @@ module GamesHelper
   end
 
   def game_login(game)
-	session[:game_id] = game.id
+	  cookies[:game] = {value: game.password, same_site: 'Lax'}
   end
 
   def current_game
-	@current_game ||= Game.find_by(id: session[:game_id])
+	  @current_game ||= Game.where(password: cookies[:game], active: true).last
   end
 
   def game_logged_in?
@@ -39,24 +39,24 @@ module GamesHelper
   end
 
   def game_logout
-	session.delete(:game_id)
-	@current_game = nil
+    cookies.delete(:game)
+	  @current_game = nil
   end
 
   def game_user_login(user)
-	session[:game_user_id] = user.id
+	  cookies[:game_user] = {value: user.id, same_site: 'Lax'}
   end
 
   def current_game_user
-	@current_game_user ||= User.find_by(id: session[:game_user_id])
+	  @current_game_user ||= GameUser.find_by(id: cookies[:game_user]).user
   end
 
   def game_user_logged_in?
-	!current_game_user.nil?
+	  !current_game_user.nil?
   end
 
   def game_user_logout
-	session.delete(:game__user_id)
+	cookies.delete(:game_user)
 	@current_game = nil
   end
 end

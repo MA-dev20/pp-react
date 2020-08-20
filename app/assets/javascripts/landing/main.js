@@ -6,4 +6,5 @@
  *= require scrollspy
  *= require landing/bodymovin
  *= require cable
+ *= require swiper-bundle.min.js
  */

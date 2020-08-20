@@ -24,7 +24,7 @@ class LandingController < ApplicationController
   end
 
   def accept_cookie
-	cookies[:accepted] = 'true'
+	cookies[:accepted] = {value: 'true', same_site: 'Lax'}
 	redirect_to root_path
   end
 

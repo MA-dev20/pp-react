@@ -4,6 +4,7 @@
  *= require landing/animations
  *= require landing/countdown
  *= require landing/product
+ *= require swiper-bundle.min.css
  */
 
 @import 'font-awesome-sprockets';
@@ -282,7 +283,7 @@
 				width: 500px;
 			}
 		}
-		
+
 	}
 	#blog {
 		width: 500px;
@@ -363,7 +364,7 @@
 }
 @media (min-width: 1300px) {
 	#blog-entry {
-		
+
 	}
 	.blog_card {
 		.content {
@@ -406,7 +407,7 @@
 		color: #54b7ff;
 		text-decoration: none;
 		font-weight: bold;
-		font-size: 20px;		
+		font-size: 20px;
 	}
 	section h2 {font-size: 24px;}
 	.point {
@@ -647,7 +648,7 @@ label .red {
 	width: calc(100% - 40px);
 	padding: 20px;
 	h2 {margin-bottom: 40px;}
-} 
+}
 .contact-hidden {
 	display: none;
 }
@@ -1034,7 +1035,7 @@ label .red {
     left: 15px;
     height: 60px;
     width: 200px;
-    
+
 }
 #content .head .left .points .point img {
     position: absolute;
@@ -1697,7 +1698,7 @@ label .red {
         display: block;
         width: 100px;
     }
-	
+
     .bounceInLeft {
         -webkit-animation-name: bounceInLeft;
         animation-name: bounceInLeft;
@@ -1796,7 +1797,7 @@ label .red {
         float: left;
         width: 400px;
     }
-    
+
     #content .head .left .cta {
         text-align: left;
     }
@@ -1840,7 +1841,7 @@ label .red {
 	}
     #content .startnow {
         width: 620px;
-        margin: 10px 10px 50px;  
+        margin: 10px 10px 50px;
     }
     #content .faq {
         padding: 0 0px;
@@ -1954,7 +1955,7 @@ label .red {
     #content {
         left: calc(50vw - 450px);
         width: 900px;
-        
+
     }
     .video-modal video {
         width: 800px;
@@ -2016,7 +2017,7 @@ label .red {
     #content .wie-geil-ist-das h5 {
         left: 100px;
         width: 700px;
-		
+
     }
     #content .references {
         margin: 0 100px 50px;
@@ -2036,7 +2037,7 @@ label .red {
         height: 20px;
         margin: 0 30px;
     }
-    
+
     #content .image-text {
         height: 300px;
     }
@@ -2294,7 +2295,7 @@ label .red {
     #content #hiw .categories img {
         margin: 0 40px;
     }
-    
+
     #content #hiw .categories .text {
         width: 300px;
     }
@@ -2408,7 +2409,7 @@ label .red {
     }
 	#content .head .left .points .point img {
 		height: 50px;
-		width: 50px;	
+		width: 50px;
 	}
 	#content .head .left .points .point h2 {
 		left: 70px;
@@ -2561,7 +2562,7 @@ label .red {
         transform: rotate(220deg);
         opacity: .4;
     }
-    
+
     #content .image-text > .paw2 {
         height: 136px;
         width: 136px;
@@ -2602,7 +2603,7 @@ label .red {
         transform: rotate(140deg);
         opacity: .4;
     }
-    
+
     #content .image-text .image img {
         width: 550px;
         height: auto;
@@ -2668,7 +2669,7 @@ label .red {
         background-color: white;
     }
     #content .testimonials .card .text {
-        
+
         padding: 40px;
         font-size: 16px;
         line-height: 32px;
