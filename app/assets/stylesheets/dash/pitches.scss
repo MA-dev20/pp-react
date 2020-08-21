@@ -77,6 +77,7 @@
 #content .card#pitches {
 	background-color: transparent;
 	box-shadow: none;
+	padding: 0;
  .pitches .card:hover {
 		box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
 	}
@@ -144,22 +145,16 @@
 	.card {
 		position: relative;
 		float: left;
-		width: 12vw;
-		height: 27vh;
+		width: 20vw;
+		height: 37vh;
 		padding: 0;
-		margin: .5vh .5vw 1.5vh .5vw;
+		margin: .5vh 1vw 1.5vh 0;
 		overflow: hidden;
 		cursor: pointer;
 		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-		a.fas.fa-trash {
-			position: absolute;
-			top: 0; right: 0;
-			margin: 1vh; font-size: 1.7vh;
-			color: rgba(0,0,0,.2)
-		}
 		.thumb {
 			margin: 1vh .5vw;
-			height: 11vh; width: 11vw;
+			height: 19vh; width: 19vw;
 			img {
 				height: 100%; width: 100%;
 			}
@@ -168,7 +163,7 @@
 			margin: 1vh .5vw;
 			width: calc(100% - 1vw);
 			font-weight: bold;
-			font-size: 1.7vh;
+			font-size: 2vh;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -187,7 +182,7 @@
 			i {opacity: .7; margin-right: .5vw;}
 			margin: 0 .5vw;
 			width: calc(100% - 1vw);
-			font-size: 1.5vh;
+			font-size: 1.7vh;
 		}
 		.subtitle {
 			margin: 0 .5vw;
@@ -198,41 +193,25 @@
 		.pitch-buttons {
 			position: absolute;
 			left: .5vw; bottom: 1.5vh;
-			width: 14vw;
+			width: 19vw;
 			height: 6vh;
 			.btn {
 				left: 0;
-				width: 5vw;
+				width: 19vw;
 				height: 4vh;
 				line-height: 4vh;
 				margin: 0;
-			}
-			.btn:last-child {
-				left: 6vw;
-			}
-		}
-
-		.pitch-buttons {
-			width: unset;
-			.btn {
-				width: 10.7vw;
-			}
-
-			.btn:last-child {
-				left: 0.1vw;
 			}
 		}
 	}
 	.card#newpitch {
 		text-align: center;
-		img {
-			height: 10vh; width: 10vh;
-			margin: 7vh auto 0 auto;
-			color: rgb(var(--btncolor));
+		.add-new-pitch {
+			margin-top: 10vh;
 		}
 		.title {
 			position: absolute;
-			top: 18vh; left: 0;
+			top: 23vh; left: 0;
 			text-align: center;
 		}
 		a {
@@ -259,17 +238,21 @@
 	}
 
 }
-
+.custom-dro
 .dropdown-div {
-	padding: 0 0.5vh;
+	position: absolute;
+	right: .5vw;
+	top: 1vh;
+	height: 3vh; width: 3vh;
+	line-height: 3vh;
+	text-align: right;
 }
 
 .dropdown-icon {
-	// position: absolute;
+		padding: 0 0 0 1vw;
     text-decoration: none;
-    right: 2vh;
-    top: 1.5vh;
     color: #acb2bd;
+		font-size: 2vh;
 }
 
 .dropdown-option-wrapper {

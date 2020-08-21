@@ -31,7 +31,7 @@ module GamesHelper
   end
 
   def current_game
-	  @current_game ||= Game.where(password: cookies[:game], active: true).last
+	  @current_game ||= Game.where(password: cookies[:game]).last
   end
 
   def game_logged_in?
@@ -48,7 +48,7 @@ module GamesHelper
   end
 
   def current_game_user
-	  @current_game_user ||= GameUser.find_by(id: cookies[:game_user]).user
+	  @current_game_user ||= User.find_by(id: cookies[:game_user])
   end
 
   def game_user_logged_in?
