@@ -53,25 +53,24 @@
   height: 80vh;
   background-color: transparent;
   box-shadow: none;
+  padding: 0;
   .head {
     text-align: left;
     height: 7vh;
     border-bottom: 1px solid rgba(0,0,0,.1);
-    margin: 0;
+    margin: 0 0 1vh;
     h3 {
       display: inline-block;
       text-align: left;
       font-weight: bold;
       line-height: 7vh;
       font-size: 2.2vh;
+      i {padding: 0 .5vw}
       span {
-        border-radius: .2vw;
-        background-color: transparent;
-        padding: 0 .5vw;
         cursor: pointer;
       }
       span:hover {
-        background-color: rgba(0,0,0,.1);
+        text-decoration: underline rgb(var(--btncolor));
       }
     }
     .search {
@@ -113,7 +112,7 @@
   .users, .files, .companies, .lists, .folders, .standard  {
     clear: left;
     text-align: left;
-    padding: 0 .5vw;
+    padding: 0;
     h3 {
       text-align: left;
       font-weight: bold;

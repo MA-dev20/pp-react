@@ -6,7 +6,7 @@
           <div class="pitches-title-wrapper">
             <div class="title"><%= pitch.title %></div>
             <% if (can? :edit, pitch) || (can? :create, Pitch) %>
-            <div class="custom-dropdown-select">
+
                 <div class="dropdown-div" onclick="openDropdown(this)">
                     <i class="fa fa-ellipsis-v dropdown-icon" aria-hidden="true"></i>
                 </div>
@@ -40,7 +40,7 @@
                         <% end %>
                     </div>
                 </div>
-            </div>
+
             <% end %>
           </div>
           <div class="thumb">

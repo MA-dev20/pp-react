@@ -19,6 +19,17 @@ class TaskMedium < ApplicationRecord
       scoped
     end
   end
+  after_save do
+    if (self.media_type == 'audio' && self.audio?) || (self.media_type == 'image' && self.image?) || (self.media_type == 'video' && self.video?)
+      Task.where(task_medium: self, task_type: 'slide').each do |t|
+        t.update(valide: true) if !t.valide
+      end
+    else
+      Task.where(task_medium: self, task_type: 'slide').each do |t|
+        t.update(valide: false) if t.valide
+      end
+    end
+  end
 
   before_save do
 	  if self.audio?
