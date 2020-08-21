@@ -57,7 +57,7 @@
 
 
 			<% if @pitch && !@pitch.title.present? && current_page?(dashboard_edit_pitch_path(@pitch)) %>
-				<% if can? :create, Pitch || @company.pitches.accessible_by(current_ability).count != 0 %>
+				<% if can? :create, Pitch || @company.pitches.accessible_by(current_ability).count != 0 || Pitch.where(available_for: "global").count != 0 %>
 				<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>">
 					<i class="fas fa-gamepad"></i>
 					<div class="text">Pitches</div>
@@ -99,7 +99,7 @@
 				</div>
 				<% end %>
 			<% else %>
-				<% if @company.pitches.accessible_by(current_ability).count != 0  || (can? :create, Pitch)%>
+				<% if @company.pitches.accessible_by(current_ability).count != 0  || (can? :create, Pitch) || Pitch.where(available_for: "global").count != 0 %>
 					<div class="link <%= current_page?(dashboard_pitches_path) || @pitch && current_page?(dashboard_edit_pitch_path(@pitch)) ? 'active' : '' %>">
 						<i class="fas fa-gamepad"></i>
 						<div class="text">Pitches</div>
@@ -150,7 +150,7 @@
 	</section>
 
 
-	<% if @inactive_users %>
+	<% if @inactive_users && @inactive_users.length != 0 %>
 		<div class="modal-blur">
 			<div class="card inactive_user">
 				<h3>Inactive User</h3>

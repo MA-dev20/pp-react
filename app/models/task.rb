@@ -20,11 +20,11 @@ class Task < ApplicationRecord
 		elsif self.title.present?
 			if self.task_type == 'catchword' && self.catchword_list&.catchwords.present?
 				self.update(valide: true) if !self.valide
-			elsif self.task_medium.media_type == 'audio' && self.task_medium.audio?
+			elsif self.task_medium && self.task_medium.media_type == 'audio' && self.task_medium.audio?
 				self.update(valide: true) if !self.valide
-			elsif self.task_medium.media_type == 'image' && self.task_medium.image?
+			elsif self.task_medium && self.task_medium.media_type == 'image' && self.task_medium.image?
 				self.update(valide: true) if !self.valide
-			elsif self.task_medium.media_type == 'video' && self.task_medium.video?
+			elsif self.task_medium && self.task_medium.media_type == 'video' && self.task_medium.video?
 				self.update(valide: true) if !self.valide
 			else
 				self.update(valide: false) if self.valide

@@ -77,6 +77,31 @@ body {
 			border: none;
 		}
 	}
+	.links {
+		.fas {
+			float: left;
+			line-height: 3.5vh;
+			margin: 3.5vh 2vw 3.5vh 2vw;
+			font-size: 1.85vh;
+			line-height: 2vh;
+			font-size: 2vh;
+			color: rgb(var(--custcolor));
+			text-decoration: none;
+		}
+		.fas:hover {transform: scale(1.2);}
+		.link {
+			float: left;
+			margin: 3.5vh 1vw;
+			font-size: 1.85vh;
+			line-height: 2vh;
+			cursor: pointer;
+			color: black;
+			text-decoration: none;
+		}
+		.link.active, .link:hover {
+			border-bottom: 2px solid rgb(var(--custcolor));
+		}
+	}
 	.btn-group {
 		z-index: 10;
 		position: absolute;
@@ -1605,10 +1630,6 @@ body {
 			}
 		}
 
-		.folders {
-			height: 63vh;
-		}
-
 		.search {
 			position: relative;
 			padding-top: 2vh;
@@ -1686,14 +1707,7 @@ body {
 				font-size: 3vh;
 			}
 
-			.release {
-				position: absolute;
-				bottom: 0; right: 0;
-				a {
-					color: black;
-					text-decoration-color: rgb(var(--btncolor));
-				}
-			}
+
 			.deleteVideo {
 				width: 3.5vh;
 			}
@@ -1937,6 +1951,20 @@ body {
 		}
 		.right {
 			width: 22vw;
+			.release {
+				position: absolute;
+				top: 0; right: 0;
+				z-index: 100;
+				a {
+					position: relative;
+					box-sizing: border-box;
+					margin: 0;
+					width: 100%;
+					height: 3vh;
+					line-height: 3vh;
+					padding: 0 1vw;
+				}
+			}
 		}
 		.middle {
 			float: left; position: relative;

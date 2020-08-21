@@ -2429,36 +2429,38 @@ input[type="file"] {
         float: left;
         padding: 0;
         border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: none;
         cursor: pointer;
         background-color: white;
-        border-radius: 1vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        border-radius: .7vh;
+				text-align: center;
 
         img {
+					margin: .5vh;
             height: 5vh;
             display: inline-block;
         }
-
-        .sub-title, .title {
-            font-size: 1.5vh;
-            width: 100%;
-            text-align: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+				.title, .sub-title, .time {
+					box-sizing: border-box;
+					width: 100%;
+					text-align: left;
+					padding: 0 .5vh;
+					font-size: 1.5vh;
+					line-height: 2vh;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+				.title {
+					font-weight: bold;
+				}
 
         .time {
-            font-size: 1.5vh;
+            color: rgba(0,0,0,.4);
         }
     }
 
     .folder-card:hover {
-        border-color: rgb(var(--custcolor)) !important;
+          box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
     }
 
     #audioRecordModal,

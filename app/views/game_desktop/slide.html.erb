@@ -5,8 +5,12 @@
 </div>
 <% elsif @task.task_medium.media_type == 'video' %>
 <div id="video-bg">
-	<%= video_tag @task.task_medium.video.url, id: 'video' , autoplay: true %>
+	<%= video_tag @task.task_medium.video.url, id: 'video' , autoplay: true, onended: 'redirect()' %>
 	<%= video_tag @task.task_medium.video.url, id: 'video-blur' , autoplay: true %>
+</div>
+<% elsif @task.task_medium.media_type == 'audio' %>
+<div id="video-bg">
+	<%= audio_tag @task.task_medium.audio.url, id: 'audio' , autoplay: true, onended: 'redirect()' %>
 </div>
 <% end %>
 <section id="skip">

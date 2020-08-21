@@ -466,7 +466,9 @@ class DashboardController < ApplicationController
   end
 
   def pitches
-  @pitches = @company.pitches.accessible_by(current_ability)
+  @company_pitches = @company.pitches.accessible_by(current_ability)
+  @global_pitches = Pitch.where(available_for: 'global').where.not(company: @company)
+  @pitches = @global_pitches + @company_pitches
 	@pitch = Pitch.find(params[:pitch_id]) if params[:pitch_id]
 	@game = Game.find(params[:game_id]) if params[:game_id]
   @teams = @company.teams.accessible_by(current_ability)
@@ -646,8 +648,14 @@ class DashboardController < ApplicationController
           u.destroy
         end
         if @company.company_users.where(role: 'inactive').count != 0
-          if @role == 'admin' || @role == 'root'
-            @inactive_users = @company.company_users.where(role: 'inactive')
+          if (can? :create, User)
+            @inactive_users = []
+            @company.company_users.where(role: 'inactive').each do |cu|
+              if (can? :view, cu.user)
+                @inactive_users << cu
+              end
+            end
+
           end
         end
         @company.company_users.where(role: 'inactive_user').each do |cu|

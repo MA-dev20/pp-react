@@ -596,7 +596,11 @@
 		} else if($('#comment_text').val().length != 0){
 		$.ajax({
 			type: 'put',
+			<% if @game.state == 'feedback' %>
+			url: "<%= gm_send_emoji_url.to_s %>?comment_reverse=" + $('#comment_text').val(),
+			<% else %>
 			url: "<%= gm_send_emoji_url.to_s %>?comment=" + $('#comment_text').val(),
+			<% end %>
 			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
 			success: function(data) {
 				$("#comment_text").val('');

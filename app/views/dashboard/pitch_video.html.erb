@@ -113,15 +113,6 @@
 			</div>
 		</div>
 		<% end %>
-		<% if @admin == @video.user %>
-		<div class="release">
-			<% if @video.released %>
-			<%= link_to 'Freigabe aufheben!', release_pitch_video_path(@video) %>
-			<% else %>
-			<%= link_to 'Für Nutzer freigeben!', release_pitch_video_path(@video) %>
-			<% end %>
-		</div>
-		<% end %>
 	</div>
 	<div class="middle card">
 		<%= video_tag @video.video.url, id: 'pitch-video' %>
@@ -138,6 +129,15 @@
 		</div>
 	</div>
 	<div class="right">
+		<% if @admin == @video.user %>
+		<div class="release">
+			<% if @video.released %>
+			<%= link_to 'Freigabe aufheben!', release_pitch_video_path(@video), class: 'btn' %>
+			<% else %>
+			<%= link_to 'Für Nutzer freigeben!', release_pitch_video_path(@video), class: 'btn' %>
+			<% end %>
+		</div>
+		<% end %>
 		<div class="comments">
 			<h5>Kommentare</h5>
 			<div class="card" id="comment-card">

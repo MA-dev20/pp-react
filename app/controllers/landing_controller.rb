@@ -36,9 +36,15 @@ class LandingController < ApplicationController
   		  @company = Company.find_by(name: 'Peter Pitch GmbH')
   		  @company = Company.create(name: 'Peter Pitch GmbH', activated: true) if @company.nil?
   		  password = SecureRandom.urlsafe_base64(8)
-  		  @user = @company.users.create(fname: 'Jan Philipp', lname: 'Resing', bo_role: 'root', email: 'resing@peterpitch.com', password: password)
-        CompanyUser.find_by(user: @user, company: @company).update(role: 'root')
-  		  UserMailer.after_create(@user, password).deliver
+        @user = User.find_by(email: 'resing@peterpitch.com')
+        if @user
+          @user.update(bo_role: 'root')
+          CompanyUser.find_by(user: @user, company: @company).update(role: 'root')
+        else
+  		    @user = @company.users.create(fname: 'Jan Philipp', lname: 'Resing', bo_role: 'root', email: 'resing@peterpitch.com', password: password)
+          CompanyUser.find_by(user: @user, company: @company).update(role: 'sroot')
+  		    UserMailer.after_create(@user, password).deliver
+        end
   	  end
 	  end
 end

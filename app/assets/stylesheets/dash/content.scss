@@ -129,6 +129,7 @@
       padding: 0;
       border: 1px solid rgba(0,0,0,.1);
       box-shadow: none;
+      border-radius: .7vh;
       cursor: pointer;
       overflow: visible;
       .dropdown {
@@ -191,7 +192,9 @@
         font-size: 1.5vh;
         line-height: 2.5vh;
         max-height: 5vh;
+        padding: 0 .5vh;
         overflow-y: hidden;
+        text-align: left;
         .ellipsis {
           display: none;
           position: absolute;
@@ -220,7 +223,6 @@
       color: #0e0e0e;
       overflow: visible;
       box-sizing: content-box;
-      border-radius: .5vh;
       .dropdown {
         z-index: 11;
         i {
@@ -232,7 +234,7 @@
         left: 0;  top: 0;
         width: 100%;
         height: 9vh;
-        border-radius: .5vh;
+        border-radius: .7vh;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
         overflow: hidden;
@@ -344,7 +346,7 @@
           height: 5.5vh;
           font-size: 1.5vh;
           line-height: 2.5vh;
-          text-align: center;
+          text-align: left;
           font-weight: 600;
           overflow: hidden;
           .ellipsis {
@@ -387,20 +389,25 @@
       height: 19vh;
       width: 10vw;
       .thumb {
-        width: calc(10vw - 1vh);
+        width: 10vw;
         height: 7vh;
       }
       .text {
+        top: 7vh;
         height: 10.5vh;
         .title {
+          font-size: 1.7vh;
           height: 2.5vh;
           width: 9vw; left: .5vh;
         }
         .stats {
           position: relative;
           width: 9vw; left: .5vh;
+          font-size: 1.3vh;
           span {
             float: right;
+            font-size: 1.5vh;
+            font-weight: 600;
           }
         }
       }

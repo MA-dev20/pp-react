@@ -108,6 +108,17 @@ body {
 			z-index: 9;
 		}
 	}
+	.comment:nth-last-child(3) {
+		.text, .text-bg, img, .emoji {
+			opacity: .2 !important;
+		}
+	}
+	.comment:nth-last-child(4) {
+		.text, .text-bg, img, .emoji {
+			opacity: .05 !important;
+		}
+	}
+	.comment:nth-last-child(n+5) {display: none;}
 }
 #content {
 	position: fixed;
