@@ -179,10 +179,15 @@
 			}
 		}
 		.autor {
-			i {opacity: .7; margin-right: .5vw;}
+			position: relative;
+			box-sizing: border-box;
 			margin: 0 .5vw .5vh;
-			width: calc(100% - 1vw);
+			max-width: calc(100% - 2.5vh);
 			font-size: 1.5vh;
+			padding-left: 2.5vh;
+			line-height: 2vh;
+			i, img {height: 2vh; width: 2vh; position: absolute; left: 0; top: 0;border-radius: 50%;}
+			i {opacity: .7;}
 		}
 		.subtitle {
 			margin: 0 .5vw;

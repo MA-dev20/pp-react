@@ -2443,7 +2443,7 @@ input[type="file"] {
 					box-sizing: border-box;
 					width: 100%;
 					text-align: left;
-					padding: 0 .5vh;
+					padding: 0 .7vh;
 					font-size: 1.5vh;
 					line-height: 2vh;
 					overflow: hidden;
@@ -2456,6 +2456,7 @@ input[type="file"] {
 
         .time {
             color: rgba(0,0,0,.4);
+						font-size: 1.3vh;
         }
     }
 

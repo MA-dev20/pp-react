@@ -134,7 +134,7 @@
 			<% if @video.released %>
 			<%= link_to 'Freigabe aufheben!', release_pitch_video_path(@video), class: 'btn' %>
 			<% else %>
-			<%= link_to 'Für Nutzer freigeben!', release_pitch_video_path(@video), class: 'btn' %>
+			<%= link_to 'freigeben', release_pitch_video_path(@video), class: 'btn' %>
 			<% end %>
 		</div>
 		<% end %>

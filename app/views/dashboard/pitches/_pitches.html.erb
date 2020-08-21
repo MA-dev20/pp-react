@@ -51,7 +51,11 @@
               <% end %>
             </div>
             <div class="autor">
+              <% if pitch.user.avatar? %>
+              <%= image_tag pitch.user.avatar.url %><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+              <% else %>
               <i class="fas fa-user"></i><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+              <% end %>
             </div>
 
             <div class="subtitle">
