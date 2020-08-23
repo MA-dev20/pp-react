@@ -1,4 +1,3 @@
-#content {
 	.card#letspitch #scroll {
 		width: 46vh !important;
 		height: 27vh !important;
@@ -19,9 +18,10 @@
 
     .blur {
         position: fixed;
-        top: 0; left: 25vh;
-        height: 100%; width: calc(100vw - 25vh);
+        top: 0; left: 0;
+        height: 100%; width: 100%;
         background-color: rgba(0,0,0,.5);
+				z-index: 102;
 		.card#letspitch,
 		.card#warningCard,
 		.card#warningCard2 {
@@ -73,8 +73,7 @@
     		left: 2vh;
 		}
     }
-}
-#content .card#pitches {
+.card#pitches {
 	background-color: transparent;
 	box-shadow: none;
 	padding: 0;
@@ -82,8 +81,8 @@
 		box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
 	}
 }
-#content .card#pitches,
-#content .card.right #pitches{
+.card#pitches,
+.card.right #pitches{
 	height: 90%;
 	font-size: 1.7vh;
 
@@ -145,19 +144,28 @@
 	.card {
 		position: relative;
 		float: left;
-		width: 18vw;
-		height: 34vh;
+		width: 17vw;
+		height: 26vh;
 		padding: 0;
 		margin: .5vh 1vw 1.5vh 0;
 		overflow: hidden;
 		cursor: pointer;
-		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+		border: 1px solid rgba(0,0,0,.2);
 		.thumb {
-			margin: 1vh .5vw;
+			margin: 0;
 			height: 17vh; width: 17vw;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
 			img {
 				height: 100%; width: 100%;
+				border-radius: 0;
 			}
+		}
+		.pitch-now {
+			position: absolute;
+			top: 0; left: 0;
+			height: 100%; width: 100%;
+			z-index: 10;
 		}
 		.title {
 			margin: 1vh .5vw;
@@ -168,15 +176,20 @@
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
-		.pitches-title-wrapper {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin: 1vh .5vw;
-			.title {
-				margin: 0;
-				width: calc(100% - 3vw);
-			}
+		.dropdown-div {
+				position: absolute;
+				right: 0; top: 0;
+				height: 3.5vh; width: 3vh;
+				line-height: 3.5vh;
+				text-align: center;
+				background-color: rgba(0,0,0,.1);
+				border-bottom-left-radius: .7vh;
+				z-index: 11;
+				.dropdown-icon {
+					padding: 0;
+					color: white;
+					width: 100%; height: 100%;
+				}
 		}
 		.autor {
 			position: relative;
@@ -198,7 +211,7 @@
 		.pitch-buttons {
 			position: absolute;
 			left: .5vw; bottom: 1.5vh;
-			width: 17vw;
+			width: 16vw;
 			height: 6vh;
 			.btn {
 				left: 0;
@@ -228,7 +241,7 @@
 	}
 }
 
-#content .card#pitches {
+.card#pitches {
 	.card .buttons {
 		left: .15vw;
 
@@ -243,13 +256,12 @@
 	}
 
 }
-.custom-dro
 .dropdown-div {
 	position: absolute;
 	right: .5vw;
 	top: 1vh;
-	height: 3vh; width: 3vh;
-	line-height: 3vh;
+	height: 3.5vh; width: 3.5vh;
+	line-height: 3.5vh;
 	text-align: right;
 }
 
@@ -273,17 +285,18 @@
     background-color: white;
     border: .1vh solid #dfe1e5;
     height: max-content;
-    z-index: 10;
+    z-index: 11;
     box-shadow: 0px 0.6vh 2.2vh 0 rgba(172, 172, 172, 0.1);
 	border-radius: 5px;
 
 	.dropdown-option {
-		// padding: 1vh;
+		z-index: 11;
 	}
 	.select-name {
 		display: block;
 		line-height: 3vh;
 		padding: 0.3vh 0;
+		z-index: 11;
 	}
 
 	.select-name:nth-child(1) {
@@ -303,6 +316,7 @@
 		margin: 0 1vh;
 		color: #212529;
 		text-decoration: none;
+		z-index: 11;
 	}
 
 	.fa, .fas, .far {

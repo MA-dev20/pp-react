@@ -1,7 +1,7 @@
 <div class="background-blur" id="new-content">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newContent()' %>
-    <h3>Content hinzufügen</h3>
+    <h3>Inhalte hinzufügen</h3>
     <h5>Hier kannst du Bild, Video, Audio oder PDF-Dateien hochladen</h5>
     <div class="preview"></div>
     <div class="droparea">
@@ -20,7 +20,7 @@
     <%= f.file_field :pdf %>
     <%= f.file_field :video %>
     <div class="form-group">
-      <%= f.text_field :title, class: 'form-field', placeholder: 'Deteiname hier eingeben' %>
+      <%= f.text_field :title, class: 'form-field', placeholder: 'Dateiname hier eingeben' %>
     </div>
     <div class="btns">
       <div class="btn inverted" onclick="newContent()">Abbrechen</div>

@@ -23,7 +23,7 @@
 		<%= content_for :heading %>
 		<% if !(@pitch && current_page?(dashboard_edit_pitch_path(@pitch))) %>
 		<div class="dropdown" onclick="toggleDropdown()">
-			Hallo, <%= @admin.fname %> <%= @admin.lname %>
+			<%= image_tag @admin.avatar.url, class: 'avatar' %>
 			<i class="fas fa-caret-down dropdown-img"></i>
 		</div>
 		<div class="dropdown-content">
@@ -148,6 +148,7 @@
 	<section id="content">
 		<%= yield %>
 	</section>
+	<%= content_for :blur %>
 
 
 	<% if @inactive_users && @inactive_users.length != 0 %>
@@ -216,7 +217,7 @@
 
 	<% if flash[:alert] %>
 	<div class="modal-blur">
-		<div class="modal card">
+		<div class="modal card" style="display: block">
 			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
 			<h3><%= flash[:alert_head] ? flash[:alert_head] : 'Da gabe es einen Fehler!' %></h3>
 			<%= flash[:alert] %>
@@ -224,7 +225,7 @@
 	</div>
 	<% elsif flash[:info] %>
 	<div class="modal-blur">
-		<div class="modal card">
+		<div class="modal card" style="display: block">
 			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
 			<h3><%= flash[:info_head] ? flash[:info_head] : 'Info' %></h3>
 			<%= flash[:info] %>
@@ -247,10 +248,7 @@
 	function toggleModal() {
 		$('.modal-blur').toggle();
 	}
-
-	if (!<%= current_page?(dashboard_pitches_path) %>) {
-		new PerfectScrollbar('#content');
-	}
+	new PerfectScrollbar('#content');
 
 
 </script>

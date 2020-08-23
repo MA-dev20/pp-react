@@ -15,9 +15,12 @@
         </div>
       </div>
       <% end %>
-      <img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="redirectFolder('<%= f.id %>')">
+      <div class="folder-redirect" onclick="redirectFolder('<%= f.id %>')"></div>
+      <img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="">
       <div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
-      <div class="author"><%= f.user ? f.user.fname[0] + '. ' + f.user.lname : '' %></div>
+      <% if f.user %>
+      <div class="author"><%= image_tag f.user.avatar.url %><%= f.user.fname[0] + '. ' + f.user.lname %></div>
+      <% end %>
     </div>
   <% end %>
   <script type="text/javascript">

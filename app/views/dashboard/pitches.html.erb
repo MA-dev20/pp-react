@@ -10,6 +10,7 @@
 <%= render 'dashboard/pitches/pitches.html.erb' %>
 <%= render 'dashboard/pitches/share_pitch.html.erb' %>
 <% if @pitch && !@game.present? %>
+<% content_for :blur do |d| %>
 <div class="blur">
     <div class="card" id="letspitch">
         <!-- <span class="close">&times;</span> -->
@@ -83,7 +84,7 @@
         <%= f.submit 'Team erstellen!', class: 'btn btn-green' %>
         <% end %>
     </div>
-</div>
+	</div>
 <script>
     function showTeam() {
         $('#letspitch').toggle();
@@ -94,6 +95,7 @@
         $('.blur').hide();
     })
 </script>
+<% end %>
 <% end %>
 <% if @game %>
 <div class="blur">
