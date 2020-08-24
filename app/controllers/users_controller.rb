@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 	authorize! :create, User
 	@user = User.new(user_params)
   @user.companies << @company
-	if @user.save
+	if @user.save(:validate => false)
 	  redirect_to dashboard_teams_path
 	else
 	  flash[:alert] = 'Konnte User nicht speichern!'
