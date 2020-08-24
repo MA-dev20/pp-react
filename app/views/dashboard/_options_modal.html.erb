@@ -3,52 +3,45 @@
         <!-- <span class="close">&times;</span> -->
         <%= image_tag 'dash/new_icons/close.svg', class: 'close' %>
         <div class="heading">
-            <h5>Add a task for interactive presentation.</h5>
+            <h5>Füge hier deinem Pitch eine Folie hinzu.</h5>
         </div>
         <div class="inner-content">
             <div class="row row1">
                 <div class="card-heading">
-                    <h2>Task</h2>
-                    <h2>Import PDF</h2>
-                    <h2>Existing Pitch</h2>
+                    <h2>Aufgabe</h2>
+                    <h2>PDF</h2>
                 </div>
                 <div class="card-content">
                     <div class="modal-card task-div">
-                        <% if @pitch.tasks.present? %>
-                            <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTaskWithAjax()" %>
+                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img' %>
+                        <% if @pitches.count == 1 && @pitches.first.tasks.count == 0 %>
+                          <% if @pitch.tasks.present? %>
+                          <label><span onclick="addTaskWithAjax()">Neu</span> / <span onclick="">bestehend</span></label>
+                          <% else %>
+                          <label><span onclick="addTask()">Neu</span> / <span onclick="">bestehend</span></label>
+                          <% end %>
                         <% else %>
-                            <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img', onclick: "addTask()" %>
+                          <% if @pitch.tasks.present? %>
+                          <label><span onclick="addTaskWithAjax()">Neu</span> / <span onclick="addTaskfromPitch()">bestehend</span></label>
+                          <% else %>
+                          <label><span onclick="addTask()">Neu</span> / <span onclick="addTaskfromPitch()">bestehend</span></label>
+                          <% end %>
                         <% end %>
-                        <label>Task</label>
                     </div>
                     <div class="modal-card import-div">
                         <%= image_tag 'dash/import-PDF.png', class: 'card-img import-PDF' %>
-                        <label>Import</label>
+                        <label><span>Import</span> / <span>Bibliothek</span></label>
                     </div>
-                    <% if @pitches.count == 1 && @pitches.first.tasks.count == 0 %>
-                    <div class="modal-card browse-div" style="opacity: 0.4">
-                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img' %>
-                        <label>No pitch Exists</label>
-                    </div>
-                    <% else %>
-                    <div class="modal-card browse-div">
-                        <%= image_tag 'dash/add_from_existing_pitch.png', class: 'card-img task-pitch' %>
-                        <label>Browse</label>
-                    </div>
-                    <% end %>
                 </div>
-            </div>
-            <div class="heading">
-                <h5>Add a task for interactive presentation.</h5>
             </div>
             <div class="row row2">
                 <div class="card-heading">
-                    <h2>Content</h2>
+                    <h2>Inhalte</h2>
                 </div>
                 <div class="card-content">
                     <div class="modal-card task-div">
                         <%= image_tag 'dash/image-icon.png', class: 'card-img pdf-image' %>
-                        <label>Image</label>
+                        <label>Bild</label>
                     </div>
                     <div class="modal-card import-div">
                         <%= image_tag 'dash/video-icon.png', class: 'card-img pdf-video' %>

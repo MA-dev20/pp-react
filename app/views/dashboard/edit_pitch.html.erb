@@ -95,7 +95,7 @@
 				</div>
 				<div class="progress-ratio"></div>
 			</div>
-			<div class="btn reversed upload record cancel-upload hide" style="display: none">Cancel Upload</div>
+			<div class="btn reversed upload record cancel-upload hide" style="display: none">Upload Abbrechen</div>
 		</div>
 	</div>
 </div>
@@ -104,13 +104,12 @@
 	<div class="modal-content">
 		<!-- <span class="close">&times;</span> -->
         <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal close' %>
-		<div class="heading">
-			<!-- <h1>Record your video</h1> -->
+
+		<div class="heading">Video aufnehmen!</div>
 			<div class="form-group">
-				<input class="form-field video-modal-title" type="text" id="task_medium_title" placeholder="Title">
+				<input class="form-field video-modal-title" type="text" id="task_medium_title" placeholder="Titel eingeben">
 			</div>
 			<input type="file" accept="video/*" capture>
-		</div>
 		<div class="inner-content">
 			<div class="video">
 				<video src="" id="recorder" autoplay></video>
@@ -123,7 +122,7 @@
 				</div>
 			</div>
 			<div class="buttons">
-				<a href="" class="btn reversed" id="clodeVideoModal">Cancel</a>
+				<a href="" class="btn reversed" id="clodeVideoModal">Abbrechen</a>
 				<a href="" class="btn" id="videoUpload">Upload</a>
 			</div>
 		</div>
@@ -494,6 +493,20 @@
 		}
 	}
 
+	function addTaskfromPitch() {
+		$('.option-modal').hide();
+		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
+		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
+
+		//Browse pitch tasks
+		$('.pitches-header').text('Pitches');
+		$('.pitch-tasks-list .ps__rail-y').hide();
+		$('.pitch-list .ps__rail-y').show();
+		$('#searchPitch').attr('data-pitch-id', '');$('.option-modal').hide();
+		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
+		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
+	}
+
 	$('.task-pitch').click(function () {
 		$('.option-modal').hide();
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
@@ -703,8 +716,8 @@
 	}
 
 	if (window.location.href.split('?task_id=').length > 1) {
-		$('#tasksScrollBar').animate({	
-			scrollTop: $(`#task_${window.location.href.split('?task_id=')[1]}`).offset().top - $('#tasksScrollBar').offset().top - 200	
+		$('#tasksScrollBar').animate({
+			scrollTop: $(`#task_${window.location.href.split('?task_id=')[1]}`).offset().top - $('#tasksScrollBar').offset().top - 200
 		}, 50);
 	}
 

@@ -122,9 +122,15 @@ class GameMobileController < ApplicationController
 	    end
     elsif params[:comment]
       if @admin.avatar?
-  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url, reverse: true
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], comment_user_avatar: @admin.avatar.url
   	  else
-  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
+  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: true, comment: true, comment_text: params[:comment], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize
+  	  end
+    elsif params[:comment_reverse]
+      if @admin.avatar?
+  	  	ActionCable.server.broadcast "count_#{@game.id}_channel", hide: false, comment: true, comment_text: params[:comment_reverse], comment_user_avatar: @admin.avatar.url, reverse: true
+  	  else
+  		  ActionCable.server.broadcast "count_#{@game.id}_channel", hide: false, comment: true, comment_text: params[:comment_reverse], name: @admin.fname[0].capitalize + @admin.lname[0].capitalize, reverse: true
   	  end
     elsif params[:emoji_comment]
       if @admin.avatar?
@@ -441,7 +447,7 @@ class GameMobileController < ApplicationController
       if @game.state != 'repeat' && @game.state != 'wait'
         @game.update(state: 'repeat', active: false)
 		    temp = Game.where(password: @game.password, state: 'wait', active: true).first
-		    temp = Game.create(company: @game.company, user: @game.user, team: @game.team, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
+		    temp = Game.create(company: @game.company, user: @game.user, team: @game.team, game_sound: @game.game_sound, state: 'wait', active: true, password: @game.password, pitch: @game.pitch, rating_user: @game.rating_user) if @temp.nil?
       end
 	    redirect_to gm_game_path
 	    return
@@ -480,17 +486,21 @@ class GameMobileController < ApplicationController
 	end
 	def check_entered
 	  if game_logged_in?
-		@game = current_game
-    @company = @game.company
-		if game_user_logged_in? && @state != 'repeat'
-		  @admin = current_game_user
-		  if !@game.game_users.find_by(user: @admin)
-			  game_logout
-	  	  game_user_logout
-		  	flash[:alert] = 'Du wurdest ausgeloggt!'
-		  	redirect_to root_path
-		  end
-		end
+  		@game = current_game
+      @company = @game.company
+      if game_user_logged_in?
+        @admin = current_game_user
+        if !@game.game_users.find_by(user: @admin)
+          if ( @state == 'wait' && @company.games.find_by(password: @game.password, state: 'repeat') ) || @state == 'repeat'
+            redirect_to gm_repeat_path
+          else
+  			    game_logout
+  	  	    game_user_logout
+  		  	  flash[:alert] = 'Du wurdest ausgeloggt!'
+  		      redirect_to root_path
+          end
+  		  end
+  		end
 	  end
 	end
 	def check_user

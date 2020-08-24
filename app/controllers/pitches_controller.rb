@@ -68,17 +68,6 @@ class PitchesController < ApplicationController
   	@pitch = Pitch.find(params[:pitch_id])
   	@task = Task.find(params[:task_id])
   	@task.update(task_params)
-  	if @task.task_type == 'slide' && @task.task_medium
-  		@task.update(valide: true)
-  	elsif @task.title && @task.time && @task.title != ''
-  	  if @task.catchword_list || @task.task_medium
-  		@task.update(valide: true)
-  	  elsif @task.valide
-  		@task.update(valide: false)
-  	  end
-  	elsif @task.valide
-  	  @task.update(valide: false)
-  	end
   	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 

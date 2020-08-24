@@ -226,10 +226,13 @@
                 }
 				.thumb.slide {
                     height: 80%;
+										text-align: center;
+										background-color: black;
+										border-radius: 1vh;
 					img {
                         width: 100%;
                         height: 100%;
-                        border-radius: 1vh;
+
                         object-fit: contain;
                     }
                     .no-pdf-image-icon {
@@ -308,10 +311,10 @@
             }
 
 			.card.selected {
-				border: 2px solid red;
+				border: 2px solid rgb(var(--btncolor));
 			}
 			.card.drop-here {
-				border-top: 2px solid red;
+				border-top: 2px solid rgb(var(--btncolor));
 			}
         }
 
@@ -541,7 +544,7 @@
 		height: 82vh; width: 65vw;
 		padding: 0;
 		.slide-preview {
-			height: 70vh; width: 60vw;
+			height: 70vh; width: 100%;
 			margin: 1vh auto;
 			text-align: center;
 			img {
@@ -770,9 +773,6 @@
                 .ps__rail-y {
                     height: 0 !important;
                 }
-                // .ps__rail-y, .ps__thumb-y {
-                //     // background: red !important;
-                // }
                 .ps__thumb-y {
                     top: 25vh !important;
                 }
@@ -1146,7 +1146,6 @@
 	}
 }
 
-#content {
     .modal {
         display: none;
         position: fixed;
@@ -1416,6 +1415,9 @@
             bottom: 0;
             width: 100%;
             text-align: center;
+						span:hover {
+							text-decoration: underline;
+						}
         }
     }
 
@@ -1458,7 +1460,15 @@
     #videoModal .modal-content,
     #loaderModal .modal-content {
         width: 72vh;
-        height: 62vh;
+        height: 64vh;
+				.heading {
+					width: 100%;
+					text-align: center;
+					font-size: 2.5vh;
+					line-height: 5vh;
+					font-weight: bold;
+					text-align: center;
+				}
 		.inner-content {
 			display: block;
 		}
@@ -1494,7 +1504,7 @@
 				.stop, .play {
 					display: none;
 				}
-				.videorecord {color: red;}
+				.videorecord {color: rgb(var(--btncolor));}
 				.videorecord.pulse i {
 					animation: record 1s infinite;
 				}
@@ -1517,19 +1527,19 @@
 
         .btn {
             width: 14vh;
-            height: 7vh;
-            line-height: 7vh;
+            height: 5.5vh;
+            line-height: 5.5vh;
             font-weight: bold;
-            font-size: 2.2vh;
+            font-size: 1.7vh;
         }
 
         .reversed {
-            border-color: #FF0000;
-            color: #000;
+            border-color: rgb(var(--btncolor));
+            color: rgb(var(--btncolor));
         }
 
         .reversed:hover {
-            background: #FF0000;
+            background: rgb(var(--btncolor));
             color: white;
         }
 
@@ -1609,7 +1619,6 @@
         top:5vh;
         z-index: 44444;
     }
-}
 
 #content {
 
@@ -2068,6 +2077,8 @@ input[type="file"] {
                 line-height: 5vh;
                 width: 14vh;
                 padding: 0 2vh;
+								color: rgb(var(--btncolor));
+								border-color: rgb(var(--btncolor));
             }
         }
 
@@ -2119,10 +2130,11 @@ input[type="file"] {
 
             .pdf-image-tag {
                 margin-top: 0;
-                height: 55vh;
-                width: 90%;
+                width: 100%;
+								max-height: none;
+								max-width: 100%;
                 border-radius: 1vh;
-                // object-fit: fill;
+                margin: 0;
                 object-fit: contain;
             }
 
@@ -2164,7 +2176,7 @@ input[type="file"] {
             }
 
             .image-remove-option {
-                left: 12vh;
+                left: 2vh;
                 top: 10.5vh;
             }
 
@@ -2221,15 +2233,16 @@ input[type="file"] {
             }
 
             .video-remove-option {
-                left: 12vh;
+                left: 2vh;
                 top: 11vh;
             }
 
             .pdf-video-tag {
-                height: 55vh;
-                width: 90%;
+                height: 70vh;
+                width: 100%;
                 position: relative;
-                border-radius: 0;
+                border-radius: 1vh;
+								background-color: black;
             }
 
             .video-frame {
@@ -2239,11 +2252,15 @@ input[type="file"] {
         }
 
         .audio-slide-preview {
-            background: #69DEA9;
+					position: relative;
+            background: white;
             border-radius: 1vh;
-            height: 55vh;
-            width: 55vw;
-
+            height: 70vh;
+            width: 100%;
+						border: 1px solid rgba(var(--btncolor));
+						.remove-option {
+							top: 1vh;
+						}
             .audio-preview {
                 height: 55vh;
                 width: 55vw;
@@ -2255,14 +2272,14 @@ input[type="file"] {
                     width: 8vh;
                     position: absolute;
                     margin: auto;
-                    top: 24vh;
+                    top: 21vh;
                     left: 0;
                     right: 0;
                     // bottom: 0;
                     height: auto;
                     font-size: 8vh;
                     line-height: 28vh;
-                    color: #fff;
+                    color: rgb(var(--btncolor));
                 }
 
                 .pause-audio {
@@ -2429,36 +2446,39 @@ input[type="file"] {
         float: left;
         padding: 0;
         border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: none;
         cursor: pointer;
         background-color: white;
-        border-radius: 1vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        border-radius: .7vh;
+				text-align: center;
 
         img {
+					margin: .5vh;
             height: 5vh;
             display: inline-block;
         }
-
-        .sub-title, .title {
-            font-size: 1.5vh;
-            width: 100%;
-            text-align: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+				.title, .sub-title, .time {
+					box-sizing: border-box;
+					width: 100%;
+					text-align: left;
+					padding: 0 .7vh;
+					font-size: 1.5vh;
+					line-height: 2vh;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+				.title {
+					font-weight: bold;
+				}
 
         .time {
-            font-size: 1.5vh;
+            color: rgba(0,0,0,.4);
+						font-size: 1.3vh;
         }
     }
 
     .folder-card:hover {
-        border-color: rgb(var(--custcolor)) !important;
+          box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
     }
 
     #audioRecordModal,
@@ -2466,9 +2486,9 @@ input[type="file"] {
         .form-group {
             margin-bottom: 0;
             input {
-                width: 80%;
+                width: 100%;
                 box-sizing: border-box;
-                margin: 10px 3vw;
+                margin: 0 0 10px;
                 height: 5vh;
                 font-size: 2vh;
                 text-align: center;
