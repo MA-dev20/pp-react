@@ -152,7 +152,7 @@
 
 
 	<% if @inactive_users && @inactive_users.length != 0 %>
-		<div class="modal-blur">
+		<div class="modal-blur" style="display: block">
 			<div class="card inactive_user">
 				<h3>Inactive User</h3>
 				<%= form_for(:users, url: activate_users_path(@company), html: {id: "inactive_user_form"}) do |f| %>
@@ -217,7 +217,7 @@
 
 	<% if flash[:alert] %>
 	<div class="modal-blur">
-		<div class="modal card" style="display: block">
+		<div class="modal card">
 			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
 			<h3><%= flash[:alert_head] ? flash[:alert_head] : 'Da gabe es einen Fehler!' %></h3>
 			<%= flash[:alert] %>
@@ -225,7 +225,7 @@
 	</div>
 	<% elsif flash[:info] %>
 	<div class="modal-blur">
-		<div class="modal card" style="display: block">
+		<div class="modal card">
 			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
 			<h3><%= flash[:info_head] ? flash[:info_head] : 'Info' %></h3>
 			<%= flash[:info] %>
