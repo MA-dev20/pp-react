@@ -1,11 +1,3 @@
-<!-- <script type="text/javascript">
-	function checkOverflow(ID) {
-		element = document.getElementById(ID);
-		if( element.offsetHeight < element.scrollHeight ) {
-			$("#"+ID + ' .ellipsis').show();
-		}
-	}
-</script> -->
 <div id="libraryModal" class="modal hide">
 	<div class="modal-content pitch-modal-content">
 		<!-- <span class="close">&times;</span> -->
@@ -61,6 +53,10 @@
 										<%= image_tag 'dash/audio.png' %>
 									</div>
 								<% elsif f.media_type == 'pdf' %>
+									<div class="list-icon">
+										<%= image_tag 'dash/import-PDF.png' %>
+									</div>
+									<%= image_tag 'dash/placeholder.png', class: 'image' %>
 								<% end %>
 
 						</div>
@@ -164,6 +160,8 @@
 	}
 
 	function uploadMediaContent(task_id, media_id, media_type) {
+		$('#libraryModal').hide();
+		$('#loaderModal').show();
         $.ajax({
             url: '<%= add_media_content_path(@pitch) %>',
             type: 'GET',

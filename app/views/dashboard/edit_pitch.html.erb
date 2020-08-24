@@ -132,7 +132,6 @@
 <div id="pitchLibraryModal">
 	<%= render partial: 'dashboard/library_modal', locals: { folders: @folders, files: @files, task_id: @task&.id, media_type: 'image' } %>
 </div>
-<%= render partial: 'dashboard/library_modal_w_all_media' %>
 <script>
 
 	$('.selected-card-order').val('<%= @task&.task_orders&.first&.order %>')
