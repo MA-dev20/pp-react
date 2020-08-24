@@ -562,12 +562,17 @@ class DashboardController < ApplicationController
   end
 
   def show_library_modal
-    @type = params[:type]
-    @pitch = Pitch.find(params[:id])
-    @task = Task.find(params[:task_id])
-    @folders = @admin.content_folders.where(content_folder: nil)
-    # @files = @admin.task_media.where(content_folder: nil)
-    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
+      # Testtt
+      @type = params[:type]
+      @pitch = Pitch.find(params[:id])
+      @task = Task.find(params[:task_id])
+      @folders = @admin.content_folders.where(content_folder: nil)
+      # @files = @admin.task_media.where(content_folder: nil)
+      if params[:type].present?
+        @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
+      else
+        @files = @admin.task_media.where(content_folder: nil)
+      end
     respond_to do |format|
       format.js { render 'show_library_modal'}
     end
