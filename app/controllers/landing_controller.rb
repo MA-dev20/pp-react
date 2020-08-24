@@ -31,7 +31,7 @@ class LandingController < ApplicationController
   private
     def check_user
   	  if user_signed_in?
-  		  redirect_to dashboard_path
+  		  redirect_to dashboard_pitches_path
   	  elsif User.where(bo_role: 'root').count == 0
   		  @company = Company.find_by(name: 'Peter Pitch GmbH')
   		  @company = Company.create(name: 'Peter Pitch GmbH', activated: true) if @company.nil?
