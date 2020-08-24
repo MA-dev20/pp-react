@@ -336,7 +336,7 @@
 		return {pause: pause , start: start}
 	}
 	function startObjection(userDiv) {
-		$('objection-bg .objection-card .objection').remove();
+		$('.objection-bg .objection-card .objection').remove();
 		$('.objection-bg .objection-card').prepend(userDiv);
 		$('.objection-bg').fadeIn();
 		if( $('.objection:first-child .text').text().length < 10 ) {

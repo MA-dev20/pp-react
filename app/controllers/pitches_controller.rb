@@ -100,9 +100,19 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	if params[:type] == 'objection'
-		@task.objection_list.objections.find(params[:word_id]).destroy
+    @entry = @task.objection_list.objections.find(params[:word_id])
+    if @entry.objection_lists.count == 1
+		  @entry.destroy
+    else
+      ObjectionListObjection.find_by(objection: @entry, objection_list: @task.objection_list).destroy
+    end
 	else
-		@task.catchword_list.catchwords.find(params[:word_id]).destroy
+    @entry = @task.catchword_list.catchwords.find(params[:word_id])
+    if @entry.catchword_lists.count == 1
+      @entry.destroy
+    else
+      CatchwordListCatchword.find_by(catchword_list: @task.catchword_list, catchword: @entry).destroy
+    end
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
@@ -111,7 +121,23 @@ class PitchesController < ApplicationController
 	@task = Task.find(params[:task_id])
 	@pitch = Pitch.find(params[:pitch_id])
 	@new_task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user)
-	@new_task.update(@task.attributes.except("id", "created_at", "updated_at"))
+  if @task.catchword_list
+    @text = CatchwordList.create(@task.catchword_list.attributes.except('id', "created_at", 'updated_at'))
+    @task.catchword_list.catchwords.each do |word|
+      @text.catchwords << word
+    end
+  end
+  if @task.objection_list
+    @react = ObjectionList.create(@task.objection_list.attributes.except('id', "created_at", 'updated_at'))
+    @task.objection_list.objections.each do |text|
+      @react.objections << text
+    end
+  end
+  @new_task.catchword_list = @text if @text
+  @new_task.objection_list = @react if @react
+  if @new_task.save
+    @new_task.update(@task.attributes.except("id", "created_at", "updated_at", "catchword_list_id", "objection_list_id"))
+  end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @new_task.id, selected_task_id: @task.id, type: params[:type], selected_card_order_id: params[:selected_card_order_id])
   end
 
