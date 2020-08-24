@@ -17,19 +17,16 @@
                 <%= image_tag 'dash/pitch_placeholder.png', class: 'pitch-placeholder-img' %>
                 <% end %>
             </div>
-            
+
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
                 Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
                 Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
-            <div class="buttons">
-                <button style="position: relative; top: 2vh;" data-pitch-id="<%= pitch.id %>"
+            <button style="margin: 0; position: absolute; top: 0; left: 0; height: 100%; width: 100%; border: none; background: none;" data-pitch-id="<%= pitch.id %>"
                     data-task="pitchTasks<%= pitch.id %>" data-name="<%= pitch.title %>"
                     data-tasks-count="<%= pitch.tasks.count > 4 %>" class="btn
-                    reversed browse-tasks">Browse
-                    tasks</button>
-            </div>
+                    reversed browse-tasks"></button>
         </div>
         <% end %>
     </div>

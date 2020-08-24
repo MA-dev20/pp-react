@@ -48,7 +48,7 @@
 				<div class="title">Text, Video oder Bild hinzufügen!</div>
 				<div class="form-group">
 					<div class="cw custom-select media-type-options" onclick="showOptions()">
-						<label><%= media_type.present? ? media_type.titleize : 'Text' %></label>
+						<label><%= media_type.present? ? media_type == 'Catchword' ? 'Text' : media_type == 'Image' ? 'Bild' : media_type.titleize : 'Text' %></label>
 						<div class="sub-cs media-options">
 							<div class="option catchword-option" onclick="handleOptionClick('catchword', event)">
 								<span class="basket-name vw">Text</span>
@@ -1259,7 +1259,7 @@
 
 	function isOtherMediaExists() {
 		let is_media_present = false;
-		if ($('.catchword-heading .media-options .active span').text().toLowerCase() === 'catchword') {
+		if ($('.catchword-heading .media-options .active span').text().toLowerCase() === 'text') {
 			is_media_present = <%= @task.task_medium.present? %>
 		} else {
 			is_media_present = <%= @task.catchword_list&.catchwords&.present? || @task.task_medium.present? %>

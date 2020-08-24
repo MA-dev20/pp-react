@@ -16,7 +16,7 @@
     <div class="card left">
         <div class="tasks" id="tasksScrollBar">
             <% if @pitch.persisted? %>
-            <% 
+            <%
                 persisted_task_ids = @pitch.task_ids
                 persisted_options = [];
                 obj = {}
@@ -30,7 +30,7 @@
                     <div class="name">Task</div>
                     <i class="fas fa-circle"></i>
                     <div class="category">
-                        <% task_media =task.media_option.titleize == 'Pitcture' ? 'Bild' : task.media_option.titleize %>
+                        <% task_media =task.media_option.titleize == 'Image' ? 'Bild' : task.media_option.titleize %>
                         <%= task_media %></div>
                     <%
                         obj[task.id] = task_media
@@ -544,7 +544,7 @@
     }
 
     FIXME:
-    // task_time, #set_time id duplication 
+    // task_time, #set_time id duplication
     function copyTaskFormData(targetTaskId, sourceTaskId) {
         console.log('copyFormData');
         let $sourceTaskId = $(`#form_${sourceTaskId}`);

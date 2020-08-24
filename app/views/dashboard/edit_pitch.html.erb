@@ -493,7 +493,17 @@
 		}
 	}
 
+	function backToTask() {
+		$('.option-modal').hide();
+		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').show();
+		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').hide();
+	}
 	function addTaskfromPitch() {
+		<% if @task %>
+		$('#navbar .back a').attr("href", '<%= dashboard_edit_pitch_path(@pitch, task_id: @task.id) %>');
+		<% else %>
+		$('#navbar .back a').attr("href", '<%= dashboard_edit_pitch_path(@pitch) %>');
+		<% end %>
 		$('.option-modal').hide();
 		$('.menu-box, #new_task_form, .card.right .card, .pitch-tasks-div, .slide-preview').hide();
 		$('#pitches, #pitches .card, .pitch-list, .browse-tasks-partial').show();
