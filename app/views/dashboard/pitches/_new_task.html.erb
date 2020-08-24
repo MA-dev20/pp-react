@@ -454,7 +454,7 @@
 	// 	$('#libraryModal').show();
 	// })
 
-	function showLibraryModal(type, task_id) {
+	function showLibraryModal(type, task_id = '') {
 		// $('.option-modal').hide();
 		$.ajax({
             url: '<%= show_library_modal_path(@pitch) %>',

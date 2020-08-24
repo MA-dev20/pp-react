@@ -146,16 +146,20 @@
 		global_media_id= media_id;
 		global_media_type = media_type;
 		global_method = 'library';
-		if ($('.selected').find('.slide-title .name').text() == "") {
-			if (isOtherMediaExists()) {
-				$('#libraryModal').hide();
-				$('.warning-card-wrapper').show();
+		if (media_type === 'pdf') {
+			uploadMediaContent(task_id, media_id, media_type);
+		} else {
+			if ($('.selected').find('.slide-title .name').text() == "") {
+				if (isOtherMediaExists()) {
+					$('#libraryModal').hide();
+					$('.warning-card-wrapper').show();
+				} else {
+					$('.warning-card-wrapper').hide();
+					uploadMediaContent(task_id, media_id, media_type);
+				}
 			} else {
-				$('.warning-card-wrapper').hide();
 				uploadMediaContent(task_id, media_id, media_type);
 			}
-		} else {
-			uploadMediaContent(task_id, media_id, media_type);
 		}
 	}
 
