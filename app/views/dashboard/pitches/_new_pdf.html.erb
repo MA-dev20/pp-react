@@ -175,7 +175,7 @@
 
 <script>
 
-	function showLibraryModal(type, task_id) {
+	function showLibraryModal(type, task_id = '') {
 		$.ajax({
             url: '<%= show_library_modal_path(@pitch) %>',
             type: 'GET',

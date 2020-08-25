@@ -30,7 +30,7 @@
                     </div>
                     <div class="modal-card import-div">
                         <%= image_tag 'dash/import-PDF.png', class: 'card-img import-PDF' %>
-                        <label><span>Import</span> / <span>Bibliothek</span></label>
+                        <label><span class="import-PDF">Import</span> / <span class="" onclick="showLibraryModal('pdf')">Bibliothek</span></label>
                     </div>
                 </div>
             </div>
@@ -56,3 +56,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    function showLibraryModal(type, task_id = '') {
+		// $('.option-modal').hide();
+		$.ajax({
+            url: '<%= show_library_modal_path(@pitch) %>',
+            type: 'GET',
+            dataType: "script",
+            data: {
+				type: type,
+				task_id: task_id
+            },
+            success: function (res) {
+            }
+        })
+	}
+</script>

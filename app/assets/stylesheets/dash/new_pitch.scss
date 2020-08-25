@@ -1742,7 +1742,8 @@ input[type="file"] {
 #content {
 
     #pitchModal,
-    #libraryModal {
+    #libraryModal,
+    #libraryModalAllMedia {
 
         // top: 12%;
         padding-top: 0;
@@ -1876,17 +1877,27 @@ input[type="file"] {
         }
     }
 
-    #libraryModal .modal-content {
+    #libraryModal .modal-content,
+    #libraryModalAllMedia .modal-content {
         top: 14vh;
     }
 
-    #libraryModal {
+    #scrollMediaContent {
+        position: relative;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    #libraryModal,
+    #libraryModalAllMedia {
         .card#content_card {
             height: unset;
             width: unset;
         }
 
-        .card#content_card #scrollcontent {
+        .card#content_card #scrollcontent,
+        .card#content_card #scrollMediaContent {
             height: 60vh;
         }
     }

@@ -564,9 +564,11 @@ class DashboardController < ApplicationController
   def show_library_modal
     @type = params[:type]
     @pitch = Pitch.find(params[:id])
-    @task = Task.find(params[:task_id])
+    @task = Task.find_by(id: params[:task_id])
+    unless @task
+      @task = @pitch&.tasks&.first
+    end
     @folders = @admin.content_folders.where(content_folder: nil)
-    # @files = @admin.task_media.where(content_folder: nil)
     @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
     respond_to do |format|
       format.js { render 'show_library_modal'}
@@ -574,13 +576,31 @@ class DashboardController < ApplicationController
   end
 
   def add_media_content
-	@pitch = Pitch.find(params[:id])
-	selected_type = params[:selected_media_type].present? ? params[:selected_media_type] : params[:pdf_media_type]
-	if params[:media_type] == selected_type
-		@pitch.tasks.find(params[:task_id]).update(task_medium_id: params[:media_id])
-	end
+    @pitch = Pitch.find(params[:id])
+    @task = Task.find_by(id: params[:task_id])
+    if params[:media_type] == 'pdf'
+      @task_medium = TaskMedium.find(params[:media_id])
+      path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
+  	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
+      Dir.chdir(path)
+      images_array = []
+      file_name = @task_medium.pdf.identifier.split('.')
+      Dir.glob("*.png").length.times { |count| images_array << "#{file_name[0]}_#{count+1}.png"}
+      images_array.each do |img|
+          task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user, image: File.open(img), media_type: 'image', is_pdf: true, task_medium: @task_medium)
+          File.delete(img)
+          task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
+        end
+        @task = @pitch&.tasks&.last
+        # redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+    else
+      selected_type = params[:selected_media_type].present? ? params[:selected_media_type] : params[:pdf_media_type]
+      if params[:media_type] == selected_type
+        @pitch.tasks.find(params[:task_id]).update(task_medium_id: params[:media_id])
+      end
+    end
+    render json: {id: @pitch.id, task_id: @task&.id}
 
-	render json: {id: @pitch.id, task_id: params[:task_id]}
 	# redirect_to dashboard_edit_pitch_path(@pitch, task_id: params[:task_id])
   end
 
