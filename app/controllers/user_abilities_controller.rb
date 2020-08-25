@@ -24,6 +24,6 @@ class UserAbilitiesController < ApplicationController
       @company = Company.find(params[:company_id])
     end
     def ability_params
-      params.require(:user_ability).permit(:edit_company, :view_department, :create_department, :edit_department, :view_team, :create_team, :edit_team, :share_team, :view_user, :create_user, :edit_user, :share_user, :view_stats, :view_pitch, :create_pitch, :edit_pitch, :share_pitch, :view_task, :create_task, :edit_task, :share_task, :view_media, :create_media, :edit_media, :share_media)
+      params.require(:user_ability).permit(:edit_company, :view_department, :create_department, :edit_department, :view_team, :create_team, :edit_team, :share_team, :view_user, :create_user, :edit_user, :share_user, :view_stats, :view_content, :create_content, :edit_content, :share_content)
     end
 end

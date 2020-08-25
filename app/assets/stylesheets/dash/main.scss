@@ -2170,12 +2170,13 @@ body {
 			float: left;
 			color: rgb(var(--custcolor));
 			background-color: white;
-			left: 5vw;
+			left: 0;
 		}
 		.btn {
 			position: absolute;
 			box-sizing: border-box;
-			right: 5vw;
+			right: 0;
+			left: auto;
 			bottom: 2vh;
 			height: 35px;
 			width: 40%;

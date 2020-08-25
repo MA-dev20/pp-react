@@ -162,6 +162,20 @@
 
         $('.pitch-list').hide();
         $(`#${$taskId}`).show();
+        $('#navbar .back a').attr('href', '#');
+        $('#navbar .back a').addClass('taskLink');
+        $('.taskLink').on('click', function(e) {
+          e.preventDefault();
+          $('#navbar .back a').removeClass('taskLink')
+          $('.pitch-list').show();
+          $(`#${$taskId}`).hide();
+          <% if @task %>
+      		$('#navbar .back a').attr("href", '<%= dashboard_edit_pitch_path(@pitch, task_id: @task.id) %>');
+      		<% else %>
+      		$('#navbar .back a').attr("href", '<%= dashboard_edit_pitch_path(@pitch) %>');
+      		<% end %>
+
+        })
     });
 
 </script>

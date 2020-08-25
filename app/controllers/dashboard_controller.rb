@@ -671,7 +671,7 @@ class DashboardController < ApplicationController
           if (can? :create, User)
             @inactive_users = []
             @company.company_users.where(role: 'inactive').each do |cu|
-              if (can? :view, cu.user)
+              if (can? :read, cu.user)
                 @inactive_users << cu
               end
             end
