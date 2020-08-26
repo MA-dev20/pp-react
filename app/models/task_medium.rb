@@ -11,6 +11,7 @@ class TaskMedium < ApplicationRecord
   belongs_to :user
   belongs_to :content_folder, required: false
   belongs_to :task_medium, required: false
+  has_many :shared_contents, dependent: :destroy
 
   def self.search(search)
     if search

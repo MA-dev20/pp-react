@@ -5,6 +5,7 @@ class ObjectionList < ApplicationRecord
   belongs_to :user, required: false
   belongs_to :content_folder, required: false
   belongs_to :game, required: false
+  has_many :shared_contents, dependent: :destroy
   has_many :objection_list_objections, dependent: :destroy
   has_many :objections, through: :objection_list_objections
 
