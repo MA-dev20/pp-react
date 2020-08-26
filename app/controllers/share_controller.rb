@@ -145,7 +145,7 @@ class ShareController < ApplicationController
       render json: {error: 'Fehler beim teilen!'}
       return
     end
-    if @new_users
+    if @new_users && @new_users.length != 0
       render json: {new_users: @new_users}
     else
       render json: {success: 'Content erfolgreich geteilt'}

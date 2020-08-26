@@ -24,12 +24,13 @@ class User < ApplicationRecord
   has_many :shared_content, dependent: :destroy
   has_many :shared_pitches, dependent: :destroy
 
-  has_many :games, dependent: :destroy
-  has_many :game_users, dependent: :destroy
+  has_many :games
   has_many :game_turns, dependent: :destroy
+  has_many :game_turn_ratings, dependent: :destroy
+  has_many :game_users, dependent: :destroy
 
   has_many :user_ratings, dependent: :destroy
-  has_many :game_turn_ratings, dependent: :destroy
+
   has_many :ratings
 
   has_many :pitch_videos
@@ -96,6 +97,9 @@ class User < ApplicationRecord
       comment.update(user: nil)
     end
 
+    self.games.each do |game|
+      game.update(user: nil)
+    end
     self.ratings.each do |rating|
       rating.update(user: nil)
     end

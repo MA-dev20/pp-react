@@ -5,6 +5,7 @@ class ContentFolder < ApplicationRecord
   belongs_to :user, required: false
   belongs_to :content_folder, required: false
   has_many :content_folders, dependent: :destroy
+  has_many :shared_folders, dependent: :destroy
   has_many :task_media
   has_many :objection_lists
   has_many :catchword_lists

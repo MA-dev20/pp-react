@@ -1,6 +1,6 @@
 class PitchVideo < ApplicationRecord
   belongs_to :game_turn
-  belongs_to :user
+  belongs_to :user, required: false
   belongs_to :company
 
   mount_uploader :video, PitchUploader

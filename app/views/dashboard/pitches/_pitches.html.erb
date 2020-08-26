@@ -55,10 +55,14 @@
             </div>
             <div class="title"><%= pitch.title ? pitch.title : ' - - - ' %></div>
             <div class="autor">
-              <% if pitch.user.avatar? %>
-              <%= image_tag pitch.user.avatar.url %><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+              <% if pitch.user %>
+                <% if pitch.user.avatar? %>
+                  <%= image_tag pitch.user.avatar.url %><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+                <% else %>
+                  <i class="fas fa-user"></i><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+                <% end %>
               <% else %>
-              <i class="fas fa-user"></i><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+                <i class="fas fa-user"></i>Gelöschter Nutzer
               <% end %>
             </div>
 

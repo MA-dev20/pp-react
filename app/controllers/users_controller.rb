@@ -3,7 +3,6 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:set_role, :edit, :edit_avatar, :destroy, :send_password]
   before_action :set_company, only: [:set_role, :activate_users, :create]
   def create
-	authorize! :create, User
   @user = User.find_by(email: user_params[:email])
     if @user
       if @company.company_users.find_by(user: @user)
