@@ -44,6 +44,7 @@ class GamesController < ApplicationController
     @game_user = @game.game_users.find_by(user: @user) if @user
     @company = @game.company
     @admin_role = @company.company_users.find_by(user: @game.user).role
+    @ability = Ability.new(@game.user)
     if params[:user][:site] == 'admin_game_mobile'
       if @user && @game_user
         flash[:success] = 'Nutzer hinzugefügt!'
@@ -51,7 +52,7 @@ class GamesController < ApplicationController
         return
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
-          if (can? :create, User)
+          if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'inactive')
           else
             @company.company_users.create(user: @user, role: 'inactive_user')
@@ -75,7 +76,7 @@ class GamesController < ApplicationController
         @user = User.new(email: params[:user][:email])
         @team = @game.team
         if @user.save(validate: false)
-          if (can? :create, User)
+          if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'inactive')
           else
             @company.company_users.create(user: @user, role: 'inactive_user')
@@ -96,7 +97,7 @@ class GamesController < ApplicationController
         return
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
-          if(can? :create, User)
+          if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'inactive')
           else
             @company.company_users.create(user: @user, role: 'inactive_user')
