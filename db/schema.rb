@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_12_120659) do
+ActiveRecord::Schema.define(version: 2020_08_25_092109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -520,16 +520,12 @@ ActiveRecord::Schema.define(version: 2020_08_12_120659) do
     t.string "edit_team", default: "none"
     t.string "share_team", default: "none"
     t.string "view_stats", default: "user"
-    t.string "view_pitch", default: "user"
-    t.string "create_pitch", default: "none"
-    t.string "edit_pitch", default: "none"
-    t.string "share_pitch", default: "none"
-    t.string "view_media", default: "user"
-    t.string "create_media", default: "none"
-    t.string "edit_media", default: "none"
-    t.string "share_media", default: "none"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "create_content", default: "none"
+    t.string "view_content", default: "none"
+    t.string "edit_content", default: "none"
+    t.string "share_content", default: "none"
     t.index ["company_id"], name: "index_user_abilities_on_company_id"
   end
 
