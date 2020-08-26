@@ -4,14 +4,27 @@ class UsersController < ApplicationController
   before_action :set_company, only: [:set_role, :activate_users, :create]
   def create
 	authorize! :create, User
-	@user = User.new(user_params)
-  @user.companies << @company
-	if @user.save(:validate => false)
-	  redirect_to dashboard_teams_path
-	else
-	  flash[:alert] = 'Konnte User nicht speichern!'
-	  redirect_to dashboard_teams_path
-	end
+  @user = User.find_by(email: user_params[:email])
+    if @user
+      if @company.company_users.find_by(user: @user)
+        flash[:alert] = 'Nutzer existiert bereits'
+        redirect_to dashboard_teams_path
+        return
+      else
+        @user.companies << @company
+        redirect_to dashboard_teams_path
+        return
+      end
+    else
+  	  @user = User.new(user_params)
+      @user.companies << @company
+  	  if @user.save(:validate => false)
+  	    redirect_to dashboard_teams_path
+  	  else
+  	    flash[:alert] = 'Konnte User nicht speichern!'
+  	    redirect_to dashboard_teams_path
+  	  end
+    end
   end
 
   def edit
