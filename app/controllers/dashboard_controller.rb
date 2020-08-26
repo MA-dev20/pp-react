@@ -600,7 +600,6 @@ class DashboardController < ApplicationController
           task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
         end
         @task = @pitch&.tasks&.last
-        # redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
     else
       selected_type = params[:selected_media_type].present? ? params[:selected_media_type] : params[:pdf_media_type]
       if params[:media_type] == selected_type
@@ -608,8 +607,6 @@ class DashboardController < ApplicationController
       end
     end
     render json: {id: @pitch.id, task_id: @task&.id}
-
-	# redirect_to dashboard_edit_pitch_path(@pitch, task_id: params[:task_id])
   end
 
   def select_task
