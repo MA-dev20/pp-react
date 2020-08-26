@@ -264,7 +264,6 @@ body {
 	border-right: 1px solid transparent;
 	box-shadow: 0 0 10px 0 rgba(172, 172, 172, 0.5);
 	z-index: 100;
-
 	.avatar {
 		position: relative;
 		top: 0;
@@ -353,6 +352,21 @@ body {
 	}
 	.settings:hover {
 		font-size: 5vh;
+	}
+}
+.company_overview {
+	position: relative;
+	width: 100%;
+	table {
+		width: 100%;
+		tr {
+			td, th {
+				text-align: left;
+			}
+			th.heading {
+				text-align: center;
+			}
+		}
 	}
 }
 #content {

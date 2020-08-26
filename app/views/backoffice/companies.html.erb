@@ -59,8 +59,8 @@
 	    <tbody>
 	      <% @unactivated_companies.each do |c| %>
 	        <tr class="red <%= c == @company ? 'highlighted' : '' %>">
-	          <td onclick="redirect(<%= c.id %>)"><%= c.name %></td>
-	          <td onclick="redirect(<%= c.id %>)"><%= c.users.first.email %></td>
+	          <td onclick="redirect('<%= backoffice_company_url(c.id) %>')"><%= c.name %></td>
+	          <td onclick="redirect('<%= backoffice_company_url(c.id) %>')"><%= c.users.first.email %></td>
 	          <td class="accept"><%= link_to '', accept_company_path(c.id), class: 'far fa-check-circle' %></td>
 	          <td class="remove"><%= link_to '', destroy_company_path(c.id, site: 'backoffice_company'), class: 'far fa-trash-alt', data: {confirm: 'Bist du sicher das du dieses Unternehmen löschen möchtest?'} %></td>
 	        </tr>

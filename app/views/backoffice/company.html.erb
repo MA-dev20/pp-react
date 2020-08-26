@@ -1,1 +1,101 @@
-
+<div class="company_overview">
+  <table>
+    <tbody>
+      <tr>
+        <th>Name</th>
+        <td><%= @company.name %></td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td><%= @company.company_type %></td>
+      </tr>
+      <tr>
+        <th>Nachricht</th>
+        <td><%= @company.message %></td>
+      </tr>
+      <tr>
+        <th>Mitarbeiter</th>
+        <% if @company.company_users.count != 1 %>
+        <td><%= @company.company_users.count %></td>
+        <% else %>
+        <td><%= @company.employees %></td>
+        <% end %>
+      </tr>
+      <% if @company.company_users.where(role: 'sroot').count != 0 %>
+      <tr>
+        <th class="heading" colspan="2">Super Roots</th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+      </tr>
+      <% @company.company_users.where(role: 'sroot').each do |user| %>
+        <tr>
+          <td><%= user.user.fname %> <%= user.user.lname %></td>
+          <td><%= user.user.email %></td>
+        </tr>
+      <% end %>
+      <% end %>
+      <% if @company.company_users.where(role: 'root').count != 0 %>
+      <tr>
+        <th class="heading" colspan="2">Roots</th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+      </tr>
+      <% @company.company_users.where(role: 'root').each do |user| %>
+        <tr>
+          <td><%= user.user.fname %> <%= user.user.lname %></td>
+          <td><%= user.user.email %></td>
+        </tr>
+      <% end %>
+      <% end %>
+      <% if @company.company_users.where(role: 'admin').count != 0 %>
+      <tr>
+        <th class="heading" colspan="2">Admins</th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+      </tr>
+      <% @company.company_users.where(role: 'admin').each do |user| %>
+        <tr>
+          <td><%= user.user.fname %> <%= user.user.lname %></td>
+          <td><%= user.user.email %></td>
+        </tr>
+      <% end %>
+      <% end %>
+      <% if @company.company_users.where(role: 'user').count != 0 %>
+      <tr>
+        <th class="heading" colspan="2">Nutzer</th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+      </tr>
+      <% @company.company_users.where(role: 'user').each do |user| %>
+        <tr>
+          <td><%= user.user.fname %> <%= user.user.lname %></td>
+          <td><%= user.user.email %></td>
+        </tr>
+      <% end %>
+      <% end %>
+      <% if @company.company_users.where(role: 'inactive').count != 0 %>
+      <tr>
+        <th class="heading" colspan="2">Inactive Nutzer</th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+      </tr>
+      <% @company.company_users.where(role: 'inactive').each do |user| %>
+        <tr>
+          <td><%= user.user.fname %> <%= user.user.lname %></td>
+          <td><%= user.user.email %></td>
+        </tr>
+      <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
