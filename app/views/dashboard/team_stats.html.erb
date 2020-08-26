@@ -101,12 +101,14 @@
 		$('.rating-criteria').slick({
 			slidesToShow: 5,
 			slidesToScroll: 1,
-			infinite: false
+			infinite: false,
+			variableWidth: true
 		})
 		$('.rating-details').slick({
 			slidesToShow: 5,
 			slidesToScroll: 1,
-			infinite: false
+			infinite: false,
+			variableWidth: true
 		})
 	})
 	$('#worst').css("color", ratingColor(<%= @games.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 100.0 %>));
