@@ -9,7 +9,7 @@ class CompanyController < ApplicationController
 	  if @company.save
 	  begin
 	    if @user.save!(:validate => false)
-      @company.company_users.create(user: @user, role: 'root')
+      @company.company_users.create(user: @user, role: 'sroot')
 		  UserMailer.after_register(@user).deliver
 		  @root = User.where(bo_role: "root").all
 		  @root.each do |r|
@@ -43,11 +43,11 @@ class CompanyController < ApplicationController
   end
 
   def new
-	authorize! :create, Company
-	@company = Company.new(company_params)
-	@company.activated = true
-	flash[:alert] = "Konnte Unternehmen nicht anlegen!" if !@company.save
-	redirect_to backoffice_companies_path
+  	authorize! :create, Company
+  	@company = Company.new(company_params)
+  	@company.activated = true
+  	flash[:alert] = "Konnte Unternehmen nicht anlegen!" if !@company.save
+  	redirect_to backoffice_companies_path
   end
 
   def accept

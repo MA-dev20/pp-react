@@ -661,26 +661,28 @@ class DashboardController < ApplicationController
         @company = current_company
         @admin = current_user
         @role = CompanyUser.find_by(user: @admin, company: @company).role
-        @company.company_users.where(role: 'inactive_user').each do |u|
-          u.destroy
+        @company.company_users.where(role: 'inactive_user').each do |du|
+          @user = du.user
+          @user.destroy if @user.company_users.count == 1
+          du.destroy if @user
         end
         if @company.company_users.where(role: 'inactive').count != 0
-          if (can? :create, User)
-            @inactive_users = []
-            @company.company_users.where(role: 'inactive').each do |cu|
-              if (can? :view, cu.user)
+          @inactive_users = []
+          @company.company_users.where(role: 'inactive').each do |cu|
+            @user = cu.user
+            @gameUser = GameUser.find_by(user: @user)
+            if @gameUser && @gameUser.game.user == @admin
+              if (can? :create, User)
                 @inactive_users << cu
               end
+            elsif !GameUser.find_by(user: cu.user)
+              @user = cu.user
+              if @user.company_users.count == 1
+                @user.destroy
+              else
+                cu.destroy
+              end
             end
-
-          end
-        end
-        @company.company_users.where(role: 'inactive_user').each do |cu|
-          @user = cu.user
-          if @user.company_users.count == 1
-            @user.destroy
-          else
-            cu.destroy
           end
         end
       end

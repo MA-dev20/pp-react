@@ -52,8 +52,7 @@ class BackofficeController < ApplicationController
       @folder.objection_lists.where.not(name: 'task_list').each do |ol|
         entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
         @lists << entry
-      end
-    end
+      end    end
 
     if params[:audio]
       @content = TaskMedium.find(params[:audio])
@@ -64,6 +63,7 @@ class BackofficeController < ApplicationController
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
     elsif params[:catchword]
+      @listType = 'catchword'
       @liste = CatchwordList.find(params[:catchword])
     elsif params[:objection]
       @liste = ObjectionList.find(params[:objection])

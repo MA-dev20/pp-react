@@ -188,9 +188,7 @@
 		</div>
 		<script type="text/javascript">
 			function chooseAll() {
-				<% @inactive_users.each do |iu| %>
-					$('#user_<%= iu.user_id %>').click();
-				<% end %>
+				var aa = document.querySelectorAll('input[type=checkbox]'); for (var i = 0; i < aa.length; i++) aa[i].checked = true
 			}
 			$('#inactive_user_form').on('submit', function(e) {
 		    e.preventDefault();

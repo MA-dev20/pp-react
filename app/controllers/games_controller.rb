@@ -51,8 +51,11 @@ class GamesController < ApplicationController
         return
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
-          @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
+          if (can? :create, User)
+            @company.company_users.create(user: @user, role: 'inactive')
+          else
+            @company.company_users.create(user: @user, role: 'inactive_user')
+          end
           @team = @game.team
           @team.users << @user if @team
         end
@@ -72,8 +75,11 @@ class GamesController < ApplicationController
         @user = User.new(email: params[:user][:email])
         @team = @game.team
         if @user.save(validate: false)
-          @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
+          if (can? :create, User)
+            @company.company_users.create(user: @user, role: 'inactive')
+          else
+            @company.company_users.create(user: @user, role: 'inactive_user')
+          end
           @team.users << @user if @team
           redirect_to gm_game_path(email: params[:user][:email])
           return
@@ -90,8 +96,11 @@ class GamesController < ApplicationController
         return
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
-          @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
+          if(can? :create, User)
+            @company.company_users.create(user: @user, role: 'inactive')
+          else
+            @company.company_users.create(user: @user, role: 'inactive_user')
+          end
           @team = @game.team
           @team.users << @user if @team
         end

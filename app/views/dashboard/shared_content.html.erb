@@ -1,4 +1,7 @@
 <% content_for :heading do |d| %>
+<div class="back">
+
+
 <% if @folder && @folder.content_folder %>
 	<%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_shared_content_path(folder_id: @folder.content_folder_id) %>
 <% elsif @folder %>
@@ -6,6 +9,7 @@
 <% else %>
 <%= link_to inline_svg_tag('dash/new_icons/back.svg', class: 'back-arrow-icon'), dashboard_content_path %>
 <% end %>
+</div>
 	<div class="heading">
 		Geteilter Content
 	</div>
