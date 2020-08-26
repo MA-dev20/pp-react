@@ -430,7 +430,7 @@
       width: 100%;
     }
   }
-  
+
   .users {
     .card {
       height: 19vh;
@@ -696,10 +696,11 @@
           width: 30px;
           .play {color: rgba(var(--btncolor), 1); cursor: pointer;}
           .play.disabled {color: rgba(var(--btncolor), .2); cursor: default;}
-          .record {color: red;}
-          .remove {color: rgba(0,0,0,.3)}
-          .record:hover, .remove:hover, .play:hover {opacity: .5}
+          .record {color: red; cursor: pointer;}
+          .remove {color: rgba(0,0,0,.3); cursor: pointer;}
+          .upload:hover, .record:hover, .remove:hover, .play:hover {opacity: .5}
           .play.disabled:hover {opacity: 1}
+          .upload {color: rgba(var(--custcolor), 1); cursor: pointer;}
         }
       }
     }
