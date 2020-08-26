@@ -21,13 +21,9 @@ class TaskMedium < ApplicationRecord
     end
   end
   after_save do
-    if (self.media_type == 'audio' && self.audio?) || (self.media_type == 'image' && self.image?) || (self.media_type == 'video' && self.video?)
-      Task.where(task_medium: self, task_type: 'slide').each do |t|
-        t.update(valide: true) if !t.valide
-      end
-    else
-      Task.where(task_medium: self, task_type: 'slide').each do |t|
-        t.update(valide: false) if t.valide
+    if self.previous_changes["valide"]
+      Task.where(task_medium: self).each do |t|
+        t.update(valide: self.valide) if t.valide != self.valide
       end
     end
   end
@@ -36,13 +32,21 @@ class TaskMedium < ApplicationRecord
 	  if self.audio?
 		  self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
       self.title = self.audio_identifier if !self.title || self.title == ''
+      self.media_type = 'audio'
+      self.valide = true
 	  elsif self.video?
 		  self.duration = FFMPEG::Movie.new(self.video.current_path).duration.round(1)
       self.title = self.video_identifier if !self.title || self.title == ''
+      self.media_type = 'video'
+      self.valide = true
     elsif self.image?
       self.title = self.image_identifier if !self.title || self.title == ''
+      self.media_type = 'image'
+      self.valide = true
     elsif self.pdf?
       self.title = self.pdf_identifier if !self.title || self.title == ''
+      self.media_type = 'pdf'
+      self.valide = true
 	  end
     if self.content_folder
       self.available_for = self.content_folder.available_for
