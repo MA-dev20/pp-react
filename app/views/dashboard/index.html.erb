@@ -1,0 +1,12 @@
+<% content_for :heading do |d| %>
+  <div class="heading">Home</div>
+<% end %>
+<div class="welcome">
+  <div class="heading">Hallo <%= @admin.fname %>, schön dich zu sehen!</div>
+  <div class="subheading">Willkommen in deinem Dashboard. Hier kannst du deine
+    <% if can? :create, Pitch %>Pitches, Inhalte, <% end %>
+    <% if can? :create, User %>Teams, <% end %>
+    Aufnahmen und Statistiken verwalten!
+  </div>
+  <div class="illu"><%= image_tag 'PeterPitchIsometric.png' %></div>
+</div>
