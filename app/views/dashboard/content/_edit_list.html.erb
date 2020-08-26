@@ -55,8 +55,9 @@
                 <td class="icon"><i class="far fa-play-circle play <%= c.sound? ? '' : 'disabled' %>" data-id="<%= c.id %>" onclick="playSound(this)"></i></td>
                 <% if can? :edit, @liste %>
                 <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
+                <td class="icon"><label for="sound_upload_field_<%= c.id %>" class="fas fa-upload upload" ></label></td>
+                <input type="file" name="" value="" id="sound_upload_field_<%= c.id %>" onchange="handleSound('<%= c.id %>')">
                 <td class="icon">
-                  <!-- <i class="far fa-trash-alt remove"></i> -->
                   <span>
                     <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
                   </span>
@@ -88,6 +89,8 @@
             <td class="icon"><i class="far fa-play-circle play <%= o.sound? ? '' : 'disabled' %>" data-id="<%= o.id %>" onclick="playSound(this)"></i></td>
             <% if can? :edit, @liste %>
             <td class="icon"><i class="far fa-dot-circle record" data-id="<%= o.id %>" onclick="recordSound(this)"></i></td>
+            <td class="icon"><label for="sound_upload_field_<%= o.id %>" class="fas fa-upload upload" ></label></td>
+            <input type="file" name="" value="" id="sound_upload_field_<%= o.id %>" onchange="handleSound('<%= o.id %>')">
             <td class="icon">
               <!-- <i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i> -->
               <span data-id="<%= o.id %>" onclick="deleteEntry(this)">
@@ -113,6 +116,14 @@
   </div>
 </div>
 <script type="text/javascript">
+  function handleSound(entryID) {
+    var file = $("#sound_upload_field_" + entryID)[0].files[0];
+    var globalForm = new FormData();
+    globalForm.append('sound', file);
+    globalForm.append('type', "<%= @listType %>" );
+    globalForm.append('entry', entryID );
+    uploadSound(globalForm);
+  }
   new PerfectScrollbar('.entries');
   function closeListPopup() {
     $('#editList').hide();
