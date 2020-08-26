@@ -2,7 +2,7 @@ class Task < ApplicationRecord
 	belongs_to :company, required: false
 	belongs_to :department, required: false
 	belongs_to :team, required: false
-  	belongs_to :user
+  belongs_to :user, required: false
 	belongs_to :task_medium, required: false
 	belongs_to :catchword_list, required: false
 	belongs_to :objection_list, required: false
@@ -11,8 +11,10 @@ class Task < ApplicationRecord
 	has_many :pitches, through: :task_orders
 
 	before_save do
-		user = User.find(self.user_id)
-		self.company_id = user.company_ids.first if self.company_id.nil?
+		if self.user
+			user = User.find(self.user_id)
+			self.company_id = user.company_ids.first if self.company_id.nil?
+		end
 	end
 	after_save do
 		if self.task_type == 'slide' && self.task_medium

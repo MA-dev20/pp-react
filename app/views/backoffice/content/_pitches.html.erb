@@ -37,7 +37,11 @@
               <% end %>
             </div>
             <div class="autor">
+              <% if pitch.user %>
               <i class="fas fa-user"></i><%= pitch.user.fname[0].capitalize + '. ' + pitch.user.lname %>
+              <% else %>
+              <i class="fas fa-user"></i>Gelöschter Nutzer
+              <% end %>
             </div>
 
             <div class="subtitle">

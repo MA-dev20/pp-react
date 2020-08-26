@@ -1,6 +1,6 @@
 class Game < ApplicationRecord
   belongs_to :company
-  belongs_to :user
+  belongs_to :user, required: false
   belongs_to :team, required: false
   belongs_to :pitch, required: false
   has_many :game_turns, dependent: :destroy

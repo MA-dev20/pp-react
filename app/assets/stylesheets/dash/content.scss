@@ -210,7 +210,11 @@
         float: left;
         line-height: 5vh;
         margin: 0;
-        padding-left: 0;
+        padding: 0;
+        max-width: calc(10vw - 5vh);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         font-weight: bold;
       }
       .author {

@@ -31,3 +31,6 @@
     <% end %>
 </div>
 <% end %>
+<% if @turn.user == @admin %>
+<%= audio_tag 'game/your_turn.mp3', autoplay: true %>
+<% end %>
