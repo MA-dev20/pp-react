@@ -792,12 +792,12 @@
 					}
 				}
 				if( res.skip_rating_timer == true ) {
-					if( $('#toggle_rating_timer .toggle').hasClass('off') ) {
-						$('#toggle_rating_timer .toggle').removeClass('off').addClass('on');
-					}
-				} else {
 					if( $('#toggle_rating_timer .toggle').hasClass('on') ) {
 						$('#toggle_rating_timer .toggle').removeClass('on').addClass('off');
+					}
+				} else {
+					if( $('#toggle_rating_timer .toggle').hasClass('off') ) {
+						$('#toggle_rating_timer .toggle').removeClass('off').addClass('on');
 					}
 				}
 				if( res.show_ratings == 'all' ) {

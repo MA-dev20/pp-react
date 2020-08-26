@@ -369,6 +369,32 @@ body {
 		}
 	}
 }
+.welcome {
+	width: 100%;
+	.heading {
+		width: 100%;
+		text-align: center;
+		font-weight: bold;
+		font-size: 3vh;
+		margin-top: 1vh;
+	}
+	.subheading {
+		width: 100%;
+		text-align: center;
+		font-size: 2vh;
+		color: rgba(0,0,0,.5);
+	}
+	.illu {
+		width: 100%;
+		text-align: center;
+		img {
+			position: relative;
+			display: inline-block;
+			height: 65vh;
+			margin-top: 10vh;
+		}
+	}
+}
 #content {
 	position: fixed;
 	top: 0;
