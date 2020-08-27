@@ -26,12 +26,19 @@ class Ability
         if @abilities.view_team != "none"
           can :read, Team, :user_id => user.id
           can :read, User, :id => user.id
+          user.user_users.where(company: cu.company).each do |u|
+            can :read, User, :id => u.userID
+          end
         end
         if @abilities.edit_team != 'none'
           can :update, Team, :user_id => user.id
           can :destroy, Team, :user_id => user.id
           can :update, User, :id => user.id
           can :destroy, User, :id => user.id
+          user.user_users.where(company: cu.company).each do |u|
+            can :update, User, :id => u.userID
+            can :destroy, User, :id => u.userID
+          end
         end
 
         if @abilities.create_content != 'none'

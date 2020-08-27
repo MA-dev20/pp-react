@@ -42,6 +42,15 @@
 		</div>
 		<%= yield %>
 	</section>
+  <% if flash[:alert] %>
+	<div class="modal-blur">
+		<div class="modal card">
+			<div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div>
+			<h3><%= flash[:alert_head] ? flash[:alert_head] : 'Da gabe es einen Fehler!' %></h3>
+			<%= flash[:alert] %>
+		</div>
+	</div>
+  <% end %>
   <% if @pitch && @game.state != 'play' && @game.state != 'feedback' %>
   <div id="count_channel" data-game-id='<%= @game.id %>'></div>
   <section class='comments' id="game_comments" style="display: none;">
@@ -90,5 +99,10 @@
 <svg viewbox= "0 0 316 316" style="display: none">
     <path id="poly" fill="none" fill-rule="evenodd" stroke="rgb(var(--custcolor))" stroke-linecap="round" stroke-width="4" d="M32.348 32.349L223.934 2.005l88.063 172.832-137.161 137.16L2.004 223.935 32.348 32.349z" opacity=".149"/>
 </svg>
+<script type="text/javascript">
+  function toggleModal() {
+		$('.modal-blur').toggle();
+	}
+</script>
 </body>
 </html>
