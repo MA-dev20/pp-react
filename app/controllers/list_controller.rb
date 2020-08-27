@@ -36,15 +36,32 @@ class ListController < ApplicationController
 
   def add_entry
     if @list_type == 'catchword'
-      @entry = @user.catchwords.find_by(list_params)
+      @entry = @company.catchwords.find_by(list_params)
       @entry = @company.catchwords.create(user: @user, name: params[:list][:name]) if !@entry
-      @list.catchwords << @entry
+      if !@list.catchwords.find_by(id: @entry.id)
+        @list.catchwords << @entry
+        if @entry.sound?
+          render json: {id: @entry.id, name: @entry.name, sound: @entry.sound.url}
+        else
+          render json: {id: @entry.id, name: @entry.name}
+        end
+      else
+        render json: {entry: "exists"}
+      end
     else
-      @entry = @user.objections.find_by(list_params)
+      @entry = @company.objections.find_by(list_params)
       @entry = @company.objections.create(user: @user, name: params[:list][:name]) if !@entry
-      @list.objections << @entry
+      if !@list.objections.find_by(id: @entry.id)
+        @list.objections << @entry
+        if @entry.sound?
+          render json: {id: @entry.id, name: @entry.name, sound: @entry.sound.url}
+        else
+          render json: {id: @entry.id, name: @entry.name}
+        end
+      else
+        render json: {entry: "exists"}
+      end
     end
-    render json: {id: @entry.id, entry: @entry.name}
   end
 
   def edit_entry
@@ -65,10 +82,19 @@ class ListController < ApplicationController
   def delete_entry
     if params[:type] == 'catchword'
       @entry = Catchword.find_by(id: params[:entry_id])
+      if CatchwordListCatchword.where(catchword: @entry).where.not(catchword_list_id: params[:list_id]).count == 0
+        @entry.destroy
+      else
+        CatchwordListCatchword.find_by(catchword_list_id: params[:list_id], catchword: @entry).destroy
+      end
     else
       @entry = Objection.find_by(id: params[:entry_id])
+      if ObjectionListObjection.where(objection: @entry).where.not(objection_list_id: params[:list_id]).count == 0
+        @entry.destroy
+      else
+        ObjectionListObjection.find_by(objection_list_id: params[:list_id], objection: @entry).destroy
+      end
     end
-    @entry.destroy
     render json: {id: params[:entry_id]}
   end
   private

@@ -85,7 +85,7 @@ Rails.application.routes.draw do
   put 'lists/:type/:list_id/delete', to: 'list#destroy', as: 'delete_list'
   post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
   post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
-  post 'lists/:type/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
+  post 'lists/:type/:list_id/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
