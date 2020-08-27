@@ -57,7 +57,7 @@
                 <td class="icon"><i class="far fa-dot-circle record" data-id="<%= c.id %>" onclick="recordSound(this)"></i></td>
                 <td class="icon"><label for="sound_upload_field_<%= c.id %>" class="fas fa-upload upload" ></label></td>
                 <input type="file" name="" value="" id="sound_upload_field_<%= c.id %>" onchange="handleSound('<%= c.id %>')">
-                <td class="icon">
+                <td class="icon" data-id="<%= c.id %>" onclick="deleteEntry(this)">
                   <span>
                     <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
                   </span>
@@ -91,9 +91,8 @@
             <td class="icon"><i class="far fa-dot-circle record" data-id="<%= o.id %>" onclick="recordSound(this)"></i></td>
             <td class="icon"><label for="sound_upload_field_<%= o.id %>" class="fas fa-upload upload" ></label></td>
             <input type="file" name="" value="" id="sound_upload_field_<%= o.id %>" onchange="handleSound('<%= o.id %>')">
-            <td class="icon">
-              <!-- <i class="far fa-trash-alt remove" data-id="<%= o.id %>" onclick="deleteEntry(this)"></i> -->
-              <span data-id="<%= o.id %>" onclick="deleteEntry(this)">
+            <td class="icon" data-id="<%= o.id %>" onclick="deleteEntry(this)">
+              <span>
                 <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon customize-trash-icon' %>
               </span>
             </td>
@@ -242,7 +241,11 @@
   }
   function deleteEntry(elem) {
     var eID = $(elem).attr('data-id');
-    var URL = '/lists/<%= @listType %>/entry/' + eID;
+    <% if params[:objection] %>
+    var URL = '/lists/objection/entry/' + eID;
+    <% elsif params[:catchword] %>
+    var URL = '/lists/catchword/entry/' + eID;
+    <% end %>
     $.ajax({
       url: URL,
       type: "post",
