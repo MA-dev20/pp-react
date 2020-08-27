@@ -28,8 +28,8 @@ class PitchesController < ApplicationController
 	@task = Task.find(@task_order.task_id)
 	@task_type = @task.task_type
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists
-	@ol_list = @admin.objection_lists
+	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
+	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
 	respond_to do |format|
 		format.js { render 'dashboard/set_task_order'}
 	end
@@ -75,8 +75,8 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists
-	@ol_list = @admin.objection_lists
+	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
+	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
 	respond_to do |format|
 		format.js { render 'dashboard/select_task'}
 	end

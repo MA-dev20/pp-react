@@ -184,9 +184,24 @@ class DashboardController < ApplicationController
         @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
       end
     else
-      if level == 'root' || level == 'shared'
+      if level == 'root'
         render json: {standard: true}
         return
+      elsif level == 'shared'
+        files = @company.task_media.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
+        folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
+        cw = @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list')
+        ol = @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list')
+      elsif level == 'user'
+        files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin)
+        folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil, user: @admin)
+        cw = @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list')
+        ol = @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list')
+      elsif level == 'peters'
+        files = TaskMedium.where(available_for: 'global', content_folder: nil)
+        folders = ContentFolder.where(available_for: 'global', content_folder: nil)
+        cw = CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
+        ol = ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
       end
       if @folder
         files.each do |file|
@@ -528,8 +543,8 @@ class DashboardController < ApplicationController
 	else
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
 	end
-	@cw_lists = @admin.catchword_lists
-	@ol_list = @admin.objection_lists
+	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
+	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
 
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
@@ -615,8 +630,8 @@ class DashboardController < ApplicationController
 	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
   @task_type = @task.task_type
 	@admin = current_user
-  @cw_lists = @admin.catchword_lists
-	@ol_list = @admin.objection_lists
+  @cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
+	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
   @folders = @admin.content_folders.where(content_folder: nil)
   @files = ''
   @type = ''
