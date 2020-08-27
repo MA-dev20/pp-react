@@ -28,8 +28,8 @@ class PitchesController < ApplicationController
 	@task = Task.find(@task_order.task_id)
 	@task_type = @task.task_type
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
-	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
+	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
 	respond_to do |format|
 		format.js { render 'dashboard/set_task_order'}
 	end
@@ -75,8 +75,8 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
-	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
+	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	@ol_list = @admin.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
 	respond_to do |format|
 		format.js { render 'dashboard/select_task'}
 	end
@@ -203,10 +203,10 @@ class PitchesController < ApplicationController
 	end
 
 	@admin = current_user
-	@cw_lists = @admin.catchword_lists
-	@ol_list = @admin.objection_lists
-	@folders = @admin.content_folders.where(content_folder: nil)
-	@files = @admin.task_media.where(content_folder: nil)
+	@cw_lists = @company.catchword_lists.accessible_by(current_ability)
+	@ol_list = @company.objection_lists.accessible_by(current_ability)
+	@folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
+	@files = @company.task_media.accessible_by(current_ability).where(content_folder: nil)
 	if (@pitch.tasks.count == 0)
 		render json: { url: dashboard_edit_pitch_path(@pitch), count: @pitch.tasks.count }
 	else

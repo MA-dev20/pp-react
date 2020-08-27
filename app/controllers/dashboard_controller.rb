@@ -543,8 +543,8 @@ class DashboardController < ApplicationController
 	else
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
 	end
-	@cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
-	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
+	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
 
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
@@ -630,9 +630,9 @@ class DashboardController < ApplicationController
 	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
   @task_type = @task.task_type
 	@admin = current_user
-  @cw_lists = @admin.catchword_lists.where.not(name: 'task_list')
-	@ol_list = @admin.objection_lists.where.not(name: 'task_list')
-  @folders = @admin.content_folders.where(content_folder: nil)
+  @cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
+  @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
   @files = ''
   @type = ''
   if @task.task_type != 'slide'
