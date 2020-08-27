@@ -44,7 +44,7 @@ class ListController < ApplicationController
       @entry = @company.objections.create(user: @user, name: params[:list][:name]) if !@entry
       @list.objections << @entry
     end
-    render json: {list: @list.id, entry: @entry.name, entry_id: @entry.id}
+    render json: {id: @entry.id, entry: @entry.name}
   end
 
   def edit_entry
