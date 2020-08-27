@@ -55,7 +55,11 @@ class ListController < ApplicationController
       @entry = Objection.find_by(id: params[:entry])
       @entry.update(sound: params[:sound]);
     end
-    render json: {entry: @entry.id, type: params[:type]}
+    if @entry.sound?
+      render json: {id: @entry.id, sound: @entry.sound.url}
+    else
+      render json: {id: @entry.id}
+    end
   end
 
   def delete_entry
@@ -65,7 +69,7 @@ class ListController < ApplicationController
       @entry = Objection.find_by(id: params[:entry_id])
     end
     @entry.destroy
-    render json: {success: true}
+    render json: {id: params[:entry_id]}
   end
   private
     def list_params

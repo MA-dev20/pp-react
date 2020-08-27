@@ -174,9 +174,10 @@
         <% if can? :edit, @liste %>
         userDiv += '<td class="icon"><i class="far fa-dot-circle record" data-id="'+ res.id +'" onclick="recordSound(this)"></i></td>'
         userDiv += '<td class="icon"><label for="sound_upload_field_'+ res.id +'" class="fas fa-upload upload" ></label></td>'
-        userDiv += '<input type="file" name="" value="" id="sound_upload_field_'+ res.id +'" onchange="handleSound('+ res.id +')">'
+        inputDiv = '<input type="file" name="" value="" id="sound_upload_field_'+ res.id +'" onchange="handleSound('+ res.id +')">'
         userDiv += '<td class="icon" data-id="'+ res.id +'" onclick="deleteEntry(this)">'
         userDiv += '<span><%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon customize-trash-icon" %></span></td>'
+        $('.entries').prepend(inputDiv);
         <% end %>
         userDiv += '</tr>'
         $('.entries table tbody').prepend(userDiv);
@@ -247,7 +248,16 @@
       beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
       success: function (res) {
         $('#addEntryForm #list_name').val('');
-        location.reload();
+        if( res.sound ) {
+          if( $('#entry_' + res.id + ' .play').hasClass('disabled') ) {
+            const audio = new Audio(res.sound);
+            audio.id = "sound_" + res.id;
+            $('#entry_' + res.id).append(audio);
+            $('#entry_' + res.id + ' .play').removeClass("disabled");
+          } else {
+            $('#sound_' + res.id).attr("src", res.sound);
+          }
+        }
       }
     })
   }
@@ -267,7 +277,7 @@
       processData: false,
       beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
       success: function (res) {
-        location.reload();
+        $('#entry_' + res.id).remove();
       }
     })
   }
