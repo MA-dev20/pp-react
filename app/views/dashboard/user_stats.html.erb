@@ -199,6 +199,40 @@
 					top: 10,
 				},
 			},
+			tooltips: {
+				enabled: false,
+				custom: function(context) {
+					var tooltipEl = document.getElementById('chartjs-tooltip');
+
+					if (!tooltipEl) {
+						tooltipEl = document.createElement('div');
+						tooltipEl.id = 'chartjs-tooltip';
+						tooltipEl.innerHTML =
+					}
+				}
+	      callbacks: {
+	        title: function(tooltipItem, data) {
+	          return data['labels'][tooltipItem[0]['index']];
+	        },
+	        label: function(tooltipItem, data) {
+	          return data['datasets'][0]['data'][tooltipItem['index']];
+	        },
+	        afterLabel: function(tooltipItem, data) {
+	          var dataset = data['datasets'][0];
+						var ratings = dataset['datapoints'][tooltipItem['index']]['data']['cust_ratings']
+	          return '(' + JSON.stringify(ratings) + '%)';
+	        }
+	      },
+	      backgroundColor: '#FFF',
+				borderColor: "rgba(0,0,0,.1)",
+				borderWidth: 1,
+				borderRadius: 10,
+	      titleFontSize: 16,
+	      titleFontColor: '#0066ff',
+	      bodyFontColor: '#000',
+	      bodyFontSize: 14,
+	      displayColors: false
+    	},
 			legend: {
 				display: false,
 			},

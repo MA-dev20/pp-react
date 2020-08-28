@@ -190,12 +190,12 @@
 					<div class="dropdown-text" id="role_text" onclick="toggleRoleDropdown()">
 						<%= @role == 'user' ? 'Nutzer' : '' %>
 						<%= @role == 'admin' ? 'Admin' : '' %>
-						<%= @role == 'root' ? 'Abteilungsleiter' : '' %>
+						<%= @role == 'root' ? 'Abteilungsleitung' : '' %>
 						<i class="fas fa-caret-down"></i>
 					</div>
 					<div class="dropdown-menu" id="role_dropdown">
 						<% if @company.company_users.find_by(user: @admin).role == 'sroot' %>
-						<div class="link" onclick="setRole('root')">Abteilungsleiter</div>
+						<div class="link" onclick="setRole('root')">Abteilungsleitung</div>
 						<% end %>
 						<div class="link" onclick="setRole('admin')">Admin</div>
 						<div class="link" onclick="setRole('user')">Nutzer</div>
@@ -317,7 +317,7 @@
 		} else if(role == 'admin') {
 			$('#role_text').html('Admin <i class="fas fa-caret-down"></i>');
 		} else if(role == 'root') {
-			$('#role_text').html('Abteilungsleiter <i class="fas fa-caret-down"></i>');
+			$('#role_text').html('Abteilungsleitung <i class="fas fa-caret-down"></i>');
 		}
 		$('.dropdown-menu').hide();
 	}
@@ -349,13 +349,13 @@
 				<tbody>
 					<% @users.each do |u| %>
 						<% if params[:edit] == "true" && TeamUser.where(team_id: @team.id, user_id: u.id).count == 0 || params[:edit] != 'true' %>
-						<% @role = CompanyUser.find_by(company: @company, user: u).role %>
+						<% @role = CompanyUser.find_by(company: @company, user: u) ? CompanyUser.find_by(company: @company, user: u).role : ''  %>
 						<tr draggable="true" ondragstart="drag(event)" id="user_<%= u.id %>" data-id="<%= u.id %>" class="username <%= @user == u ? 'highlighted' : '' %>">
 							<td class="img"><%= image_tag u.avatar.url %></td>
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td><%= u.game_turns.count %></td>
 							<td><%= u.ges_rating / 10.0 %></td>
-							<td><%= @role == 'user' ? 'Nutzer' : @role == 'admin' ? 'Admin' : @role == 'root' ? 'Abteilungsleiter' : @role == 'sroot' ? 'Superadmin' : '' %></td>
+							<td><%= @role == 'user' ? 'Nutzer' : @role == 'admin' ? 'Admin' : @role == 'root' ? 'Abteilungsleitung' : @role == 'sroot' ? 'Superadmin' : '' %></td>
 							<% if can? :edit, u %>
 							<td class="edit">
 								<a href="<%= dashboard_teams_path('', edit_user: u.id) %>">
