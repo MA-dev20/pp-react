@@ -7,7 +7,7 @@
     <h3 class="pitches-header">Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches pitch-list">
-        <% pitches.each do |pitch| %>
+        <% pitches.includes(:task_orders, tasks: [:task_medium]).each do |pitch| %>
         <div class="card pitch-card">
             <div class="thumb">
                 <% if pitch.image? %>
@@ -20,7 +20,7 @@
 
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
+                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>,
                 Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
             </div>
             <button style="margin: 0; position: absolute; top: 0; left: 0; height: 100%; width: 100%; border: none; background: none;" data-pitch-id="<%= pitch.id %>"
@@ -31,7 +31,7 @@
         <% end %>
     </div>
     <div class="pitch-tasks-list">
-        <% pitches.each do |pitch| %>
+        <% pitches.includes(:task_orders, tasks: [:task_medium]).each do |pitch| %>
         <div class="right-side-card hide pitch-tasks-div" id="pitchTasks<%= pitch.id %>">
             <div class="right-tasks">
                 <% pitch.tasks.each_with_index do |task, index| %>
