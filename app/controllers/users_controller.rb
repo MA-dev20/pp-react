@@ -45,7 +45,7 @@ class UsersController < ApplicationController
       @user.companies << @company
       @user.teams << @team if @team
       if @user.save(:validate => false)
-        @usersUser.create(company: @company, user: @admin, userID: @user.id)
+        @company.user_users.create(user: @admin, userID: @user.id)
       else
         flash[:alert] = 'Konnte User nicht speichern!'
       end
