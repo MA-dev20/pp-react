@@ -60,7 +60,7 @@ class GamesController < ApplicationController
           @team = @game.team
           @team.users << @user if @team
         end
-        @game_user = @game.game_users.create(user: @user, play: true)
+        @game_user = @game.game_users.create(user: @user, play: true, company: @company)
         if @user.avatar?
           ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
         else
@@ -170,6 +170,7 @@ class GamesController < ApplicationController
   	  return
     else
       @game_user = @game.game_users.new(game_user_params)
+      @game_user.company = @company
       @game_user.user = @user
       @game_user.active = true
       if @game_user.save

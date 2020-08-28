@@ -364,9 +364,7 @@ class PitchesController < ApplicationController
 		@cw = CatchwordList.find(params[:list][:list_id])
 		@cw.catchwords.each do |entry|
 		  if @list.catchwords.find_by(name: entry.name).nil?
-			dup_entry = entry.dup
-			dup_entry.save
-			@list.catchwords << dup_entry
+			@list.catchwords << entry
 		  end
 		end
 	  end
@@ -387,10 +385,7 @@ class PitchesController < ApplicationController
 		@ol = ObjectionList.find(params[:list][:list_id])
 		@ol.objections.each do |entry|
 		if @list.objections.find_by(name: entry.name).nil?
-			dup_entry = entry.dup
-			dup_entry.save
-			@list.objections << dup_entry
-			# @list.objections << entry
+			@list.objections << entry
 		end
 		end
 	  end

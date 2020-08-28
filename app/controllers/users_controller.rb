@@ -70,7 +70,7 @@ class UsersController < ApplicationController
     if params[:users]
       params[:users].each do |u|
         @user = User.find(u[1].to_i)
-        @user.update(user_id: @admin.id) if @user.user_id != @admin.id
+        @admin.user_users.create(company: @company, userID: @user.id) if !@admin.user_users.find_by(company: @company, userID: @user.id)
         @company_user = CompanyUser.find_by(company: @company, user: @user)
         @company.user_users.create(user: @admin, userID: @user.id)
         if !@company_user.update(role: 'user')
