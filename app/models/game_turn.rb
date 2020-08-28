@@ -10,4 +10,8 @@ class GameTurn < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   scope :playable, -> {where(play: true, played: false)}
+  after_save do
+    @game = self.game
+    @user = self.user
+  end
 end
