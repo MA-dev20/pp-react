@@ -1,4 +1,4 @@
-<% @pitch.task_orders.order(:order).each do |t| %>
+<% TaskOrder.where(pitch_id: @pitch.id).includes(task: [:task_medium]).order(:order).each do |t| %>
 <div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>" data-order-id="<%= t.order %>"
     id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
     ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
