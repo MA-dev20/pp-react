@@ -64,6 +64,11 @@ class GameDesktopController < ApplicationController
   end
 
   def set_slide
+    if @game.game_users.count == 0
+      flash[:alert] = 'Nicht genug Spieler beigetreten!'
+      redirect_to gd_game_path
+      return
+    end
 	  @task_order = @pitch.task_orders.find_by(order: params[:slide])
     while @task_order && !@task_order.task.valide
       @task_order = @pitch.task_orders.find_by(order: @task_order.order + 1)

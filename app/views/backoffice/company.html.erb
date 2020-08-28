@@ -28,11 +28,13 @@
       <tr>
         <th>Name</th>
         <th>E-Mail</th>
+        <th>Phone</th>
       </tr>
       <% @company.company_users.where(role: 'sroot').each do |user| %>
         <tr>
           <td><%= user.user.fname %> <%= user.user.lname %></td>
           <td><%= user.user.email %></td>
+          <td><%= user.user.phone %></td>
         </tr>
       <% end %>
       <% end %>

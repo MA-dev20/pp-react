@@ -5,6 +5,7 @@ class Company < ApplicationRecord
   has_many :histories, dependent: :destroy
   has_many :teams, dependent: :destroy
   has_many :company_users, dependent: :destroy
+  has_many :user_users, dependent: :destroy
   has_many :users, through: :company_users
   has_many :user_abilities, dependent: :destroy
   has_many :games, dependent: :destroy

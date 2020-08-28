@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :rememberable, :validatable, :trackable
 
+  belongs_to :user, required: false
   mount_uploader :avatar, AvatarUploader
 
   has_many :company_users, dependent: :destroy
@@ -9,6 +10,7 @@ class User < ApplicationRecord
   has_many :departments, through: :department_users
   has_many :teams, dependent: :destroy
   has_many :team_users, dependent: :destroy
+  has_many :user_users, dependent: :destroy
 
   has_many :content_folders
   has_many :catchword_lists
@@ -102,6 +104,16 @@ class User < ApplicationRecord
     end
     self.ratings.each do |rating|
       rating.update(user: nil)
+    end
+  end
+
+  def self.search(search)
+    if search
+      where('lower(fname) LIKE ?', "%#{search.downcase}%")
+      where('lower(lname) LIKE ?', "%#{search.downcase}%")
+      where('lower(email) LIKE ?', "%#{search.downcase}%")
+    else
+      scoped
     end
   end
 

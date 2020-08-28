@@ -3,26 +3,54 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:set_role, :edit, :edit_avatar, :destroy, :send_password]
   before_action :set_company, only: [:set_role, :activate_users, :create]
   def create
-  @user = User.find_by(email: user_params[:email])
+    @user = User.find_by(email: user_params[:email])
+    @team = Team.find_by(id: params[:team]) if params[:team]
+    @companyUser = @company.company_users.find_by(user: @user) if @user
     if @user
-      if @company.company_users.find_by(user: @user)
+      if @company.user_users.find_by(user: @admin, userID: @user.id)
         flash[:alert] = 'Nutzer existiert bereits'
-        redirect_to dashboard_teams_path
+        redirect_to dashboard_teams_path(@team) if @team
+        redirect_to dashboard_teams_path if !@team
         return
+      end
+      if @companyUser
+        if @team && @team.users.find_by(id: @user.id)
+          flash[:alert] = 'Nutzer existiert bereits'
+          redirect_to dashboard_teams_path(@team)
+          return
+        elsif @team
+          @company.user_users.create(user: @admin, userID: @user.id) if @companyUser.role == 'user' || @companyUser.role == 'inactive'
+          @team.users << @user
+          redirect_to dashboard_teams_path(@team)
+          return
+        else
+          @company.user_users.create(user: @admin, userID: @user.id) if @companyUser.role == 'user' || @companyUser.role == 'inactive'
+          redirect_to dashboard_teams_path
+          return
+        end
       else
         @user.companies << @company
-        redirect_to dashboard_teams_path
-        return
+        @company.user_users.create(user: @admin, userID: @user.id)
+        if @team
+          @team.users << @user
+          redirect_to dashboard_teams_path(@team)
+          return
+        else
+          redirect_to dashboard_teams_path
+          return
+        end
       end
     else
   	  @user = User.new(user_params)
       @user.companies << @company
-  	  if @user.save(:validate => false)
-  	    redirect_to dashboard_teams_path
-  	  else
-  	    flash[:alert] = 'Konnte User nicht speichern!'
-  	    redirect_to dashboard_teams_path
-  	  end
+      @user.teams << @team if @team
+      if @user.save(:validate => false)
+        @usersUser.create(company: @company, user: @admin, userID: @user.id)
+      else
+        flash[:alert] = 'Konnte User nicht speichern!'
+      end
+  	  redirect_to dashboard_teams_path(@team) if @team
+      redirect_to dashboard_teams_path if !@team
     end
   end
 
@@ -42,7 +70,9 @@ class UsersController < ApplicationController
     if params[:users]
       params[:users].each do |u|
         @user = User.find(u[1].to_i)
+        @admin.user_users.create(company: @company, userID: @user.id) if !@admin.user_users.find_by(company: @company, userID: @user.id)
         @company_user = CompanyUser.find_by(company: @company, user: @user)
+        @company.user_users.create(user: @admin, userID: @user.id)
         if !@company_user.update(role: 'user')
           render json: {error: true}
           return
@@ -88,16 +118,15 @@ class UsersController < ApplicationController
 
   def destroy
     authorize! :destroy, @user
-	@user.companies.each do |c|
-  	if @user == c.users.first
+    if CompanyUser.find_by(user: @user, company: @company, role: 'sroot')
   	  flash[:alert] = 'Du kannst diesen User nicht löschen!'
-  	else
-  	  c.company_users.find_by(user: @user).destroy
-  	end
-  end
-  @user.destroy if @user.companies.count == 0
-	redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice'
-	redirect_to dashboard_teams_path if params[:site] == 'dashboard'
+  	elsif @user.companies.count == 1
+      @user.destroy
+    else
+      @user.company_users.find_by(company: @company).destroy
+    end
+	  redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice'
+	  redirect_to dashboard_teams_path if params[:site] == 'dashboard'
   end
 
   def set_role

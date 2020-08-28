@@ -33,7 +33,7 @@
 				<%= link_to '', backoffice_path %>
 			</div>
 			<% end %>
-			<% if can? :manage, @company %>
+			<% if can? :update, @company %>
 			<div class="link">
 				Unternehmen
 				<%= link_to '', dash_company_path %>

@@ -37,4 +37,12 @@ class Team < ApplicationRecord
     end
   end
 
+  def self.search(search)
+    if search
+      where('lower(name) LIKE ?', "%#{search.downcase}%")
+    else
+      scoped
+    end
+  end
+
 end
