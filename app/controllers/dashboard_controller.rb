@@ -315,7 +315,7 @@ class DashboardController < ApplicationController
 
   def user_stats
 	@user = User.find(params[:user_id])
-	if @user.game_turn_ratings.count == 0
+	if @user.game_turn_ratings.where(company: @company).count == 0
     flash[:alert_head] = 'Keine Statistik vorhanden'
 	  flash[:alert] = 'Der Spieler hat noch nicht gepitcht!'
     if can? :read, Team
@@ -327,8 +327,8 @@ class DashboardController < ApplicationController
     end
 	end
 	@user_ratings = []
-	@user.user_ratings.each do |r|
-	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, change: r.change, id: r.rating_criterium.id}
+	UserRating.where(company: @company, user: @user).each do |r|
+	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, id: r.rating_criterium.id}
 	end
 	@user_ratings = @user_ratings.sort_by{|e| -e[:name]}
 	@days = 1
@@ -341,10 +341,7 @@ class DashboardController < ApplicationController
 		@days += 1
 		date = bod
 	  end
-	end
-	@turns = @turns.where.not(ges_rating: nil)
-	@turns.each do |t|
-	  cust_rating = []
+    cust_rating = []
 	  if t.game_turn_ratings.count != 0
 	    t.game_turn_ratings.each do |tr|
 		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
@@ -353,6 +350,7 @@ class DashboardController < ApplicationController
 	  else
 		@turns = @turns.except(t)
 	  end
+
 	end
   TeamUser.where(user: @user).each do |t|
     @team = t.team if t.team.company == @company

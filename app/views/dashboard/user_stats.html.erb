@@ -32,7 +32,7 @@
 		</div>
 		<div class="name"><%= r[:name] %></div>
 		<div class="change">
-			<%= r[:change] / 10.0 %>
+			<%= (@turns.last.ges_rating - @turns.second_to_last.ges_rating) / 10.0 %>
 		</div>
 	</div>
 	<% end %>
@@ -50,15 +50,15 @@
 	</div>
 	<div class="card">
 		<div class="head">Siegrate</div>
-		<div class="count"><%= (@turns.where(place: 1).count / @turns.count) * 100.0 %>%</div>
+		<div class="count"><%= (@user.game_users.where(company: @company, place: 1).count / @user.game_users.where(company: @company).count) * 100.0 %>%</div>
 	</div>
 	<div class="card">
 		<div class="head">Bester Score</div>
-		<div class="count" id="best"><%= @turns.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 10.0 %></div>
+		<div class="count" id="best"><%= GameUser.where(company: @company, user: @user).maximum("best_rating") / 10.0 %></div>
 	</div>
 	<div class="card">
 		<div class="head">Schlechtester Score</div>
-		<div class="count" id='worst'><%= @turns.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 10.0 %></div>
+		<div class="count" id='worst'><%= GameUser.where(company: @company, user: @user).minimum("best_rating") / 10.0 %></div>
 	</div>
 </div>
 
@@ -81,19 +81,19 @@
 		<div class="gold">
 			<%= image_tag 'dash/icons/gold.png' %>
 			<div class="text">
-				<%= @turns.where(place: 1).count %>
+				<%= @user.game_users.where(company: @company, place: 1).count %>
 			</div>
 		</div>
 		<div class="silver">
 			<%= image_tag 'dash/icons/silver.png' %>
 			<div class="text">
-				<%= @turns.where(place: 2).count %>
+				<%= @user.game_users.where(company: @company, place: 2).count %>
 			</div>
 		</div>
 		<div class="bronze">
 			<%= image_tag 'dash/icons/bronze.png' %>
 			<div class="text">
-				<%= @turns.where(place: 3).count %>
+				<%= @user.game_users.where(company: @company, place: 3).count %>
 			</div>
 		</div>
 		</div>
@@ -135,8 +135,8 @@
 		infinite: false,
 		variableWidth: true
 	})
-	$('#worst').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.last.ges_rating / 100.0 %>));
-	$('#best').css("color", ratingColor(<%= @turns.sort_by{|e| -e[:ges_rating]}.first.ges_rating / 100.0 %>));
+	$('#worst').css("color", ratingColor(<%= GameUser.where(company: @company, user: @user).minimum("best_rating") / 100.0 %>));
+	$('#best').css("color", ratingColor(<%= GameUser.where(company: @company, user: @user).maximum("best_rating") / 100.0 %>));
 
 	ratecircle('#ges', 'ges_text', <%= @user.ges_rating / 100.0 %>);
 	<% @user_ratings.each do |r| %>

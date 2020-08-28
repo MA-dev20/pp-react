@@ -355,7 +355,7 @@
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td><%= u.game_turns.count %></td>
 							<td><%= u.ges_rating / 10.0 %></td>
-							<td><%= @role == 'user' ? 'Nutzer' : @role == 'admin' ? 'Admin' : @role == 'root' ? 'Abteilungsleiter' : @role == 'sroot' ? 'Super Admin' : '' %></td>
+							<td><%= @role == 'user' ? 'Nutzer' : @role == 'admin' ? 'Admin' : @role == 'root' ? 'Abteilungsleiter' : @role == 'sroot' ? 'Superadmin' : '' %></td>
 							<% if can? :edit, u %>
 							<td class="edit">
 								<a href="<%= dashboard_teams_path('', edit_user: u.id) %>">
