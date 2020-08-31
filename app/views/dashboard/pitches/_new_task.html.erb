@@ -89,13 +89,32 @@
 						</div>
 					</div>
 				</div>
-				<% if @task.catchword_list&.catchwords&.present? %>
-				<div class="title list-title">Liste</div>
-				<% end %>
 				<div class="words-list cw-list">
 					<% if @task.catchword_list %>
-					<% @task.catchword_list.catchwords.each do |cw| %>
-					<div class="hr-line"></div>
+					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != @task.catchword_list.catchwords.count %>
+						<% catchword_list = [] %>
+						<% @task.catchword_list.catchwords.each do |word| %>
+							<% if cannot? :read, word %>
+								<% @entry = {list: word.catchword_lists.first.id, name: word.catchword_lists.first.name} %>
+								<% if !catchword_list.include?(@entry) %>
+									<% catchword_list << @entry %>
+								<% end %>
+							<% end %>
+						<% end %>
+						<div class="title list-title">Listen</div>
+						<% catchword_list.each do |list| %>
+						<div class="words-wrapper">
+							<div class="word">
+								<%= list[:name] %>
+							</div>
+							<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: list[:list], type: 'catchword') %>" data-method="delete">
+								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+							</a>
+						</div>
+						<% end %>
+					<% end %>
+					<div class="title list-title">Text</div>
+					<% @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %>
 					<div class="words-wrapper">
 						<div class="word"><%= cw.name %></div>
 						<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'far fa-trash-alt remove' %>
@@ -103,6 +122,7 @@
 							<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 						</a>
 					</div>
+					<div class="hr-line"></div>
 					<% end %>
 					<% end %>
 				</div>
@@ -420,12 +440,32 @@
 				</div>
 			</div>
 		</div>
-		<% if @task.objection_list&.objections&.present? %>
-		<div class="title ow-list-title">List</div>
-		<% end %>
 		<div class="words-list ow-list">
 			<% if @task.objection_list.present? %>
-			<% @task.objection_list.objections.each do |ow| %>
+			<% if @task.objection_list.objections.accessible_by(current_ability).count != @task.objection_list.objections.count %>
+				<% objection_list = [] %>
+				<% @task.objection_list.objections.each do |word| %>
+					<% if cannot? :read, word %>
+						<% @entry = {list: word.objection_lists.first.id, name: word.objection_lists.first.name} %>
+						<% if !objection_list.include?(@entry) %>
+							<% objection_list << @entry %>
+						<% end %>
+					<% end %>
+				<% end %>
+				<div class="title list-title">Listen</div>
+				<% objection_list.each do |list| %>
+				<div class="words-wrapper">
+					<div class="word">
+						<%= list[:name] %>
+					</div>
+					<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: list[:list], type: 'objection') %>" data-method="delete">
+						<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+					</a>
+				</div>
+				<% end %>
+			<% end %>
+			<div class="title list-title">Reaktionen</div>
+			<% @task.objection_list.objections.accessible_by(current_ability).each do |ow| %>
 			<div class="hr-line"></div>
 			<div class="words-wrapper">
 				<div class="word"><%= ow.name %></div>

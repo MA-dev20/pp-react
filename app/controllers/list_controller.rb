@@ -1,6 +1,6 @@
 class ListController < ApplicationController
   before_action :set_user
-  before_action :set_list, only: [:update, :add_entry]
+  before_action :set_list, only: [:update, :add_entry, :add_sounds]
 
   def create
     if params[:list][:type] == 'catchword'
@@ -61,6 +61,36 @@ class ListController < ApplicationController
       else
         render json: {entry: "exists"}
       end
+    end
+  end
+
+  def add_sounds
+    if @list_type == 'catchword'
+      params[:list][:sounds].each do |sound|
+        @entry = @company.catchwords.find_by(name: sound.original_filename.split('.mp3').first)
+        if @entry
+          @entry.update(sound: sound)
+          @list.catchwords << @entry if @list.catchwords.where(name: @entry.name).count == 0
+        else
+          @entry = @company.catchwords.create(user: @user, name: sound.original_filename.split('.mp3').first, sound: sound)
+          @list.catchwords << @entry
+        end
+      end
+      render json: {id: @list.id, type: @list_type}
+      return
+    else
+      params[:list][:sounds].each do |sound|
+        @entry = @company.objections.find_by(name: sound.original_filename.split('.mp3').first)
+        if @entry
+          @entry.update(sound: sound)
+          @list.objections << @entry if @list.objections.where(name: @entry.name).count == 0
+        else
+          @entry = @company.objections.create(user: @user, name: sound.original_filename.split('.mp3').first, sound: sound)
+          @list.objections << @entry
+        end
+      end
+      render json: {id: @list.id, type: @list_type}
+      return
     end
   end
 

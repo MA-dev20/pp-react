@@ -51,7 +51,7 @@ Rails.application.routes.draw do
 
   put 'pitches/:id/update', to: 'pitches#update_pitch', as: 'update_pitch'
 
-  get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
+  get '/pitches/:id', to: 'pitches#delete_pitch', as: 'delete_unsave_pitch'
   get 'pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order', to: 'pitches#set_task_order'
   post 'task/:pitch_id/task_media', to: 'pitches#create_task_media', as: 'create_task_media'
   post 'pitches/:id/pitch_media', to: 'pitches#create_pitch_media', as: 'create_pitch_media'
@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   post 'pitches/:pitch_id/task/:task_id/update', to: 'pitches#update_task', as: 'update_task'
   delete 'pitches/:pitch_id/task/:task_id/media', to: 'pitches#delete_media', as: 'delete_task_media'
   delete 'pitches/:pitch_id/task/:task_id/words', to: 'pitches#delete_words', as: 'delete_task_words'
+  delete 'pitches/:pitch_id/task/:task_id/lists', to: 'pitches#delete_list', as: 'delete_task_list'
 
 
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
@@ -84,6 +85,7 @@ Rails.application.routes.draw do
   post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
   put 'lists/:type/:list_id/delete', to: 'list#destroy', as: 'delete_list'
   post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
+  post 'lists/:list_id/addSound', to: 'list#add_sounds', as: 'list_add_sounds'
   post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
   post 'lists/:type/:list_id/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
 

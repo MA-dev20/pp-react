@@ -20,7 +20,11 @@
 			<div id="ges_text"></div>
 		</div>
 		<div class="name">Gesamt</div>
-		<div class="change"><%= @user.ges_change / 10.0 %></div>
+		<div class="change"><% if @turns.count > 1 %>
+		<%= (@turns.last.ges_rating - @turns.second_to_last.ges_rating) / 10.0 %>
+		<% else %>
+		<%= @turns.last.ges_rating / 10.0 %>
+		<% end %></div>
 	</div>
 	<% @user_ratings.each do |r| %>
 	<div class="card" id="ratingCard_<%= r[:id] %>" onclick="setChart(<%= r[:id] %>)">
@@ -32,7 +36,11 @@
 		</div>
 		<div class="name"><%= r[:name] %></div>
 		<div class="change">
-			<%= (@turns.last.ges_rating - @turns.second_to_last.ges_rating) / 10.0 %>
+			<% if GameTurnRating.where(company: @company, user: @user, rating_criterium: r[:id]).count > 1 %>
+			<%= (GameTurnRating.where(company: @company, user: @user, rating_criterium: r[:id]).last.rating - GameTurnRating.where(company: @company, user: @user, rating_criterium: r[:id]).second_to_last.rating) / 10.0 %>
+			<% else %>
+			<%= GameTurnRating.where(company: @company, user: @user, rating_criterium: r[:id]).last.rating / 10.0 %>
+			<% end %>
 		</div>
 	</div>
 	<% end %>
@@ -176,21 +184,20 @@
 			labels: label6,
 			datasets: [{
 				label: user,
-                data: data6,
-                fill: false,
-                lineTension:0,
-                spanGaps: true,
-                borderWidth: 3,
-                borderColor: "rgba(67, 148, 236, 1)",
-                pointBackgroundColor: "#4394ec",
-                pointBorderColor: "#fafafa",
-                pointBorderWidth: 3,
-                pointStyle: 'circle',
-                pointRadius: 9,
-                hoverRadius: 9,
-                datapoints: datapoints6,
-                extra: datapoints6,
-
+        data: data6,
+        fill: false,
+        lineTension:0,
+        spanGaps: true,
+        borderWidth: 3,
+        borderColor: "rgba(67, 148, 236, 1)",
+        pointBackgroundColor: "#4394ec",
+        pointBorderColor: "#fafafa",
+        pointBorderWidth: 3,
+        pointStyle: 'circle',
+        pointRadius: 9,
+        hoverRadius: 9,
+        datapoints: datapoints6,
+        extra: datapoints6,
 			}],
 		},
 		options: {
@@ -206,70 +213,70 @@
 				position: 'nearest',
 				custom: function(context) {
 					var tooltipEl = document.getElementById('chartjs-tooltip');
-
 					if (!tooltipEl) {
 						tooltipEl = document.createElement('div');
 						tooltipEl.id = 'chartjs-tooltip';
 						tooltipEl.innerHTML = '<table></table>';
-						body.appendChild(tooltipEl);
+						$('body').append(tooltipEl);
 					}
-
-					// Hide if no tooltip
-          var tooltipModel = context.tooltip;
-          if (tooltipModel.opacity === 0) {
-            tooltipEl.style.opacity = 0;
-            return;
-          }
-
-          // Set caret Position
-          tooltipEl.classList.remove('above', 'below', 'no-transform');
-          if (tooltipModel.yAlign) {
-            tooltipEl.classList.add(tooltipModel.yAlign);
-          } else {
-            tooltipEl.classList.add('no-transform');
-          }
-
-          function getBody(bodyItem) {
-            return bodyItem.lines;
-          }
-
-					if (tooltipModel.body) {
-						var titleLines = tooltipModel.title || [];
-						var bodyLines = dataset['datapoints'][tooltipItem['index']]['data']['cust_ratings'];
-
+					var tooltip = context.tooltip;
+					if (context.opacity === 0) {
+						tooltipEl.style.opacity = 0;
+						return;
+					}
+					tooltipEl.classList.remove('above', 'below', 'no-transform');
+					if (context.yAlign) {
+						tooltipEl.classList.add(context.yAlign);
+					} else {
+						tooltipEl.classList.add('no-transform');
+					}
+					function getBody(bodyItem) {
+					 return bodyItem.after;
+					}
+					if (context.body) {
+						var titleLines = context.title || [];
+						console.log("contextTitle -> ");
+						console.log(context.title);
+						var bodyLines = context.body.map(getBody);
+						console.log("contextBody -> ");
+						console.log(context.body);
 						var innerHtml = '<thead>';
 
 						titleLines.forEach(function(title) {
-								innerHtml += '<tr><th>' + title + '</th></tr>';
-						});
+							innerHtml += '<tr><th>' + title + '</th></tr>';
+						})
+
 						innerHtml += '</thead><tbody>';
 
 						bodyLines.forEach(function(body, i) {
-								var colors = tooltipModel.labelColors[i];
-								var style = 'background:' + colors.backgroundColor;
-								style += '; border-color:' + colors.borderColor;
-								style += '; border-width: 2px';
-								var span = '<span style="' + style + '"></span>';
-								innerHtml += '<tr><td>' + span + body + '</td></tr>';
+							var colors = context.labelColors[i];
+							var style = 'background:' + colors.backgroundColor;
+							style += '; border-color:' + colors.borderColor;
+							style += '; border-width: 2px';
+							var span = '<span style="' + style + '"></span>';
+							body.forEach(function(line) {
+								console.log("line -> ");
+								console.log(line);
+								innerHtml += '<tr><td>'+ line["name"] +'</td><td>' + line["rating"] + '</td></tr>';
+							})
 						});
 						innerHtml += '</tbody>';
-
 						var tableRoot = tooltipEl.querySelector('table');
 						tableRoot.innerHTML = innerHtml;
+
+						var position = this._chart.canvas.getBoundingClientRect();
+						tooltipEl.style.opacity = 1;
+            tooltipEl.style.position = 'absolute';
+            tooltipEl.style.left = position.left + window.pageXOffset + context.caretX + 'px';
+            tooltipEl.style.top = position.top + window.pageYOffset + context.caretY + 'px';
+            tooltipEl.style.fontFamily = context._bodyFontFamily;
+            tooltipEl.style.fontSize = context.bodyFontSize + 'px';
+            tooltipEl.style.fontStyle = context._bodyFontStyle;
+            tooltipEl.style.padding = context.yPadding + 'px ' + context.xPadding + 'px';
+            tooltipEl.style.pointerEvents = 'none';
 					}
-
-					var position = context.chart.canvas.getBoundingClientRect();
-
-					// Display, position, and set styles for font
-					tooltipEl.style.opacity = 1;
-					tooltipEl.style.position = 'absolute';
-					tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-					tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-					tooltipEl.style.font = tooltipModel.bodyFont.string;
-					tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-					tooltipEl.style.pointerEvents = 'none';
 				},
-	      callbacks: {
+				callbacks: {
 	        title: function(tooltipItem, data) {
 	          return data['labels'][tooltipItem[0]['index']];
 	        },
@@ -279,18 +286,9 @@
 	        afterLabel: function(tooltipItem, data) {
 	          var dataset = data['datasets'][0];
 						var ratings = dataset['datapoints'][tooltipItem['index']]['data']['cust_ratings']
-	          return '(' + JSON.stringify(ratings) + '%)';
+	          return ratings;
 	        }
 	      },
-	      backgroundColor: '#FFF',
-				borderColor: "rgba(0,0,0,.1)",
-				borderWidth: 1,
-				borderRadius: 10,
-	      titleFontSize: 16,
-	      titleFontColor: '#0066ff',
-	      bodyFontColor: '#000',
-	      bodyFontSize: 14,
-	      displayColors: false
     	},
 			legend: {
 				display: false,
@@ -317,18 +315,18 @@
 					}
 				}],
 				xAxes: [{
-                    gridLines: {
-                        display: false,
-                        color:"rgba(255,255,255,1)",
-                        lineWidth:0.2,
-                        zeroLineBorderDashOffset: 1.0,
-                    },
-                    ticks: {
-                        fontColor:"rgba(0,0,0,1)",
-                        fontSize: 14,
-                        fontFamily: 'Nunito',
-                    }
-                }],
+          gridLines: {
+            display: false,
+            color:"rgba(255,255,255,1)",
+            lineWidth:0.2,
+            zeroLineBorderDashOffset: 1.0,
+          },
+          ticks: {
+            fontColor:"rgba(0,0,0,1)",
+            fontSize: 14,
+            fontFamily: 'Nunito',
+          }
+        }],
 			},
 		}
 	});

@@ -30,6 +30,13 @@
           <% end %>
         </div>
       <% end %>
+      <% if can? :manage, :all %>
+      <%= form_for :list, url: list_add_sounds_path(@liste), html: {id: "addSoundForm"} do |f| %>
+        <%= f.hidden_field :type, value: @listType %>
+        <label for="list_sounds" class="btn">Upload</label>
+        <%= f.file_field :sounds, multiple: true %>
+      <% end %>
+      <% end %>
     <% else %>
       <h3><%= @liste.name %></h3>
     <% end %>
@@ -292,5 +299,30 @@
       }
     })
   }
+  $('#list_sounds').on('change', function() {
+    $('#addSoundForm').submit();
+  })
+  $('#addSoundForm').on('submit', function(e) {
+    e.preventDefault();
+    var URL = '<%= list_add_sounds_path(@liste) %>';
+    var formData = new FormData(document.getElementById('addSoundForm'));
+    $.ajax({
+      url: URL,
+      type: "post",
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: formData,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function (res) {
+        <% if params[:folder_id] %>
+          location.replace("<%= dashboard_my_content_url(folder_id: params[:folder_id]) %>&" + res.type + '=' + res.id);
+        <% else %>
+          location.replace("<%= dashboard_my_content_url %>?" + res.type + '=' + res.id);
+        <% end %>
+      }
+    })
+  });
 </script>
 <% end %>

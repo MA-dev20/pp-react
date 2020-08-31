@@ -103,12 +103,20 @@ class DashboardController < ApplicationController
 
   def peters_content
     @folders = ContentFolder.where(content_folder: nil, available_for: 'global')
+    @folders += ContentFolder.where(content_folder: nil, available_for: 'global_hidden')
     @files = TaskMedium.where(content_folder: nil, available_for: 'global').where.not(is_pdf: true)
+    @files = TaskMedium.where(content_folder: nil, available_for: 'global_hidden').where.not(is_pdf: true)
     @lists = []
     CatchwordList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'catchword', name: cl.name}
     end
+    CatchwordList.where(content_folder: nil, available_for: 'global_hidden').where.not(name: 'task_list').each do |cl|
+      @lists << {id: cl.id, type: 'catchword', name: cl.name}
+    end
     ObjectionList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
+      @lists << {id: cl.id, type: 'objection', name: cl.name}
+    end
+    ObjectionList.where(content_folder: nil, available_for: 'global_hidden').where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'objection', name: cl.name}
     end
     if params[:folder_id]
@@ -199,9 +207,13 @@ class DashboardController < ApplicationController
         ol = @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list')
       elsif level == 'peters'
         files = TaskMedium.where(available_for: 'global', content_folder: nil)
+        files += TaskMedium.where(available_for: 'global_hidden', content_folder: nil)
         folders = ContentFolder.where(available_for: 'global', content_folder: nil)
+        folders += ContentFolder.where(available_for: 'global_hidden', content_folder: nil)
         cw = CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
+        cw += CatchwordList.where(available_for: 'global_hidden', content_folder: nil).where.not(name: 'task_list')
         ol = ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
+        ol += ObjectionList.where(available_for: 'global_hidden', content_folder: nil).where.not(name: 'task_list')
       end
       if @folder
         files.each do |file|
@@ -350,8 +362,8 @@ class DashboardController < ApplicationController
 	  else
 		@turns = @turns.except(t)
 	  end
-
 	end
+  @turns = @turns.where.not(ges_rating: nil)
   TeamUser.where(user: @user).each do |t|
     @team = t.team if t.team.company == @company
   end
@@ -512,17 +524,8 @@ class DashboardController < ApplicationController
   end
 
   def edit_pitch
-  # @pitches = @admin.pitches
   @pitches = @company.pitches.includes(task_orders: [task: [:task_medium]]).accessible_by(current_ability)
   @pitch = @pitches.select { |p| p.id == params[:pitch_id].to_i }.first
-
-  # @pitches = @company.pitches.includes(:tasks).accessible_by(current_ability)
-  # @pitch = Pitch.find(params[:pitch_id])
-  # @pitches = @pitches.includes(task_orders: [task: [:task_medium]])
-  # @pitch = Pitch.includes(:task_orders).find(params[:pitch_id])
-  # @pitch = Pitch.where(id: params[:pitch_id]).includes(:task_orders).first
-  # @pitch = Pitch.where(id: params[:pitch_id]).includes(task_orders: [task: [:task_medium]]).first
-  # debugger
 	if params[:task_id]
     @task = @pitch.tasks.find_by(id: params[:task_id])
     unless @task.present?
@@ -550,7 +553,11 @@ class DashboardController < ApplicationController
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
 	end
 	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+  @cw_lists += CatchwordList.where(available_for: 'global').where.not(name: 'task_list')
+  @cw_lists += CatchwordList.where(available_for: 'global_hidden').where.not(name: 'task_list')
 	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
+  @ol_list += ObjectionList.where(available_for: 'global').where.not(name: 'task_list')
+  @ol_list += ObjectionList.where(available_for: 'global_hidden').where.not(name: 'task_list')
 
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)

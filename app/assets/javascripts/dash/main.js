@@ -11,6 +11,7 @@
  *= require cocoon
  */
 
+// Colors
 function ratingColor(rating) {
 	var color_value;
 	if (rating < 0.5 ) {

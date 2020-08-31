@@ -19,22 +19,22 @@
 
       <% if can? :create, ContentFolder %>
       <div class="card" onclick="redirectContent('my_content')">
-        <%= image_tag 'dash/icons/folder.svg'%>
-        <div class="title">Mein Content</div>
+        <%= image_tag 'dash/new_icons/myfolder.png'%>
+        <div class="title">Mein Inhalt</div>
       </div>
       <% end %>
 
       <% if @shared_count != 0 %>
       <div class="card" onclick="redirectContent('shared_content')">
-        <%= image_tag 'dash/icons/folder.svg'%>
-        <div class="title">Geteilter Content</div>
+        <%= image_tag 'dash/new_icons/sharefolder.png'%>
+        <div class="title">Geteilter Inhalt</div>
       </div>
       <% end %>
 
       <% if @peters_count != 0 %>
       <div class="card" onclick="redirectContent('peters_content')">
-        <%= image_tag 'logo-m.png'%>
-        <div class="title">Peter's Content</div>
+        <%= image_tag 'dash/new_icons/PPfolder.png'%>
+        <div class="title">Peter's Inhalt</div>
       </div>
       <% end %>
     </div>

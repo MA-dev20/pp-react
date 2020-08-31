@@ -17,6 +17,9 @@
         <div class="dropdown-text" onclick="showDropdown()"><span><%= this_media.available_for == 'user' ? "Teilen mit: " : this_media.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_media.team_id).name : this_media.available_for == 'company' ? 'Geteilt mit Company' : 'Global Content' %></span><i class="fas fa-caret-down"></i></div>
         <div class="dropdown-menu" id="userDropdown">
           <% if @admin.bo_role == 'root' %>
+            <div class="link" onclick="shareBig('global_hidden')">
+              Global hidden
+            </div>
             <div class="link" onclick="shareBig('global')">
               Global
             </div>
@@ -53,7 +56,9 @@
     $('#content_available_for').val(type);
     if( type == 'company' ) {
       $('.dropdown-text span').text("<%= @company.name %>");
-    } else {
+    } else if (type == 'global_hidden') {
+      $('.dropdown-text span').text("Globaler Hidden Content");
+    } else if (type == 'global') {
       $('.dropdown-text span').text("Globaler Content");
     }
     $('#userDropdown').toggle();

@@ -58,6 +58,16 @@ class Ability
           can :read, Game, :user_id => user.id
           can :update, Game, :user_id => user.id
           can :destroy, Game, :user_id => user.id
+          user.catchword_lists.each do |list|
+            list.catchwords.each do |entry|
+              can :read, Catchword, :id => entry.id
+            end
+          end
+          user.objection_lists.each do |list|
+            list.objections.each do |entry|
+              can :read, Objection, :id => entry.id
+            end
+          end
         end
         if @abilities.edit_content != 'none'
           can :update, Pitch, :user_id => user.id
@@ -85,6 +95,31 @@ class Ability
         can :read, TaskMedium, :available_for => 'global'
         can :read, CatchwordList, :available_for => 'global'
         can :read, ObjectionList, :available_for => 'global'
+        can :read, Pitch, :available_for => 'global_hidden'
+        can :read, ContentFolder, :available_for => 'global_hidden'
+        can :read, TaskMedium, :available_for => 'global_hidden'
+        can :read, CatchwordList, :available_for => 'global_hidden'
+        can :read, ObjectionList, :available_for => 'global_hidden'
+        CatchwordList.where(available_for: 'global_hidden').each do |list|
+          list.catchwords.each do |entry|
+            cannot :read, Catchword, :id => entry.id
+          end
+        end
+        ObjectionList.where(available_for: 'global_hidden').each do |list|
+          list.objections.each do |entry|
+            cannot :read, Objection, :id => entry.id
+          end
+        end
+        CatchwordList.where(available_for: 'global').each do |list|
+          list.catchwords.each do |entry|
+            can :read, Catchword, :id => entry.id
+          end
+        end
+        ObjectionList.where(available_for: 'global').each do |list|
+          list.objections.each do |entry|
+            can :read, Objection, :id => entry.id
+          end
+        end
 
         SharedPitch.where(user: user).each do |sp|
           can :read, Pitch, :id => sp.pitch_id
@@ -93,6 +128,12 @@ class Ability
           can :read, TaskMedium, :id => sc.task_medium_id
           can :read, CatchwordList, :id => sc.catchword_list_id
           can :read, ObjectionList, :id => sc.objection_list_id
+          sc.catchword_list.catchwords.each do |entry|
+            can :read, Catchword, :id => entry.id
+          end
+          sc.objection_list.objections.each do |entry|
+            can :read, Objection, :id => entry.id
+          end
         end
         SharedFolder.where(user: user).each do |sf|
           can :read, ContentFolder, :id => sf.content_folder_id
@@ -110,6 +151,16 @@ class Ability
             can :read, ContentFolder, :team_id => team.id, :available_for => 'team'
             can :read, CatchwordList, :team_id => team.id, :available_for => 'team'
             can :read, ObjectionList, :team_id => team.id, :available_for => 'team'
+            CatchwordList.where(team: team, available_for: 'team').each do |list|
+              list.catchwords.each do |entry|
+                can :read, Catchword, :id => entry.id
+              end
+            end
+            ObjectionList.where(team: team, available_for: 'team').each do |list|
+              list.objections.each do |entry|
+                can :read, Objection, :id => entry.id
+              end
+            end
           end
           if @abilities.edit_content != 'none' && @abilities.edit_content != 'user'
             can :update, Pitch, :team_id => team.id, :available_for => 'team'
@@ -147,6 +198,16 @@ class Ability
               can :read, ContentFolder, :department_id => du.department_id, :available_for => 'department'
               can :read, CatchwordList, :department_id => du.department_id, :available_for => 'department'
               can :read, ObjectionList, :department_id => du.department_id, :available_for => 'department'
+              CatchwordList.where(department: du.department, available_for: 'department').each do |list|
+                list.catchwords.each do |entry|
+                  can :read, Catchword, :id => entry.id
+                end
+              end
+              ObjectionList.where(department: du.department, available_for: 'department').each do |list|
+                list.objections.each do |entry|
+                  can :read, Objection, :id => entry.id
+                end
+              end
             end
 
             if @abilities.edit_content == 'department' || @abilities.edit_content == 'company'
@@ -184,6 +245,16 @@ class Ability
           can :read, ContentFolder, :company_id => cu.company_id, :available_for => 'company'
           can :read, CatchwordList, :company_id => cu.company_id, :available_for => 'company'
           can :read, ObjectionList, :company_id => cu.company_id, :available_for => 'company'
+          CatchwordList.where(company: cu.company, available_for: 'company').each do |list|
+            list.catchwords.each do |entry|
+              can :read, Catchword, :id => entry.id
+            end
+          end
+          ObjectionList.where(company: cu.company, available_for: 'company').each do |list|
+            list.objections.each do |entry|
+              can :read, Objection, :id => entry.id
+            end
+          end
         end
         if @abilities.edit_content == 'company'
           can :update, Pitch, :company_id => cu.company_id, :available_for => 'company'

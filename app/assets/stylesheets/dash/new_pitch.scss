@@ -770,27 +770,23 @@
 
 		.add-reaction, .catchword {
 
-            .words-list .word {
-                padding: 0.5vh;
-            }
-
-            .words-list {
-                .ps__rail-y {
-                    height: 0 !important;
-                }
-                .ps__thumb-y {
-                    top: 25vh !important;
-                }
+            .words-list .words-wrapper {
+                margin-right: 1vh;
+								width: calc(100% - 1vh)
             }
 
             .ow-list {
-                height: 10vh;
+							position: relative;
+                height: 15vh;
+								width: calc(100% + 1vh);
             }
 
             .cw-list {
-                // position: relative;
-                height: 14vh;
+                position: relative;
+                height: 16vh;
+								width: calc(100% + 1vh);
             }
+						.hr-line {width: calc(100% - 1vh)}
 
             .words-wrapper {
                 display: flex;

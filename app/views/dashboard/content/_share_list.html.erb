@@ -19,9 +19,12 @@
     <div class="form-group list-table">
       <label for="">Gruppe auswählen</label>
       <div class="dropdown" id="ability-dropdown">
-        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_list.available_for == 'user' ? "Teilen mit: " : this_list.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_list.team_id).name : this_list.available_for == 'company' ? 'Geteilt mit Company' : 'Global Content' %></span><i class="fas fa-caret-down"></i></div>
+        <div class="dropdown-text" onclick="showDropdown()"><span><%= this_list.available_for == 'user' ? "Teilen mit: " : this_list.available_for == 'team' ? "Geteilt mit Team: " + Team.find(this_list.team_id).name : this_list.available_for == 'company' ? 'Geteilt mit Company' : this_list.available_for == 'global' ? 'Global Content' : this_list.available_for == 'global_hidden' ? 'Globaler Hidden Content' : '' %></span><i class="fas fa-caret-down"></i></div>
         <div class="dropdown-menu" id="userDropdown">
           <% if @admin.bo_role == 'root' %>
+          <div class="link" onclick="shareBig('global_hidden')">
+            Global Hidden
+          </div>
             <div class="link" onclick="shareBig('global')">
               Global
             </div>
@@ -55,7 +58,13 @@
   }
   function shareBig(type) {
     $('#list_available_for').val(type);
-    $('.dropdown-text span').text(type);
+    if( type == 'company' ) {
+      $('.dropdown-text span').text("<%= @company.name %>");
+    } else if (type == 'global_hidden') {
+      $('.dropdown-text span').text("Globaler Hidden Content");
+    } else if (type == 'global') {
+      $('.dropdown-text span').text("Globaler Content");
+    }
     $('#userDropdown').toggle();
   }
   function shareTeam(teamID, teamName) {

@@ -96,6 +96,22 @@ class PitchesController < ApplicationController
 	end
   end
 
+  def delete_list
+    @pitch = Pitch.find(params[:pitch_id])
+    @task = Task.find(params[:task_id])
+    if params[:type] == 'objection'
+      @list = ObjectionList.find(params[:list_id])
+      @list.objections.each do |entry|
+        ObjectionListObjection.find_by(objection: entry, objection_list: @task.objection_list).destroy if ObjectionListObjection.find_by(objection: entry, objection_list: @task.objection_list)
+      end
+  	else
+      @list = CatchwordList.find(params[:list_id])
+      @list.catchwords.each do |entry|
+        CatchwordListCatchword.find_by(catchword: entry, catchword_list: @task.catchword_list).destroy if CatchwordListCatchword.find_by(catchword: entry, catchword_list: @task.catchword_list)
+      end
+  	end
+  	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
+  end
   def delete_words
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])

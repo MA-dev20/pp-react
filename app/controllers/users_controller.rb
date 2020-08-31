@@ -124,6 +124,15 @@ class UsersController < ApplicationController
       @user.destroy
     else
       @user.company_users.find_by(company: @company).destroy
+      @user.department_users.each do |department|
+        department.destroy if department.department.company == @company
+      end
+      @user.team_users.each do |team|
+        team.destroy if team.team.company == @company
+      end
+      @company.users_user.where(userID: @user).each do |user|
+        user.destroy
+      end
     end
 	  redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice'
 	  redirect_to dashboard_teams_path if params[:site] == 'dashboard'
