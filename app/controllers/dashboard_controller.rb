@@ -18,7 +18,7 @@ class DashboardController < ApplicationController
   end
 
   def my_content
-    @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil, user: @admin)
+    @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
     @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(is_pdf: true)
     @lists = []
     @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
