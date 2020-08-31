@@ -355,11 +355,25 @@ class DashboardController < ApplicationController
 		date = bod
 	  end
     cust_rating = []
+    cust_task = []
 	  if t.game_turn_ratings.count != 0
 	    t.game_turn_ratings.each do |tr|
-		  cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
+        if t.ratings.find_by(rating_criterium: tr.rating_criterium)
+		    cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0, my_rating: t.ratings.find_by(rating_criterium: tr.rating_criterium).rating / 10.0}
+        else
+        cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
+        end
 	    end
-	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
+      if t.task.task_type == 'catchword'
+        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.catchword.name}
+      elsif t.task.task_type == 'audio'
+        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, audio: t.task.task_medium.audio.url}
+      elsif t.task.task_type == 'image'
+        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, image: t.task.task_medium.image.url}
+      elsif t.task.task_type == 'video'
+        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, video: t.task.task_medium.video.url}
+      end
+	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), task: cust_task, time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, cust_ratings: cust_rating}
 	  else
 		@turns = @turns.except(t)
 	  end

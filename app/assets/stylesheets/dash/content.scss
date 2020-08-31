@@ -746,12 +746,15 @@
         width: 48%;
         top: 0;
         border: 1px solid rgb(var(--btncolor));
+        margin: 0;
       }
       .btn:first-child {
         left: 0;
+        right: auto;
       }
       .btn:last-child {
         right: 0;
+        left: auto;
       }
     }
   }
