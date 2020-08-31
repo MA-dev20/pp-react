@@ -299,7 +299,7 @@ class DashboardController < ApplicationController
   end
 
   def teams
-  @teams = @company.teams.accessible_by(current_ability)
+  @teams = @company.teams.includes(:users).accessible_by(current_ability)
 	@team = Team.find(params[:team_id]) if params[:team_id]
   @users_count = @company.users.accessible_by(current_ability).count
 	@users = @team.users.accessible_by(current_ability).order('lname') if params[:team_id] && params[:edit] != "true"
@@ -524,7 +524,6 @@ class DashboardController < ApplicationController
   # @pitch = Pitch.includes(:task_orders).find(params[:pitch_id])
   # @pitch = Pitch.where(id: params[:pitch_id]).includes(:task_orders).first
   # @pitch = Pitch.where(id: params[:pitch_id]).includes(task_orders: [task: [:task_medium]]).first
-  # debugger
 	if params[:task_id]
     @task = @pitch.tasks.find_by(id: params[:task_id])
     unless @task.present?
