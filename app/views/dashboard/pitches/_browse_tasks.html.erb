@@ -7,7 +7,7 @@
     <h3 class="pitches-header">Pitches</h3>
     <h5>Hier ist eine Liste deiner Pitchvorlagen</h5>
     <div class="pitches pitch-list">
-        <% pitches.each do |pitch| %>
+        <% pitches.includes(:task_orders, tasks: [:task_medium]).each do |pitch| %>
         <div class="card pitch-card">
             <div class="thumb">
                 <% if pitch.image? %>
@@ -17,11 +17,15 @@
                 <%= image_tag 'dash/pitch_placeholder.png', class: 'pitch-placeholder-img' %>
                 <% end %>
             </div>
-
+            <%
+                tasks = pitch.tasks
+                slide_tasks_count = tasks.select{|t| t.task_type == 'slide'}.size
+                other_tasks_count = tasks.select{|t| t.task_type != 'slide'}.size
+            %>    
             <div class="title"><%= pitch.title %></div>
             <div class="subtitle">
-                Slide: <%= pitch.tasks.where(task_type: 'slide').size + pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size%>,
-                Tasks: <%= pitch.tasks.where.not(task_type: 'slide').size + pitch.tasks.where(task_type: nil).size %>
+                Slide: <%= slide_tasks_count + other_tasks_count %>,
+                Tasks: <%= other_tasks_count %>
             </div>
             <button style="margin: 0; position: absolute; top: 0; left: 0; height: 100%; width: 100%; border: none; background: none;" data-pitch-id="<%= pitch.id %>"
                     data-task="pitchTasks<%= pitch.id %>" data-name="<%= pitch.title %>"
@@ -31,7 +35,7 @@
         <% end %>
     </div>
     <div class="pitch-tasks-list">
-        <% pitches.each do |pitch| %>
+        <% pitches.includes(:task_orders, tasks: [:task_medium]).each do |pitch| %>
         <div class="right-side-card hide pitch-tasks-div" id="pitchTasks<%= pitch.id %>">
             <div class="right-tasks">
                 <% pitch.tasks.each_with_index do |task, index| %>

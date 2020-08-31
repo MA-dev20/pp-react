@@ -513,9 +513,12 @@ class DashboardController < ApplicationController
 
   def edit_pitch
   # @pitches = @admin.pitches
-  @pitches = @company.pitches.accessible_by(current_ability)
+  @pitches = @company.pitches.includes(task_orders: [task: [:task_medium]]).accessible_by(current_ability)
+  @pitch = @pitches.select { |p| p.id == params[:pitch_id].to_i }.first
+
   # @pitches = @company.pitches.includes(:tasks).accessible_by(current_ability)
-  @pitch = Pitch.find(params[:pitch_id])
+  # @pitch = Pitch.find(params[:pitch_id])
+  # @pitches = @pitches.includes(task_orders: [task: [:task_medium]])
   # @pitch = Pitch.includes(:task_orders).find(params[:pitch_id])
   # @pitch = Pitch.where(id: params[:pitch_id]).includes(:task_orders).first
   # @pitch = Pitch.where(id: params[:pitch_id]).includes(task_orders: [task: [:task_medium]]).first
