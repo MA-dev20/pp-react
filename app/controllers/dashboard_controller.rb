@@ -5,7 +5,8 @@ class DashboardController < ApplicationController
   layout "dashboard"
 
   def content
-    @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(is_pdf: true).count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
+    @peters_count = ContentFolder.select{|cf| cf.available_for == 'global'}.size + TaskMedium.select{|tm| tm.available_for == 'global' && tm.is_pdf != true}.size + CatchwordList.select{|cl| cl.available_for == 'global' && cl.name != 'task_list'}.size + ObjectionList.select{|ol| ol.available_for == 'global' && ol.name != 'task_list'}.size
+    # @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(is_pdf: true).count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
     @shared_count = @company.content_folders.accessible_by(current_ability).where.not(user: @admin).count + @company.task_media.accessible_by(current_ability).where.not(user: @admin, is_pdf: true).count + @company.catchword_lists.accessible_by(current_ability).where.not(user: @admin, name: 'task_list').count + @company.objection_lists.where.not(user: @admin, name: 'task_list').count
     if !(can? :create, ContentFolder)
       if @peters_count == 0
@@ -17,8 +18,8 @@ class DashboardController < ApplicationController
   end
 
   def my_content
-    @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil, user: @admin)
-    @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(is_pdf: true)
+    @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
+    @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(is_pdf: true)
     @lists = []
     @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'catchword', name: cl.name}
@@ -56,8 +57,8 @@ class DashboardController < ApplicationController
   end
 
   def shared_content
-    @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
-    @files = @company.task_media.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
+    @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
+    @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @lists = []
     @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
       if list.user
@@ -311,7 +312,7 @@ class DashboardController < ApplicationController
   end
 
   def teams
-  @teams = @company.teams.accessible_by(current_ability)
+  @teams = @company.teams.includes(:users).accessible_by(current_ability)
 	@team = Team.find(params[:team_id]) if params[:team_id]
   @users_count = @company.users.accessible_by(current_ability).count
 	@users = @team.users.accessible_by(current_ability).order('lname') if params[:team_id] && params[:edit] != "true"
@@ -440,11 +441,11 @@ class DashboardController < ApplicationController
   def company
   end
 
+
   def video
     @pitches = []
     @videos = []
     count = 0
-
     game_hash = @company.pitch_videos.accessible_by(current_ability).joins(game_turn: :game).group("game_turns.game_id").count
     game_hash.each do |game_id, videos_count|
       @game = Game.find(game_id)
@@ -468,34 +469,6 @@ class DashboardController < ApplicationController
         count += 1
       end
     end
-
-
-    # Game.find(23).game_turns.first.pitch
-    # video_hash = PitchVideo.joins(game_turn: [game: :pitch]).group("games.pitch_id").count
-    # video_hash.each do |pitch_id, videos_count|
-    #   pitch = Pitch.find(pitch_id)
-    # end
-    # @company.pitch_videos.accessible_by(current_ability).each do |v|
-  	# 	  minutes = v.duration / 60
-  	# 	  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-  	# 	  seconds = v.duration % 60
-  	# 	  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-  	# 	  rating = v.game_turn.ges_rating ? v.game_turn.ges_rating / 10.0 : '?'
-    #     @videos << {id: v.game_turn_id, video: v, duration: minutes + ':' + seconds, title: v.game_turn&.task&.title, user: v.user, rating: rating, pitch_id: v.game_turn.game.pitch_id}
-    #     unless @pitches.any? {|p| p[:id] == v.game_turn.game.pitch_id}
-    #       pitch = v.game_turn.game.pitch
-    #       @pitches << {id: pitch.id, title: pitch.title, created_at: pitch.created_at}
-    #     end
-  	# end
-  end
-
-  def pitch_video
-	@turn = GameTurn.find(params[:turn_id])
-	@task = @turn.task
-	@ratings = @turn.game_turn_ratings
-	@own_ratings = @turn.ratings.where(user: @admin).all
-	@video = @turn.pitch_video
-	@comments = @turn.comments.where.not(time: nil).order(:time)
   end
 
   def pitches
@@ -523,10 +496,19 @@ class DashboardController < ApplicationController
     end
   end
 
+  def pitch_video
+    @turn = GameTurn.find(params[:turn_id])
+    @task = @turn.task
+    @ratings = @turn.game_turn_ratings
+    @own_ratings = @turn.ratings.where(user: @admin).all
+    @video = @turn.pitch_video
+    @comments = @turn.comments.where.not(time: nil).order(:time)
+  end
+
   def edit_pitch
   @pitches = @company.pitches.includes(task_orders: [task: [:task_medium]]).accessible_by(current_ability)
   @pitch = @pitches.select { |p| p.id == params[:pitch_id].to_i }.first
-	if params[:task_id]
+  if params[:task_id]
     @task = @pitch.tasks.find_by(id: params[:task_id])
     unless @task.present?
       @task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
@@ -584,14 +566,6 @@ class DashboardController < ApplicationController
     # @files = @folder.task_media.order(:title)
 		@files = @folder.task_media.where.not("#{params[:type].to_sym}" => nil).order(:title)
 	end
-	# if params[:folder_id]
-    #   @folder = ContentFolder.find(params[:folder_id])
-    #   @folders = @folder.content_folders
-    #   @files = @folder.task_media.order(:title)
-    # end
-    # if params[:video]
-    #   @video = TaskMedium.find_by(id: params[:video])
-    # end
 	respond_to do |format|
 		format.js { render 'select_folder'}
 	end
@@ -638,40 +612,40 @@ class DashboardController < ApplicationController
   end
 
   def select_task
-	@pitch = Pitch.find(params[:pitch_id])
-	@task = Task.find(params[:selected_task_id])
-	@task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
-  @task_type = @task.task_type
-	@admin = current_user
-  @cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
-	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
-  @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
-  @files = ''
-  @type = ''
-  if @task.task_type != 'slide'
-    @type = @task.task_type if @task.task_type == 'image' || @task.task_type == 'video' || @task.task_type == 'audio'
-  else
-    if @task.task_medium.present?
-      @type = @task.task_medium.media_type
+    @pitch = Pitch.find(params[:pitch_id])
+    @task = Task.find(params[:selected_task_id])
+    @task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
+    @task_type = @task.task_type
+    @admin = current_user
+    @cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+    @ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
+    @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
+    @files = ''
+    @type = ''
+    if @task.task_type != 'slide'
+      @type = @task.task_type if @task.task_type == 'image' || @task.task_type == 'video' || @task.task_type == 'audio'
     else
-      @type = @task.pdf_type
+      if @task.task_medium.present?
+        @type = @task.task_medium.media_type
+      else
+        @type = @task.pdf_type
+      end
+    end
+
+    @type ||= nil
+    if @type.present?
+      @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
+    else
+      @files = @admin.task_media.where(content_folder: nil)
+    end
+    respond_to do |format|
+      format.js { render 'select_task'}
     end
   end
 
-  @type ||= nil
-  if @type.present?
-    @files = @admin.task_media.where.not("#{@type.to_sym}" => nil).where(content_folder: nil)
-  else
-    @files = @admin.task_media.where(content_folder: nil)
-  end
-	respond_to do |format|
-		format.js { render 'select_task'}
-	end
-  end
-
   def update_values
-	@task = Task.find(params[:selected_task_id])
-	@task.update(params[:type].to_sym => params[:value])
+	  @task = Task.find(params[:selected_task_id])
+	  @task.update(params[:type].to_sym => params[:value])
   end
 
   private

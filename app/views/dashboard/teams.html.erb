@@ -93,10 +93,8 @@
 					<% @teams.each do |t| %>
 						<tr ondrop="dropTeam(event, <%= t.id %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)" id="team_<%= t.id %>" class="teamname <%= @team && @team == t ? 'highlighted' : '' %>">
 							<td onclick="redirect(<%= t.id %>)"><%= t.name %></td>
-							<td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.count %></td>
+							<td onclick="redirect(<%= t.id %>)" id="count"><%= t.users.size %></td>
 							<td onclick="redirect(<%= t.id %>)"><%= t.ges_rating / 10.0 %></td>
-							<!-- <td class="edit"><%#= link_to '', dashboard_team_path(t.id, edit: true), class: 'far fa-edit' %></td> -->
-							<!-- <td class="stats"><%#= link_to '', dashboard_team_stats_path(t.id), class: 'far fa-chart-bar' %></td> -->
 							<td class="edit">
 								<a href="<%= dashboard_team_path(t.id, edit: true) %>">
 									<%= inline_svg_tag 'dash/new_icons/edit-user.svg', class: 'edit-icon' %>
