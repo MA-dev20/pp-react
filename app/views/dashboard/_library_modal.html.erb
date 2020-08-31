@@ -22,7 +22,7 @@
 			<% if folders.count != 0 %>
 			<div class="folders">
 				<h3>Ordner</h3>
-				<% folders.each do |f| %>
+				<% folders.includes(:user).each do |f| %>
 					<div class="card">
 						<img src="<%= asset_path 'dash/icons/folder.svg' %>" alt="" onclick="openFolder('<%= f.id %>', '<%= task_id %>', '<%= media_type %>')">
 						<div class="title" id="title_<%= f.id %>"><%= f.name %><div class="ellipsis">...</div></div>
