@@ -5,7 +5,8 @@ class DashboardController < ApplicationController
   layout "dashboard"
 
   def content
-    @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(is_pdf: true).count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
+    @peters_count = ContentFolder.select{|cf| cf.available_for == 'global'}.size + TaskMedium.select{|tm| tm.available_for == 'global' && tm.is_pdf != true}.size + CatchwordList.select{|cl| cl.available_for == 'global' && cl.name != 'task_list'}.size + ObjectionList.select{|ol| ol.available_for == 'global' && ol.name != 'task_list'}.size
+    # @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(is_pdf: true).count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
     @shared_count = @company.content_folders.accessible_by(current_ability).where.not(user: @admin).count + @company.task_media.accessible_by(current_ability).where.not(user: @admin, is_pdf: true).count + @company.catchword_lists.accessible_by(current_ability).where.not(user: @admin, name: 'task_list').count + @company.objection_lists.where.not(user: @admin, name: 'task_list').count
     if !(can? :create, ContentFolder)
       if @peters_count == 0
