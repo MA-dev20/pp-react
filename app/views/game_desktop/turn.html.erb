@@ -9,11 +9,29 @@
 			<%= @turn.user.fname[0].capitalize + @turn.user.lname[0].capitalize %>
 		</div>
 		<% end %>
+		<div class="time">
+			<i class="fas fa-stopwatch"></i>
+			<%= @task.time / 60 %>:<%= (@task.time % 60) < 10 ? "0" + (@task.time % 60) : (@task.time % 60) %>
+		</div>
 	</div>
 	<div class="task left">
 		<h3>Deine Aufgabe</h3>
 		<div class="card">
 			<%= @task.title %>
+		</div>
+		<div class="ratings">
+			<% if @task.rating1 %>
+			<div class="rating"><%= @task.rating1 %></div>
+			<% end %>
+			<% if @task.rating2 %>
+			<div class="rating"><%= @task.rating2 %></div>
+			<% end %>
+			<% if @task.rating3 %>
+			<div class="rating"><%= @task.rating3 %></div>
+			<% end %>
+			<% if @task.rating4 %>
+			<div class="rating"><%= @task.rating4 %></div>
+			<% end %>
 		</div>
 	</div>
 </section>
