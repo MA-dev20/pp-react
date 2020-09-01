@@ -360,6 +360,36 @@ class PitchesController < ApplicationController
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
 
+  def task_list_options
+	@task = Task.find(params[:task_id])
+	@pitch = @task.pitches.first
+	@company = current_company
+	@entry = nil
+	if @task.objection_list
+		@list = @task.objection_list
+	else
+		@list = ObjectionList.create(company: @task.company, user: @task.user, name: 'task_list')
+		@task.update(objection_list_id: @list.id)
+	end
+	if (params["ol_value"].present? && params["ol_value"] != '')
+		@list_name = params["ol_value"]
+		@entry = @company.objections.find_by(name: @list_name)
+		@entry = @company.objections.create(company: @task.company, user: @task.user, name: @list_name) if @entry.nil?
+		@list.objections << @entry if @list.objections.find_by(name: @list_name).nil?
+	# elsif params[:list_id].present?
+	# 	@ol = ObjectionList.find(params[:list_id])
+	# 	@ol.objections.each do |entry|
+	# 		if @list.objections.find_by(name: entry.name).nil?
+	# 			@list.objections << entry
+	# 		end
+	# 	end
+	end
+	if (@entry.present?)
+		render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["ol_value"], word_id: @entry.id }
+	end
+
+  end
+
   def create_task_list
 	@task = Task.find(params[:task_id])
 	@pitch = @task.pitches.first
