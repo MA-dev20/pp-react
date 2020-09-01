@@ -232,15 +232,19 @@
 					function getBody(bodyItem) {
 					 return bodyItem.after;
 					}
+					function getRating(bodyItem) {
+						return bodyItem.before;
+					}
 					if (context.body) {
 						var titleLines = context.title || [];
 						var bodyLines = context.body.map(getBody);
+						var ratingLines = context.footer;
 						var innerHtml;
 
 						titleLines.forEach(function(title) {
 							innerHtml = '<h1>' + title['title'] + '</h1>';
 							if ( title['type'] == 'catchword' ) {
-								innerHtml += '<div class="task">Catchword: ' + title['catchword'] + '</div>'
+								innerHtml += '<div class="task" title="'+title['catchword']+'">' + title['catchword'] + '</div>'
 							} if (title['type'] == 'audio' ) {
 								innerHtml += '<div class="task"><audio src="'+ title['audio'] +'" controls="controls"></audio></div>';
 							} if (title['type'] == 'video' ) {
@@ -248,25 +252,40 @@
 							} if (title['type'] == 'image' ) {
 								innerHtml += '<div class="task"><img src="'+ title['image'] +'"></img></div>';
 							}
-							innerHtml += '<div class="head-row"><div>Eigene Bewertung</div><div>&#x3a6; Bewertung</div></div>';
 						})
-
+						var myRating = '<div class="my_rating">';
+						var gesRating = '<div class="ges_rating">';
+						ratingLines.forEach(function(rating) {
+							if (rating['my_ges'] == null) {
+								myRating = '<div class="my_rating hidden">';
+								gesRating = '<div class="ges_rating big">';
+							}
+							myRating += '<div class="ges-row"><div class="title">Meine Bewertung</div>';
+							myRating +=	'<div class="line"><div class="rating_line" style="width: '+ rating['my_ges'] * 10 +'%"></div></div>';
+							myRating += '<div class="rating">' + rating['my_ges'] + '</div></div>';
+							gesRating += '<div class="ges-row"><div class="title">Gesamt</div>';
+							gesRating +=	'<div class="line"><div class="rating_line" style="width: '+ rating['ges'] * 10 +'%"></div></div>';
+							gesRating += '<div class="rating">' + rating['ges'] + '</div></div>';
+						})
 						bodyLines.forEach(function(body, i) {
 							body.forEach(function(line) {
-								innerHtml += '<div class="row"><div>'+ line["name"] +'</div>';
-								innerHtml += '<div class="line"><div class="rating_line" style="width: '+ line['my_rating'] * 10 +'%"></div></div>';
-								innerHtml += '<div>'+ line['my_rating']+'</div>';
-								innerHtml += '<div class="line"><div class="rating_line" style="width: '+ line['rating'] * 10 +'%"></div></div>';
-								innerHtml += '<div>'+ line["rating"] + '</div></div>';
+								myRating += '<div class="row"><div class="title" title="'+line["name"]+'">'+line["name"]+'</div>';
+								myRating += '<div class="line"><div class="rating_line" style="width: '+ line['my_rating'] * 10 +'%"></div></div>';
+								myRating += '<div class="rating">'+ line['my_rating']+'</div></div>';
+								gesRating += '<div class="row"><div class="title" title="'+line["name"]+'">'+line["name"]+'</div>';
+								gesRating += '<div class="line"><div class="rating_line" style="width: '+ line['rating'] * 10 +'%"></div></div>';
+								gesRating += '<div class="rating">'+ line['rating']+'</div></div>';
 							})
 						});
+						innerHtml += '<div class="ratings">' +  myRating + '</div>';
+						innerHtml += gesRating + '</div></div>';
 						tooltipEl.innerHTML = innerHtml;
 
 						var position = this._chart.canvas.getBoundingClientRect();
 						tooltipEl.style.opacity = 1;
             tooltipEl.style.position = 'absolute';
             tooltipEl.style.left = position.left + window.pageXOffset + context.caretX + 'px';
-            tooltipEl.style.top = position.top + window.pageYOffset + context.caretY - 320 + 'px';
+            tooltipEl.style.top = position.top + window.pageYOffset + context.caretY - 500 + 'px';
             tooltipEl.style.padding = context.yPadding + 'px ' + context.xPadding + 'px';
 					}
 				},
@@ -276,8 +295,9 @@
 						var task = dataset['datapoints'][tooltipItem[0]['index']]['data']['task'];
 	          return task;
 	        },
-	        label: function(tooltipItem, data) {
-	          return data['datasets'][0]['data'][tooltipItem['index']];
+	        footer: function(tooltipItem, data) {
+						var ges = data['datasets'][0]['datapoints'][tooltipItem[0]['index']]['data']['ges_ratings'];
+	          return ges;
 	        },
 	        afterLabel: function(tooltipItem, data) {
 	          var dataset = data['datasets'][0];

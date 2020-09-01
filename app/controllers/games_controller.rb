@@ -144,7 +144,7 @@ class GamesController < ApplicationController
     if params[:user][:site] == 'admin_game_mobile'
       @game_user = @game.game_users.find_by(user: @user)
       if !@game_user
-        @game_user = @game.game_users.create(user: @user, play: true)
+        @game_user = @game.game_users.create(user: @user, play: true, company: @company)
         if @user.avatar?
           ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
         else

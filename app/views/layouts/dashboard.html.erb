@@ -154,7 +154,7 @@
 	<% if @inactive_users && @inactive_users.length != 0 %>
 		<div class="modal-blur" style="display: block">
 			<div class="card inactive_user">
-				<h3>Inactive User</h3>
+				<h3>Teilnehmer als Nutzer hinzufügen?</h3>
 				<%= form_for(:users, url: activate_users_path(@company), html: {id: "inactive_user_form"}) do |f| %>
 					<div id="inactive_user-table">
 				    <table>
