@@ -42,6 +42,12 @@
 		</div>
 		<%= yield %>
 	</section>
+  <section id="qrCODE">
+    <div class="qr-code-wrapper">
+      <%= generate_qr("#{request.host_with_port}/#{@game.password}").html_safe %>
+    </div>
+    <h5>peterpitch.com/<%= @game.password %></h5>
+  </section>
   <% if flash[:alert] %>
 	<div class="modal-blur">
 		<div class="modal card">

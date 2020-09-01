@@ -113,6 +113,11 @@ class GameMobileController < ApplicationController
 	end
   end
 
+  def showQR
+    ActionCable.server.broadcast "count_#{@game.id}_channel", showQR: true
+    render json: {success: true}
+  end
+
   def send_emoji
     if params[:emoji]
 	    if @admin.avatar?

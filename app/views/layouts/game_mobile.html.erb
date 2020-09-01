@@ -81,6 +81,13 @@
 				Spielregeln
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
+			<% if @game && @game.state != 'play' %>
+				<div class="link toggleQR" onclick="toggleQR()">
+					<i class="icon fas fa-qrcode"></i>
+					<span>QR-Code einblenden</span>
+					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
+				</div>
+			<% end %>
 			<% if @game && @game.state == 'play' %>
 		    <div class="link end-pitch"  onclick="redirectRate()">
 					<svg class="icon" viewbox="0 0 144 144"><use xlink:href="#endTurnIcon" /></svg>
@@ -841,4 +848,18 @@
 			}
 		})
 	})
+	function toggleQR() {
+		$.ajax({
+			url: "<%= gm_showQR_url %>",
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				if ( $('.toggleQR span').text() == "QR-Code ausblenden" ) {
+					$('.toggleQR span').text("QR-Code einblenden");
+				} else {
+						$('.toggleQR span').text("QR-Code ausblenden");
+				}
+			},
+		});
+	}
 </script>

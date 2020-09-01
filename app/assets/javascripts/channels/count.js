@@ -111,6 +111,9 @@ jQuery(document).ready(function() {
 						App.commentHideTimer.restart();
 					}
 			  }
+				if (data['showQR'] == true) {
+					$('#qrCODE').toggle();
+				}
 		  }
 		});
 		$(window).bind('beforeunload', function(){

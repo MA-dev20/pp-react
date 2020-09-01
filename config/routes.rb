@@ -130,6 +130,7 @@ Rails.application.routes.draw do
   get 'mobile/games/turns/:turn_id/task/:task_id', to: 'game_mobile#set_task_user', as: 'gm_set_task_user'
 
   put 'mobile/game/addTime', to: 'game_mobile#add_time', as: 'gm_add_time'
+  put 'mobile/game/showQR', to: 'game_mobile#showQR', as: 'gm_showQR'
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   put 'mobile/game/set_timer', to: 'game_mobile#set_timer', as: 'gm_set_timer'

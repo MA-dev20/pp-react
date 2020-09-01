@@ -11,6 +11,46 @@ body {
 	font-family: 'Barack-Medium';
 	margin: 0;
 }
+#qrCODE {
+	display: none;
+	position: fixed;
+	bottom: 0;
+	left: 35vw;
+	height: 30vh;
+	width: 30vw;
+	text-align: center;
+	z-index: 1000;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	color: rgb(var(--custcolor));
+	box-shadow: 0 5px 10px rgba(0,0,0,.4);
+	background-color: white;
+	animation: fadeInBottom 2s 1 forwards; opacity: 0;
+	h5 {
+		position: relative;
+		font-size: 2.5vh;
+	}
+	.qr-code-wrapper {
+		position: relative;
+		display: inline-block;
+		top: 2vh;
+		z-index: 1000;
+		border: 2px solid rgb(var(--custcolor));
+		padding: .5vh;
+		table {
+			border-collapse: collapse;
+			td {
+				padding: 0;
+				width: .5vh;
+				background-color: white;
+				height: .5vh;
+			}
+			td.black {
+				background-color: #00232a;
+			}
+		}
+	}
+}
 .modal-blur {
 	position: fixed;
 	top: 0;
