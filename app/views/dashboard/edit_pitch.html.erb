@@ -791,9 +791,12 @@
 			},
 			success: function (res) {
 				if (res) {
+					console.log(res);
 					res = JSON.parse(res)
 					if (res.count === 0){
 						window.location.replace(res.url);
+					} else if (res.task == "success") {
+						window.location.reload();
 					}
 				}
 			}

@@ -219,6 +219,7 @@ class PitchesController < ApplicationController
 	end
 
 	@admin = current_user
+  @company = @pitch.company
 	@cw_lists = @company.catchword_lists.accessible_by(current_ability)
 	@ol_list = @company.objection_lists.accessible_by(current_ability)
 	@folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
@@ -226,9 +227,10 @@ class PitchesController < ApplicationController
 	if (@pitch.tasks.count == 0)
 		render json: { url: dashboard_edit_pitch_path(@pitch), count: @pitch.tasks.count }
 	else
-		respond_to do |format|
-			format.js { render 'dashboard/delete_task_card'}
-		end
+    render json: {task: "success"}
+		#respond_to do |format|
+		#	format.js { render 'dashboard/delete_task_card'}
+		#end
 	end
 
   end
