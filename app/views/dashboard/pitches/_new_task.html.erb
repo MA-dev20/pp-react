@@ -433,8 +433,8 @@
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reaktionen & Einwände
 				<div class="sub-cs" id="ol-options">
 					<% @ol_list.each do |list| %>
-					<div class="option" onclick="sendList('objection', '<%= list.id %>')">
-					<!-- <div class="option" onclick="sendListToServer('objection', '<%= list.id %>')"> -->
+					<!-- <div class="option" onclick="sendList('objection', '<%= list.id %>')"> -->
+					<div class="option" onclick="sendListToServer('objection', '<%= list.id %>')">
 						<span class="basker-name vw"><%= list.name %></span>
 					</div>
 					<% end %>
@@ -723,22 +723,35 @@
             dataType: "json",
             data: {
 				type: 'objection',
+				list_id: list_id,
 				ol_value: $('#add_ol_form #list_name').val()
             },
             success: function (res) {
-				// debugger
-				// res = JSON.parse(res);
-				var word_wrapper = '<div class="words-wrapper">'
-				word_wrapper += `<div class="word">${res.word}</div>`
-				word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.word_id}" data-method="delete">`
-				// word_wrapper += '<img class="remove trash-icon" src="/assets/dash/new_icons/trash-e64f3d2413b0aafedf43c85a172687080b4ebc92bf658ccca85578f5b13c09fd.svg">'
-				word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-				word_wrapper += '</a>'
-				word_wrapper += '</div>'
-				$('.ow-list').append('<div class="hr-line"></div>');
-				$('.ow-list').append(word_wrapper);
-				$('.list-name-cls').val('');
-				
+				if (res.obj_list) {
+					objections = res.objections[0]
+					objections.map(obj => {
+						var word_wrapper = '<div class="words-wrapper">'
+						word_wrapper += `<div class="word">${obj.name}</div>`
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${obj.id}" data-method="delete">`
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
+						word_wrapper += '</a>'
+						word_wrapper += '</div>'
+						$('.ow-list').append('<div class="hr-line"></div>');
+						$('.ow-list').append(word_wrapper);
+						$('.list-name-cls').val('');
+					})
+				} else {
+					var word_wrapper = '<div class="words-wrapper">'
+					word_wrapper += `<div class="word">${res.word}</div>`
+					word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.word_id}" data-method="delete">`
+					word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
+					word_wrapper += '</a>'
+					word_wrapper += '</div>'
+					$('.ow-list').append('<div class="hr-line"></div>');
+					$('.ow-list').append(word_wrapper);
+					$('.list-name-cls').val('');
+				}
+
 				if ($('.ow-list .words-wrapper').length > 3) {
 					new PerfectScrollbar('.ow-list');
 				}
