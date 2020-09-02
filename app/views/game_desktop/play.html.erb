@@ -34,11 +34,13 @@
 </div>
 <% if @task.task_medium && @task.task_medium.video? %>
 <div class="video">
+	<%= video_tag @task.task_medium.video.url, id: 'bg_video' %>
 	<%= video_tag @task.task_medium.video.url, id: 'task_video' %>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
 <% elsif @task.task_medium && @task.task_medium.image? %>
 <div class="video">
+	<%= image_tag @task.task_medium.image.url, id: 'bg_image' %>
 	<%= image_tag @task.task_medium.image.url, id: 'task_image' %>
 </div>
 <% elsif @task.task_medium && @task.task_medium.audio? %>
@@ -158,6 +160,7 @@
 				<% elsif  @task.task_medium && @task.task_medium.video? %>
 					$('#play .video').show();
 					document.getElementById('task_video').play();
+					document.getElementById('bg_video').play();
 				<% elsif @task.task_medium && @task.task_medium.image? %>
 					$('#play .video').show();
 					<% if @game.game_sound %>

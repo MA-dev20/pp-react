@@ -114,6 +114,32 @@ jQuery(document).ready(function() {
 				if (data['showQR'] == true) {
 					$('#qrCODE').toggle();
 				}
+				if (data['controlMedia'] == true) {
+					if (data['control'] == 'play') {
+						if (data['type'] == 'audio' ) {
+								document.getElementById('audio').play();
+						} else {
+							document.getElementById('video').play();
+							document.getElementById('video-blur').play();
+						}
+					}
+					if (data['control'] == 'pause') {
+						if (data['type'] == 'audio' ) {
+								document.getElementById('audio').pause();
+						} else {
+							document.getElementById('video').pause();
+							document.getElementById('video-blur').pause();
+						}
+					}
+					if (data['control'] == 'replay') {
+						if (data['type'] == 'audio' ) {
+								document.getElementById('audio').load();
+						} else {
+							document.getElementById('video').load();
+							document.getElementById('video-blur').load();
+						}
+					}
+				}
 		  }
 		});
 		$(window).bind('beforeunload', function(){

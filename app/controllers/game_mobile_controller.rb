@@ -118,6 +118,11 @@ class GameMobileController < ApplicationController
     render json: {success: true}
   end
 
+  def controlMedia
+    ActionCable.server.broadcast "count_#{@game.id}_channel", controlMedia: true, control: params[:control], type: params[:type]
+    render json: {success: true}
+  end
+
   def send_emoji
     if params[:emoji]
 	    if @admin.avatar?

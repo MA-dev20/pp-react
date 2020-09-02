@@ -7,11 +7,17 @@
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
-          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">Bearbeiten</div>
+          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">
+            <i class="fa fa-pencil-alt"></i>Bearbeiten
+          </div>
           <% if controller.controller_name != "backoffice" %>
-          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">Freigeben</div>
+          <div class="point" data-id="<%= f.id %>" onclick="shareFolder(this)">
+            <i class="fa fa-share-alt"></i>Freigeben
+          </div>
           <% end %>
-          <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">Löschen</div>
+          <div class="point" data-id="<%= f.id %>" onclick="deleteFolder(this)">
+            <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %>Löschen
+          </div>
         </div>
       </div>
       <% end %>

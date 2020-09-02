@@ -114,17 +114,20 @@
 		width: 30%;
 		animation: taskMoveIn 1s 1;
 		animation-fill-mode: forwards;
+		text-align: center;
 		h3 {
 			width: 100%;
 			text-align: center;
 			font-size: 6vh;
-			margin: 0 !important;
+			margin: 2vh 0 !important;
 			animation-duration: 1s !important;
 		}
 		.circle,
 		img {
-			position: absolute;
-			top: 22.5vh; left: calc(15vw - 17.5vh);
+			position: relative;
+			top: 0; left: 0;
+			display: inline-block;
+			margin: 5vh;
 			width: 35vh;
 			height: 35vh;
 			border: 1vh solid rgb(var(--custcolor));
@@ -138,11 +141,11 @@
 			color: white;
 		}
 		.time {
-			position: absolute;
-			top: 60vh; left: calc(15vw - 17.5vh);
+			position: relative;
+			top: 0; left: 0;
 			line-height: 10vh;
-			font-size: 5vh;
-			width: 35vh; text-align: center;
+			font-size: 7vh;
+			width: 100%; text-align: center;
 			color: rgb(var(--custcolor));
 		}
 	}
@@ -189,27 +192,43 @@
 			align-self: center;
 			box-shadow: 0 5px 10px rgba(0,0,0,.4);
 		}
-		.ratings {
-			position: absolute;
-			right: 0; bottom: 10vh;
-			width: 50vw; height: 20vh;
-			.rating {
+		.task-card {
+			position: relative;
+			right: 0;
+			width: 50vw;
+			align-self: center;
+			.card {margin-top: 10vh;}
+			.ratings {
 				position: relative;
-				width: 20vw;
-				line-height: 5vh;
-				padding: 0 .5vw;
-				border-radius: 1vh;
-				border: .3vh solid rgba(var(--custcolor), .4);
-				margin: 1vh 0;
-				font-size: 2vh;
-				color: rgba(0,0,0,.3);
-			}
-			.rating:nth-child(2n+1) {
-				float: left;
-			}
-			.rating:nth-child(2n) {
-				float: right;
-				margin-left: 5vw;
+				margin-top: 3vh;
+				width: 52vw; height: auto;
+				.rating {
+					position: relative;
+					width: 20vw;
+					line-height: 5vh;
+					padding: 0 .5vw;
+					border-radius: 1vh;
+					border: .3vh solid rgba(var(--custcolor), .5);
+					margin: 1vh 0;
+					font-size: 2vh;
+					color: rgba(0,0,0,.6);
+					svg {
+						float: right;
+						height: 3vh;
+						width: 3vh;
+						padding: 1vh 0;
+						path {
+							fill: rgba(var(--custcolor), .5);
+						}
+					}
+				}
+				.rating:nth-child(2n+1) {
+					float: left;
+				}
+				.rating:nth-child(2n) {
+					float: right;
+					margin-left: 5vw;
+				}
 			}
 		}
 	}

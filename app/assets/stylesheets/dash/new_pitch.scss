@@ -2075,12 +2075,6 @@ input[type="file"] {
 // Loading Part
 
 #content {
-    .popup {
-        .close {
-            top: 1vh;
-        }
-    }
-
     #loaderModal {
         .modal-content {
             background: transparent;
@@ -2090,14 +2084,17 @@ input[type="file"] {
                 position: absolute;
                 top: 40vh;
                 height: 5vh;
-                left: 32vh;
-                font-size: 2vh;
+                left: 27vh;
+                font-size: 1.7vh;
                 line-height: 5vh;
-                width: 14vh;
+                width: 20vh;
                 padding: 0 2vh;
 								color: rgb(var(--btncolor));
 								border-color: rgb(var(--btncolor));
             }
+						.cancel-upload:hover {
+							color: white;
+						}
         }
 
         .progress-ratio {
@@ -2149,11 +2146,12 @@ input[type="file"] {
             .pdf-image-tag {
                 margin-top: 0;
                 width: 100%;
-								max-height: none;
+								max-height: 70vh;
 								max-width: 100%;
                 border-radius: 1vh;
                 margin: 0;
                 object-fit: contain;
+								background-color: black;
             }
 
             .remove-option {

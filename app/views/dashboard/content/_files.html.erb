@@ -8,13 +8,15 @@
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
-            Bearbeiten
+            <i class="fa fa-pencil-alt"></i>Bearbeiten
           </div>
           <% if controller.controller_name != "backoffice" %>
-          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">Freigeben</div>
+          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="shareMedia(this)">
+            <i class="fa fa-share-alt"></i>Freigeben
+          </div>
           <% end %>
           <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="deleteContent(this)">
-            Löschen
+            <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %>Löschen
           </div>
         </div>
       </div>

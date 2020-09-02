@@ -131,6 +131,7 @@ Rails.application.routes.draw do
 
   put 'mobile/game/addTime', to: 'game_mobile#add_time', as: 'gm_add_time'
   put 'mobile/game/showQR', to: 'game_mobile#showQR', as: 'gm_showQR'
+  put 'mobile/game/controlMedia', to: 'game_mobile#controlMedia', as: 'gm_controlMedia'
   get 'mobile/game/join', to: 'game_mobile#join', as: 'gm_join'
   get 'mobile/game', to: 'game_mobile#game', as: 'gm_game'
   put 'mobile/game/set_timer', to: 'game_mobile#set_timer', as: 'gm_set_timer'

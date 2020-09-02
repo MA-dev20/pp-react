@@ -16,22 +16,36 @@
 	</div>
 	<div class="task left">
 		<h3>Deine Aufgabe</h3>
-		<div class="card">
-			<%= @task.title %>
-		</div>
-		<div class="ratings">
-			<% if @task.rating1 %>
-			<div class="rating"><%= @task.rating1 %></div>
-			<% end %>
-			<% if @task.rating2 %>
-			<div class="rating"><%= @task.rating2 %></div>
-			<% end %>
-			<% if @task.rating3 %>
-			<div class="rating"><%= @task.rating3 %></div>
-			<% end %>
-			<% if @task.rating4 %>
-			<div class="rating"><%= @task.rating4 %></div>
-			<% end %>
+		<div class="task-card">
+			<div class="card">
+				<%= @task.title %>
+			</div>
+			<div class="ratings">
+				<% if @task.rating1 %>
+				<div class="rating">
+					<%= @task.rating1 %>
+					<%= inline_svg_tag 'dash/icons/star.svg' %>
+				</div>
+				<% end %>
+				<% if @task.rating2 %>
+				<div class="rating">
+					<%= @task.rating2 %>
+					<%= inline_svg_tag 'dash/icons/criteria2.svg' %>
+				</div>
+				<% end %>
+				<% if @task.rating3 %>
+				<div class="rating">
+					<%= @task.rating3 %>
+					<%= inline_svg_tag 'dash/icons/criteria3.svg' %>
+				</div>
+				<% end %>
+				<% if @task.rating4 %>
+				<div class="rating">
+					<%= @task.rating4 %>
+					<%= inline_svg_tag 'dash/icons/criteria4.svg' %>
+				</div>
+				<% end %>
+			</div>
 		</div>
 	</div>
 </section>

@@ -1387,10 +1387,25 @@ body {
 			overflow: hidden;
 			box-shadow: 0 5px 10px rgba(0,0,0,.4);
 			z-index: 5;
-			img,
-			video {
+			text-align: center;
+			#task_image,
+			#task_video {
+				position: relative;
+				display: inline-block;
 				height: 100%;
-				width: 100%;
+				z-index: 1;
+				box-shadow: 0 5px 10px rgba(0,0,0,.4);
+			}
+			#bg_image, #bg_video {
+				position: absolute;
+				left: -25%; top: -25%;
+				filter: blur(20px) opacity(80%);
+				height: 150%;
+				width: 150%;
+				z-index: 0;
+			}
+			#bg_video {
+				height: auto;
 			}
 		}
 		.video.fadeOut {

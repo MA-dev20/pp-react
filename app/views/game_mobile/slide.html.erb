@@ -3,13 +3,49 @@
 	<h1>Kopf hoch!</h1>
 	<h3>Die Musik spielt gerade auf dem Hauptbildschirm</h3>
 </div>
+<% if @admin == @game.user && (@task.task_medium.media_type == 'video' || @task.task_medium.media_type == 'audio') %>
+<div class="controls">
+	<div class="replay" onclick="controlMedia('replay')">
+		<%= image_tag 'icons/repeat.png' %>
+	</div>
+	<div class="play" onclick="controlMedia('play')">
+		<%= image_tag 'icons/play.png' %>
+	</div>
+	<div class="pause" onclick="controlMedia('pause')">
+		<%= image_tag 'icons/pause.png' %>
+	</div>
+</div>
+<% else %>
 <div class="middle">
 		<div class="icon shake">
 			<i class="fas fa-desktop"></i>
 		</div>
 </div>
+<% end %>
 <div class="bottom">
 	<% if @admin == @game.user %>
 	<%= link_to 'weiter', gm_set_slide_path(@game.current_task + 1), class: 'btn custom-btn' %>
 	<% end %>
 </div>
+
+<script type="text/javascript">
+	function controlMedia(playback) {
+		$.ajax({
+			url: '<%= gm_controlMedia_url %>?type=<%= @task.task_medium.media_type %>&control=' + playback,
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				if (playback == 'play') {
+					$('.controls .pause').css('display', "inline-block");
+					$('.controls .play').hide();
+				} else if (playback == 'pause') {
+					$('.controls .pause').hide();
+					$('.controls .play').css('display', "inline-block");
+				} else if (playback == 'replay') {
+					$('.controls .pause').css('display', "inline-block");
+					$('.controls .play').hide();
+				}
+			}
+		})
+	}
+</script>

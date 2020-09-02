@@ -168,7 +168,7 @@
           position: absolute;
           right: 15px;
           z-index: 12;
-          width: 90px;
+          width: 110px;
           background-color: white;
           border-radius: 5px;
           overflow: hidden;
@@ -177,9 +177,18 @@
           .point {
             position: relative;
             left: 0;
+            height: 20px;
             line-height: 20px;
             font-size: 15px;
             padding: 5px;
+            text-align: left;
+            i, img {
+              float: left;
+              color: #acb2bd;
+              padding: 2.5px 5px 2.5px 0;
+              height: 15px;
+              margin: 0;
+            }
           }
           .point:hover {
             background-color: rgba(0,0,0,.2);
@@ -243,10 +252,7 @@
         z-index: 10;
       }
       .dropdown i {
-        line-height: 3vh;
-        padding: 1vh 8px;
         color: rgba(0,0,0,.5);
-        font-size: 1.8vh;
       }
     }
   }

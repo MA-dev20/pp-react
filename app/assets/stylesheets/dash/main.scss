@@ -2288,6 +2288,44 @@ body {
 		#6e6e6e;
 		font-size: 30px;
 		text-align: center;
+		margin: 10px;
+	}
+	.toggleSize {
+		position: absolute;
+		top: 0;	left: 0;
+		margin: 10px;
+		line-height: 20px;
+		height: 20px;
+		padding-left: 45px;
+		.toggle {
+			position: absolute;
+			left: 2.5px; top: 2px;
+			width: 35px;
+			height: 15px;
+			background-color: rgba(0,0,0,.3);
+			border-radius: 7.5px;
+			.dot {
+				position: absolute;
+				top: -2.5px; left: -2.5px;
+				border-radius: 10px;
+				height: 20px; width: 20px;
+				border: 1px solid rgba(var(--btncolor));
+				background-color: white;
+				box-sizing: border-box;
+			}
+		}
+		.toggle.off {
+			background-color: rgba(0,0,0,.3);
+			.dot {
+				left: -2.5px;
+			}
+		}
+		.toggle.on {
+			background-color: rgba(var(--btncolor));
+			.dot {
+				left: 17.5px;
+			}
+		}
 	}
 }
 .red {

@@ -196,9 +196,32 @@ body {
 					}
 
 				}
+				.slide-icon,
+				.task-icon {
+					position: absolute;
+					top: -1vw; right: -1vw;
+					height: 10vw; width: 10vw;
+					border-radius: 50%;
+					background-color: rgba(var(--custcolor),.9);
+					img {border: none;}
+				}
+				.task-icon img {
+					height: 7vw; width: 7vw;
+					margin: 1.5vw;
+				}
+				.slide-icon img {
+					height: 6vw; width: 6vw;
+					margin: 2vw;
+				}
 				.slide {
 					top: 1vw;
 					background-color: rgba(var(--custcolor), .9);
+				}
+				.media-icon {
+					position: absolute;
+					bottom: -1vw; right: 0;
+					height: 10vw; width: 10vw;
+					img {border: none; width: 100%; height:auto;}
 				}
 				.user {
 					top: auto;
@@ -700,6 +723,32 @@ body {
 			margin: 0 10vw;
 			line-height: 4vh;
 			padding: 2vw;
+		}
+	}
+	.controls {
+		position: absolute;
+		top: calc(50% - 75px); left: 0;
+		height: 150px; width: 100%;
+		line-height: 150px;
+		text-align: center;
+		.replay, .play, .pause {
+			position: relative;
+			display: inline-block;
+			img {
+				position: relative;
+				width: 100%;
+			}
+		}
+		.replay {
+			height: 150px; width: 100px;
+			img {margin: 25px 0;}
+		}
+		.play, .pause {
+			margin: 0;
+			height: 150px; width: 150px;
+		}
+		.play {
+			display: none;
 		}
 	}
 	.middle {
@@ -1263,9 +1312,46 @@ body {
 					width: 500px; padding: 20px;
 					font-size: 20px;
 				}
+				.task-icon {
+					position: absolute;
+					right: -24px;
+				}
 				.preview {
 					width: 490px; margin: 0 25px;
 					height: 275px;
+					.slide-icon,
+					.task-icon {
+						position: absolute;
+						top: -5px; right: 0;
+						height: 58px; width: 58px;
+						border-radius: 50%;
+						background-color: rgba(var(--custcolor),.9);
+						img {border: none;}
+					}
+					.task-icon img {
+						height: 38px; width: 38px;
+						margin: 10px;
+					}
+					.slide-icon img {
+						height: 30px; width: 30px;
+						margin: 14px;
+					}
+					.media-icon {
+						position: absolute;
+						bottom: -5px; right: 0;
+						height: 58px; width: 58px;
+						img {border: none; width: 100%; height:auto;}
+					}
+					.user {
+						font-size: 35px;
+						height: 58px;
+						width: 58px;
+						line-height: 58px;
+						left: -24px;
+						img {
+							height: 100%; width: 100%;
+						}
+					}
 					.slide {
 						top: 5px; left: -24px;
 						height: 48px; width: 48px;
