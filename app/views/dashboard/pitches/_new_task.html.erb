@@ -75,14 +75,15 @@
 				<div class="title">Text</div>
 				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen</div>
 				<div class="form-group fields">
-					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field' %>
+					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name' %>
 					<div class="add-cw">
 						<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img cw-image plus-cust-icon' %>
 					</div>
 					<div class="cw custom-select cw-dropdown" onclick="openList('catchword')">Liste auswählen
 						<div class="sub-cs" id="cw-options">
 							<% @cw_lists.each do |list| %>
-							<div class="option" onclick="handleClick('catchword', '<%= list.id %>')">
+							<!-- <div class="option" onclick="handleClick('catchword', '<%= list.id %>')"> -->
+							<div class="option" onclick="sendListToServer('cw', '<%= list.id %>')">
 								<span class="basket-name vw"><%= list.name %></span>
 							</div>
 							<% end %>
@@ -716,44 +717,75 @@
 	// 	$(e.target).closest('form').submit();
 	// })
 
-	function sendListToServer(type = '', list_id = '') {
+	function sendListToServer(type = '', list_id = '', word = '') {
 		$.ajax({
             url: '<%= task_list_options_path(@task, type: "objection") %>',
             type: 'GET',
             dataType: "json",
             data: {
-				type: 'objection',
+				type: type,
 				list_id: list_id,
-				ol_value: $('#add_ol_form #list_name').val()
+				word: word
             },
             success: function (res) {
-				if (res.obj_list) {
-					objections = res.objections[0]
-					objections.map(obj => {
+				if (res.obj_type) {
+					if (res.obj_list) {
+						objections = res.objections[0]
+						objections.map(obj => {
+							var word_wrapper = '<div class="words-wrapper">'
+							word_wrapper += `<div class="word">${obj.name}</div>`
+							word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${obj.id}" data-method="delete">`
+							word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
+							word_wrapper += '</a>'
+							word_wrapper += '</div>'
+							$('.ow-list').append('<div class="hr-line"></div>');
+							$('.ow-list').append(word_wrapper);
+							$('.list-name-cls').val('');
+						})
+					} else {
 						var word_wrapper = '<div class="words-wrapper">'
-						word_wrapper += `<div class="word">${obj.name}</div>`
-						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${obj.id}" data-method="delete">`
+						word_wrapper += `<div class="word">${res.word}</div>`
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.word_id}" data-method="delete">`
 						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
 						word_wrapper += '</a>'
 						word_wrapper += '</div>'
 						$('.ow-list').append('<div class="hr-line"></div>');
 						$('.ow-list').append(word_wrapper);
 						$('.list-name-cls').val('');
-					})
-				} else {
-					var word_wrapper = '<div class="words-wrapper">'
-					word_wrapper += `<div class="word">${res.word}</div>`
-					word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.word_id}" data-method="delete">`
-					word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-					word_wrapper += '</a>'
-					word_wrapper += '</div>'
-					$('.ow-list').append('<div class="hr-line"></div>');
-					$('.ow-list').append(word_wrapper);
-					$('.list-name-cls').val('');
-				}
+					}
 
-				if ($('.ow-list .words-wrapper').length > 3) {
-					new PerfectScrollbar('.ow-list');
+					if ($('.ow-list .words-wrapper').length > 3) {
+						new PerfectScrollbar('.ow-list');
+					}
+				} else {
+					if (res.cw_list) {
+						catchwords = res.catchwords[0]
+						catchwords.map(cw => {
+							var word_wrapper = '<div class="words-wrapper">'
+							word_wrapper += `<div class="word">${cw.name}</div>`
+							word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${cw.id}" data-method="delete">`
+							word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
+							word_wrapper += '</a>'
+							word_wrapper += '</div>'
+							$('.cw-list').append(word_wrapper);
+							$('.cw-list').append('<div class="hr-line"></div>');
+							$('.cw-list-name').val('');
+						})
+					} else {
+						var word_wrapper = '<div class="words-wrapper">'
+						word_wrapper += `<div class="word">${res.word}</div>`
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${res.word_id}" data-method="delete">`
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
+						word_wrapper += '</a>'
+						word_wrapper += '</div>'
+						$('.cw-list').append(word_wrapper);
+						$('.cw-list').append('<div class="hr-line"></div>');
+						$('.cw-list-name').val('');
+					}
+
+					if ($('.cw-list .words-wrapper').length > 3) {
+						new PerfectScrollbar('.cw-list');
+					}
 				}
             }
         })
@@ -762,7 +794,7 @@
 	$( ".list-name-cls" ).keydown(function() {
 		if (event.keyCode === 13) {
 			if ($('#add_ol_form #list_name').val() !== '')
-				sendListToServer();
+				sendListToServer('objection', '', $('#add_ol_form #list_name').val());
 			event.preventDefault();
       		return false;
 		}
@@ -772,12 +804,22 @@
 		// $('#add_ol_form .list-name').val($('#add_ol_form #list_name').val())
 		// $('#add_ol_form').submit();
 		if ($('#add_ol_form #list_name').val() !== '') 
-			sendListToServer();
+			sendListToServer('objection', '', $('#add_ol_form #list_name').val());
 	})
 
+	$( ".cw-list-name" ).keydown(function() {
+		if (event.keyCode === 13) {
+			if ($('#add_cw_form #list_name').val() !== '')
+				sendListToServer('cw', '', $('#add_cw_form #list_name').val());
+			event.preventDefault();
+      		return false;
+		}
+	});
 	$('.cw-image').on('click', e => {
-		$('#add_cw_form .list-name').val($('#add_cw_form #list_name').val())
-		$('#add_cw_form').submit();
+		// $('#add_cw_form .list-name').val($('#add_cw_form #list_name').val())
+		// $('#add_cw_form').submit();
+		if ($('#add_cw_form #list_name').val() !== '') 
+			sendListToServer('cw', '', $('#add_cw_form #list_name').val());
 	})
 
 	media_type = '<%= media_type&.downcase %>'

@@ -371,29 +371,55 @@ class PitchesController < ApplicationController
 	@company = current_company
 	@entry = nil
 	objections = []
-	if @task.objection_list
-		@list = @task.objection_list
-	else
-		@list = ObjectionList.create(company: @task.company, user: @task.user, name: 'task_list')
-		@task.update(objection_list_id: @list.id)
-	end
-	
-	if params[:list_id].present?
-		@ol = ObjectionList.find(params[:list_id])
-		objections << @ol.objections
-		@ol.objections.each do |entry|
-			if @list.objections.find_by(name: entry.name).nil?
-				@list.objections << entry
-			end
+	catchwords = []
+	if params[:type] == 'objection'
+		if @task.objection_list
+			@list = @task.objection_list
+		else
+			@list = ObjectionList.create(company: @task.company, user: @task.user, name: 'task_list')
+			@task.update(objection_list_id: @list.id)
 		end
-	elsif (params["ol_value"].present? && params["ol_value"] != '')
-		@list_name = params["ol_value"]
-		@entry = @company.objections.find_by(name: @list_name)
-		@entry = @company.objections.create(company: @task.company, user: @task.user, name: @list_name) if @entry.nil?
-		@list.objections << @entry if @list.objections.find_by(name: @list_name).nil?
-	end
+		
+		if params[:list_id].present?
+			@ol = ObjectionList.find(params[:list_id])
+			objections << @ol.objections
+			@ol.objections.each do |entry|
+				if @list.objections.find_by(name: entry.name).nil?
+					@list.objections << entry
+				end
+			end
+		elsif (params["word"].present? && params["word"] != '')
+			@list_name = params["word"]
+			@entry = @company.objections.find_by(name: @list_name)
+			@entry = @company.objections.create(company: @task.company, user: @task.user, name: @list_name) if @entry.nil?
+			@list.objections << @entry if @list.objections.find_by(name: @list_name).nil?
+		end
+	else
+		if @task.catchword_list
+			@list = @task.catchword_list
+		else
+			@list = CatchwordList.create(company: @task.company, user: @task.user, name: "task_list")
+			@task.update(catchword_list_id: @list.id)
+		end
 
-	render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["ol_value"], word_id: @entry&.id, obj_list: objections.present?, objections: objections }
+		if params[:list_id].present?
+			@cw = CatchwordList.find(params[:list_id])
+			catchwords << @cw.catchwords
+			@cw.catchwords.each do |entry|
+				if @list.catchwords.find_by(name: entry.name).nil?
+					@list.catchwords << entry
+				end
+			end
+		elsif (params["word"].present? && params["word"] != '')
+			@list_name = params["word"]
+			@entry = @company.catchwords.find_by(name: @list_name)
+			@entry = @company.catchwords.create(company: @task.company, user: @task.user, name: @list_name) if @entry.nil?
+			@list.catchwords << @entry if @list.catchwords.find_by(name: @list_name).nil?
+		end
+		@task.update(task_type: 'catchword')
+	end
+	render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["word"], word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
+
   end
 
   def create_task_list
