@@ -727,9 +727,9 @@ body {
 	}
 	.controls {
 		position: absolute;
-		top: calc(50% - 75px); left: 0;
-		height: 150px; width: 100%;
-		line-height: 150px;
+		top: calc(50% - 25vh); left: 0;
+		height: 50vh; width: 100%;
+		line-height: 50vh;
 		text-align: center;
 		.replay, .play, .pause {
 			position: relative;
@@ -740,12 +740,15 @@ body {
 			}
 		}
 		.replay {
-			height: 150px; width: 100px;
-			img {margin: 25px 0;}
+			height: 50vh; width: 10vh;
+			img {margin: 20vh 0;}
 		}
 		.play, .pause {
 			margin: 0;
-			height: 150px; width: 150px;
+			height: 50vh; width: 15vh;
+			img {
+				margin: 17.5vh 0;
+			}
 		}
 		.play {
 			display: none;
