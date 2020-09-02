@@ -2,20 +2,26 @@ class PitchesController < ApplicationController
   before_action :set_user, only: [:copy_pitch]
   #GET pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order
   def set_task_order
-	@pitch = Pitch.find(params[:pitch_id])
+	# @pitch = Pitch.find(params[:pitch_id])
+	@pitch = Pitch.where(id: params[:pitch_id]).includes(:task_orders).first
+	@admin = current_user
+	@company = current_company
+	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
 	@task_order = TaskOrder.find(params[:task_id])
 	@order = params[:order].to_i
-	@task_orders = @pitch.task_orders.where.not(id: params[:task_id])
+	# @task_orders = @pitch.task_orders.where.not(id: params[:task_id])
+	@task_orders = @pitch.task_orders.select{|to| to.id != params[:task_id]}
 	if @order <= @task_order.order
 		@task_orders.each do |to|
 			if to.order >= @order
-			  to.update(order: to.order + 1)
+				to.update(order: to.order + 1)
 			end
 		end
     else
 		@task_orders.each do |to|
 			if to.order <= @order
-			  to.update(order: to.order - 1)
+				to.update(order: to.order - 1)
 			end
 		end
 	end
@@ -27,9 +33,6 @@ class PitchesController < ApplicationController
 	end
 	@task = Task.find(@task_order.task_id)
 	@task_type = @task.task_type
-	@admin = current_user
-	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
-	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
 	respond_to do |format|
 		format.js { render 'dashboard/set_task_order'}
 	end
