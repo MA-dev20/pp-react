@@ -66,6 +66,7 @@ Rails.application.routes.draw do
 
 
   post 'tasks/:task_id/create_list', to: 'pitches#create_task_list', as: 'create_task_list'
+  get 'tasks/:task_id/task_list_options', to: 'pitches#task_list_options', as: 'task_list_options'
   post 'pitches/:pitch_id/tasks/:task_id/create_ratings', to: 'pitches#create_ratings', as: 'create_ratings'
   get '/pitches/:pitch_id/task/:task_id/duplicate', to: 'pitches#copy_task', as: 'copy_task'
   get '/pitches/:id/duplicate', to: 'pitches#copy_pitch', as: 'copy_pitch'

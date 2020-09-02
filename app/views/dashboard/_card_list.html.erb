@@ -1,4 +1,5 @@
 <% TaskOrder.where(pitch_id: @pitch.id).includes(task: [:task_medium]).order(:order).each do |t| %>
+<!-- <%# @pitch.task_orders.order(:order).each do |t| %> -->
 <div class="card left-card <%= @task && @task.id == t.task_id ? 'selected' : '' %>" data-order-id="<%= t.order %>"
     id="task_<%= t.task_id %>" draggable="true" ondragstart="drag(event)"
     ondrop="dropOrder(event, <%= t.order %>)" ondragleave="leaveDrop(event)" ondragover="allowDrop(event)"
@@ -19,11 +20,9 @@
         <% else %>
             <div class="name"><%= t.order %>. Aufgabe</div>
         <% end %>
-        <!-- <a class="far fa-trash-alt remove" href="javascript:void(0)" onclick="deleteTask(<%= t.task_id %>)"></a> -->
         <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
             <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
         </a>
-        <%#= link_to '', copy_task_path(@pitch, t.task_id), class: 'fas fa-copy copy copy-task' %>
         <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')" class="dupli">
             <i class="fas fa-copy copy" aria-hidden="true"></i>
         </div>
