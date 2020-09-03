@@ -133,7 +133,7 @@
 	<div class="close" onclick="hidePdfPopup()">
         <%= image_tag 'dash/new_icons/close.svg', class: 'close-modal' %>
 	</div>
-	<div class="toggleSize" data-type="16_9" onclick="toggleCropper(this)">
+	<div class="toggleSize" data-type="16_9" onclick="togglePdfCropper(this)">
 		<div class="toggle off"><div class="dot"></div></div>Hochkant
 	</div>
 	<div class="img-container">
@@ -507,7 +507,7 @@
 			});
 		}
 	})
-	function toggleCropper(e) {
+	function togglePdfCropper(e) {
 		var type = $(e).data('type');
 		console.log('Type: ' + type);
 		if (type == "16_9") {

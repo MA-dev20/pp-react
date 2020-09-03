@@ -6,7 +6,7 @@
 <% elsif @task.task_medium.media_type == 'video' %>
 <div id="video-bg">
 	<%= video_tag @task.task_medium.video.url, id: 'video' , autoplay: true, onended: 'redirect()' %>
-	<%= video_tag @task.task_medium.video.url, id: 'video-blur' , autoplay: true %>
+	<%= video_tag @task.task_medium.video.url, id: 'video-blur' , autoplay: true, muted: true %>
 </div>
 <% elsif @task.task_medium.media_type == 'audio' %>
 <div id="video-bg">

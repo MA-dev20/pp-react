@@ -812,13 +812,13 @@ body {
 		.feedback_comments {
 			position: absolute;
 			top: 5vw;
-			left: 20vw;
-			width: 30vw;
+			left: 15vw;
+			width: 40vw;
 			height: 60vh;
 			animation: fadeInTop 2s forwards;
 			.comment {
 				position: relative;
-				width: 20vw;
+				width: 30vw;
 				min-height: 3vh;
 				display: flex;
 				margin: 2vh 2vw 0;
@@ -845,7 +845,7 @@ body {
 				.text {
 					border-radius: 1vh;
 					border-top-left-radius: 0;
-					width: 15vw;
+					width: 25vw;
 					min-height: 3vh;
 					background-color: rgba(var(--custcolor), .2);
 					line-height: 3vh;

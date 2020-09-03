@@ -193,7 +193,7 @@ class PitchesController < ApplicationController
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
 	@task_order.destroy
 	@task_orders = @pitch.task_orders.all.order(:order)
-  if @task.task_orders.count == 0
+  if @task.task_orders.count == 0 && !GameTurn.find_by(task: @task)
     @task.destroy
   end
 	i = 1
@@ -209,7 +209,7 @@ class PitchesController < ApplicationController
 	@task = Task.find(params[:selected_task_id])
 	@task_order = TaskOrder.find_by(pitch: @pitch, task: @task)
 	@task_order.destroy
-  if @task.task_orders.count == 0
+  if @task.task_orders.count == 0 && !GameTurn.find_by(task: @task)
     @task.destroy
   end
 	@task_orders = @pitch.task_orders.all.order(:order)
@@ -379,7 +379,7 @@ class PitchesController < ApplicationController
 			@list = ObjectionList.create(company: @task.company, user: @task.user, name: 'task_list')
 			@task.update(objection_list_id: @list.id)
 		end
-		
+
 		if params[:list_id].present?
 			@ol = ObjectionList.find(params[:list_id])
 			objections << @ol.objections

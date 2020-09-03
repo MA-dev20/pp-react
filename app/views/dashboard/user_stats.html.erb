@@ -223,9 +223,9 @@
 						tooltipEl.style.opacity = 0;
 						return;
 					}
-					tooltipEl.classList.remove('above', 'below', 'no-transform');
+					tooltipEl.classList.remove('top', 'below', 'no-transform');
 					if (context.yAlign) {
-						tooltipEl.classList.add(context.yAlign);
+						tooltipEl.classList.add('above');
 					} else {
 						tooltipEl.classList.add('no-transform');
 					}
@@ -450,4 +450,14 @@
 				myChart.update();
 			}
 		}
+
+		$(document).mousemove(function (e) {
+			e.stopPropagation();
+			console.log("Target: " + $(e.target).closest('#chartjs-tooltip').length);
+			if (!$(e.target).hasClass('chartjs-render-monitor')) {
+				if ($(e.target).closest('#chartjs-tooltip').length != 1) {
+					$('#chartjs-tooltip').remove();
+				}
+			}
+		})
 </script>

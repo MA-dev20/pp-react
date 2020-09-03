@@ -436,6 +436,7 @@
                 .thumb {
                     width: 12.8vw;
                     height: 13.5vh;
+										text-align: center;
                 }
 
                 .thumb.slide {
@@ -789,15 +790,21 @@
 						.hr-line {width: calc(100% - 1vh)}
 
             .words-wrapper {
-                display: flex;
+							position: relative;
                 width: 100%;
-                justify-content: space-between;
+								line-height: 3vh;
+								.word {
+									width: calc(100% - 2vh)
+								}a {
+									position: absolute;
+									right: 0; top: 0;
+									height: 3vh; width: 2vh;
+								}
                 .remove {
                     color: #CFD3D6;
-                    font-size: 2vh;
+                    height: 2vh;
+										margin: .5vh 0 0;
                     cursor: pointer;
-                    padding: 0.5vh;
-                    padding-top: 0.7vh;
                 }
             }
             .form-group.fields {
@@ -904,7 +911,8 @@
 
 			}
 			.info {
-                margin-top: 0.3vh;
+				position: absolute;
+				bottom: .5vh;
                 width: 101%;
 				font-size: 1.4vh;
                 font-weight: 500;

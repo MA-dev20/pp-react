@@ -34,7 +34,7 @@
 </div>
 <% if @task.task_medium && @task.task_medium.video? %>
 <div class="video">
-	<%= video_tag @task.task_medium.video.url, id: 'bg_video' %>
+	<%= video_tag @task.task_medium.video.url, id: 'bg_video', muted: true %>
 	<%= video_tag @task.task_medium.video.url, id: 'task_video' %>
 </div>
 <div class="task" id="task" style="display: none"><div class="card"><%= @task.title %></div></div>
