@@ -14,7 +14,11 @@
 		</div>
 	</div>
 </div>
-<%= f.hidden_field :task_type %>
+<% if @task %>
+<%= f.hidden_field :task_type, value: @task.task_type %>
+<% else %>
+<%= f.hidden_field :task_type, value: '' %>
+<% end %>
 <%= f.hidden_field :catchword_list_id %>
 <%= f.hidden_field :task_medium_id %>
 <% end %>
@@ -498,7 +502,7 @@
 	// $('.library').on('click', function() {
 	// 	$('#libraryModal').show();
 	// })
-  
+
 	function showLibraryModal(type, task_id = '') {
 		// $('.option-modal').hide();
 		$.ajax({
@@ -806,7 +810,7 @@
 	$('.ol-image').on('click', e => {
 		// $('#add_ol_form .list-name').val($('#add_ol_form #list_name').val())
 		// $('#add_ol_form').submit();
-		if ($('#add_ol_form #list_name').val() !== '') 
+		if ($('#add_ol_form #list_name').val() !== '')
 			sendListToServer('objection', '', $('#add_ol_form #list_name').val());
 	})
 
@@ -821,7 +825,7 @@
 	$('.cw-image').on('click', e => {
 		// $('#add_cw_form .list-name').val($('#add_cw_form #list_name').val())
 		// $('#add_cw_form').submit();
-		if ($('#add_cw_form #list_name').val() !== '') 
+		if ($('#add_cw_form #list_name').val() !== '')
 			sendListToServer('cw', '', $('#add_cw_form #list_name').val());
 	})
 
