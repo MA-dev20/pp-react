@@ -594,20 +594,6 @@ class DashboardController < ApplicationController
 	end
   end
 
-  def show_library_modal
-    @type = params[:type]
-    @pitch = Pitch.find(params[:id])
-    @task = Task.find_by(id: params[:task_id])
-    unless @task
-      @task = @pitch&.tasks&.first
-    end
-    @folders = @admin.content_folders.where(content_folder: nil)
-    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
-    respond_to do |format|
-      format.js { render 'show_library_modal'}
-    end
-  end
-
   def add_media_content
     @pitch = Pitch.find(params[:id])
     @task = Task.find_by(id: params[:task_id])
@@ -627,11 +613,25 @@ class DashboardController < ApplicationController
         @task = @pitch&.tasks&.last
     else
       selected_type = params[:selected_media_type].present? ? params[:selected_media_type] : params[:pdf_media_type]
-      if params[:media_type] == selected_type
+      if params[:media_type] == selected_type || selected_type == 'bild'
         @pitch.tasks.find(params[:task_id]).update(task_medium_id: params[:media_id])
       end
     end
     render json: {id: @pitch.id, task_id: @task&.id}
+  end
+  
+  def show_library_modal
+    @type = params[:type]
+    @pitch = Pitch.find(params[:id])
+    @task = Task.find_by(id: params[:task_id])
+    unless @task
+      @task = @pitch&.tasks&.first
+    end
+    @folders = @admin.content_folders.where(content_folder: nil)
+    @files = @admin.task_media.where.not("#{params[:type].to_sym}" => nil).where(content_folder: nil)
+    respond_to do |format|
+      format.js { render 'show_library_modal'}
+    end
   end
 
   def select_task
