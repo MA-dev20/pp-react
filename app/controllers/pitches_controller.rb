@@ -70,6 +70,7 @@ class PitchesController < ApplicationController
   def update_task
   	@pitch = Pitch.find(params[:pitch_id])
   	@task = Task.find(params[:task_id])
+
   	@task.update(task_params)
   	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end
@@ -267,8 +268,7 @@ class PitchesController < ApplicationController
       @task_medium.update(media_params)
 	  if params[:task_id].present?
 		  @task = Task.find(params[:task_id])
-		  @task.update(task_medium_id: @task_medium.id)
-		  @task.update(task_medium_id: @task_medium.id, task_type: media_params[:media_type])
+		  @task.update(task_medium_id: @task_medium.id, catchword_list: nil, task_type: media_params[:media_type])
 	  end
 	  if @task_medium.media_type == 'audio'
 		  redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
@@ -416,7 +416,8 @@ class PitchesController < ApplicationController
 			@entry = @company.catchwords.create(company: @task.company, user: @task.user, name: @list_name) if @entry.nil?
 			@list.catchwords << @entry if @list.catchwords.find_by(name: @list_name).nil?
 		end
-		@task.update(task_type: 'catchword')
+		@task.update(task_type: 'catchword', task_medium_id: nil)
+    @task.update(valide: true) if @task.title && !@task.valide
 	end
 	render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["word"], word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
 
@@ -431,7 +432,7 @@ class PitchesController < ApplicationController
 	    @list = @task.catchword_list
 	  else
 		@list = CatchwordList.create(company: @task.company, user: @task.user, name: "task_list")
-		@task.update(catchword_list_id: @list.id)
+		@task.update(catchword_list_id: @list.id, task_medium: nil)
 	  end
 	  if (params[:list][:name] && params[:list][:name] != '') || (params["list-name"].present? && params["list-name"] != '')
 		@list_name = params[:list][:name] || params["list-name"]

@@ -1,5 +1,8 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
 <%= f.hidden_field :user_id, value: @admin.id %>
+<% if @task %>
+<%= f.hidden_field :task_type, value: @task.task_type %>
+<% end %>
 <div class="form-group title">
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Folientitel hier eintippen', onchange: 'handleTitleChange(event)' %>
 </div>
