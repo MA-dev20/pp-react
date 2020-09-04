@@ -204,7 +204,7 @@ class GamesController < ApplicationController
 		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) ).to_s + ' / ' + (@game.game_users.count).to_s
 	  end
 	end
-	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_users.count - 1)
+	if @turn.game_turn_ratings.count != 0 && (@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) == (@game.game_users.count)
 	  redirect_to gm_set_state_path('', state: 'rating')
 	else
 	  redirect_to gm_game_path
@@ -226,7 +226,7 @@ class GamesController < ApplicationController
   		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ( @turn.game_turn_ratings.count != 0 ? ( (@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) ).to_s : '1') + ' / ' + (@game.game_users.count).to_s
   	  end
   	end
-  	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_users.count - 1)
+  	if @turn.game_turn_ratings.count != 0 && (@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) == (@game.game_users.count)
   	  redirect_to gm_set_state_path('', state: 'rating')
   	else
   	  redirect_to gm_game_path

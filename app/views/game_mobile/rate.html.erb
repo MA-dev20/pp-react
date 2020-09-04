@@ -7,7 +7,7 @@
 	<div class="middle">
 		<div class="text">
 			Aktuell haben den Pitch bewertet: <br>
-			<span id="rating_count"><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_users.count).to_s : (@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_users.count - 1).to_s %></span>
+			<span id="rating_count"><%= @turn.game_turn_ratings.count == 0 ? '0 / ' + (@game.game_users.count).to_s : ((@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count)).to_s + ' / ' + (@game.game_users.count).to_s %></span>
 		</div>
 	</div>
 	<div class="dots" style="top: 60vh;">
