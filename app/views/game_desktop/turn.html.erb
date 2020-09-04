@@ -11,7 +11,7 @@
 		<% end %>
 		<div class="time">
 			<i class="fas fa-stopwatch"></i>
-			<%= @task.time / 60 %>:<%= (@task.time % 60) < 10 ? "0" + (@task.time % 60) : (@task.time % 60) %>
+			<%= (@task.time / 60).to_s %>:<%= (@task.time % 60) < 10 ? "0" + (@task.time % 60).to_s : (@task.time % 60).to_s %>
 		</div>
 	</div>
 	<div class="task left">
