@@ -39,7 +39,7 @@
     <% else %>
     <% image_url = nil %>
     <% end %>
-    <div class="thumb <%= 'thumb-border' unless image_url.present? %>">
+    <div class="thumb <%= 'thumb-border' unless image_url.present? %><%= t.task.task_type == 'catchword' ? ' catchword' : '' %>">
         <% if (t.task.task_medium && (t.task.task_medium.video? || t.task.task_medium.video_url_id?)) %>
         <% if t.task.task_medium.video_url_id? %>
         <%= image_tag t.task.task_medium.video_img, class: 'image' %>
