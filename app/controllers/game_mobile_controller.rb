@@ -123,6 +123,11 @@ class GameMobileController < ApplicationController
     render json: {success: true}
   end
 
+  def showOwnRating
+    ActionCable.server.broadcast "count_#{@game.id}_channel", show_own_rating: true
+    render json: {success: true}
+  end
+
   def send_emoji
     if params[:emoji]
 	    if @admin.avatar?

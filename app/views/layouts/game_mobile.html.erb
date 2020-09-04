@@ -77,7 +77,7 @@
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
 			<div class="link" onclick="toggleRatingMenu()">
-				<i class="icon fas fa-cog"></i>
+				<%= inline_svg_tag 'icons/settings.svg', class: 'icon podium' %>
 				Spielregeln
 				<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 			</div>
@@ -85,6 +85,13 @@
 				<div class="link toggleQR" onclick="toggleQR()">
 					<i class="icon fas fa-qrcode"></i>
 					<span>QR-Code einblenden</span>
+					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
+				</div>
+			<% end %>
+			<% if @game && @game.state != 'play' %>
+				<div class="link toggleOwnRating" onclick="toggleOwnRating()">
+					<%= inline_svg_tag 'icons/podium.svg', class: 'icon podium' %>
+					<span>Eigenwahrnemung einblenden</span>
 					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 				</div>
 			<% end %>
@@ -138,7 +145,7 @@
 			<div class="ratings" id="rating_user_list" style="<%= @game.show_ratings == 'none' ? 'display: none' : 'display: block' %>">
 				<div class="user" onclick="toggleRatings('all', 0)">
 						<div class="avatar">
-
+							<%= inline_svg_tag 'icons/average.svg', class: 'icon podium' style: "height: "%>
 						</div>
 						<div class="name">
 							Durchschnittsbewertung
@@ -885,6 +892,20 @@
 					$('.toggleQR span').text("QR-Code einblenden");
 				} else {
 						$('.toggleQR span').text("QR-Code ausblenden");
+				}
+			},
+		});
+	}
+	function toggleOwnRating() {
+		$.ajax({
+			url: "<%= gm_showOwnRating_url %>",
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function (res) {
+				if ( $('.toggleOwnRating span').text() == "Eigenwahrnemung ausblenden" ) {
+					$('.toggleOwnRating span').text("Eigenwahrnemung einblenden");
+				} else {
+						$('.toggleOwnRating span').text("Eigenwahrnemung ausblenden");
 				}
 			},
 		});

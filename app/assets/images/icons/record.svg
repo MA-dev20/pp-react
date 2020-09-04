@@ -8,5 +8,5 @@
 	.st2{fill:none;stroke:#565656;stroke-width:2.7752;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.6131;}
 </style>
 <circle class="st1" cx="73" cy="72.4" r="36"/>
-<ellipse transform="matrix(0.2898 -0.9571 0.9571 0.2898 -17.4312 121.2256)" class="st1" cx="73" cy="72.4" rx="12.6" ry="12.6"/>
+<ellipse transform="matrix(0.2898 -0.9571 0.9571 0.2898 -17.4312 121.2256)" class="st2" cx="73" cy="72.4" rx="12.6" ry="12.6"/>
 </svg>

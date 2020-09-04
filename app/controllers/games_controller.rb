@@ -201,7 +201,7 @@ class GamesController < ApplicationController
 	  	@rating.update(rating: r.last)
 	  else
 	  	@rating = @turn.ratings.create(rating_criterium: @rating_criterium, user: @user, rating: r.last)
-		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.ratings.count / @turn.game_turn_ratings.count).to_s + ' / ' + (@game.game_users.count - 1).to_s)
+		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ((@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) ).to_s + ' / ' + (@game.game_users.count).to_s
 	  end
 	end
 	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_users.count - 1)
@@ -209,6 +209,28 @@ class GamesController < ApplicationController
 	else
 	  redirect_to gm_game_path
 	end
+  end
+
+  def create_own_rating
+    @turn = GameTurn.find(params[:turn_id])
+  	@game = @turn.game
+  	@user = current_game_user
+  	params[:rating].each do |r|
+  	  @rating_criterium = RatingCriterium.find_by(name: r.first)
+  	  @rating_criterium = RatingCriterium.create(name: r.first) if !@rating_criterium
+  	  @rating = @turn.own_ratings.find_by(rating_criterium: @rating_criterium, user: @user)
+  	  if @rating
+  	  	@rating.update(rating: r.last)
+  	  else
+  	  	@rating = @turn.own_ratings.create(rating_criterium: @rating_criterium, user: @user, rating: r.last)
+  		ActionCable.server.broadcast "game_#{@turn.game.id}_channel", rating: 'added', rating_count: ( @turn.game_turn_ratings.count != 0 ? ( (@turn.own_ratings.count / @turn.game_turn_ratings.count) + (@turn.ratings.count / @turn.game_turn_ratings.count) ).to_s : '1') + ' / ' + (@game.game_users.count).to_s
+  	  end
+  	end
+  	if @turn.game_turn_ratings.count != 0 && (@turn.ratings.count / @turn.game_turn_ratings.count ) == (@game.game_users.count - 1)
+  	  redirect_to gm_set_state_path('', state: 'rating')
+  	else
+  	  redirect_to gm_game_path
+  	end
   end
 
   def record_pitch

@@ -19,10 +19,12 @@ class GameDesktopController < ApplicationController
   	if @turn && @game.show_ratings == 'all'
   	  @turn_ratings = @turn.game_turn_ratings.all
   	  @ges_rating = @turn.ges_rating
+      @own_ratings = @turn.own_ratings.all
   	elsif @turn && @game.show_ratings == 'one'
   	  @rat_user = @game.rating_user
   	  @turn_ratings = @turn.ratings.where(user_id: @rat_user).all
   	  @ges_rating = @turn.ratings.where(user_id: @rat_user).average(:rating)
+      @own_ratings = @turn.own_ratings.all
   	end
   	@turns = @game.game_turns.where.not(ges_rating: nil).order(ges_rating: :desc)
     @game_users = @game.game_users.where(play: true).order(best_rating: :desc)

@@ -7,6 +7,6 @@
 	.st1{fill:#565656;}
 	.st2{fill:none;stroke:#565656;stroke-width:2.4999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.6131;}
 </style>
-<ellipse transform="matrix(0.2567 -0.9665 0.9665 0.2567 -16.1479 123.7199)" class="st2" cx="72.4" cy="72.4" rx="19.5" ry="19.5"/>
-<line class="st2" x1="106.9" y1="37.8" x2="37.8" y2="106.9"/>
+<ellipse transform="matrix(0.2567 -0.9665 0.9665 0.2567 -16.1479 123.7199)" class="st0" cx="72.4" cy="72.4" rx="19.5" ry="19.5"/>
+<line class="st0" x1="106.9" y1="37.8" x2="37.8" y2="106.9"/>
 </svg>

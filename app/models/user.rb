@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many :user_ratings, dependent: :destroy
 
   has_many :ratings
+  has_many :own_ratings, dependent: :destroy
 
   has_many :pitch_videos
   has_many :comments

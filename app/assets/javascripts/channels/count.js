@@ -140,6 +140,9 @@ jQuery(document).ready(function() {
 						}
 					}
 				}
+				if (data['show_own_rating'] == true) {
+					showOwnRating();
+				}
 		  }
 		});
 		$(window).bind('beforeunload', function(){

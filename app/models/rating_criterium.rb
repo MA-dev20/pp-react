@@ -2,11 +2,12 @@ class RatingCriterium < ApplicationRecord
   has_many :rating_list_rating_criteria, dependent: :destroy
   has_many :rating_lists, through: :rating_list_rating_criteria
   has_many :ratings, dependent: :destroy
+  has_many :own_ratings, dependent: :destroy
   has_many :game_turn_ratings, dependent: :destroy
   has_many :game_ratings, dependent: :destroy
   has_many :user_ratings, dependent: :destroy
   has_many :team_ratings, dependent: :destroy
-	
+
   def green
 	if self.name == 'Körpersprache'
 	  return 'game/ratings/body_green.png'
