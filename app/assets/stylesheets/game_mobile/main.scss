@@ -536,6 +536,7 @@ body {
 			padding: 0 5px;
 			box-shadow: 0 0.5vh 2vh 0 rgba(107,107,107,0.1);
 		}
+
 		.form-field::placeholder {
 			font-family: 'Nunito', sans-serif  !important;
 			color: #212529;
@@ -1046,6 +1047,10 @@ body {
 			.form-field.red::placeholder {
 				color: red;
 				opacity: 1;
+			}
+			.form-field#comment_text {
+				padding-right: 45px;
+				width: calc(80% - 25px);
 			}
 			.radio-label {
 				display: inline-block;

@@ -609,7 +609,7 @@
 		e.preventDefault();
 		$('#comment_text').removeClass('red');
 		<% if @game.state == 'feedback' %>
-		if( $('#comment_text').val().length > 50) {
+		if( $('#comment_text').val().length > 100) {
 			$('#comment_text').addClass('red');
 			var comment_value = $("#comment_text").val();
 			$("#comment_text").val(comment_value.substring(0,30));
