@@ -88,7 +88,7 @@
 					<svg class="next" viewbox="0 0 144 144"><use xlink:href="#nextIcon" /></svg>
 				</div>
 			<% end %>
-			<% if @game && @game.state != 'play' %>
+			<% if @game && @game.state == 'rating' && @turn && @turn.own_ratings.count >= 1 %>
 				<div class="link toggleOwnRating" onclick="toggleOwnRating()">
 					<%= inline_svg_tag 'icons/podium.svg', class: 'icon podium' %>
 					<span>Eigenwahrnemung einblenden</span>
