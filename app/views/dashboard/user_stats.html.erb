@@ -242,7 +242,7 @@
 						var innerHtml;
 
 						titleLines.forEach(function(title) {
-							innerHtml = '<h1>' + title['title'] + '</h1>';
+							innerHtml = '<div class="content"><h1>' + title['title'] + '</h1>';
 							if ( title['type'] == 'catchword' ) {
 								innerHtml += '<div class="task" title="'+title['catchword']+'">' + title['catchword'] + '</div>'
 							} if (title['type'] == 'audio' ) {
@@ -278,14 +278,14 @@
 							})
 						});
 						innerHtml += '<div class="ratings">' +  myRating + '</div>';
-						innerHtml += gesRating + '</div></div>';
+						innerHtml += gesRating + '</div></div></div>';
 						tooltipEl.innerHTML = innerHtml;
 
 						var position = this._chart.canvas.getBoundingClientRect();
 						tooltipEl.style.opacity = 1;
             tooltipEl.style.position = 'absolute';
             tooltipEl.style.left = position.left + window.pageXOffset + context.caretX + 'px';
-            tooltipEl.style.top = position.top + window.pageYOffset + context.caretY - 500 + 'px';
+            tooltipEl.style.top = position.top + window.pageYOffset + context.caretY - 110 + 'px';
             tooltipEl.style.padding = context.yPadding + 'px ' + context.xPadding + 'px';
 					}
 				},
@@ -453,11 +453,11 @@
 
 		$(document).mousemove(function (e) {
 			e.stopPropagation();
-			console.log("Target: " + $(e.target).closest('#chartjs-tooltip').length);
 			if (!$(e.target).hasClass('chartjs-render-monitor')) {
 				if ($(e.target).closest('#chartjs-tooltip').length != 1) {
 					$('#chartjs-tooltip').remove();
 				}
 			}
 		})
+
 </script>
