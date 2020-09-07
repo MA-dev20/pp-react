@@ -41,7 +41,7 @@
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
-          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
+          <div class="point" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMediaModal(this)">
             <i class="fa fa-pencil-alt"></i>Bearbeiten
           </div>
           <% if controller.controller_name != "backoffice" %>
