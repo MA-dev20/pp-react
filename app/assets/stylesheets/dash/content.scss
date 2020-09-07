@@ -479,9 +479,6 @@
   display: none;
   z-index: 11;
 }
-#content .file-modal-bg {
-  z-index: 111;
-}
 #content .background-blur {
   position: fixed;
   top: 0; left: 0;
@@ -768,6 +765,10 @@
     }
   }
 
+}
+
+#content .file-modal-bg {
+  z-index: 111;
 }
 
 #content .background-blur#editList {display: block}
