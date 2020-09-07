@@ -13,11 +13,11 @@
                 <h3><%= content.title %></h3>
               <% end %>
             </div>
-            <% if content.media_type == 'image' %>
+            <% if content.media_type == 'image' && content.image.url.present? %>
               <%= image_tag content.image.url %>
             <% elsif content.media_type == 'video' && content.video.url.present? %>
               <%= video_tag content.video.url, controls: true, id: 'content_media'%>
-            <% elsif content.media_type == 'audio' %>
+            <% elsif content.media_type == 'audio' && content.audio.url.present? %>
               <div class="audio">
                 <%= image_tag 'dash/audio.png' %>
                 <%= audio_tag content.audio.url, controls: true, id: 'content_media' %>
