@@ -2,7 +2,7 @@
   <h3>Dateien</h3>
   
   <% @files.each do |f| %>
-    <div class="background-blur file-modal" id="edit_content<%= f.id %>">
+    <div class="background-blur file-modal file-modal-bg" id="edit_content<%= f.id %>">
       <div class="content-popup">
         <% content = f %>
         <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeMediaModal()' %>
