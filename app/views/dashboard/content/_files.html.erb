@@ -1,6 +1,40 @@
 <div class="files" style="<%= @files.count == 0 ? 'display: none' : 'display: block' %>">
   <h3>Dateien</h3>
+  
   <% @files.each do |f| %>
+      <div class="background-blur file-modal" id="edit_content<%= f.id %>">
+        <div class="content-popup">
+          <% content = f %>
+          <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeMediaModal()' %>
+            <div class="form-group">
+              <% if can? :edit, content %>
+                <input value="<%= content.title %>" class="form-field title-field" type="text">
+              <% else %>
+                <h3><%= content.title %></h3>
+              <% end %>
+            </div>
+            <% if content.media_type == 'image' %>
+              <%= image_tag content.image.url %>
+            <% elsif content.media_type == 'video' && content.video.url.present? %>
+              <%= video_tag content.video.url, controls: true, id: 'content_media'%>
+            <% elsif content.media_type == 'audio' %>
+              <div class="audio">
+                <%= image_tag 'dash/audio.png' %>
+                <%= audio_tag content.audio.url, controls: true, id: 'content_media' %>
+              </div>
+            <% elsif content.media_type == 'pdf' %>
+              <div class="audio">
+                <iframe src="<%= content.pdf.url %>" width="100%" height="500px"></iframe>
+              </div>
+            <% end %>
+            <% if can? :edit, content %>
+              <div class="btns">
+                <div class="btn inverted" onclick='closeMediaModal()'>Cancel</div>
+                <input type="submit" name="commit" value="speichern" class="btn submit-btn" data-disable-with="speichern">
+              </div>
+            <% end %>
+        </div>
+      </div>
     <% if f.audio? || f.image? || f.video? || f.pdf? %>
     <div class="card" id='media_<%= f.id %>'>
       <% if (can? :edit, f) && !current_page?(dashboard_peters_content_path) %>
@@ -21,7 +55,7 @@
         </div>
       </div>
       <% end %>
-      <div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMedia(this)">
+      <div class="thumb" data-type="<%= f.media_type %>" data-id="<%= f.id %>" onclick="showMediaModal(this)">
           <% if f.media_type == 'video' %>
             <%= image_tag f.video.thumb.url, class: 'image' %>
             <i class="fas fa-play-circle"></i>

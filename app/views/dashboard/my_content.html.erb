@@ -67,6 +67,9 @@
 <%= render 'dashboard/content/share_folder.html.erb' %>
 
 <script type="text/javascript">
+	var mediaID = '';
+	var mediaType = '';
+	
 	$(document).click(function (e) {
 		if ($(e.target).is('.background-blur')) {
 			$('.background-blur').hide();

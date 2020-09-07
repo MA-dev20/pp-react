@@ -105,7 +105,7 @@
 <% end %>
 
 <script type="text/javascript">
-  function showMedia(e) {
+function showMedia(e) {
 		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
 		<% if params[:folder_id] %>
@@ -120,5 +120,56 @@
 		<% else %>
 		location.replace('?');
 		<% end  %>
+	}
+  function showMediaModal(e) {
+		mediaType = $(e).attr('data-type');
+		mediaID = $(e).attr('data-id');
+		$('.dropdown-Menu').hide();
+		$(`#edit_content${mediaID}`).show();
+	}
+  function closeMediaModal() {
+		if (mediaType === 'video' || mediaType === 'audio') {
+			$(`#edit_content${mediaID} #content_media`).get(0).pause();
+			$(`#edit_content${mediaID} #content_media`).get(0).currentTime = 0;;
+		}
+	  	$('.file-modal').hide();
+	}
+
+	$(".title-field").keydown(function() {
+		if (event.keyCode === 13) {
+			if ($(`#edit_content${mediaID} .title-field`).val() !== '') {
+				sendDataToServer();
+			}
+			event.preventDefault();
+      		return false;
+		}
+	});
+
+	$('.submit-btn').click(function() {
+		if ($(`#edit_content${mediaID} .title-field`).val() !== '') {
+			sendDataToServer();
+		}
+	})
+
+	function sendDataToServer() {
+		$.ajax({
+            url: '<%= update_media_options_path %>',
+            type: 'GET',
+            dataType: "json",
+            data: {
+				type: mediaType,
+				media_id: mediaID,
+				title: $(`#edit_content${mediaID} .title-field`).val()
+            },
+            success: function (res) {
+				$(`#edit_content${res.id} .title-field`).val(res.title);
+				$(`#media_title_${res.id}`).text(res.title);
+				$('.file-modal').hide();
+				if (res.type === 'video' || res.type === 'audio') {
+					$(`#edit_content${res.id} #content_media`).get(0).pause();
+					$(`#edit_content${res.id} #content_media`).get(0).currentTime = 0;;
+				}
+			}
+		})
 	}
 </script>
