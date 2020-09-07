@@ -769,6 +769,13 @@
 
 #content .file-modal-bg {
   z-index: 111;
+
+  .h2-heading {
+    text-align: center !important;
+    font-weight: 600;
+    margin: 2.5vh 0;
+    font-size: 2.5vh;
+  }
 }
 
 #content .background-blur#editList {display: block}

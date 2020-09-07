@@ -121,6 +121,8 @@ function showMedia(e) {
 		location.replace('?');
 		<% end  %>
 	}
+
+	// Media modal part
   function showMediaModal(e) {
 		mediaType = $(e).attr('data-type');
 		mediaID = $(e).attr('data-id');
@@ -132,7 +134,7 @@ function showMedia(e) {
 			$(`#edit_content${mediaID} #content_media`).get(0).pause();
 			$(`#edit_content${mediaID} #content_media`).get(0).currentTime = 0;;
 		}
-	  	$('.file-modal').hide();
+	  	$('.file-modal, .folder-modal').hide();
 	}
 
 	$(".title-field").keydown(function() {
@@ -172,4 +174,46 @@ function showMedia(e) {
 			}
 		})
 	}
+	// End Media modal part
+
+	// Folder modal part
+	function showFolderModal(e) {
+		folderID = $(e).attr('data-id');
+		$('.dropdown-Menu').hide();
+		$(`#edit_folder${folderID}`).show();
+	}
+
+	$(".name-field").keydown(function() {
+		if (event.keyCode === 13) {
+			if ($(`#edit_folder${folderID} .name-field`).val() !== '') {
+				sendFolderDataToServer();
+			}
+			event.preventDefault();
+      		return false;
+		}
+	});
+
+	$('.submit-folder-btn').click(function() {
+		if ($(`#edit_folder${folderID} .name-field`).val() !== '') {
+			sendFolderDataToServer();
+		}
+	})
+
+	function sendFolderDataToServer() {
+		$.ajax({
+            url: '<%= update_folder_name_path %>',
+            type: 'GET',
+            dataType: "json",
+            data: {
+				folder_id: folderID,
+				name: $(`#edit_folder${folderID} .name-field`).val()
+            },
+            success: function (res) {
+				$(`#edit_folder${folderID} .name-field`).val(res.name)
+				$(`#title_${res.id}`).text(res.name);
+				$('.folder-modal').hide();
+			}
+		})
+	}
+	// End Folder modal part
 </script>

@@ -2,12 +2,30 @@
 <div class="folders">
   <h3>Ordner</h3>
   <% @folders.each do |f| %>
+    <div class="background-blur file-modal-bg folder-modal" id="edit_folder<%= f.id %>">
+      <div class="content-popup folder">
+        <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeMediaModal()' %>
+        <h2 class="h2-heading">Umbenennen</h2>
+          <div class="audio">
+            <%= image_tag 'dash/icons/folder.svg' %>
+          </div>
+          <div class="form-group">
+              <input value="<%= f.name %>" class="form-field name-field" type="text">
+          </div>
+          <div class="btns">
+            <div class="btn inverted" onclick='closeMediaModal()'>Cancel</div>
+            <input type="submit" name="commit" value="speichern" class="btn submit-folder-btn" data-disable-with="speichern">
+            <%#= f.submit 'speichern', class: 'btn' %>
+          </div>
+      </div>
+    </div>
     <div class="card" id="folder_<%= f.id %>">
       <% if can? :edit, f %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
-          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)">
+          <!-- <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showMedia(this)"> -->
+          <div class="point" data-type="edit_folder" data-id="<%= f.id %>" onclick="showFolderModal(this)">
             <i class="fa fa-pencil-alt"></i>Bearbeiten
           </div>
           <% if controller.controller_name != "backoffice" %>

@@ -62,6 +62,12 @@ class DashboardController < ApplicationController
     render json: { id: params[:media_id], title: params[:title], type: params[:type] }
   end
 
+  def update_folder_name
+    @folder = ContentFolder.find(params[:folder_id])
+    @folder.update(name: params[:name])
+    render json: { id: params[:folder_id], name: params[:name] }
+  end
+
   def shared_content
     @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)

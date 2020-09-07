@@ -83,6 +83,7 @@ Rails.application.routes.draw do
   post 'content_folder/:folder_id/update', to: "content_folder#update", as: 'update_folder'
   put 'content_folder/:folder_id/delete', to: "content_folder#delete", as: 'delete_folder'
   get 'content/update_media_options', to: 'dashboard#update_media_options', as: 'update_media_options'
+  get 'content/update_folder_name', to: 'dashboard#update_folder_name', as: 'update_folder_name'
 
   post 'lists/new', to: 'list#create', as: 'create_list'
   post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
