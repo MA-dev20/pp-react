@@ -120,18 +120,22 @@ class PitchesController < ApplicationController
 	@pitch = Pitch.find(params[:pitch_id])
 	@task = Task.find(params[:task_id])
 	if params[:type] == 'objection'
-    @entry = @task.objection_list.objections.find(params[:word_id])
-    if @entry.objection_lists.count == 1
-		  @entry.destroy
-    else
-      ObjectionListObjection.find_by(objection: @entry, objection_list: @task.objection_list).destroy
+    @entry = @task.objection_list.objections.find_by(id: params[:word_id])
+    if @entry
+      if @entry.objection_lists.count > 1
+        @list = ObjectionListObjection.find_by(objection: @entry, objection_list: @task.objection_list).destroy
+      else
+        @entry.destroy
+      end
     end
 	else
-    @entry = @task.catchword_list.catchwords.find(params[:word_id])
-    if @entry.catchword_lists.count == 1
-      @entry.destroy
-    else
-      CatchwordListCatchword.find_by(catchword_list: @task.catchword_list, catchword: @entry).destroy
+    @entry = @task.catchword_list.catchwords.find_by(id: params[:word_id])
+    if @entry
+      if @entry.catchword_lists.count > 1
+        CatchwordListCatchword.find_by(catchword_list: @task.catchword_list, catchword: @entry).destroy
+      else
+        @entry.destroy
+      end
     end
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
