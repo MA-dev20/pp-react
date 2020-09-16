@@ -386,6 +386,8 @@ class DashboardController < ApplicationController
       my_rating = (my_rating / cust_rating.length).round(1) if my_rating
       if t.task.task_type == 'catchword'
         cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.catchword.name}
+      elsif t.task.task_medium_id.nil?
+        cust_task << {id: t.task, type: 'deleted', title: t.task.title}
       elsif t.task.task_type == 'audio'
         cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, audio: t.task.task_medium.audio.url}
       elsif t.task.task_type == 'image'
@@ -631,7 +633,7 @@ class DashboardController < ApplicationController
     end
     render json: {id: @pitch.id, task_id: @task&.id}
   end
-  
+
   def show_library_modal
     @type = params[:type]
     @pitch = Pitch.find(params[:id])

@@ -245,7 +245,10 @@
 							innerHtml = '<div class="content"><h1>' + title['title'] + '</h1>';
 							if ( title['type'] == 'catchword' ) {
 								innerHtml += '<div class="task" title="'+title['catchword']+'">' + title['catchword'] + '</div>'
-							} if (title['type'] == 'audio' ) {
+							} else if (title['type'] == 'deleted') {
+								innerHtml += '<div class="task" title="">Inhalt wurde entfernt</div>'
+							}
+							if (title['type'] == 'audio' ) {
 								innerHtml += '<div class="task"><audio src="'+ title['audio'] +'" controls="controls"></audio></div>';
 							} if (title['type'] == 'video' ) {
 								innerHtml += '<div class="task"><video src="'+ title['video'] +'" controls="controls"></video></div>';

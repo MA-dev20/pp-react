@@ -1,6 +1,6 @@
 <div class="files" style="<%= @files.count == 0 ? 'display: none' : 'display: block' %>">
   <h3>Dateien</h3>
-  
+
   <% @files.each do |f| %>
     <div class="background-blur file-modal file-modal-bg" id="edit_content<%= f.id %>">
       <div class="content-popup">
@@ -119,8 +119,25 @@
           if ( $('.modal-blur').length > 0 ) {
             $('.modal-blur').remove();
           }
-					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Fehler!</h3>'+res.error+'</div></div>'
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Fehler!</h3>'+res.error;
+          userDiv += '<div class="btns"><div class="btn" data-type="'+type+'" data-id="'+mediaID+'" onclick="deleteforceContent(this)">trotzdem löschen</div></div></div></div>';
 					$('body').append(userDiv);
+				}
+			}
+		})
+	}
+  function deleteforceContent(e) {
+		var type = $(e).attr('data-type');
+		var mediaID = $(e).attr('data-id');
+    var URL = '/task_medium/'+mediaID+'/delete_force';
+		$.ajax({
+			url: URL,
+			type: 'put',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				if( res.id ) {
+					$('#media_' + res.id).hide();
+          $('.modal-blur').remove();
 				}
 			}
 		})

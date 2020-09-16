@@ -47,6 +47,13 @@ class TaskMediaController < ApplicationController
       render json: {error: 'Content ist noch einer Task zugeordnet!'}
     end
   end
+
+  def delete_force
+    @task_medium = TaskMedium.find_by(id: params[:task_medium_id])
+    @task_medium_id = @task_medium.id
+    @task_medium.destroy
+    render json: {id: @task_medium_id}
+  end
   private
     def set_user
       if user_signed_in? && company_logged_in?

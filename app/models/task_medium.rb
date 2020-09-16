@@ -28,6 +28,12 @@ class TaskMedium < ApplicationRecord
     end
   end
 
+  before_destroy do
+    Task.where(task_medium: self).each do |t|
+      t.update(task_medium_id: nil, valide: false)
+    end
+  end
+
   before_save do
 	  if self.audio?
 		  self.duration = FFMPEG::Movie.new(self.audio.current_path).duration.round(1)
