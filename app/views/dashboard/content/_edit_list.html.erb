@@ -22,11 +22,11 @@
           <% if @listType == 'catchword' %>
             <label for="">Text hinzufügen</label>
             <%= f.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field shortened' %>
-            <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+            <svg class="icon add" onclick="submitEntryForm()" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
           <% else %>
             <label for="">Einwand hinzufügen</label>
             <%= f.text_field :name, placeholder: 'Einwand hier eingeben', class: 'form-field shortened' %>
-            <svg class="icon add" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
+            <svg class="icon add" onclick="submitEntryForm()" viewbox="0 0 144 144"><use xlink:href="#addIcon" /></svg>
           <% end %>
         </div>
       <% end %>
@@ -159,6 +159,9 @@
       }
     })
   })
+  function submitEntryForm() {
+    $('#addEntryForm').submit();
+  }
   $('#addEntryForm').on('submit', function(e) {
     e.preventDefault();
     var URL = '<%= list_add_entry_path(@liste) %>';

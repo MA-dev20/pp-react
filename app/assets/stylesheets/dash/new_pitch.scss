@@ -2113,6 +2113,15 @@ input[type="file"] {
             margin-top: 1.3vh;
             font-size: 2vh;
         }
+				.progress-pdf {
+					position: absolute;
+					display: none;
+					top: 40px;
+					left: -150px;
+					width: 300px;
+					text-align: center;
+					color: red;
+				}
 
         .loader-img {
             position: absolute;

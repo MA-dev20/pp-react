@@ -539,8 +539,8 @@
 		if (pdfCropper) {
 			canvas = pdfCropper.getCroppedCanvas({
 				fillColor: "white",
-				width: 500,
-				height: 500,
+				maxWidth: 1920,
+        maxHeight: 1080,
 			});
 			canvas.toBlob(function (blob) {
 				var date = new Date().getTime();

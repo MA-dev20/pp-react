@@ -118,6 +118,7 @@
 						</div>
 						<% end %>
 					<% end %>
+					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %>
 					<div class="title list-title">Text</div>
 					<% @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %>
 					<div class="words-wrapper">
@@ -128,6 +129,7 @@
 						</a>
 					</div>
 					<div class="hr-line"></div>
+					<% end %>
 					<% end %>
 					<% end %>
 				</div>

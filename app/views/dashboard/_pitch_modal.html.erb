@@ -225,8 +225,8 @@
 		if (pitchCropper) {
 			pitchCanvas = pitchCropper.getCroppedCanvas({
 				fillColor: "white",
-				width: 500,
-				height: 500,
+        maxWidth: 1920,
+        maxHeight: 1080,
 			});
 			pitchCanvas.toBlob(function (blob) {
 				var date = new Date().getTime();

@@ -94,6 +94,7 @@
 					<div class="spinner-icon"></div>
 				</div>
 				<div class="progress-ratio"></div>
+				<div class="progress-pdf">Bitte warte bis die PDF verarbeitet wurde</div>
 			</div>
 			<div class="btn reversed upload record cancel-upload hide" style="display: none">Upload Abbrechen</div>
 		</div>
@@ -673,7 +674,7 @@
 					if (percentComplete === 100) {
 					}
 					percentComplete = percentComplete === 100 ? Math.floor(Math.random() * (100 - 85 + 1)) + 85 : percentComplete;
-					// $('.progress-ratio').text(percentComplete+'%')
+					$('.progress-pdf').show();
 				}
 				}, false);
 				return xhr;
