@@ -309,9 +309,16 @@ class PitchesController < ApplicationController
   	  path = @task_medium.pdf.current_path.split('/'+ @task_medium.pdf.identifier)[0]
       @task_pdf = @company.task_pdfs.create(user: @user, name: @task_medium.pdf.identifier)
   	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
-	    Dir.chdir(path)
-	    Dir.glob("*.png").each do |img|
-    	  task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user, image: File.open(img), media_type: 'image', is_pdf: true, task_pdf: @task_pdf)
+	  Dir.chdir(path)
+	  images_array = []
+    if @task_medium.pdf.identifier.split('.').last == 'PDF'
+      file_name = @task_medium.pdf.identifier.split('.PDF')
+    else
+	   file_name = @task_medium.pdf.identifier.split('.pdf')
+    end
+	  Dir.glob("*.png").length.times { |count| images_array << "#{file_name[0]}_#{count+1}.png"}
+	  images_array.each do |img|
+    		task_medium = TaskMedium.create(company: @pitch.company, user: @pitch.user, image: File.open(img), media_type: 'image', is_pdf: true, task_pdf: @task_pdf)
     		File.delete(img)
     		task = @pitch.tasks.create(company: @pitch.company, user: @pitch.user, task_type: "slide", task_medium: task_medium, valide: true)
   	  end
