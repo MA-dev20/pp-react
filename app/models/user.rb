@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :objection_lists
   has_many :objections
   has_many :task_media
+  has_many :task_pdfs
 
   has_many :pitches
   has_many :tasks

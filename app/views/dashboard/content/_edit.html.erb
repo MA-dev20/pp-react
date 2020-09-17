@@ -48,12 +48,35 @@
 		<%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeContentPopup()' %>
 		<%= form_for :task_medium, url: update_media_path(@content.id), html: {id: 'content_update-form'} do |f| %>
 			<div class="form-group">
-				<% if can? :edit, @content %>
-					<%= f.text_field :title, value: @content.title, class: 'form-field' %>
+				<% if params[:pdf] %>
+					<% if can? :edit, @content %>
+						<%= f.text_field :name, value: @content.name, class: 'form-field' %>
+					<% else %>
+						<h3><%= @content.name %></h3>
+					<% end %>
 				<% else %>
-					<h3><%= @content.title %></h3>
+					<% if can? :edit, @content %>
+						<%= f.text_field :title, value: @content.title, class: 'form-field' %>
+					<% else %>
+						<h3><%= @content.title %></h3>
+					<% end %>
 				<% end %>
 			</div>
+			<% if params[:pdf] %>
+			<div class="imageSlider">
+				<% if params[:slide].to_i > 1 %>
+				<div class="left" onclick="changeSlide('prev')">
+					<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
+				</div>
+				<% end %>
+				<%= image_tag @slides[(params[:slide].to_i - 1)].image.url %>
+				<% if params[:slide].to_i < @slides.length %>
+				<div class="right" onclick="changeSlide('next')">
+					<%= inline_svg_tag 'dash/new_icons/back.svg', class: 'back-arrow-icon back-arrow-cust' %>
+				</div>
+				<% end %>
+			</div>
+			<% else %>
 			<% if @content.media_type == 'image' %>
 				<%= image_tag @content.image.url %>
 			<% elsif @content.media_type == 'video' %>
@@ -68,6 +91,7 @@
 					<iframe src="<%= @content.pdf.url %>" width="100%" height="500px"></iframe>
 				</div>
 			<% end %>
+			<% end %>
 			<% if can? :edit, @content %>
 				<div class="btns">
 					<div class="btn inverted" onclick='closeContentPopup()'>Cancel</div>
@@ -78,6 +102,13 @@
 	</div>
 	</div>
 	<script type="text/javascript">
+		function changeSlide(direction) {
+			if (direction == 'next') {
+				location.replace('libary?pdf=<%= params[:pdf] %>&slide=<%= (params[:slide].to_i + 1)%>');
+			} else {
+				location.replace('libary?pdf=<%= params[:pdf] %>&slide=<%= (params[:slide].to_i - 1)%>');
+			}
+		}
     $('#edit_content').show();
 		$('#content_update-form').on('submit', function(e) {
 			e.preventDefault();

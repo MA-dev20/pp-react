@@ -1,20 +1,22 @@
 class TaskMediaController < ApplicationController
   before_action :set_task_medium, only: [:update, :delete]
   before_action :set_user
+
   def create
     @task_medium = @company.task_media.new(task_medium_params)
-    @task_medium.user = @user
     if task_medium_params[:title] != '' && @task_medium.save
       if @task_medium.media_type == 'pdf'
         path = @task_medium.pdf.current_path.split('/'+@task_medium.pdf.identifier)[0]
+        @task_pdf = @company.task_pdfs.create(user: @user, name: @task_medium.title)
     	  images = Docsplit.extract_images( @task_medium.pdf.current_path, :output => path)
     	  Dir.chdir(path)
     	  Dir.glob("*.png").each do |img|
-      		task_medium = TaskMedium.create(company: @task_medium.company, user: @task_medium.user, image: File.open(img), media_type: 'image', is_pdf: true, task_medium: @task_medium)
+      		@task_medium = TaskMedium.create(company: @company, user: @admin, image: File.open(img), media_type: 'image', is_pdf: true, task_pdf: @task_pdf)
       		File.delete(img)
         end
+        @task_medium.destroy
       end
-      render json: {id: @task_medium.id}
+      render json: {id: @task_pdf.id}
     elsif task_medium_params[:title] == ''
       render json: {no_title: true}
     else
@@ -53,6 +55,28 @@ class TaskMediaController < ApplicationController
     @task_medium_id = @task_medium.id
     @task_medium.destroy
     render json: {id: @task_medium_id}
+  end
+
+  def delete_pdf
+    @task_pdf = TaskPdf.find_by(id: params[:task_pdf_id])
+    @task_pdf_id = @task_pdf.id
+    @task_pdf.task_media.each do |media|
+      if media.tasks.count == 0
+        media.destroy
+      end
+    end
+    if @task_pdf.task_media.count == 0
+      @task_pdf.destroy
+      render json: {id: @task_pdf_id}
+    else
+      render json: {error: 'Slides sind noch Tasks zugeordnet'}
+    end
+  end
+  def delete_force_pdf
+    @task_pdf = TaskPdf.find_by(id: params[:task_pdf_id])
+    @task_pdf_id = @task_pdf.id
+    @task_pdf.destroy
+    render json: {id: @task_pdf_id}
   end
   private
     def set_user

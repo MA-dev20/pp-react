@@ -28,7 +28,39 @@ class ShareController < ApplicationController
     if @new_users
       render json: {new_users: @new_users}
     else
-      render json: {success: 'Content erfolgreich geteilt'}
+      render json: {success: 'Inhalt erfolgreich geteilt'}
+    end
+  end
+
+  def share_pdf
+    @pdf = TaskPdf.find(params[:pdf_id])
+    if params[:content][:email] != ''
+      @new_users = []
+      params[:content][:email].split(' ').each do |email|
+        @user = User.find_by(email: email)
+        if @user
+          if !@user.company_users.find_by(company: @company)
+            @user.companies << @company
+          end
+          @user.shared_content.create(task_pdf: @pdf)
+        else
+          @user = User.new(email: email)
+          @user.save(validate: false)
+          @user.company_users.create(company: @company, role: 'user')
+          @user.shared_content.create(task_pdf: @pdf)
+          @new_users << @user
+        end
+      end
+    elsif params[:content][:available_for]
+      @pdf.update(content_params)
+    else
+      render json: {error: 'Fehler beim teilen!'}
+      return
+    end
+    if @new_users
+      render json: {new_users: @new_users}
+    else
+      render json: {success: 'PDF erfolgreich geteilt'}
     end
   end
 

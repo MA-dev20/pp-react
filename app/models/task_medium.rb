@@ -10,7 +10,7 @@ class TaskMedium < ApplicationRecord
   belongs_to :team, required: false
   belongs_to :user, required: false
   belongs_to :content_folder, required: false
-  belongs_to :task_medium, required: false
+  belongs_to :task_pdf, required: false
   has_many :shared_contents, dependent: :destroy
 
   def self.search(search)

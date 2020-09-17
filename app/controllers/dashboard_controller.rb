@@ -6,7 +6,6 @@ class DashboardController < ApplicationController
 
   def content
     @peters_count = ContentFolder.select{|cf| cf.available_for == 'global'}.size + TaskMedium.select{|tm| tm.available_for == 'global' && tm.is_pdf != true}.size + CatchwordList.select{|cl| cl.available_for == 'global' && cl.name != 'task_list'}.size + ObjectionList.select{|ol| ol.available_for == 'global' && ol.name != 'task_list'}.size
-    # @peters_count = ContentFolder.where(available_for: 'global').count + TaskMedium.where(available_for: 'global').where.not(is_pdf: true).count + CatchwordList.where(available_for: 'global').where.not(name: 'task_list').count + ObjectionList.where(available_for: 'global').where.not(name: 'task_list').count
     @shared_count = @company.content_folders.accessible_by(current_ability).where.not(user: @admin).count + @company.task_media.accessible_by(current_ability).where.not(user: @admin, is_pdf: true).count + @company.catchword_lists.accessible_by(current_ability).where.not(user: @admin, name: 'task_list').count + @company.objection_lists.where.not(user: @admin, name: 'task_list').count
     if !(can? :create, ContentFolder)
       if @peters_count == 0
@@ -20,6 +19,7 @@ class DashboardController < ApplicationController
   def my_content
     @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
     @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(is_pdf: true)
+    @pdfs = @company.task_pdfs.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
     @lists = []
     @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
       @lists << {id: cl.id, type: 'catchword', name: cl.name}
@@ -31,6 +31,7 @@ class DashboardController < ApplicationController
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders.accessible_by(current_ability)
       @files = @folder.task_media.accessible_by(current_ability).where.not(is_pdf: true)
+      @pdfs = @folder.task_pdfs.accessible_by(current_ability)
       @lists = []
       @folder.catchword_lists.accessible_by(current_ability).each do |cl|
         @lists << {id: cl.id, type: 'catchword', name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
@@ -44,7 +45,8 @@ class DashboardController < ApplicationController
     elsif params[:image]
       @content = TaskMedium.find(params[:image])
     elsif params[:pdf]
-      @content = TaskMedium.find(params[:pdf])
+      @content = TaskPdf.find(params[:pdf])
+      @slides = @content.task_media
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
     elsif params[:catchword]
@@ -53,7 +55,6 @@ class DashboardController < ApplicationController
     elsif params[:objection]
       @liste = ObjectionList.find(params[:objection])
     end
-
   end
 
   def update_media_options

@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get 'dashboard/company', to: 'dashboard#company', as: 'dash_company'
 
   post 'share/content/:medium_id', to: 'share#share_content', as: 'share_content'
+  post 'share/pdf/:pdf_id', to: 'share#share_pdf', as: 'share_pdf'
   post 'share/list/:type/:list_id', to: 'share#share_list', as: 'share_list'
   post 'share/folder/:folder_id', to: 'share#share_folder', as: 'share_folder'
   post 'share/pitch/:pitch_id', to: 'share#share_pitch', as: 'share_pitch'
@@ -78,6 +79,8 @@ Rails.application.routes.draw do
   post 'task_medium/:task_medium_id/update', to: "task_media#update", as: 'update_media'
   put 'task_medium/:task_medium_id/delete', to: "task_media#delete", as: 'delete_media'
   put 'task_medium/:task_medium_id/delete_force', to: "task_media#delete_force", as: 'delete_force_media'
+  put 'task_pdf/:task_pdf_id/delete', to: "task_media#delete_pdf", as: 'delete_pdf'
+  put 'task_pdf/:task_pdf_id/delete_force', to: "task_media#delete_force_pdf", as: 'delete_force_pdf'
 
 
   post 'content_folder/new', to: 'content_folder#new', as: 'new_folder'

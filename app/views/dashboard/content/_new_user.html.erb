@@ -1,0 +1,81 @@
+<% new_users = @company.users.where(fname: nil) %>
+<% if new_users.count != 0 %>
+<div class="background-blur" id="newUser" style="display: block">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeNewUser()' %>
+    <h3>Nutzer existieren nicht.</h3>
+    <h5>Diese E-Mail Adressen haben noch keinen Peter Pitch Account. Gebe Vor-und Nachnamen ein, um sie deinem Dashboard hinzuzufügen.</h5>
+    <form class="" action="index.html" method="post" id="newUserForm">
+    <table>
+      <thead>
+        <tr>
+          <th>E-Mail</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+        </tr>
+      </thead>
+    <% new_users.each do |nu| %>
+      <tbody>
+        <tr id="new_user_<%= nu.id %>">
+          <td><%= nu.email %></td>
+          <td><input type="text" id="user_fname_<%= nu.id %>" name="users[<%= nu.id %>][fname]" value="" placeholder="Vornamen eingeben" class="form-field"></td>
+          <td><input type="text" id="user_lname_<%= nu.id %>" name="users[<%= nu.id %>][lname]" value="" placeholder="Nachnamen eingeben" class="form-field"></td>
+          <td class="remove" onclick="deleteUser(this)" data-id="<%= nu.id %>"><%= inline_svg_tag 'icons/trash.svg' %></td>
+        </tr>
+      </tbody>
+    <% end %>
+    </table>
+    <div class="form-group">
+      <div class="btn" onclick="submitNewUser()">speichern</div>
+    </div>
+    </form>
+  </div>
+</div>
+<% end %>
+<script type="text/javascript">
+  function closeNewUser() {
+
+  }
+  function deleteUser(e) {
+    var userID = $(e).attr('data-id')
+    $('#new_user_' + userID).hide();
+  }
+
+  function submitNewUser() {
+    var formVal = true;
+    <% new_users.each do |user| %>
+      if( $("#new_user_<%= user.id %>").is(':visible') ) {
+      if ( $('#user_fname_<%= user.id %>').val() == '' || $('#user_lname_<%= user.id %>').val() == '' ) {
+        formVal = false;
+        if( $('#user_fname_<%= user.id %>').val() == '' ) {
+            $('#user_fname_<%= user.id %>').css("border-color", "red")
+        }
+        if( $('#user_lname_<%= user.id %>').val() == '' ) {
+            $('#user_lname_<%= user.id %>').css("border-color", "red")
+        }
+      }
+      }
+    <% end %>
+    if( formVal ) {
+      $('#newUserForm').submit();
+    }
+  }
+  $('#newUserForm').on('submit', function(ev) {
+    ev.preventDefault();
+    var user_url = '/share/users/update_name';
+    formData = new FormData(document.getElementById('newUserForm'));
+    $.ajax({
+      url: user_url,
+      type: 'post',
+      cache: false,
+      async: true,
+      contentType: false,
+      processData: false,
+      data: formData,
+      beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        location.replace('?');
+      }
+    })
+  })
+</script>

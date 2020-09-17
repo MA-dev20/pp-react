@@ -505,6 +505,30 @@
     text-align: center;
     z-index: 11;
     padding: 10px;
+    .imageSlider {
+      position: relative;
+      .left {
+        left: 0;
+      }
+      .right {
+        left: auto;
+        right: 0;
+        svg {
+          transform: rotateY(180deg);
+        }
+
+      }
+      .left, .right {
+        position: absolute;
+        top: 12.5vh;
+        height: 5vh;
+        width: 5vh;
+        svg {
+          height: 5vh;
+          width: 5vh;
+        }
+      }
+    }
     table {
       width: 100%;
       th {text-align: left;}

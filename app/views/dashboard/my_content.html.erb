@@ -51,6 +51,7 @@
 
 	<div id="scrollcontent">
 		<%= render 'dashboard/content/folders.html.erb' %>
+		<%= render 'dashboard/content/pdfs.html.erb' %>
 		<%= render 'dashboard/content/files.html.erb' %>
 		<%= render 'dashboard/content/lists.html.erb' %>
 	</div>
@@ -60,9 +61,17 @@
 <%= render 'dashboard/content/new_folder.html.erb' %>
 <%= render 'dashboard/content/new_content.html.erb' %>
 <%= render 'dashboard/content/new_list.html.erb' %>
+<% if params[:new_users] %>
+<%= render 'dashboard/content/new_user.html.erb' %>
+<% end %>
 <%= render 'dashboard/content/edit.html.erb' %>
 <%= render 'dashboard/content/edit_list.html.erb' %>
+<% if params[:share_content] %>
 <%= render 'dashboard/content/share_content.html.erb' %>
+<% end %>
+<% if params[:share_pdf] %>
+<%= render 'dashboard/content/share_pdf.html.erb' %>
+<% end %>
 <%= render 'dashboard/content/share_list.html.erb' %>
 <%= render 'dashboard/content/share_folder.html.erb' %>
 
@@ -70,7 +79,7 @@
 	var mediaID = '';
 	var mediaType = '';
 	var folderID = '';
-	
+
 	$(document).click(function (e) {
 		if ($(e.target).is('.background-blur')) {
 			$('.background-blur').hide();
