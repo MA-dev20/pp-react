@@ -15,7 +15,15 @@ class Task < ApplicationRecord
 			user = User.find(self.user_id)
 			self.company_id = user.company_ids.first if self.company_id.nil?
 		end
-
+		if self.rating1 == ''
+			self.rating1 = nil
+		elsif self.rating2 == ''
+			self.rating2 = nil
+		elsif self.rating3 == ''
+			self.rating3 = nil
+		elsif self.rating4 == ''
+			self.rating4 = nil
+		end
 	end
 	after_save do
 		if self.task_type == 'slide' && self.task_medium && self.task_medium.valide
