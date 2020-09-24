@@ -254,8 +254,8 @@ class GameMobileController < ApplicationController
         		return
         	elsif @game.state != 'show_task' && @task_order.task.task_type != 'slide'
             @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
-        		redirect_to gm_set_state_path(state: 'show_task')
-        		return
+          	redirect_to gm_set_state_path(state: 'show_task')
+          	return
           else
             @game.update(current_task: @task_order.order) if @game.current_task != @task_order.order
             redirect_to gm_game_path
@@ -294,22 +294,28 @@ class GameMobileController < ApplicationController
 		    return
       elsif @game.state != 'show_task'
 		    @game_users = @game.game_users.where(play: true, active: true).order('turn_count')
-        @users = @game_users.where(turn_count: @game_users.first.turn_count).all
-        if @users.count == 1 && @game_users.count >= 2
-          @users = @game_users.first(2)
-        elsif @users.count == 1
-          redirect_to gm_set_state_path(state: 'turn')
+        if @game_users.count == 0
+          flash[:alert] = 'Es muss mindestens einen pitchenden Teilnehmer geben!'
+          redirect_to gm_game_path
           return
         else
-          @users = @users.sample(2)
+          @users = @game_users.where(turn_count: @game_users.first.turn_count).all
+          if @users.count == 1 && @game_users.count >= 2
+            @users = @game_users.first(2)
+          elsif @users.count == 1
+            redirect_to gm_set_state_path(state: 'turn')
+            return
+          else
+            @users = @users.sample(2)
+          end
+          @turn1 = @game.game_turns.where(user: @users.first.user, task: @task, played: false).first
+          @turn2 = @game.game_turns.where(user: @users.second.user, task: @task, played: false).first
+          @turn1 = @game.game_turns.create(user: @users.first.user, task: @task, team: @game.team, played: false) if !@turn1
+          @turn2 = @game.game_turns.create(user: @users.second.user, task: @task, team: @game.team, played: false) if !@turn2
+          @game.update(state: "show_task", turn1: @turn1.id, turn2: @turn2.id, current_turn: nil) if @game.state != 'show_task'
+          redirect_to gm_game_path
+          return
         end
-        @turn1 = @game.game_turns.where(user: @users.first.user, task: @task, played: false).first
-        @turn2 = @game.game_turns.where(user: @users.second.user, task: @task, played: false).first
-        @turn1 = @game.game_turns.create(user: @users.first.user, task: @task, team: @game.team, played: false) if !@turn1
-        @turn2 = @game.game_turns.create(user: @users.second.user, task: @task, team: @game.team, played: false) if !@turn2
-        @game.update(state: "show_task", turn1: @turn1.id, turn2: @turn2.id, current_turn: nil) if @game.state != 'show_task'
-        redirect_to gm_game_path
-        return
       else
         redirect_to gm_game_path
         return
