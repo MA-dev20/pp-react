@@ -95,8 +95,9 @@
 					</div>
 				</div>
 				<div class="words-list cw-list">
-					<% if @task.catchword_list %>
-					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != @task.catchword_list.catchwords.count %>
+					<% if @task.catchword_list.present? %>
+					<% if @task.catchword_list.catchwords.count != @task.catchword_list.catchwords.count %>
+					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != @task.catchword_list.catchwords.count %> -->
 						<% catchword_list = [] %>
 						<% @task.catchword_list.catchwords.each do |word| %>
 							<% if cannot? :read, word %>
@@ -107,6 +108,7 @@
 							<% end %>
 						<% end %>
 						<div class="title list-title">Listen</div>
+						<% if catchword_list.present? %>
 						<% catchword_list.each do |list| %>
 						<div class="words-wrapper">
 							<div class="word">
@@ -117,8 +119,10 @@
 							</a>
 						</div>
 						<% end %>
+						<% end %>
 					<% end %>
-					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %>
+					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %> -->
+					<% if @task.catchword_list.catchwords.count != 0 %>
 					<div class="title list-title">Text</div>
 					<% @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %>
 					<div class="words-wrapper">
