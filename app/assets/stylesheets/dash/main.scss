@@ -2162,9 +2162,9 @@ body {
 	.card {
 		position: absolute;
 		top: 40vh;
-		left: calc(50vw - 20vh);
-		height: 20vh;
-		width: 40vh;
+		left: calc(50vw - 25vh);
+		height: auto;
+		width: 50vh;
 		background-color: white;
 		border-radius: 1vh;
 		box-shadow: 0 0 10px 0 rgba(172,172,172,.1);
@@ -2194,6 +2194,23 @@ body {
 		}
 		h3 {
 			font-size: 3vh;
+		}
+		.btns {
+			position: relative;
+			height: 10vh;
+			.btn {
+				width: 45%;
+				margin-left: 0;
+				margin-right: 0;
+			}
+			.btn:first-child {
+				left: 0;
+				right: auto;
+			}
+			.btn:last-child {
+				right: 0;
+				left: auto;
+			}
 		}
 	}
 	.card.inactive_user {

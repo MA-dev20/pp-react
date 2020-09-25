@@ -90,11 +90,12 @@
 				if( res.id ) {
 					$('#media_' + res.id).hide();
 				} else if (res.error) {
+          $('.dropdown-Menu').hide();
           if ( $('.modal-blur').length > 0 ) {
             $('.modal-blur').remove();
           }
-					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Fehler!</h3>'+res.error;
-          userDiv += '<div class="btns"><div class="btn" data-type="'+type+'" data-id="'+mediaID+'" onclick="deleteforcePdf(this)">trotzdem löschen</div></div></div></div>';
+					var userDiv = '<div class="modal-blur"><div class="modal card"><div class="close" onclick="toggleModal()"><%= image_tag 'icons/close.svg' %></div><h3>Aufgepasst...</h3>'+res.error;
+          userDiv += '<div class="btns"><div class="btn" onclick="toggleModal()">Abbrechen</div><div class="btn" data-type="'+type+'" data-id="'+mediaID+'" onclick="deleteforcePdf(this)">Löschen</div></div></div></div>';
 					$('body').append(userDiv);
 				}
 			}
