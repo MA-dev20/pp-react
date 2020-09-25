@@ -63,7 +63,7 @@
         <% end %>
     </div>
     <% else %>
-    <div class="task-title slide-title">
+    <div class="task-title">
         <div class="select-task-link" onclick="selectTask(<%= t.task_id %>)"></div>
         <% if t.task.valide %>
             <input type="hidden" class="exclamation-triangle" value="0">
@@ -77,7 +77,7 @@
         <a href="javascript:void(0)" class="remove card-list" onclick="deleteTask(<%= t.task_id %>)">
             <%= inline_svg_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
         </a>
-        <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')">
+        <div onclick="addTaskWithAjax('<%= copy_task_path(@pitch, t.task_id) %>', 'copy')" class="dupli">
             <i class="fas fa-copy copy" aria-hidden="true"></i>
         </div>
     </div>

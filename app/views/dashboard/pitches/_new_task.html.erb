@@ -100,7 +100,7 @@
 						<% catchword_list = [] %>
 						<% @task.catchword_list.catchwords.each do |word| %>
 							<% if cannot? :read, word %>
-								<% @entry = {list: word.catchword_lists.first.id, name: word.catchword_lists.first.name} %>
+								<% @entry = {list: word.catchword_lists.where.not(name: 'task_list').first.id, name: word.catchword_lists.where.not(name: 'task_list').first.name} %>
 								<% if !catchword_list.include?(@entry) %>
 									<% catchword_list << @entry %>
 								<% end %>

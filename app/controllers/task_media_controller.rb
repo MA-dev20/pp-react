@@ -46,7 +46,7 @@ class TaskMediaController < ApplicationController
       @task_medium.destroy
       render json: {id: @task_medium_id}
     else
-      render json: {error: 'Diese Datei ist noch mindestens einer Aufgabe zugeordnet. Wenn Du sie löscht, dann wird sie auch aus der Aufgabe entfernt.'}
+      render json: {error: 'Diese Datei ist noch mindestens einer Aufgabe zugeordnet. Wenn Du sie löschst, wird sie auch aus der Aufgabe entfernt.'}
     end
   end
 
@@ -69,7 +69,7 @@ class TaskMediaController < ApplicationController
       @task_pdf.destroy
       render json: {id: @task_pdf_id}
     else
-      render json: {error: 'Diese Datei ist noch mindestens einer Aufgabe zugeordnet. Wenn Du sie löscht, dann wird sie auch aus der Aufgabe entfernt.'}
+      render json: {error: 'Diese Datei ist noch mindestens einer Aufgabe zugeordnet. Wenn Du sie löschst, wird sie auch aus der Aufgabe entfernt.'}
     end
   end
   def delete_force_pdf

@@ -2,7 +2,7 @@
   <h3>Listen</h3>
   <% @lists.each do |f| %>
     <div class="card" id='list_<%= f[:id] %>')">
-      <% if f[:type] == 'catchword' && (can? :edit, CatchwordList.find(f[:id])) || (can? :edit, ObjectionList.find(f[:id])) %>
+      <% if (f[:type] == 'catchword' && (can? :edit, CatchwordList.find(f[:id]))) || (f[:type] == 'objection' && (can? :edit, ObjectionList.find(f[:id]))) %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
