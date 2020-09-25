@@ -121,7 +121,8 @@
 						<% end %>
 						<% end %>
 					<% end %>
-					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %>
+					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %> -->
+					<% if @task.catchword_list.catchwords.count != 0 %>					
 					<div class="title list-title">Text</div>
 					<!-- <%# @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %> -->
 					<% @task.catchword_list.catchwords.each do |cw| %>
