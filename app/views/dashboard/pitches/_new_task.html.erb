@@ -121,10 +121,10 @@
 						<% end %>
 						<% end %>
 					<% end %>
-					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %> -->
-					<% if @task.catchword_list.catchwords.count != 0 %>
+					<% if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %>
 					<div class="title list-title">Text</div>
-					<% @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %>
+					<!-- <%# @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %> -->
+					<% @task.catchword_list.catchwords.each do |cw| %>
 					<div class="words-wrapper">
 						<div class="word"><%= cw.name %></div>
 						<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'far fa-trash-alt remove' %>
