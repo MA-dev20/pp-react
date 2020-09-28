@@ -357,50 +357,54 @@ class DashboardController < ApplicationController
 	  @user_ratings << {icon: r.rating_criterium.icon, name: r.rating_criterium.name, rating: r.rating, id: r.rating_criterium.id}
 	end
 	@user_ratings = @user_ratings.sort_by{|e| -e[:name]}
-	@days = 1
+	@days = 0
+  @pitch_count = 0
 	@turns = @user.game_turns.order('created_at')
 	date = @turns.first.created_at.beginning_of_day
 	@chartdata = []
 	@turns.each do |t|
-	  bod = t.created_at.beginning_of_day
-	  if date != bod
-		@days += 1
-		date = bod
-	  end
-    cust_rating = []
-    cust_task = []
-    ges_rating = []
-	  if t.game_turn_ratings.count != 0
-      my_rating = nil
-	    t.game_turn_ratings.each do |tr|
-        if t.ratings.find_by(rating_criterium: tr.rating_criterium, user: @admin)
-  		    cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0, my_rating: t.ratings.find_by(rating_criterium: tr.rating_criterium).rating / 10.0}
-          if my_rating
-            my_rating += tr.rating / 10.0
+    if t.game.company == @company
+      @pitch_count += 1
+  	  bod = t.created_at.beginning_of_day
+  	  if date != bod
+  		@days += 1
+  		date = bod
+  	  end
+      cust_rating = []
+      cust_task = []
+      ges_rating = []
+  	  if t.game_turn_ratings.count != 0
+        my_rating = nil
+  	    t.game_turn_ratings.each do |tr|
+          if t.ratings.find_by(rating_criterium: tr.rating_criterium, user: @admin)
+    		    cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0, my_rating: t.ratings.find_by(rating_criterium: tr.rating_criterium).rating / 10.0}
+            if my_rating
+              my_rating += tr.rating / 10.0
+            else
+              my_rating = tr.rating / 10.0
+            end
           else
-            my_rating = tr.rating / 10.0
+            cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
           end
-        else
-          cust_rating << {id: tr.rating_criterium.id, name: tr.rating_criterium.name, rating: tr.rating / 10.0}
+  	    end
+        my_rating = (my_rating / cust_rating.length).round(1) if my_rating
+        if t.task.task_type == 'catchword'
+          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.catchword.name}
+        elsif t.task.task_medium_id.nil?
+          cust_task << {id: t.task, type: 'deleted', title: t.task.title}
+        elsif t.task.task_type == 'audio'
+          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, audio: t.task.task_medium.audio.url}
+        elsif t.task.task_type == 'image'
+          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, image: t.task.task_medium.image.url}
+        elsif t.task.task_type == 'video'
+          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, video: t.task.task_medium.video.url}
         end
-	    end
-      my_rating = (my_rating / cust_rating.length).round(1) if my_rating
-      if t.task.task_type == 'catchword'
-        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.catchword.name}
-      elsif t.task.task_medium_id.nil?
-        cust_task << {id: t.task, type: 'deleted', title: t.task.title}
-      elsif t.task.task_type == 'audio'
-        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, audio: t.task.task_medium.audio.url}
-      elsif t.task.task_type == 'image'
-        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, image: t.task.task_medium.image.url}
-      elsif t.task.task_type == 'video'
-        cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, video: t.task.task_medium.video.url}
-      end
-      ges_rating << {ges: t.ges_rating / 10.0, my_ges: my_rating}
-	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), task: cust_task, time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, ges_ratings: ges_rating, cust_ratings: cust_rating}
-	  else
-		@turns = @turns.except(t)
-	  end
+        ges_rating << {ges: t.ges_rating / 10.0, my_ges: my_rating}
+  	    @chartdata << {date: t.created_at.strftime('%d.%m.%Y'), task: cust_task, time: t.created_at.strftime('%H:%M'), ges: t.ges_rating / 10.0, ges_ratings: ges_rating, cust_ratings: cust_rating}
+  	  else
+  		@turns = @turns.except(t)
+  	  end
+    end
 	end
   @turns = @turns.where.not(ges_rating: nil)
   TeamUser.where(user: @user).each do |t|

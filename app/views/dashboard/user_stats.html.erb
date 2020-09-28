@@ -54,11 +54,11 @@
 	</div>
 	<div class="card">
 		<div class="head">Pitches</div>
-		<div class="count"><%= @user.game_turns.count %></div>
+		<div class="count"><%= @pitch_count %></div>
 	</div>
 	<div class="card">
 		<div class="head">Siegrate</div>
-		<div class="count"><%= (@user.game_users.where(company: @company, place: 1).count / @user.game_users.where(company: @company).count) * 100.0 %>%</div>
+		<div class="count"><%= (GameUser.where(company: @company, user: @user, place: 1).count / GameUser.where(company: @company, user: @user).where.not(best_rating: 0).count * 100) %>%</div>
 	</div>
 	<div class="card">
 		<div class="head">Bester Score</div>
@@ -66,7 +66,7 @@
 	</div>
 	<div class="card">
 		<div class="head">Schlechtester Score</div>
-		<div class="count" id='worst'><%= GameUser.where(company: @company, user: @user).minimum("best_rating") / 10.0 %></div>
+		<div class="count" id='worst'><%= GameUser.where(company: @company, user: @user).where.not(best_rating: 0).minimum("best_rating") / 10.0 %></div>
 	</div>
 </div>
 
@@ -89,19 +89,19 @@
 		<div class="gold">
 			<%= image_tag 'dash/icons/gold.png' %>
 			<div class="text">
-				<%= @user.game_users.where(company: @company, place: 1).count %>
+				<%= GameUser.where(company: @company, user: @user, place: 1).count %>
 			</div>
 		</div>
 		<div class="silver">
 			<%= image_tag 'dash/icons/silver.png' %>
 			<div class="text">
-				<%= @user.game_users.where(company: @company, place: 2).count %>
+				<%= GameUser.where(company: @company, user: @user, place: 2).count %>
 			</div>
 		</div>
 		<div class="bronze">
 			<%= image_tag 'dash/icons/bronze.png' %>
 			<div class="text">
-				<%= @user.game_users.where(company: @company, place: 3).count %>
+				<%= GameUser.where(company: @company, user: @user, place: 3).count %>
 			</div>
 		</div>
 		</div>
@@ -146,7 +146,7 @@
 	$('#worst').css("color", ratingColor(<%= GameUser.where(company: @company, user: @user).minimum("best_rating") / 100.0 %>));
 	$('#best').css("color", ratingColor(<%= GameUser.where(company: @company, user: @user).maximum("best_rating") / 100.0 %>));
 
-	ratecircle('#ges', 'ges_text', <%= @user.ges_rating / 100.0 %>);
+	ratecircle('#ges', 'ges_text', <%= UserRating.where(company: @company, user: @user).average(:rating) / 100.0 %>);
 	<% @user_ratings.each do |r| %>
 		ratecircle('#rating_<%= r[:id] %>', 'text_<%= r[:id] %>', <%= r[:rating] / 100.0 %>);
 	<% end %>
