@@ -90,3 +90,40 @@
     text-align: left;
   }
 }
+
+#content .background-blur#edit_teaser {
+  text-align: left;
+  .content-popup {
+    .form-group {
+      text-align: left;
+      label {
+        width: 30vw;
+        margin: 10px 5vw;
+      }
+      .form-field {
+        position: relative;
+        text-align: left;
+      }
+    }
+    .form-group.half-right,
+    .form-group.half-left {
+      margin: 10px 0 10px 5vw;
+      width: 14vw;
+      label {
+        width: 100%;
+        margin: 0;
+        text-align: left;
+      }
+      .form-field {
+          width: 100%;
+          margin-left: 0;
+      }
+    }
+    .form-group.half-right {
+      margin: 10px 5vw 10px 0;
+    }
+    .form-group.color {
+
+    }
+  }
+}

@@ -73,6 +73,11 @@
    				<div class="text">Übersicht</div>
    				<%= link_to '', backoffice_path %>
    			</div>
+        <div class="link <%= current_page?(backoffice_teaser_path) ? 'active' : '' %>">
+          <i class="fas fa-cube"></i>
+          <div class="text">Teaser</div>
+          <%= link_to '', backoffice_teaser_path %>
+        </div>
    			<% if can? :manage, :all %>
    			<div class="link <%= @company ? 'active' : '' %>">
    				<i class="far fa-building"></i>

@@ -1,0 +1,61 @@
+<div class="card" id="content_card">
+  <div class="head">
+    <h3><span>Teaser Übersicht</span></h3>
+    <span onclick="createNewTeaser()">
+      <%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'icon add plus-cust-icon' %>
+    </span>
+  </div>
+  <div class="" id="scrollcontent">
+    <div class="files">
+      <% @teasers.each do |teaser| %>
+        <div class="card" id="teaser_<%= teaser.id %>">
+          <div class="dropdown">
+            <i class="fas fa-ellipsis-v dropdown-icon" data-id="<%= teaser.id %>" aria-hidden="true" onclick="showDropdown(this)"></i>
+            <div class="dropdown-Menu">
+              <div class="point" data-id="<%= teaser.id %>" onclick="showTeaser(this)"><i class="fa fa-pencil-alt"></i>Bearbeiten</div>
+              <div class="point" data-id="<%= teaser.id %>" onclick="deleteTeaser(this)"><%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %>Löschen</div>
+            </div>
+          </div>
+          <div class="thumb" data-id="<%= teaser.id %>" onclick="showTeaser(this)">
+            <div class="list-icon">
+              <% if teaser.logo.present? %>
+              <%= image_tag teaser.logo.url %>
+              <% end %>
+            </div>
+            <%= image_tag 'dash/placeholder.png', class: 'image' %>
+          </div>
+          <div class="text">
+              <div class="title" id="title_<%= teaser.id %>"><%= teaser.password %></div>
+              <div class="time"><%= teaser.fname %> <%= teaser.lname %></div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<%= render 'backoffice/teaser/edit_teaser.html.erb' %>
+<script type="text/javascript">
+  function showTeaser(e) {
+    var TeaserID = $(e).attr("data-id");
+    location.replace('?teaser=' + TeaserID);
+  }
+  function showDropdown(e) {
+    var TeaserID = $(e).attr("data-id");
+    $('#teaser_' + TeaserID + ' .dropdown .dropdown-Menu').toggle();
+  }
+  function createNewTeaser() {
+    var newURL = "<%= new_teaser_path %>";
+    $.ajax({
+      url: newURL,
+      type: 'put',
+      cache: 'false',
+      async: true,
+			contentType: false,
+			processData: false,
+      beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success:function(res) {
+        location.replace("<%= backoffice_teaser_path %>?teaser="+res.teaser);
+      }
+    })
+  }
+</script>

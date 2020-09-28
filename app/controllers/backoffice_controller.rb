@@ -6,6 +6,13 @@ class BackofficeController < ApplicationController
   def index
   end
 
+  def teaser
+    @teasers = Teaser.all
+    if params[:teaser]
+      @teaser = Teaser.find(params[:teaser])
+    end
+  end
+
   def companies
 	@companies = Company.where(activated: true)
 	@unactivated_companies = Company.where(activated: false)

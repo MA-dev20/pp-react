@@ -7,10 +7,18 @@
     	<%= favicon_link_tag 'wolfhead-tab.png', rel: 'icon', type: 'image/png' %>
 		<%= csrf_meta_tags %>
 		<%= csp_meta_tag %>
-		
+
 		<%= stylesheet_link_tag 'landing/main', media: 'all', 'data-turbolinks-track': 'reload' %>
 		<%= javascript_include_tag 'landing/main', 'data-turbolinks-track': 'reload' %>
 	</head>
+	<% if @teaser %>
+	<style>
+	 :root {
+		 --custcolor: <%= @teaser.color1[0] %>,<%= @teaser.color1[1] %>,<%= @teaser.color1[2] %>;
+		 --btncolor: <%= @teaser.color2[0] %>,<%= @teaser.color2[1] %>,<%= @teaser.color2[2] %>;
+	 }
+ </style>
+	<% end %>
 	<body>
 		<%= yield %>
 	</body>

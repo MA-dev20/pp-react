@@ -1,0 +1,47 @@
+
+<% content_for :title, "Peter Pitch - Teaser" %>
+<% content_for :description, 'Peter Pitch ist das digitale Trainingstool für Kommunication und Vertrieb. Erfahre mehr und sende uns eine Nachricht.'%>
+<section id="teaser-navbar" class="teaser-navbar">
+  <%= image_tag 'logos/pp_logo.png', class: 'logo', alt: 'Peter Pitch Logo'%>
+  <% if @teaser.logo? %>
+  <div class="company-logo">
+    <%= image_tag @teaser.logo.url, alt: 'Peter Pitch Logo'%>
+    <%= inline_svg_tag 'game/polygon.svg', class: 'polygon' %>
+  </div>
+  <% end %>
+</section>
+<section id="teaser-content">
+  <div class="head">
+    <h1>Hallo, <%= @teaser.fname %> <%= @teaser.lname %></h1>
+    <h5>hier ein kleiner Einblick in Peter Pitch!</h5>
+  </div>
+
+  <div class="video">
+    <%= inline_svg_tag 'game/illus/dots.svg', class: 'dots' %>
+    <%= video_tag 'gameintro.mp4', controls: true %>
+  </div>
+
+  <div class="contact">
+    <div class="head">
+      <h3>Wie geht's weiter</h3>
+    </div>
+    <div class="content">
+
+      <div class="text">
+        <i class="quote fas fa-quote-left"></i>
+        Wir sind für Sie da und freuen uns von Ihnen zu hören!
+      </div>
+      <div class="address">
+        0234 123 456<br>
+        hallo@peterpitch.com
+      </div>
+      <div class="people">
+        <%= image_tag 'people/panne.png', class: "panne" %>
+        <%= image_tag 'people/neuendorf.png', class: "neuendorf" %>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="teaser-footer">
+
+</section>
