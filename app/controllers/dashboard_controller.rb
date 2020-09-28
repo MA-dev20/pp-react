@@ -573,8 +573,12 @@ class DashboardController < ApplicationController
 				task_orders.find_by(task_id: @task.id).update(order: set_order_id)
 			end
 		end
-	else
+	elsif @pitch
 		@task = @pitch.task_orders.order(:order).first.task if @pitch.task_orders.present?
+  else
+    flash[:alert_head] = 'Upps...'
+    flash[:alert] = 'Der Pitch existiert nicht mehr!'
+    redirect_to dashboard_pitches_path
 	end
 	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
   @cw_lists += CatchwordList.where(available_for: 'global').where.not(name: 'task_list')
