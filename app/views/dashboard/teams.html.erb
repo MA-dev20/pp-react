@@ -352,7 +352,11 @@
 							<td class="img"><%= image_tag u.avatar.url %></td>
 							<td class="name"><%= u.fname %> <%= u.lname %></td>
 							<td><%= u.game_turns.count %></td>
-							<td><%= u.ges_rating / 10.0 %></td>
+							<% if UserRating.where(company: @company, user: u).count != 0 %>
+							<td><%= (UserRating.where(company: @company, user: u).average(:rating) / 10.0).round(1) %></td>
+							<% else %>
+							<td> - </td>
+							<% end %>
 							<td><%= @role == 'user' ? 'Nutzer' : @role == 'admin' ? 'Admin' : @role == 'root' ? 'Abteilungsleitung' : @role == 'sroot' ? 'Superadmin' : '' %></td>
 							<% if can? :edit, u %>
 							<td class="edit">

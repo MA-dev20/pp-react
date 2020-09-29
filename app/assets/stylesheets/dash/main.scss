@@ -2196,6 +2196,11 @@ body {
 		h3 {
 			font-size: 3vh;
 		}
+		.btn {
+			position: relative;
+			width: 100%;
+			margin-left: 0;
+		}
 		.btns {
 			position: relative;
 			height: 10vh;
@@ -2213,6 +2218,7 @@ body {
 				left: auto;
 			}
 		}
+
 	}
 	.card.inactive_user {
 		top: 20vh;

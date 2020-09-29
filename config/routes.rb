@@ -15,6 +15,13 @@ Rails.application.routes.draw do
   get 'password/new', to: 'landing#new_password', as: 'forget_password'
   get 'accept_cookie', to: 'landing#accept_cookie', as: 'accept_cookies'
 
+  get 'teaser/:password', to: 'teaser#index', as: 'teaser'
+
+  put 'teasers/teaser/create', to: 'teaser#create', as: 'new_teaser'
+  post 'teasers/teaser/:teaser_id/edit', to: 'teaser#edit', as: 'edit_teaser'
+  put 'teasers/teaser/:teaser_id/edit_logo', to: 'teaser#edit_logo', as: 'edit_teaser_logo'
+  put 'teasers/teaser/:teaser_id/destroy', to: 'teaser#destory', as: 'destroy_teaser'
+
   get 'dashboard/', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
   get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
@@ -99,6 +106,7 @@ Rails.application.routes.draw do
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
+  get 'backoffice/teaser', to: 'backoffice#teaser', as: 'backoffice_teaser'
   get 'backoffice/companies', to: 'backoffice#companies', as: "backoffice_companies"
   get 'backoffice/companies/:company_id', to: 'backoffice#company', as: "backoffice_company"
   get 'backoffice/companies/:company_id/content', to: 'backoffice#company_content', as: "backoffice_company_content"

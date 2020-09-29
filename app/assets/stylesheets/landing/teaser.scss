@@ -1,0 +1,361 @@
+.teaser-content {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+#teaser-navbar {
+    position: relative;
+    top: 0;
+    left: calc(50% - 150px);
+    height: 50px;
+    width: 300px;
+    z-index: 100;
+    color: #2b2b2b;
+    background-color: rgba(255,255,255,.8);
+    margin: 0;
+    .logo {
+      position: absolute;
+      left: 0;
+      height: 40px;
+      top: 5px;
+    }
+    .company-logo {
+      position: absolute;
+      display: flex;
+      right: 0;
+      height: 50px;
+      width: 50px;
+      top: 0;
+      line-height: 50px;
+      text-align: center;
+      align-content: center;
+      svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 0;
+        path {
+          stroke: rgba(var(--custcolor), .4);
+        }
+      }
+      img {
+        position: relative;
+        align-self: center;
+        margin: 0 auto;
+        max-height: 20px;
+        max-width: 20px;
+        z-index: 1;
+      }
+    }
+}
+#teaser-content {
+  position: relative;
+  left: calc(50% - 150px);
+  width: 300px;
+  color: #2b2b2b;
+  .head {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    line-height: 30px;
+    font-size: 20px;
+    h5 {
+      font-weight: normal;
+    }
+  }
+  .video {
+    position: relative;
+    width: 100%;
+    height: auto;
+    .dots {
+      position: absolute;
+      padding: 0;
+      top: 0;
+      left: -20px;
+      height: 50px;
+      width: auto;
+      transform: rotateZ(90deg);
+      g path {
+        fill: rgba(var(--custcolor), .4);
+      }
+    }
+    video {
+      position: relative;
+      margin: 25px;
+      width: 250px;
+      border-radius: 10px;
+      background-color: black;
+      border: 1px solid black;
+    }
+
+  }
+  .contact {
+    position: relative;
+    width: 100%;
+    .dots {
+      position: absolute;
+      padding: 0;
+      top: -20px;
+      right: -50px;
+      left: auto;
+      height: 50px;
+      width: auto;
+      transform: rotateZ(-45deg);
+      g path {
+        fill: rgba(var(--custcolor), .4);
+      }
+    }
+    .content {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      .text {
+        position: relative;
+        left: 0;
+        width: 50%;
+        font-size: 16px;
+        padding-top: 20px;
+        .quote {
+          position: absolute;
+          top: 30px;
+          left: -40px;
+          height: 20px;
+        }
+      }
+      .address {
+        position: absolute;
+        left: 0; width: 50%;
+        text-align: right;
+        bottom: 20px;
+        font-size: 15px;
+      }
+      .people {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 200px;
+        img {
+          height: 200px;
+        }
+        .neuendorf {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 0;
+        }
+        .panne {
+          position: absolute;
+          top: 0;
+          right: 50px;
+          z-index: 1;
+        }
+      }
+    }
+  }
+}
+#teaser-footer {
+  width: 100%;
+  border-top: 1px solid rgba(0,0,0,.2);
+  height: 50px;
+}
+@media (min-width: 500px) {
+  #teaser-navbar,
+  #teaser-content {
+    left: calc(50% - 250px);
+    width: 500px;
+    .video {
+      video {
+        width: 450px;
+      }
+    }
+    .contact {
+      .content {
+        height: 300px;
+        .text {
+          padding-top: 50px;
+          font-size: 17px;
+          .quote {
+            left: -20px;
+            height: 30px;
+          }
+        }
+        .address {
+          bottom: 50px;
+          font-size: 17px;
+        }
+        .people {
+          height: 300px;
+          img {
+            height: 300px;
+          }
+          .panne {
+            right: 75px;
+          }
+        }
+      }
+    }
+  }
+}
+@media (min-width: 700px) {
+  #teaser-navbar {
+    left: calc(50% - 300px);
+    width: 600px;
+    height: 100px;
+    .logo {
+      height: 70px;
+      margin: 15px 0;
+    }
+    .company-logo {
+      height: 100px;
+      width: 100px;
+      img {
+        max-width: 40px;
+        max-height: 40px;
+      }
+    }
+  }
+  #teaser-content {
+    left: calc(50% - 300px);
+    width: 600px;
+    .head {
+      line-height: 40px;
+      font-size: 30px;
+    }
+    .video {
+      video {
+        margin: 50px;
+        width: 500px;
+      }
+      .dots {
+        height: 75px;
+      }
+    }
+    .contact {
+      .dots {
+        right: -100px;
+        height: 75px;
+      }
+      .content {
+        height: 350px;
+        .text {
+          padding-top: 50px;
+          font-size: 20px;
+        }
+        .address {
+          bottom: 50px;
+          font-size: 17px;
+        }
+        .people {
+          height: 350px;
+          img {
+            height: 350px;
+          }
+          .panne {
+            right: 75px;
+          }
+        }
+      }
+    }
+  }
+}
+@media(min-width: 900px) {
+  #teaser-navbar {
+    left: calc(50% - 350px);
+    width: 700px;
+  }
+  #teaser-content {
+    left: calc(50% - 350px);
+    width: 700px;
+    .video {
+      video {
+        width: 600px;
+      }
+      .dots {
+        height: 80px;
+      }
+    }
+    .contact {
+      .dots {
+        height: 80px;
+      }
+      .content {
+        height: 400px;
+        .text {
+          font-size: 23px;
+          .quote {
+            left: -30px;
+            height: 40px;
+          }
+        }
+        .address {
+          font-size: 23px;
+        }
+        .people {
+          height: 400px;
+          img {
+            height: 400px;
+          }
+          .panne {
+            right: 80px;
+          }
+        }
+      }
+    }
+  }
+}
+@media(min-width: 1100px) {
+  #teaser-navbar {
+    left: calc(50% - 500px);
+    width: 1000px;
+  }
+  #teaser-content {
+    left: calc(50% - 500px);
+    width: 1000px;
+    .video {
+      video {
+        width: 900px;
+      }
+      .dots {
+        left: -70px;
+        height: 120px;
+      }
+    }
+    .contact {
+      .dots {
+        height: 120px;
+        top: -70px;
+        right: -120px;
+      }
+      .content {
+        height: 500px;
+        .text {
+          width: 45%;
+          padding-top: 75px;
+          padding-left: 50px;
+          font-size: 30px;
+          .quote {
+            margin-top: 20px;
+            left: 0;
+            height: 50px;
+          }
+        }
+        .address {
+          bottom: 100px;
+          font-size: 25px;
+        }
+        .people {
+          height: 500px;
+          img {
+            height: 500px;
+          }
+          .panne {
+            right: 100px;
+          }
+        }
+      }
+    }
+  }
+}

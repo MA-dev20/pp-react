@@ -1,0 +1,166 @@
+<% if @teaser %>
+<div class="background-blur" id="edit_teaser" style="display: block">
+  <div class="content-popup">
+    <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeTeaserPopup()' %>
+    <h3>Edit Teaser</h3>
+    <%= form_for :teaser, url: edit_teaser_path(@teaser), html: {id: 'editTeaserForm'} do |f| %>
+      <div class="form-group logo">
+        <label for="teaser_logo">
+        <% if @teaser.logo? %>
+          <%= image_tag @teaser.logo.url, id: 'logo' %>
+        <% else %>
+          <%= image_tag '', id: 'logo', style: 'display: none' %>
+          Logo hinzufügen
+        <% end %>
+        <div class="hover"><i class="fas fa-plus"></i></div>
+        </label>
+        <%= f.file_field :logo %>
+      </div>
+      <div class="form-group">
+        <label for="">Teaser-URL</label>
+        <div class="form-field">
+            <div class="text">peterpitch.com/teaser/</div>
+            <%= f.text_field :password, class: 'custom-url-field' %>
+        </div>
+      </div>
+      <div class="form-group half-left">
+        <label for="">Vorname / Anrede</label>
+        <%= f.text_field :fname, class: 'form-field' %>
+      </div>
+      <div class="form-group half-right">
+        <label for="">Nachname</label>
+        <%= f.text_field :lname, class: 'form-field' %>
+      </div>
+
+      <div class="form-group color">
+        <%= f.hidden_field :teaser_color, value: @teaser.teaser_color %>
+    		<label for="">Markenfarbe auswählen</label> <br>
+    		<%= f.color_field :color_hex, class: 'form-field' %>
+    	</div>
+      <%= f.submit 'speichern!', class: 'btn btn-green' %>
+    <% end %>
+  </div>
+</div>
+<div class="popup" id="popup">
+	<div class="img-container">
+		<%= image_tag '', id: 'logo_image' %>
+	</div>
+   	<div class="center">
+    	<div class="btn btn-green" id="crop">speichern</div>
+   	</div>
+   	<div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
+</div>
+<script type="text/javascript">
+  function closeTeaserPopup() {
+    $('#edit_teaser').hide();
+  }
+  $('#teaser_color_hex').on('change', function() {
+    $('#teaser_teaser_color').attr('value', 1);
+  })
+  $('#editTeaserForm').on('submit', function(event) {
+    event.preventDefault();
+    var url = "<%= edit_teaser_path(@teaser) %>";
+    var formData = new FormData(document.getElementById('editTeaserForm'));
+    $.ajax({
+      url: url,
+      type: 'post',
+      cache: 'false',
+      async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success:function(res) {
+        location.replace("<%= backoffice_teaser_path %>");
+      }
+    })
+  })
+  function showPopup() {
+        $('#popup').show();
+    }
+    function hidePopup() {
+        $('#popup').hide();
+    }
+	(function ($) {
+	  $.each(['show', 'hide'], function (i, ev) {
+	    var el = $.fn[ev];
+	    $.fn[ev] = function () {
+	      this.trigger(ev);
+	      return el.apply(this, arguments);
+	    };
+	  });
+	})(jQuery);
+	var inputAvatar = document.getElementById('teaser_logo');
+	var image = document.getElementById('logo_image');
+  var avatar = document.getElementById('logo');
+
+	inputAvatar.addEventListener('change', function(e) {
+		var files = e.target.files;
+		var done = function(url) {
+			inputAvatar.value = '';
+			image.src = url;
+			$('#popup').show();
+		};
+		var reader, file, url;
+		if(files && files.length > 0) {
+			file = files[0];
+			if(URL) {
+				done(URL.createObjectURL(file));
+			} else if(FileReader) {
+				reader = new FileReader();
+				reader.onload = function(e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+	})
+	$('#popup').on('show', function() {
+		cropper = new Cropper(image, {
+			aspectRatio: 1,
+		});
+	})
+	$('#popup').on('hide', function() {
+		cropper.destroy();
+		cropper = null;
+	})
+	$('#crop').on('click', function() {
+		var initialURL, canvas;
+		if(cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			initalURL = avatar.src;
+			avatar.src = canvas.toDataURL();
+			canvas.toBlob(function(blob) {
+				var date = new Date().getTime();
+				var file = new window.File([blob], 'logo_'+date+'.jpg', {type: 'image/jpg'});
+				var formData = new FormData();
+				formData.append('file', file);
+				uploadImage(formData);
+			});
+		};
+	})
+	function uploadImage(formData) {
+		var url = '<%= edit_teaser_logo_path(@teaser) %>';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				formData = new FormData();
+				$('#avatar').data('url', res.logo);
+				$('#popup').hide();
+			}
+		})
+
+	}
+</script>
+<% end %>
