@@ -1,3 +1,9 @@
+.teaser-content {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
 #teaser-navbar {
     position: relative;
     top: 0;
@@ -89,6 +95,19 @@
   .contact {
     position: relative;
     width: 100%;
+    .dots {
+      position: absolute;
+      padding: 0;
+      top: -20px;
+      right: -50px;
+      left: auto;
+      height: 50px;
+      width: auto;
+      transform: rotateZ(-45deg);
+      g path {
+        fill: rgba(var(--custcolor), .4);
+      }
+    }
     .content {
       position: relative;
       width: 100%;
@@ -103,8 +122,7 @@
           position: absolute;
           top: 30px;
           left: -40px;
-          font-size: 15px;
-          color: rgba(0,0,0,.1);
+          height: 20px;
         }
       }
       .address {
@@ -160,7 +178,8 @@
           padding-top: 50px;
           font-size: 17px;
           .quote {
-            font-size: 30px;
+            left: -20px;
+            height: 30px;
           }
         }
         .address {
@@ -215,14 +234,15 @@
       }
     }
     .contact {
+      .dots {
+        right: -100px;
+        height: 75px;
+      }
       .content {
         height: 350px;
         .text {
           padding-top: 50px;
           font-size: 20px;
-          .quote {
-            font-size: 30px;
-          }
         }
         .address {
           bottom: 50px;
@@ -258,13 +278,16 @@
       }
     }
     .contact {
+      .dots {
+        height: 80px;
+      }
       .content {
         height: 400px;
         .text {
           font-size: 23px;
           .quote {
-            left: -50px;
-            font-size: 40px;
+            left: -30px;
+            height: 40px;
           }
         }
         .address {
@@ -301,6 +324,11 @@
       }
     }
     .contact {
+      .dots {
+        height: 120px;
+        top: -70px;
+        right: -120px;
+      }
       .content {
         height: 500px;
         .text {
@@ -309,8 +337,9 @@
           padding-left: 50px;
           font-size: 30px;
           .quote {
+            margin-top: 20px;
             left: 0;
-            font-size: 40px;
+            height: 50px;
           }
         }
         .address {

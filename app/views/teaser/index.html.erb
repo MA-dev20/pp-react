@@ -1,6 +1,7 @@
 
 <% content_for :title, "Peter Pitch - Teaser" %>
 <% content_for :description, 'Peter Pitch ist das digitale Trainingstool für Kommunication und Vertrieb. Erfahre mehr und sende uns eine Nachricht.'%>
+<div class="teaser-content">
 <section id="teaser-navbar" class="teaser-navbar">
   <%= image_tag 'logos/pp_logo.png', class: 'logo', alt: 'Peter Pitch Logo'%>
   <% if @teaser.logo? %>
@@ -22,13 +23,14 @@
   </div>
 
   <div class="contact">
+    <%= inline_svg_tag 'game/illus/dots.svg', class: 'dots' %>
     <div class="head">
       <h3>Wie geht's weiter</h3>
     </div>
     <div class="content">
 
       <div class="text">
-        <i class="quote fas fa-quote-left"></i>
+        <%= image_tag 'icons/quote.png', class: 'quote' %>
         Wir sind für Sie da und freuen uns von Ihnen zu hören!
       </div>
       <div class="address">
@@ -42,6 +44,30 @@
     </div>
   </div>
 </section>
-<section id="teaser-footer">
-
+</div>
+<section id="footer" class="wow fadeIn">
+    <div class="logo">
+        <%= image_tag 'logos/pp_logo.png', alt: 'Peter Pitch Logo' %>
+    </div>
+    <div class="company">
+        <div class="heading">Unternehmen</div>
+        <div class="links">
+            <%= link_to 'Registrieren', contact_path %>
+            <%= link_to 'Preise', contact_path %>
+            <%= link_to 'FAQ', root_path(anchor: 'faq') %>
+            <%= link_to 'Login', '#login', onclick: 'showLoginModal()' %>
+        </div>
+    </div>
+    <div class="legal">
+        <div class="heading">Rechtliches</div>
+        <div class="links">
+            <%= link_to 'Impressum', impressum_path %>
+            <%= link_to 'Datenschutz', datenschutz_path %>
+        </div>
+    </div>
+    <div class="social">
+        <%= link_to '', 'https://www.instagram.com/peterpitchcom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-instagram" %>
+        <%= link_to '', 'https://www.youtube.com/channel/UCN7MeKNNdXK28uIiJjJ4Fdg', target: "_blank", rel: "noopener noreferrer", class: "fab fa-youtube" %>
+        <%= link_to '', 'https://www.facebook.com/PeterPitchCom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-facebook-f" %>
+    </div>
 </section>

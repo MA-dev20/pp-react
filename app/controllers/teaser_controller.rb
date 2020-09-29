@@ -1,6 +1,6 @@
 class TeaserController < ApplicationController
   before_action :set_teaser_by_password, only: [:index]
-  before_action :set_teaser, only: [:edit, :destroy]
+  before_action :set_teaser, only: [:edit, :edit_logo, :destroy]
   layout 'landing'
 
   def create
@@ -22,6 +22,10 @@ class TeaserController < ApplicationController
     render json: {teaser: params[:teaser_id]}
   end
 
+  def edit_logo
+    @teaser.update(logo: params[:file]) if params[:file].present? && @teaser.present?
+    render json: {id: @teaser.id, logo: @teaser.logo.url}
+  end
   def destroy
     if @teaser.destroy
       render json: {teaser: params[:teaser_id]}
@@ -45,6 +49,6 @@ class TeaserController < ApplicationController
   end
 
   def teaser_params
-    params.require(:teaser).permit(:password, :fname, :lname, :logo, :color_hex)
+    params.require(:teaser).permit(:password, :fname, :lname, :logo, :color_hex, :teaser_color)
   end
 end

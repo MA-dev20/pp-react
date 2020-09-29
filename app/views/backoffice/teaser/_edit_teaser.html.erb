@@ -33,13 +33,22 @@
       </div>
 
       <div class="form-group color">
-        <%= f.hidden_field :teaser_color, value: 0 %>
+        <%= f.hidden_field :teaser_color, value: @teaser.teaser_color %>
     		<label for="">Markenfarbe auswählen</label> <br>
     		<%= f.color_field :color_hex, class: 'form-field' %>
     	</div>
       <%= f.submit 'speichern!', class: 'btn btn-green' %>
     <% end %>
   </div>
+</div>
+<div class="popup" id="popup">
+	<div class="img-container">
+		<%= image_tag '', id: 'logo_image' %>
+	</div>
+   	<div class="center">
+    	<div class="btn btn-green" id="crop">speichern</div>
+   	</div>
+   	<div class="close" onclick="hidePopup()"><%= image_tag 'icons/close.svg' %></div>
 </div>
 <script type="text/javascript">
   function closeTeaserPopup() {
@@ -66,5 +75,92 @@
       }
     })
   })
+  function showPopup() {
+        $('#popup').show();
+    }
+    function hidePopup() {
+        $('#popup').hide();
+    }
+	(function ($) {
+	  $.each(['show', 'hide'], function (i, ev) {
+	    var el = $.fn[ev];
+	    $.fn[ev] = function () {
+	      this.trigger(ev);
+	      return el.apply(this, arguments);
+	    };
+	  });
+	})(jQuery);
+	var inputAvatar = document.getElementById('teaser_logo');
+	var image = document.getElementById('logo_image');
+  var avatar = document.getElementById('logo');
+
+	inputAvatar.addEventListener('change', function(e) {
+		var files = e.target.files;
+		var done = function(url) {
+			inputAvatar.value = '';
+			image.src = url;
+			$('#popup').show();
+		};
+		var reader, file, url;
+		if(files && files.length > 0) {
+			file = files[0];
+			if(URL) {
+				done(URL.createObjectURL(file));
+			} else if(FileReader) {
+				reader = new FileReader();
+				reader.onload = function(e) {
+					done(reader.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		}
+	})
+	$('#popup').on('show', function() {
+		cropper = new Cropper(image, {
+			aspectRatio: 1,
+		});
+	})
+	$('#popup').on('hide', function() {
+		cropper.destroy();
+		cropper = null;
+	})
+	$('#crop').on('click', function() {
+		var initialURL, canvas;
+		if(cropper) {
+			canvas = cropper.getCroppedCanvas({
+				fillColor: "white",
+				width: 500,
+				height: 500,
+			});
+			initalURL = avatar.src;
+			avatar.src = canvas.toDataURL();
+			canvas.toBlob(function(blob) {
+				var date = new Date().getTime();
+				var file = new window.File([blob], 'logo_'+date+'.jpg', {type: 'image/jpg'});
+				var formData = new FormData();
+				formData.append('file', file);
+				uploadImage(formData);
+			});
+		};
+	})
+	function uploadImage(formData) {
+		var url = '<%= edit_teaser_logo_path(@teaser) %>';
+		$.ajax({
+			url: url,
+			type: 'put',
+			cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+			success: function(res) {
+				formData = new FormData();
+				$('#avatar').data('url', res.logo);
+				$('#popup').hide();
+			}
+		})
+
+	}
 </script>
 <% end %>

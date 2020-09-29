@@ -8,6 +8,7 @@ class CreateTeasers < ActiveRecord::Migration[5.2]
       t.integer :color1, array: true, default: [69, 177, 255]
       t.integer :color2, array: true, default: [29, 218, 175]
       t.string :color_hex
+      t.integer :teaser_color
       t.timestamps
     end
   end

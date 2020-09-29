@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   put 'teasers/teaser/create', to: 'teaser#create', as: 'new_teaser'
   post 'teasers/teaser/:teaser_id/edit', to: 'teaser#edit', as: 'edit_teaser'
+  put 'teasers/teaser/:teaser_id/edit_logo', to: 'teaser#edit_logo', as: 'edit_teaser_logo'
   put 'teasers/teaser/:teaser_id/destroy', to: 'teaser#destory', as: 'destroy_teaser'
 
   get 'dashboard/', to: 'dashboard#index', as: 'dashboard'
