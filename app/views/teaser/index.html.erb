@@ -18,12 +18,17 @@
   </div>
 
   <div class="video">
-    <%= inline_svg_tag 'game/illus/dots.svg', class: 'dots' %>
+    <%= inline_svg_tag 'game/illus/dots.svg', class: 'dotted' %>
     <%= video_tag 'gameintro.mp4', controls: true %>
+  </div>
+  <div class="dots">
+      <div class="dot blue wow fadeIn"></div>
+      <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
+      <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
   </div>
 
   <div class="contact">
-    <%= inline_svg_tag 'game/illus/dots.svg', class: 'dots' %>
+    <%= inline_svg_tag 'game/illus/dots_arrow.svg', class: 'dotted' %>
     <div class="head">
       <h3>Wie geht's weiter</h3>
     </div>
@@ -44,7 +49,6 @@
     </div>
   </div>
 </section>
-</div>
 <section id="footer" class="wow fadeIn">
     <div class="logo">
         <%= image_tag 'logos/pp_logo.png', alt: 'Peter Pitch Logo' %>
@@ -71,3 +75,4 @@
         <%= link_to '', 'https://www.facebook.com/PeterPitchCom/', target: "_blank", rel: "noopener noreferrer", class: "fab fa-facebook-f" %>
     </div>
 </section>
+</div>

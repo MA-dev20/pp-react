@@ -34,6 +34,8 @@ class GameMobileController < ApplicationController
 	render @state
   end
 
+
+
   def choosen
 	if @game.state != 'choose'
 	  redirect_to gm_game_path
@@ -157,6 +159,14 @@ class GameMobileController < ApplicationController
   end
 
   def repeat_turn
+    @turn = @game.game_turns.find_by(id: @game.current_turn) if @game.current_turn
+    @turn = @game.game_turns.find_by(task_id: @game.current_task) if !@turn
+    @game.game_turns.where(task: @turn.task, user: @turn.user).each do |t|
+        t.update(played: true, play: false, repeat: true)
+    end
+  end
+  
+  def repeat_turn_copy
 	@turn = @game.game_turns.find_by(id: @game.current_turn) if @game.current_turn
   @turn = @game.game_turns.find_by(task_id: @game.current_task) if !@turn
     @game.game_turns.where(task: @turn.task, user: @turn.user).each do |t|

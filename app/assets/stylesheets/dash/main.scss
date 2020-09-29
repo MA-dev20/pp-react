@@ -2287,6 +2287,12 @@ body {
 	box-shadow: 0px 6px 20px 0
 	rgba(172,172,172,0.1);
 	z-index: 100;
+	.close {
+		img {
+			height: 30px;
+			width: 30px;
+		}
+	}
 	.img-container {
 		position: relative;
 		height: 500px;
@@ -2300,6 +2306,13 @@ body {
 		width: 500px;
 		margin: 0 50px 50px;
 		text-align: center;
+		.btn {
+			margin: 5px 0;
+			height: 40px;
+			line-height: 40px;
+			border-radius: 20px;
+			width: 100px;
+		}
 	}
 	.close {
 		cursor: pointer;
