@@ -35,59 +35,53 @@
         <i class="fas fa-bars"></i>
     </div>
 </section>
+<%= image_tag 'landing/product/dots.png', class: 'dotted' %>
 <section id="content">
     <div class="head animated fadeIn">
         <div class="left">
-            <div class="heading-big" id='typed'></div>
+            <div class="heading">Macht<br> <span id="typed"></span> <br>besser.</div>
             <div id="typed-strings">
-                <span>Peter Pitch</span>
-                <p>ZurückBlitzer</p>
-                <p>ChefTrampolin</p>
-                <p>NotrufSocke</p>
+                <span>Trainings</span>
+                <p>Menschen</p>
+                <p>Dich</p>
             </div>
-            <div class="heading-small">Das digitale Trainingstool für <br> Kommunikation und Vertrieb.</div>
-            <div class="points">
-                <div class="point">
-                    <%= image_tag 'landing/training.png', alt: 'Training' %>
-                    <h2>Training</h2>
-                    <h5>Interaktiv und Digital</h5>
-                </div>
-                <div class="point">
-                    <%= image_tag 'landing/analyse.png', alt: 'Analyse' %>
-                    <h2>Analyse</h2>
-                    <h5>Macht Softskills messbar</h5>
-                </div>
-                <div class="point">
-                    <%= image_tag 'landing/rec.png', alt: 'Recruiting' %>
-                    <h2>Recruiting</h2>
-                    <h5>Testet Bewerber</h5>
-                </div>
-                <div class="point">
-                    <%= image_tag 'landing/event.png', alt: 'Event' %>
-                    <h2>Event</h2>
-                    <h5>100% Entertainmentgarantie</h5>
-                </div>
-            </div>
+            <div class="subheading">Peter Pitch ist das innovative und beispiellos interaktive Tool,
+das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
+
             <div class="cta">
                 <%= link_to 'kostenlos testen', contact_path, class: 'btn btn-green' %>
             </div>
         </div>
         <div class="right">
-            <%= image_tag 'landing/PeterPitchIsometric.png', alt: 'Vertriebstraining' %>
+          <div class="video">
+            <%= video_tag 'landing.mp4', alt: 'Vertriebstraining', id: 'videoLanding'%>
+            <%= image_tag 'landing/video-bg.png' %>
+            <div class="play" onclick="playlanding()">
+              <%= inline_svg_tag 'icons/play.svg' %>
+            </div>
+          </div>
+
+            <%= image_tag 'landing/product/polygons.png', class: 'polygons' %>
+
         </div>
     </div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape1', alt: '' %>
     <%= image_tag 'landing/shape.svg', class: 'shape s153', id: 'shape2', alt: '' %>
 
-
+    <div class="references wow fadeIn">
+        <h2 class="mobilehead">Referenzen</h2>
+        <h2 class="desktophead"><div class="line1"></div>Du befindest dich in bester Gesellschaft <div class="line2"></div></h2>
+        <div class="logo-wheel">
+            <%= image_tag 'logos/lensing.png', alt: 'LensingMedia' %>
+            <%= image_tag 'logos/mysecondear.png', alt: 'MySecondEar' %>
+            <%= image_tag 'logos/ergo.svg', alt: 'Ergo' %>
+            <%= image_tag 'logos/tremonia.png', alt: 'TremoniaMedia' %>
+        </div>
+    </div>
     <div class="wie-geil-ist-das animated fadeIn" data-wow-delay=".2s">
         <h2>Wie geil ist das denn?</h2>
         <h5>Nimm den Spaß in deinem Unternehmen ernst und verwandel deine Meetings in wahre Performance-Booster. Mit Peter Pitch treibst du das Mitarbeiter-Rudel zusammen und machst sogar aus den wackeligsten Welpen wahre Wölfe. Stage is yours!</h5>
-        <div class="video" onclick="playVideo()">
-        	<%= image_tag 'landing/video-bg.png', id: 'picVideo', alt: 'Spaß am Training' %>
-        	<%= video_tag 'landing.mp4', id: 'vidVideo', controls: true, preload: 'auto' %>
-        	<i class="far fa-play-circle" id="playVideo"></i>
-        </div>
+        <%= image_tag 'PeterPitchIsometric.png', alt: 'Spaß am Training' %>
     </div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape3', alt: '' %>
     <%= image_tag 'landing/shape.svg', class: 'shape s87 right219', id: 'shape4', alt: '' %>
@@ -165,16 +159,7 @@
         </div>
         </div>
     </section>
-    <div class="references wow fadeIn">
-        <h2 class="mobilehead">Referenzen</h2>
-        <h2 class="desktophead"><div class="line1"></div>Du befindest dich in bester Gesellschaft <div class="line2"></div></h2>
-        <div class="logo-wheel">
-            <%= image_tag 'logos/lensing.png', alt: 'LensingMedia' %>
-            <%= image_tag 'logos/mysecondear.png', alt: 'MySecondEar' %>
-            <%= image_tag 'logos/ergo.svg', alt: 'Ergo' %>
-            <%= image_tag 'logos/tremonia.png', alt: 'TremoniaMedia' %>
-        </div>
-    </div>
+
 
     <section id="product">
     <div class="image-text left" onmouseover="startGami()" onmouseout="stopGami()" ontouchstart="startGami()" ontouchend="stopGami()">
@@ -655,20 +640,19 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        var typed = new Typed('#typed', {
-            contentType: 'html',
-            stringsElement: '#typed-strings',
-            startDelay: 300,
-            typeSpeed: 100,
-            backSpeed: 20,
-            backDelay: 700,
-            loop: true,
-            loopCount: Infinity,
-        })
-
         WOW.prototype.addBox = function(element) {
             this.boxes.push(element);
         };
+        var typed = new Typed('#typed', {
+            contentType: 'html',
+            stringsElement: '#typed-strings',
+            startDelay: 100,
+            typeSpeed: 200,
+            backSpeed: 50,
+            backDelay: 1000,
+            loop: true,
+            loopCount: Infinity,
+        })
 
         // Init WOW.js and get instance
         var wow = new WOW();
@@ -681,5 +665,13 @@
             }).removeClass('animated');
             wow.addBox(this);
         }).scrollSpy();
+    })
+    function playlanding() {
+      $(".head .right .play").hide();
+      document.getElementById('videoLanding').play();
+    }
+    $('#videoLanding').on('ended', function() {
+      $(".head .right .play").show();
+      document.getElementById('videoLanding').load();
     })
 </script>
