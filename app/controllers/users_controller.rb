@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :check_user, except: [:edit_avatar]
-  before_action :set_user, only: [:set_role, :edit, :edit_avatar, :destroy, :send_password]
+  before_action :set_user, only: [:set_role, :edit, :edit_ajax, :edit_avatar, :destroy, :send_password]
   before_action :set_company, only: [:set_role, :activate_users, :create]
   def create
     @user = User.find_by(email: user_params[:email])
@@ -54,6 +54,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit_ajax
+    @user.update(user_params)
+    render json: {fname: @user.fname, lname: @user.lname, email: @user.email, avatar: @user.avatar.url}
+  end
   def edit
 	authorize! :update, @user
   @user.company_users.find_by(company: @admin_company).update(role: params[:user][:role]) if params[:user][:role]
@@ -100,10 +104,18 @@ class UsersController < ApplicationController
   	  end
       flash[:info_head] = 'Passwort gesendet!'
       flash[:info] = 'Prima. Wir haben dem Nutzer sein Passwort in einer Mail zukommen lassen.'
-  	  redirect_to dashboard_teams_path(edit_user: @user)
+      if params[:backoffice]
+        redirect_to backoffice_company_teams_path(params[:backoffice], user: @user)
+      else
+  	    redirect_to dashboard_teams_path(edit_user: @user)
+      end
     else
       flash[:alert] = 'Konnte Passwort nicht ändern!'
-  	  redirect_to dashboard_teams_path(edit_user: @user)
+      if params[:backoffice]
+        redirect_to backoffice_company_teams_path(params[:backoffice], user: @user)
+      else
+  	    redirect_to dashboard_teams_path(edit_user: @user)
+      end
     end
   end
 

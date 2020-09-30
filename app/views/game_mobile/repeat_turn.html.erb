@@ -1,5 +1,5 @@
 <div class="head">
-	<h1>Den letzten Pitch wiederholen</h1>
+	<h1>Die letzte Aufgabe wiederholen</h1>
 </div>
 <div class="middle">
 	<% if @turn.user.avatar? %>
@@ -9,6 +9,6 @@
 	<% end %>
 </div>
 <div class="bottom big">
-		<%= link_to @turn.user.fname + ' soll wiederholen', gm_repeat_turn_copy_path, class: 'btn inverted' %>
-		<%= link_to 'jemand anderes soll wiederholen', gm_set_state_path(state: 'show_task'), class: 'btn'%>
+		<%= link_to @turn.user.fname + ' pitcht', gm_repeat_turn_copy_path, class: 'btn inverted' %>
+		<%= link_to 'Anderer Nutzer pitcht', gm_set_state_path(state: 'show_task'), class: 'btn'%>
 </div>

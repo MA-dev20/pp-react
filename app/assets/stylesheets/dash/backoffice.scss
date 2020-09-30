@@ -127,3 +127,54 @@
     }
   }
 }
+#bo_edit_users {
+  form {
+    position: relative;
+    .form-group {
+      width: 50%;
+      label {
+        display: inline-block;
+        width: 10vw;
+      }
+    }
+    .form-group.avatar {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 30vh;
+      text-align: center;
+      .circle, img {
+        display: inline-block;
+        height: 20vh;
+        width: 20vh;
+        background-color: #00232a;
+        border-radius: 50%;
+        line-height: 20vh;
+        font-size: 10vh;
+        color: white;
+        margin: 5vh;
+      }
+      .mail-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        line-height: 5vh;
+        text-decoration: 2px underline rgba(var(--btncolor), 1) !important;
+      }
+      .mail-link:hover {
+        text-decoration: 2px underline rgba(var(--btncolor), .5) !important;
+      }
+    }
+    .btn {
+      position: relative;
+      width: 50%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  table {
+    width: 100%;
+  }
+}

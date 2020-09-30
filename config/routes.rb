@@ -194,6 +194,7 @@ Rails.application.routes.draw do
   #USER
   post 'company/:company_id/users/create', to: 'users#create', as: 'new_user'
   post 'users/:user_id/edit', to: 'users#edit', as: 'edit_user'
+  post 'users/:user_id/edit_ajax', to: 'users#edit_ajax', as: 'edit_user_ajax'
   get 'users/:user_id/send_password', to: 'users#send_password', as: 'user_send_password'
   post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
   post 'company/:company_id/users/activate_users', to: 'users#activate_users', as: 'activate_users'

@@ -37,14 +37,40 @@
   </div>
   <% end %>
 </div>
-<div class="edit_user">
-  <%= form_for :user, url: edit_user_path(@company, @user), html: {id: 'editUserForm'} do |f| %>
+<div class="users" id="bo_edit_users">
+  <h3>Nutzer</h3>
+  <%= form_for :user, url: edit_user_path(@user), html: {id: 'editUserForm'} do |f| %>
+  <div class="form-group">
+    <label for="">Vorname</label>
+    <%= f.text_field :fname, value: @user.fname, class: 'form-field' %>
+  </div>
+  <div class="form-group">
+    <label for="">Nachname</label>
+    <%= f.text_field :lname, value: @user.lname, class: 'form-field' %>
+  </div>
+  <div class="form-group">
+    <label for="">E-Mail</label>
+    <%= f.email_field :email, value: @user.email, class: 'form-field' %>
+  </div>
+  <div class="form-group avatar">
+    <div id="avatar">
+      <% if @user.avatar.present? %>
+      <%= image_tag @user.avatar.url %>
+      <% else %>
+      <div class="circle">
+        <%= @user.fname[0].capitalize %><%= @user.lname[0].capitalize %>
+      </div>
+      <% end %>
+    </div>
+    <%= f.file_field :avatar %>
+    <%= link_to 'Passwort zusenden!', user_send_password_path(@user, backoffice: @company.id), class: 'mail-link' %>
+  </div>
+  <%= f.submit 'speichern', class: 'btn' %>
+  <% end %>
+  <h3>Statistik</h3>
   <table>
     <thead>
       <tr>
-        <th>Vorname</th>
-        <th>Nachname</th>
-        <th>E-Mail</th>
         <th>Pitches erstellt</th>
         <th>Pitches gespielt</th>
         <th>Sign-In Count</th>
@@ -54,9 +80,6 @@
     </thead>
     <tbody>
       <tr>
-        <td><%= f.text_field :fname, value: @user.fname %></td>
-        <td><%= f.text_field :lname, value: @user.lname %></td>
-        <td><%= f.text_field :email, value: @user.email %></td>
         <td><%= @user.pitches.count %></td>
         <td><%= @user.game_turns.count %></td>
         <td><%= @user.sign_in_count %></td>
@@ -65,11 +88,34 @@
       </tr>
     </tbody>
   </table>
-  <% end %>
 </div>
 <script type="text/javascript">
+  $('#editUserForm').on('submit', function(e) {
+    e.preventDefault();
+    var URL = "<%= edit_user_ajax_path(@user) %>";
+    var formData = new FormData(document.getElementById('editUserForm'));
+    $.ajax({
+      url: URL,
+      type: 'post',
+      data: formData,
+      cache: false,
+			async: true,
+			contentType: false,
+			processData: false,
+      beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      success: function(res) {
+        $('#user_fname').attr('value', res.fname);
+        $('#user_lname').attr('value', res.lname);
+        $('#user_email').attr('value', res.email);
+        var image = document.createElement('img');
+        image.src = res.avatar;
+        $('#avatar').html(image);
+			}
+    })
+    })
+  })
   function toggleRoleDropdown(e) {
-    var companyID = $(e).attr('data-id');
+    var companyID = $(e).attr('data-id');'
     $('#dropdown_'+companyID).toggle();
   }
   function setRole(companyID, role) {
