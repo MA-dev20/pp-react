@@ -241,6 +241,11 @@ class GameDesktopController < ApplicationController
             else
               @game_user.update(best_rating: 0)
             end
+            i = 1
+            @game.game_users.order(best_rating: :desc).each do |gu|
+              gu.update(place: i) if gu.place != i && gu.best_rating != 0
+              i += 1
+            end
           end
           if @game.state != 'rating'
             @user = @turn.user

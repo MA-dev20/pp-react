@@ -165,7 +165,7 @@ class GameMobileController < ApplicationController
         t.update(played: true, play: false, repeat: true)
     end
   end
-  
+
   def repeat_turn_copy
 	@turn = @game.game_turns.find_by(id: @game.current_turn) if @game.current_turn
   @turn = @game.game_turns.find_by(task_id: @game.current_task) if !@turn
@@ -428,6 +428,11 @@ class GameMobileController < ApplicationController
               @game_user.update(best_rating: @turns.maximum("ges_rating"))
             else
               @game_user.update(best_rating: 0)
+            end
+            i = 1
+            @game.game_users.order(best_rating: :desc).each do |gu|
+              gu.update(place: i) if gu.place != i && gu.best_rating != 0
+              i += 1
             end
           end
           if @game.state != 'rating'
