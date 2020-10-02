@@ -55,7 +55,7 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         <div class="right">
           <div class="video">
             <%= video_tag 'landing.mp4', alt: 'Vertriebstraining', id: 'videoLanding'%>
-            <%= image_tag 'landing/video-bg.png' %>
+            <%= image_tag 'landing/video-bg.png', id: 'videoBG' %>
             <div class="play" onclick="playlanding()">
               <%= inline_svg_tag 'icons/play.svg' %>
             </div>
@@ -72,11 +72,17 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         <h2 class="mobilehead">Referenzen</h2>
         <h2 class="desktophead"><div class="line1"></div>Du befindest dich in bester Gesellschaft <div class="line2"></div></h2>
         <div class="logo-wheel">
-            <%= image_tag 'logos/lensing.png', alt: 'LensingMedia' %>
-            <%= image_tag 'logos/mysecondear.png', alt: 'MySecondEar' %>
-            <%= image_tag 'logos/ergo.svg', alt: 'Ergo' %>
-            <%= image_tag 'logos/tremonia.png', alt: 'TremoniaMedia' %>
+            <%= image_tag 'logos/lensing.png', alt: 'LensingMedia', title: 'Lensing Media' %>
+            <%= image_tag 'logos/mysecondear.png', alt: 'MySecondEar', title: 'MySecondEar UG' %>
+            <%= image_tag 'logos/sparkasse.png', alt: 'Sparkasse', title: 'Sparkassenakademie Nordrhein-Westfalen' %>
+            <%= image_tag 'logos/ergo.svg', alt: 'Ergo', title: 'Ergo Group AG' %>
+            <%= image_tag 'logos/tremonia.png', alt: 'TremoniaMedia', title: 'tremoniamedia Filmproduktion GmbH' %>
         </div>
+    </div>
+    <div class="dots">
+        <div class="dot blue wow fadeIn"></div>
+        <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
+        <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
     </div>
     <div class="wie-geil-ist-das animated fadeIn" data-wow-delay=".2s">
         <h2>Wie geil ist das denn?</h2>
@@ -86,11 +92,62 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape3', alt: '' %>
     <%= image_tag 'landing/shape.svg', class: 'shape s87 right219', id: 'shape4', alt: '' %>
 
-    <div class="dots">
+    <div class="dots" style="margin-top: 0">
         <div class="dot blue wow fadeIn"></div>
         <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
         <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
     </div>
+    <div class="testimonials wow fadeIn" data-wow-delay=".2s">
+       <div class="heading">
+           Wir lieben Peter
+       </div>
+        <div class="swiper-container">
+        	<div class="swiper-wrapper">
+        		<div class="swiper-slide">
+					<div class="card" id="card1">
+						<div class="text">
+							"Die Mitarbeiter lieben es - unsere Schulungen avancieren mit diesem Tool zu echten Highlights."
+						</div>
+						<div class="people">
+							<div class="name">Julian Stechert</div>
+							<div class="reference">MySecondEar</div>
+						</div>
+            <%= image_tag 'people/stechert.png', alt: 'Julian Stechert' %>
+            <%= image_tag 'people/stechert.png', id: 'second' %>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="card" id="card2">
+						<div class="text">
+							"Kreative und nachhaltige Lernmethoden sind ein wichtiger Bestandteil unserer DNA. Als Gründungspartner von Peter Pitch profitieren wir von einem hoch innovativen, digitalen Trainingstool."
+						</div>
+						<div class="people">
+							<div class="name">Sabrina Michallik</div>
+							<div class="reference">Lensing Media</div>
+						</div>
+            <%= image_tag 'people/lensingmichallik.png', alt: 'Sabrina Michallik' %>
+            <%= image_tag 'people/lensingmichallik.png', alt: 'Sabrina Michallik', id: 'second' %>
+					</div>
+				</div>
+
+				<div class="swiper-slide">
+					<div class="card" id="card3">
+						<div class="text">
+							"Spaß und Vertrieb gehören zusammen. Peter Pitch trägt einen großen Teil zu unserer erfolgreichen Lernkultur bei."
+						</div>
+						<div class="people">
+							<div class="name">Julian Storms</div>
+							<div class="reference">Ergo Group</div>
+						</div>
+            <%= image_tag 'people/storms.png', alt: 'Julian Storms' %>
+            <%= image_tag 'people/storms.png', alt: 'Julian Storms', id: 'second' %>
+					</div>
+				</div>
+        	</div>
+        	<div class="swiper-pagination"></div>
+        </div>
+    </div>
+
 
     <section id="hiw">
         <h2 class="wow fadeIn" data-wow-delay=".2s">So funktioniert's</h2>
@@ -160,7 +217,15 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         </div>
     </section>
 
-
+    <section id="party">
+      <div class="heading">
+        Lass es krachen!
+      </div>
+      <div class="video">
+        <%= image_tag 'landing/video-bg.png', id: 'partyIMG' %>
+        <%= video_tag 'landing.mp4', id: 'partyVideo' %>
+      </div>
+    </section>
     <section id="product">
     <div class="image-text left" onmouseover="startGami()" onmouseout="stopGami()" ontouchstart="startGami()" ontouchend="stopGami()">
         <div class="image wow fadeInLeft" data-wow-delay=".2s" >
@@ -305,53 +370,7 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
     </div>
 
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape8', alt: '' %>
-    <div class="testimonials wow fadeIn" data-wow-delay=".2s">
-       <div class="heading">
-           Wir lieben Peter
-       </div>
-        <div class="swiper-container">
-        	<div class="swiper-wrapper">
-        		<div class="swiper-slide">
-					<div class="card" id="card1">
-						<div class="text">
-							"Die Mitarbeiter lieben es - unsere Schulungen avancieren mit diesem Tool zu echten Highlights."
-						</div>
-						<div class="people">
-							<%= image_tag 'people/stechert.png', alt: 'Julian Stechert' %>
-							<div class="name">Julian Stechert</div>
-							<div class="reference">MySecondEar</div>
-						</div>
-					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="card" id="card2">
-						<div class="text">
-							"Kreative und nachhaltige Lernmethoden sind ein wichtiger Bestandteil unserer DNA. Als Gründungspartner von Peter Pitch profitieren wir von einem hoch innovativen, digitalen Trainingstool."
-						</div>
-						<div class="people">
-							<%= image_tag 'people/michallik.png', alt: 'Sabrina Michallik' %>
-							<div class="name">Sabrina Michallik</div>
-							<div class="reference">Lensing Media</div>
-						</div>
-					</div>
-				</div>
 
-				<div class="swiper-slide">
-					<div class="card" id="card3">
-						<div class="text">
-							"Spaß und Vertrieb gehören zusammen. Peter Pitch trägt einen großen Teil zu unserer erfolgreichen Lernkultur bei."
-						</div>
-						<div class="people">
-							<%= image_tag 'people/storms.jpg', alt: 'Julian Storms' %>
-							<div class="name">Julian Storms</div>
-							<div class="reference">Ergo Group</div>
-						</div>
-					</div>
-				</div>
-        	</div>
-        	<div class="swiper-pagination"></div>
-        </div>
-    </div>
     <%= image_tag 'landing/shape.svg', class: 'shape s310', id: 'shape9', alt: '' %>
 <section id="faq">
     <div class="faq wow fadeIn">
@@ -540,28 +559,7 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
     <% end %>
     </div>
 </div>
-<div class="fullscreen-modal" id="dontLeaveModal">
-  <div class="close" onclick="hideDontLeaveModal()"><%= image_tag 'icons/close.svg' %></div>
-	<div class="card">
-	<h3>Verlass uns noch nicht.</h3>
-	<div class="text">Erhalte eine kostenlose Demo mit nur einem Klick.</div>
-	<div class="form-group center">
-	<%= link_to 'Zur Demo', contact_path("", subject: "demo"), class: 'btn btn-green' %>
-	</div>
-	</div>
-</div>
 <script>
-	setTimeout(function(){
-		$('body').on('mouseleave', function() {
-			if($('#loginModal').is(':hidden')) {
-				$('#dontLeaveModal').show();
-			  	$('body').off('mouseleave');
-			}
-		})
-	}, 20000)
-	function hideDontLeaveModal() {
-		$('#dontLeaveModal').hide();
-	}
 	<% if flash[:thanks_for_register] || flash[:admin_email] || flash[:alert] %>
 		setTimeout(function(){$('.register-pop-up').hide();}, 5100);
 	<% end %>
@@ -668,10 +666,12 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
     })
     function playlanding() {
       $(".head .right .play").hide();
+      $('#videoBG').hide();
       document.getElementById('videoLanding').play();
     }
     $('#videoLanding').on('ended', function() {
       $(".head .right .play").show();
+      $('#videoBG').show();
       document.getElementById('videoLanding').load();
     })
 </script>
