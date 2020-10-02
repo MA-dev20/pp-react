@@ -216,6 +216,11 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         </div>
         </div>
     </section>
+    <div class="dots">
+        <div class="dot blue wow fadeIn"></div>
+        <div class="dot green wow fadeIn" data-wow-delay=".2s"></div>
+        <div class="dot wow fadeIn" data-wow-delay=".4s"></div>
+    </div>
 
     <section id="party">
       <div class="heading">
@@ -224,9 +229,20 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
       <div class="video">
         <%= image_tag 'landing/video-bg.png', id: 'partyIMG' %>
         <%= video_tag 'landing.mp4', id: 'partyVideo' %>
+        <div class="play" onclick="playlanding()">
+          <%= inline_svg_tag 'icons/play.svg' %>
+        </div>
+      </div>
+      <div class="paw2">
+          <div class="paw1 wow fadeIn"></div>
+          <div class="paw2 wow fadeIn06" data-wow-delay=".2s"></div>
+          <div class="paw3 wow fadeIn06" data-wow-delay=".4s"></div>
+          <div class="paw4 wow fadeIn04" data-wow-delay=".6s"></div>
       </div>
     </section>
+
     <section id="product">
+
     <div class="image-text left" onmouseover="startGami()" onmouseout="stopGami()" ontouchstart="startGami()" ontouchend="stopGami()">
         <div class="image wow fadeInLeft" data-wow-delay=".2s" >
        		<div id="gamification"></div>

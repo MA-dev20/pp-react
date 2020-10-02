@@ -649,6 +649,9 @@
             color: black;
             padding: 0 1vw;
             cursor: pointer;
+            span {
+              float: right;
+            }
             .teams {
               position: absolute;
               left: 100%;

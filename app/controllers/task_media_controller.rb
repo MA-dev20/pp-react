@@ -15,8 +15,10 @@ class TaskMediaController < ApplicationController
       		File.delete(img)
         end
         @task_medium.destroy
+        render json: {id: @task_pdf.id}
+        return
       end
-      render json: {id: @task_pdf.id}
+      render json: {id: @task_medium.id}
     elsif task_medium_params[:title] == ''
       render json: {no_title: true}
     else
