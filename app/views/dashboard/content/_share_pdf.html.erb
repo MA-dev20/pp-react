@@ -27,8 +27,9 @@
           <div class="link" onclick="shareBig('company')">
             <%= @company.name %>
           </div>
+          <% if @admin.teams.count != 0 %>
           <div class="link">
-            Team
+            Team<span>></span>
             <div class="teams">
               <% @admin.teams.each do |t| %>
               <div class="link" onclick="shareTeam('<%= t.id %>', '<%= t.name %>')">
@@ -37,6 +38,7 @@
               <% end %>
             </div>
           </div>
+          <% end %>
         </div>
       </div>
     </div>
