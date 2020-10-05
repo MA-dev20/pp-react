@@ -210,6 +210,38 @@ body {
 	font-weight: bold;
   text-align: center;
 }
+.video-popup {
+	position: fixed;
+	display: none;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	line-height: 100%;
+	background-color: rgba(0,0,0,.5);
+	z-index: 100;
+	animation: zoomIn 1s 1;
+	iframe {
+		position: absolute;
+		top: 50%; left: 50%;
+		transform: translate(-50%, -50%);
+		width: 300px;
+	}
+	video {
+		width: 75% !important;
+  	height: auto !important;
+  	margin: 0 auto;
+  	display: block;
+		position: absolute;
+		top: 50%; left: 50%;
+		transform: translate(-50%, -50%);
+	}
+}
+@keyframes zoomIn {
+	from {
+		transform: scale(0);
+	}
+}
 #content {
 	position: relative;
   left: calc(50vw - 150px);
@@ -247,6 +279,7 @@ body {
 		}
 		.right {
 			position: relative;
+			height: 200px;
 			cursor: pointer;
 			.video {
 				position: relative;
@@ -438,16 +471,25 @@ body {
 				  font-weight: bold;
 				  color: #0e0e0e;
 				}
-				.reference {
-				  position: absolute;
-				  top: 25px;
-				  left: 0;
-				  font-size: 13.5px;
-				  font-weight: normal;
-				  line-height: 20px;
-				  color: #667093;
+				.logo {
+					position: absolute;
+					left: 0;
+					top: 25px;
+					bottom: 10px;
+					height: 20px;
+					img {
+						left: 0;
+						margin: 2.5px 0;
+						height: 15px;
+						width: auto;
+					}
+					img#mysecondear {
+						height: 20px;
+						margin: 0;
+					}
 				}
 			}
+
 			img {
 		    position: absolute;
 		    left: 5px;
@@ -756,6 +798,11 @@ body {
 	}
 }
 @media (min-width: 500px) {
+	.video-popup {
+		iframe {
+			width: 500px;
+		}
+	}
 	#content {
 		left: calc(50vw - 250px);
 		width: 500px;
@@ -808,6 +855,11 @@ body {
 }
 @media (min-width: 700px) {
 	.dotted {display: block;}
+	.video-popup {
+		iframe {
+			width: 700px;
+		}
+	}
 	#content {
 		left: calc(50vw - 350px);
 		width: 700px;
@@ -956,6 +1008,11 @@ body {
 	}
 }
 @media (min-width: 900px) {
+	.video-popup {
+		iframe {
+			width: 900px;
+		}
+	}
 	#content {
 		left: calc(50vw - 450px);
 		width: 900px;
@@ -1125,6 +1182,11 @@ body {
 	}
 }
 @media (min-width: 1100px) {
+	.video-popup {
+		iframe {
+			width: 1100px;
+		}
+	}
 	.dotted {display: block;}
 	#content {
 		left: calc(50vw - 550px);
@@ -1277,6 +1339,11 @@ body {
 	}
 }
 @media (min-width: 1300px) {
+	.video-popup {
+		iframe {
+			width: 1300px;
+		}
+	}
 	#content {
 		left: calc(50vw - 650px);
 		width: 1300px;
@@ -1364,13 +1431,13 @@ body {
 				height: 340px;
 				margin-left: 10px 38px;
 				.text {
-					padding: 25px;
+					padding: 20px;
 					font-size: 16px;
 					line-height: 32px;
 					width: 300px;
 				}
 				.people {
-					left: 160px;
+					left: 150px;
 					.name {font-size: 20px;}
 					.reference {font-size: 16px;}
 				}

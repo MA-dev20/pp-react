@@ -725,19 +725,8 @@ class DashboardController < ApplicationController
         if @company.company_users.where(role: 'inactive').count != 0
           @inactive_users = []
           @company.company_users.where(role: 'inactive').each do |cu|
-            @user = cu.user
-            @gameUser = GameUser.find_by(user: @user)
-            if @gameUser && @gameUser.game.user == @admin
-              if (can? :create, User)
-                @inactive_users << cu
-              end
-            elsif !GameUser.find_by(user: cu.user)
-              @user = cu.user
-              if @user.company_users.count == 1
-                @user.destroy
-              else
-                cu.destroy
-              end
+            if (can? :read, cu.user)
+              @inactive_users << cu
             end
           end
         end

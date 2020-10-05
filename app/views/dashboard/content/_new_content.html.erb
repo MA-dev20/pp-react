@@ -171,13 +171,18 @@
     $('#popup').show();
   }
   $('#popup').on('show', function() {
+    if(cropper) {
+      cropper.destroy();
+    }
 		cropper = new Cropper(image, {
 			aspectRatio: 1.77,
 		});
 	})
   $('#popup').on('hide', function() {
-		cropper.destroy();
-		cropper = null;
+    if(cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
 	})
   $('#crop').on('click', function() {
 		var initialURL, canvas;

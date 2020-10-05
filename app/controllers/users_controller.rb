@@ -130,23 +130,23 @@ class UsersController < ApplicationController
 
   def destroy
     authorize! :destroy, @user
-    if CompanyUser.find_by(user: @user, company: @company, role: 'sroot')
+    if CompanyUser.find_by(user: @user, company: @admin_company, role: 'sroot')
   	  flash[:alert] = 'Du kannst diesen User nicht löschen!'
   	elsif @user.companies.count == 1
       @user.destroy
     else
-      @user.company_users.find_by(company: @company).destroy
+      @user.company_users.find_by(company: @admin_company).destroy
       @user.department_users.each do |department|
-        department.destroy if department.department.company == @company
+        department.destroy if department.department.company == @admin_company
       end
       @user.team_users.each do |team|
-        team.destroy if team.team.company == @company
+        team.destroy if team.team.company == @admin_company
       end
-      @company.users_user.where(userID: @user).each do |user|
+      @admin.user_users.where(userID: @user).each do |user|
         user.destroy
       end
     end
-	  redirect_to backoffice_company_path(@company) if params[:site] == 'backoffice'
+	  redirect_to backoffice_company_path(@admin_company) if params[:site] == 'backoffice'
 	  redirect_to dashboard_teams_path if params[:site] == 'dashboard'
   end
 

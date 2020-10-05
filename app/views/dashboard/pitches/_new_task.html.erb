@@ -1,7 +1,11 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
 <div class="form-group title">
 	<%= f.hidden_field :user_id, value: @admin.id %>
+	<% if (@task.task_type != nil) && (@task.title == '' || @task.title == nil) %>
+	<%= f.text_field :title, class: 'form-field red', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"', onchange: 'handleTitleChange(event)' %>
+	<% else %>
 	<%= f.text_field :title, class: 'form-field', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"', onchange: 'handleTitleChange(event)' %>
+	<% end %>
 </div>
 <div class="card time-limit hide">
 	<div class="form-group">
@@ -79,7 +83,13 @@
 				<div class="title">Text</div>
 				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen</div>
 				<div class="form-group fields">
+					<% if (@task.title != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list.catchwords.count == 0)) %>
+					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
+					<% elsif (@task.task_type != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list.catchwords.count == 0)) %>
+					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
+					<% else %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name' %>
+					<% end %>
 					<div class="add-cw">
 						<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img cw-image plus-cust-icon' %>
 					</div>
@@ -260,7 +270,7 @@
 					<img src="" alt="">
 					<% end %>
 				</div>
-				<div class="dropzone-container image-drop-zone"
+				<div class="dropzone-container image-drop-zone <%= (@task.task_type == nil || @task.task_medium) ? '' : 'red' %>"
 					style="<%= 'display: none;' if @task.task_medium && @task.task_medium.image? %>">
 					<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 					<div class="label-btn media-btns-container">
@@ -324,7 +334,7 @@
 						<video class="video-tag" src="" controls></video>
 					<% end %>
 				</div>
-				<div class="dropzone-container video-drop-zone"
+				<div class="dropzone-container video-drop-zone <%= (@task.task_type == nil || @task.task_medium) ? '' : 'red' %>"
 					style="<%= 'display: none;' if (@task.task_medium && (@task.task_medium.video? || @task.task_medium.video_url_id?)) %>">
 					<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 					<div class="label-btn media-btns-container">
@@ -337,7 +347,7 @@
 							<label class="btn reversed upload btn-ml-1" onclick="showLibraryModal('video', <%= @task.id %>)" id="">Video Bibliothek</label>
 						</div>
 						<div class="video-form">
-							<label for="">Hier kannst du einen Lik zu Youtube oder Vimeo hinzufügen</label>
+							<label for="">Hier kannst du einen Link zu Youtube oder Vimeo hinzufügen</label>
 							<div class="form-group">
 								<input type="text" class="form-field" name="videoLink" id="videoLink" placeholder="Youtube/Vimeo link eingeben" onkeypress="videoLinkClicked(event)">
 								<input type="hidden" name="videoLinkImage" id="videoLinkImage">
@@ -378,7 +388,7 @@
 					<div class="remove">remove</div>
 					<% end %>
 				</div>
-				<div class="dropzone-container audio-drop-zone"
+				<div class="dropzone-container audio-drop-zone <%= (@task.task_type == nil || @task.task_medium) ? '' : 'red' %>"
 					style="<%= 'display: none;' if @task.task_medium && @task.task_medium.audio? %>">
 					<label class="dropzone-text">Datei hier hinziehen und ablegen</label>
 					<div class="label-btn media-btns-container">
@@ -402,7 +412,7 @@
 			<i class="far far-rating-criteria fa-check-square" id="ratingCheck" onclick="showRating()"></i>
 			<div class="title">Bewertungskriterien</div>
 			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"}, remote: true do |f| %>
-			<div class="subline">Du kannst bis zu 4 Bewertungskriterium hinzufügen</div>
+			<div class="subline">Du kannst bis zu 4 Bewertungskriterien hinzufügen</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>

@@ -36,6 +36,10 @@
     </div>
 </section>
 <%= image_tag 'landing/product/dots.png', class: 'dotted' %>
+<div class="video-popup">
+  <iframe src="https://player.vimeo.com/video/464987764?autoplay=1" width="1100" height="900" frameborder="0" allow="autoplay; fullscreen" allowfullscreen id="videoSparkasse"></iframe>
+  <%= video_tag 'landing.mp4', alt: 'Vertriebstraining', id: 'videoInfo', controls: true %>
+</div>
 <section id="content">
     <div class="head animated fadeIn">
         <div class="left">
@@ -54,8 +58,7 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         </div>
         <div class="right">
           <div class="video">
-            <%= video_tag 'landing.mp4', alt: 'Vertriebstraining', id: 'videoLanding'%>
-            <%= image_tag 'landing/video-bg.png', id: 'videoBG' %>
+            <%= image_tag 'landing/969592257.jpg', id: 'videoBG' %>
             <div class="play" onclick="playlanding()">
               <%= inline_svg_tag 'icons/play.svg' %>
             </div>
@@ -110,8 +113,11 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
 						</div>
 						<div class="people">
 							<div class="name">Julian Stechert</div>
-							<div class="reference">MySecondEar</div>
+              <div class="logo">
+                <%= image_tag 'logos/mysecondear.png', id: 'mysecondear' %>
+              </div>
 						</div>
+
             <%= image_tag 'people/stechert.png', alt: 'Julian Stechert' %>
             <%= image_tag 'people/stechert.png', id: 'second' %>
 					</div>
@@ -123,8 +129,11 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
 						</div>
 						<div class="people">
 							<div class="name">Sabrina Michallik</div>
-							<div class="reference">Lensing Media</div>
+              <div class="logo">
+                <%= image_tag 'logos/lensing.png' %>
+              </div>
 						</div>
+
             <%= image_tag 'people/lensingmichallik.png', alt: 'Sabrina Michallik' %>
             <%= image_tag 'people/lensingmichallik.png', alt: 'Sabrina Michallik', id: 'second' %>
 					</div>
@@ -137,8 +146,11 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
 						</div>
 						<div class="people">
 							<div class="name">Julian Storms</div>
-							<div class="reference">Ergo Group</div>
+              <div class="logo">
+                <%= image_tag 'logos/ergo.png' %>
+              </div>
 						</div>
+
             <%= image_tag 'people/storms.png', alt: 'Julian Storms' %>
             <%= image_tag 'people/storms.png', alt: 'Julian Storms', id: 'second' %>
 					</div>
@@ -229,7 +241,7 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
       <div class="video">
         <%= image_tag 'landing/video-bg.png', id: 'partyIMG' %>
         <%= video_tag 'landing.mp4', id: 'partyVideo' %>
-        <div class="play" onclick="playlanding()">
+        <div class="play" onclick="playInfo()">
           <%= inline_svg_tag 'icons/play.svg' %>
         </div>
       </div>
@@ -681,13 +693,33 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
         }).scrollSpy();
     })
     function playlanding() {
-      $(".head .right .play").hide();
-      $('#videoBG').hide();
-      document.getElementById('videoLanding').play();
+      $('.video-popup').show();
+      $('#videoSparkasse').show();
+      $('#videoSparkasse').attr('src', 'https://player.vimeo.com/video/464987764?autoplay=1');
+      $('#videoInfo').hide();
+      document.getElementById('videoSparkasse').play();
     }
-    $('#videoLanding').on('ended', function() {
-      $(".head .right .play").show();
-      $('#videoBG').show();
-      document.getElementById('videoLanding').load();
+    $('.video-popup').on('click', function(e) {
+      if ($(e.target).is('.video-popup')) {
+          $('.video-popup').hide();
+          document.getElementById('videoInfo').load();
+          $('#videoSparkasse').attr('src', '');
+
+      }
+    })
+    $('#videoSparkasse').attr('src', '');
+    function playInfo() {
+      $('.video-popup').show();
+      $('#videoSparkasse').hide();
+      $('#videoInfo').show();
+      document.getElementById('videoInfo').play();
+    }
+    $('#videoInfo').on('ended', function() {
+      $('.video-popup').hide();
+      document.getElementById('videoInfo').load();
+    })
+    $('#videoSparkasse').on('ended', function() {
+      $('.video-popup').hide();
+      document.getElementById('videoSparkasse').load();
     })
 </script>

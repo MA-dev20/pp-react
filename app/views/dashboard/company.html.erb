@@ -61,6 +61,7 @@
 	})(jQuery);
 	var inputLogo = document.getElementById('company_logo');
 	var image = document.getElementById('company_image');
+	var cropper;
 
 	inputLogo.addEventListener("change", function(e) {
 		var files = e.target.files;
@@ -84,11 +85,16 @@
 		}
 	})
 	$('#popup').on('show', function() {
+		if(cropper) {
+			cropper.destroy();
+		}
 		cropper = new Cropper(image, {});
 	})
 	$('#popup').on('hide', function() {
-		cropper.destroy();
-		cropper = null;
+		if(cropper) {
+			cropper.destroy();
+			cropper = null;
+		}
 	})
 	$('#crop').on('click', function() {
 		var initialURL, canvas;
