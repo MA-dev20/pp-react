@@ -37,7 +37,7 @@
 </section>
 <%= image_tag 'landing/product/dots.png', class: 'dotted' %>
 <div class="video-popup">
-  <iframe src="https://player.vimeo.com/video/464987764?autoplay=1" width="1100" height="900" frameborder="0" allow="autoplay; fullscreen" allowfullscreen id="videoSparkasse"></iframe>
+  <iframe src="" width="1100" height="900" frameborder="0" allow="autoplay; fullscreen" allowfullscreen id="videoSparkasse"></iframe>
   <%= video_tag 'landing.mp4', alt: 'Vertriebstraining', id: 'videoInfo', controls: true %>
 </div>
 <section id="content">
@@ -707,9 +707,9 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
 
       }
     })
-    $('#videoSparkasse').attr('src', '');
     function playInfo() {
       $('.video-popup').show();
+      $('#videoSparkasse').attr('src', '');
       $('#videoSparkasse').hide();
       $('#videoInfo').show();
       document.getElementById('videoInfo').play();
@@ -720,6 +720,6 @@ das Lernen in Unternehmen revolutioniert. Digital und in der Präsenz.</div>
     })
     $('#videoSparkasse').on('ended', function() {
       $('.video-popup').hide();
-      document.getElementById('videoSparkasse').load();
+      $('#videoSparkasse').attr('src', '');
     })
 </script>
