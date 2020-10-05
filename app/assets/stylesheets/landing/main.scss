@@ -226,6 +226,7 @@ body {
 		top: 50%; left: 50%;
 		transform: translate(-50%, -50%);
 		width: 300px;
+		height: 168px;
 	}
 	video {
 		width: 75% !important;
@@ -801,6 +802,7 @@ body {
 	.video-popup {
 		iframe {
 			width: 500px;
+			height: 282px;
 		}
 	}
 	#content {
@@ -858,6 +860,7 @@ body {
 	.video-popup {
 		iframe {
 			width: 700px;
+			height: 393px;
 		}
 	}
 	#content {
@@ -1011,6 +1014,7 @@ body {
 	.video-popup {
 		iframe {
 			width: 900px;
+			height: 506px;
 		}
 	}
 	#content {
@@ -1185,6 +1189,7 @@ body {
 	.video-popup {
 		iframe {
 			width: 1100px;
+			height: 620px;
 		}
 	}
 	.dotted {display: block;}
@@ -1342,6 +1347,7 @@ body {
 	.video-popup {
 		iframe {
 			width: 1300px;
+			height: 730px;
 		}
 	}
 	#content {
@@ -1429,7 +1435,7 @@ body {
 			.card {
 				width: 350px;
 				height: 340px;
-				margin-left: 10px 38px;
+				margin: 10px auto;
 				.text {
 					padding: 20px;
 					font-size: 16px;
