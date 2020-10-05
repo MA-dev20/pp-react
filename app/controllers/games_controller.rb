@@ -54,6 +54,7 @@ class GamesController < ApplicationController
         if !@company.users.find_by(id: @user.id)
           if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'inactive')
+            @company.user_users.create(user: @admin, userID: @user.id)
           else
             @company.company_users.create(user: @user, role: 'inactive_user')
           end

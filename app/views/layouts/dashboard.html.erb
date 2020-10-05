@@ -18,7 +18,9 @@
 	}
 </style>
 
-<body>
+<body <% if content_for?(:body_attributes) %>
+    <%= yield(:body_attributes) %>
+  <% end %>>
 	<section id="navbar">
 		<%= content_for :heading %>
 		<% if !(@pitch && current_page?(dashboard_edit_pitch_path(@pitch))) %>
@@ -237,20 +239,26 @@
 	<%= render 'layouts/svgs.html.erb' %>
 </body>
 <script>
-	function toggleDropdown() {
-		$(".dropdown-content").toggle();
-		if ($(".dropdown .fas").hasClass('fa-caret-down')) {
-			$(".dropdown .fas").addClass('fa-caret-up');
-			$(".dropdown .fas").removeClass('fa-caret-down');
-		} else {
-			$(".dropdown .fas").addClass('fa-caret-down');
-			$(".dropdown .fas").removeClass('fa-caret-up');
+	if($('.dropdown').length > 0) {
+		function toggleDropdown() {
+			$(".dropdown-content").toggle();
+			if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+				$(".dropdown .fas").addClass('fa-caret-up');
+				$(".dropdown .fas").removeClass('fa-caret-down');
+			} else {
+				$(".dropdown .fas").addClass('fa-caret-down');
+				$(".dropdown .fas").removeClass('fa-caret-up');
+			}
 		}
 	}
-	function toggleModal() {
-		$('.modal-blur').toggle();
+	if ($('.modal-blur').lenght > 0) {
+		function toggleModal() {
+			$('.modal-blur').toggle();
+		}
 	}
-	new PerfectScrollbar('#content');
+	if($('#content').lenght > 0) {
+		new PerfectScrollbar('#content');
+	}
 
 
 </script>

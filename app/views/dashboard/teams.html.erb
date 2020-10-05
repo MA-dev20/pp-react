@@ -236,6 +236,7 @@
 	})(jQuery);
 	var inputAvatar = document.getElementById('user_avatar');
 	var image = document.getElementById('user_image');
+	var cropper;
 
 	inputAvatar.addEventListener('change', function(e) {
 		var files = e.target.files;
@@ -259,13 +260,18 @@
 		}
 	})
 	$('#popup').on('show', function() {
+		if (cropper) {
+			cropper.destroy();
+		}
 		cropper = new Cropper(image, {
 			aspectRatio: 1,
 		});
 	})
 	$('#popup').on('hide', function() {
-		cropper.destroy();
-		cropper = null;
+		if(cropper) {
+			cropper.destroy();
+			cropper = null;
+		}
 	})
 	$('#crop').on('click', function() {
 		var initialURL, canvas;

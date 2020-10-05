@@ -138,6 +138,9 @@ class PitchesController < ApplicationController
       else
         @entry.destroy
       end
+      if @task.catchword_list.catchwords.count == 0
+        @task.update(valide: false);
+      end
     end
 	end
 	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
