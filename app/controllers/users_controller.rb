@@ -142,7 +142,7 @@ class UsersController < ApplicationController
       @user.team_users.each do |team|
         team.destroy if team.team.company == @admin_company
       end
-      @admin.user_users.where(userID: @user).each do |user|
+      @admin.user_users.where(userID: @user.id).each do |user|
         user.destroy
       end
     end
