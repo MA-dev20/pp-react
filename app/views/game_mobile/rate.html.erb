@@ -37,19 +37,19 @@
 	<div class="middle">
 		<% if @task.rating1 && @task.rating1 != '' %>
 		<div class="form-group">
-			<label for="" class="rangeLabel" id="label_<%= @task.rating1 %>"><%= @task.rating1 %></label>
-			<div id="rangeVal_<%= @task.rating1 %>" class="rangeVal">5.0</div>
-			<input type="range" name="rating[<%= @task.rating1 %>]" min="0" max="100" id="slider_<%= @task.rating1 %>">
+			<label for="" class="rangeLabel" id="label_rating1"><%= @task.rating1 %></label>
+			<div id="rangeVal_rating1" class="rangeVal">5.0</div>
+			<input type="range" name="rating[<%= @task.rating1 %>]" min="0" max="100" id="slider_rating1">
 		</div>
 		<script>
-			if($('#label_<%= @task.rating1 %>').text().length > 20) {
-				$('#label_<%= @task.rating1 %>').css("font-size", "2.5vh");
+			if($('#label_rating1').text().length > 20) {
+				$('#label_rating1').css("font-size", "2.5vh");
 			}
-			if($('#label_<%= @task.rating1 %>').text().length > 27) {
-				$('#label_<%= @task.rating1 %>').css("font-size", "2vh");
+			if($('#label_rating1').text().length > 27) {
+				$('#label_rating1').css("font-size", "2vh");
 			}
-			if($('#label_<%= @task.rating1 %>').text().length > 34) {
-				$('#label_<%= @task.rating1 %>').css("font-size", "1.5vh");
+			if($('#label_rating1').text().length > 34) {
+				$('#label_rating1').css("font-size", "1.5vh");
 			}
 			$('input[type="range"]').rangeslider({
 				polyfill: false,
@@ -70,26 +70,26 @@
 				onSlideEnd: function(position, value) {}
 			});
 
-			document.getElementById('slider_<%= @task.rating1 %>').oninput = function() {
-				document.getElementById('rangeVal_<%= @task.rating1 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+			document.getElementById('slider_rating1').oninput = function() {
+				document.getElementById('rangeVal_rating1').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 			}
 		</script>
 		<% end %>
 		<% if @task.rating2 && @task.rating2 != '' %>
 		<div class="form-group">
-			<label for="" class="rangeLabel" id="label_<%= @task.rating2 %>"><%= @task.rating2 %></label>
-			<div id="rangeVal_<%= @task.rating2 %>" class="rangeVal">5.0</div>
-			<input type="range" name="rating[<%= @task.rating2 %>]" min="0" max="100" id="slider_<%= @task.rating2 %>">
+			<label for="" class="rangeLabel" id="label_rating2"><%= @task.rating2 %></label>
+			<div id="rangeVal_rating2" class="rangeVal">5.0</div>
+			<input type="range" name="rating[<%= @task.rating2 %>]" min="0" max="100" id="slider_rating2">
 		</div>
 		<script>
-			if($('#label_<%= @task.rating2 %>').text().length > 20) {
-				$('#label_<%= @task.rating2 %>').css("font-size", "2.5vh");
+			if($('#label_rating2').text().length > 20) {
+				$('#label_rating2').css("font-size", "2.5vh");
 			}
-			if($('#label_<%= @task.rating2 %>').text().length > 27) {
-				$('#label_<%= @task.rating2 %>').css("font-size", "2vh");
+			if($('#label_rating2').text().length > 27) {
+				$('#label_rating2').css("font-size", "2vh");
 			}
-			if($('#label_<%= @task.rating2 %>').text().length > 34) {
-				$('#label_<%= @task.rating2 %>').css("font-size", "1.5vh");
+			if($('#label_rating2').text().length > 34) {
+				$('#label_rating2').css("font-size", "1.5vh");
 			}
 			$('input[type="range"]').rangeslider({
 				polyfill: false,
@@ -110,26 +110,26 @@
 				onSlideEnd: function(position, value) {}
 			});
 
-			document.getElementById('slider_<%= @task.rating2 %>').oninput = function() {
-				document.getElementById('rangeVal_<%= @task.rating2 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+			document.getElementById('slider_rating2').oninput = function() {
+				document.getElementById('rangeVal_rating2').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 			}
 		</script>
 		<% end %>
 		<% if @task.rating3 && @task.rating3 != '' %>
 		<div class="form-group">
-			<label for="" class="rangeLabel" id="label_<%= @task.rating3 %>"><%= @task.rating3 %></label>
-			<div id="rangeVal_<%= @task.rating3 %>" class="rangeVal">5.0</div>
-			<input type="range" name="rating[<%= @task.rating3 %>]" min="0" max="100" id="slider_<%= @task.rating3 %>">
+			<label for="" class="rangeLabel" id="label_rating3"><%= @task.rating3 %></label>
+			<div id="rangeVal_rating3" class="rangeVal">5.0</div>
+			<input type="range" name="rating[<%= @task.rating3 %>]" min="0" max="100" id="slider_rating3">
 		</div>
 		<script>
-			if($('#label_<%= @task.rating3 %>').text().length > 20) {
-				$('#label_<%= @task.rating3 %>').css("font-size", "2.5vh");
+			if($('#label_rating3').text().length > 20) {
+				$('#label_rating3').css("font-size", "2.5vh");
 			}
-			if($('#label_<%= @task.rating3 %>').text().length > 27) {
-				$('#label_<%= @task.rating3 %>').css("font-size", "2vh");
+			if($('#label_rating3').text().length > 27) {
+				$('#label_rating3').css("font-size", "2vh");
 			}
-			if($('#label_<%= @task.rating3 %>').text().length > 34) {
-				$('#label_<%= @task.rating3 %>').css("font-size", "1.5vh");
+			if($('#label_rating3').text().length > 34) {
+				$('#label_rating3').css("font-size", "1.5vh");
 			}
 			$('input[type="range"]').rangeslider({
 				polyfill: false,
@@ -150,26 +150,26 @@
 				onSlideEnd: function(position, value) {}
 			});
 
-			document.getElementById('slider_<%= @task.rating3 %>').oninput = function() {
-				document.getElementById('rangeVal_<%= @task.rating3 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+			document.getElementById('slider_rating3').oninput = function() {
+				document.getElementById('rangeVal_rating3').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 			}
 		</script>
 		<% end %>
 		<% if @task.rating4 && @task.rating4 != '' %>
 		<div class="form-group">
-			<label for="" class="rangeLabel" id="label_<%= @task.rating4 %>"><%= @task.rating4 %></label>
-			<div id="rangeVal_<%= @task.rating4 %>" class="rangeVal">5.0</div>
-			<input type="range" name="rating[<%= @task.rating4 %>]" min="0" max="100" id="slider_<%= @task.rating4 %>">
+			<label for="" class="rangeLabel" id="label_rating4"><%= @task.rating4 %></label>
+			<div id="rangeVal_rating4" class="rangeVal">5.0</div>
+			<input type="range" name="rating[<%= @task.rating4 %>]" min="0" max="100" id="slider_rating4">
 		</div>
 		<script>
-			if($('#label_<%= @task.rating4 %>').text().length > 20) {
-				$('#label_<%= @task.rating4 %>').css("font-size", "2.5vh");
+			if($('#label_rating4').text().length > 20) {
+				$('#label_rating4').css("font-size", "2.5vh");
 			}
-			if($('#label_<%= @task.rating4 %>').text().length > 27) {
-				$('#label_<%= @task.rating4 %>').css("font-size", "2vh");
+			if($('#label_rating4').text().length > 27) {
+				$('#label_rating4').css("font-size", "2vh");
 			}
-			if($('#label_<%= @task.rating4 %>').text().length > 34) {
-				$('#label_<%= @task.rating4 %>').css("font-size", "1.5vh");
+			if($('#label_rating4').text().length > 34) {
+				$('#label_rating4').css("font-size", "1.5vh");
 			}
 			$('input[type="range"]').rangeslider({
 				polyfill: false,
@@ -190,8 +190,8 @@
 				onSlideEnd: function(position, value) {}
 			});
 
-			document.getElementById('slider_<%= @task.rating4 %>').oninput = function() {
-				document.getElementById('rangeVal_<%= @task.rating4 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+			document.getElementById('slider_rating4').oninput = function() {
+				document.getElementById('rangeVal_rating4').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 			}
 		</script>
 		<% end %>
@@ -208,19 +208,19 @@
 <div class="middle">
 	<% if @task.rating1 && @task.rating1 != '' %>
 	<div class="form-group">
-		<label for="" class="rangeLabel" id="label_<%= @task.rating1 %>"><%= @task.rating1 %></label>
-		<div id="rangeVal_<%= @task.rating1 %>" class="rangeVal">5.0</div>
-		<input type="range" name="rating[<%= @task.rating1 %>]" min="0" max="100" id="slider_<%= @task.rating1 %>">
+		<label for="" class="rangeLabel" id="label_rating1"><%= @task.rating1 %></label>
+		<div id="rangeVal_rating1" class="rangeVal">5.0</div>
+		<input type="range" name="rating[<%= @task.rating1 %>]" min="0" max="100" id="slider_rating1">
 	</div>
 	<script>
-		if($('#label_<%= @task.rating1 %>').text().length > 20) {
-			$('#label_<%= @task.rating1 %>').css("font-size", "2.5vh");
+		if($('#label_rating1').text().length > 20) {
+			$('#label_rating1').css("font-size", "2.5vh");
 		}
-		if($('#label_<%= @task.rating1 %>').text().length > 27) {
-			$('#label_<%= @task.rating1 %>').css("font-size", "2vh");
+		if($('#label_rating1').text().length > 27) {
+			$('#label_rating1').css("font-size", "2vh");
 		}
-		if($('#label_<%= @task.rating1 %>').text().length > 34) {
-			$('#label_<%= @task.rating1 %>').css("font-size", "1.5vh");
+		if($('#label_rating1').text().length > 34) {
+			$('#label_rating1').css("font-size", "1.5vh");
 		}
 		$('input[type="range"]').rangeslider({
 			polyfill: false,
@@ -241,26 +241,26 @@
 			onSlideEnd: function(position, value) {}
 		});
 
-		document.getElementById('slider_<%= @task.rating1 %>').oninput = function() {
-			document.getElementById('rangeVal_<%= @task.rating1 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		document.getElementById('slider_rating1').oninput = function() {
+			document.getElementById('rangeVal_rating1').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 		}
 	</script>
 	<% end %>
 	<% if @task.rating2 && @task.rating2 != '' %>
 	<div class="form-group">
-		<label for="" class="rangeLabel" id="label_<%= @task.rating2 %>"><%= @task.rating2 %></label>
-		<div id="rangeVal_<%= @task.rating2 %>" class="rangeVal">5.0</div>
-		<input type="range" name="rating[<%= @task.rating2 %>]" min="0" max="100" id="slider_<%= @task.rating2 %>">
+		<label for="" class="rangeLabel" id="label_rating2"><%= @task.rating2 %></label>
+		<div id="rangeVal_rating2" class="rangeVal">5.0</div>
+		<input type="range" name="rating[<%= @task.rating2 %>]" min="0" max="100" id="slider_rating2">
 	</div>
 	<script>
-		if($('#label_<%= @task.rating2 %>').text().length > 20) {
-			$('#label_<%= @task.rating2 %>').css("font-size", "2.5vh");
+		if($('#label_rating2').text().length > 20) {
+			$('#label_rating2').css("font-size", "2.5vh");
 		}
-		if($('#label_<%= @task.rating2 %>').text().length > 27) {
-			$('#label_<%= @task.rating2 %>').css("font-size", "2vh");
+		if($('#label_rating2').text().length > 27) {
+			$('#label_rating2').css("font-size", "2vh");
 		}
-		if($('#label_<%= @task.rating2 %>').text().length > 34) {
-			$('#label_<%= @task.rating2 %>').css("font-size", "1.5vh");
+		if($('#label_rating2').text().length > 34) {
+			$('#label_rating2').css("font-size", "1.5vh");
 		}
 		$('input[type="range"]').rangeslider({
 			polyfill: false,
@@ -281,26 +281,26 @@
 			onSlideEnd: function(position, value) {}
 		});
 
-		document.getElementById('slider_<%= @task.rating2 %>').oninput = function() {
-			document.getElementById('rangeVal_<%= @task.rating2 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		document.getElementById('slider_rating2').oninput = function() {
+			document.getElementById('rangeVal_rating2').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 		}
 	</script>
 	<% end %>
 	<% if @task.rating3 && @task.rating3 != '' %>
 	<div class="form-group">
-		<label for="" class="rangeLabel" id="label_<%= @task.rating3 %>"><%= @task.rating3 %></label>
-		<div id="rangeVal_<%= @task.rating3 %>" class="rangeVal">5.0</div>
-		<input type="range" name="rating[<%= @task.rating3 %>]" min="0" max="100" id="slider_<%= @task.rating3 %>">
+		<label for="" class="rangeLabel" id="label_rating3"><%= @task.rating3 %></label>
+		<div id="rangeVal_rating3" class="rangeVal">5.0</div>
+		<input type="range" name="rating[<%= @task.rating3 %>]" min="0" max="100" id="slider_rating3">
 	</div>
 	<script>
-		if($('#label_<%= @task.rating3 %>').text().length > 20) {
-			$('#label_<%= @task.rating3 %>').css("font-size", "2.5vh");
+		if($('#label_rating3').text().length > 20) {
+			$('#label_rating3').css("font-size", "2.5vh");
 		}
-		if($('#label_<%= @task.rating3 %>').text().length > 27) {
-			$('#label_<%= @task.rating3 %>').css("font-size", "2vh");
+		if($('#label_rating3').text().length > 27) {
+			$('#label_rating3').css("font-size", "2vh");
 		}
-		if($('#label_<%= @task.rating3 %>').text().length > 34) {
-			$('#label_<%= @task.rating3 %>').css("font-size", "1.5vh");
+		if($('#label_rating3').text().length > 34) {
+			$('#label_rating3').css("font-size", "1.5vh");
 		}
 		$('input[type="range"]').rangeslider({
 			polyfill: false,
@@ -321,26 +321,26 @@
 			onSlideEnd: function(position, value) {}
 		});
 
-		document.getElementById('slider_<%= @task.rating3 %>').oninput = function() {
-			document.getElementById('rangeVal_<%= @task.rating3 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		document.getElementById('slider_rating3').oninput = function() {
+			document.getElementById('rangeVal_rating3').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 		}
 	</script>
 	<% end %>
 	<% if @task.rating4 && @task.rating4 != '' %>
 	<div class="form-group">
-		<label for="" class="rangeLabel" id="label_<%= @task.rating4 %>"><%= @task.rating4 %></label>
-		<div id="rangeVal_<%= @task.rating4 %>" class="rangeVal">5.0</div>
-		<input type="range" name="rating[<%= @task.rating4 %>]" min="0" max="100" id="slider_<%= @task.rating4 %>">
+		<label for="" class="rangeLabel" id="label_rating4"><%= @task.rating4 %></label>
+		<div id="rangeVal_rating4" class="rangeVal">5.0</div>
+		<input type="range" name="rating[<%= @task.rating4 %>]" min="0" max="100" id="slider_rating4">
 	</div>
 	<script>
-		if($('#label_<%= @task.rating4 %>').text().length > 20) {
-			$('#label_<%= @task.rating4 %>').css("font-size", "2.5vh");
+		if($('#label_rating4').text().length > 20) {
+			$('#label_rating4').css("font-size", "2.5vh");
 		}
-		if($('#label_<%= @task.rating4 %>').text().length > 27) {
-			$('#label_<%= @task.rating4 %>').css("font-size", "2vh");
+		if($('#label_rating4').text().length > 27) {
+			$('#label_rating4').css("font-size", "2vh");
 		}
-		if($('#label_<%= @task.rating4 %>').text().length > 34) {
-			$('#label_<%= @task.rating4 %>').css("font-size", "1.5vh");
+		if($('#label_rating4').text().length > 34) {
+			$('#label_rating4').css("font-size", "1.5vh");
 		}
 		$('input[type="range"]').rangeslider({
 			polyfill: false,
@@ -361,8 +361,8 @@
 			onSlideEnd: function(position, value) {}
 		});
 
-		document.getElementById('slider_<%= @task.rating4 %>').oninput = function() {
-			document.getElementById('rangeVal_<%= @task.rating4 %>').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
+		document.getElementById('slider_rating4').oninput = function() {
+			document.getElementById('rangeVal_rating4').innerHTML = parseFloat(this.value / 10.0).toFixed(1);
 		}
 	</script>
 	<% end %>

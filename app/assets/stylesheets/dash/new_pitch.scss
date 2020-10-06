@@ -1050,8 +1050,8 @@
 				}
 				.star {
 					position: absolute;
-					top: 1px; left: 1px;
-					width: 3vh; height: 5.5vh;
+					top: 0; left: 0;
+					width: 3vh; height: calc(5vh + 2px);
 					background-color: #F2C94C;
 					border-top-left-radius: .8vh;
 					border-bottom-left-radius: .8vh;

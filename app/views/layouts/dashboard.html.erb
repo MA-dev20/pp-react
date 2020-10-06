@@ -147,6 +147,9 @@
 			<%= image_tag @company.logo? ? @company.logo.url : 'logo-m.png' %>
 		</div>
 	</section>
+	<div class="helper-videos">
+		<iframe src="" width="640" height="564" frameborder="0" id="helperVideo"></iframe>
+	</div>
 	<section id="content">
 		<%= yield %>
 	</section>
@@ -239,27 +242,27 @@
 	<%= render 'layouts/svgs.html.erb' %>
 </body>
 <script>
-	if($('.dropdown').length > 0) {
-		function toggleDropdown() {
-			$(".dropdown-content").toggle();
-			if ($(".dropdown .fas").hasClass('fa-caret-down')) {
-				$(".dropdown .fas").addClass('fa-caret-up');
-				$(".dropdown .fas").removeClass('fa-caret-down');
-			} else {
-				$(".dropdown .fas").addClass('fa-caret-down');
-				$(".dropdown .fas").removeClass('fa-caret-up');
-			}
+	function toggleDropdown() {
+		$(".dropdown-content").toggle();
+		if ($(".dropdown .fas").hasClass('fa-caret-down')) {
+			$(".dropdown .fas").addClass('fa-caret-up');
+			$(".dropdown .fas").removeClass('fa-caret-down');
+		} else {
+			$(".dropdown .fas").addClass('fa-caret-down');
+			$(".dropdown .fas").removeClass('fa-caret-up');
 		}
 	}
-	if ($('.modal-blur').lenght > 0) {
-		function toggleModal() {
-			$('.modal-blur').toggle();
-		}
+	function toggleModal() {
+		$('.modal-blur').toggle();
 	}
-	if($('#content').lenght > 0) {
-		new PerfectScrollbar('#content');
-	}
+	new PerfectScrollbar('#content');
+	$('.helper-videos').on('click', function(e) {
+		if ($(e.target).is('.helper-videos')) {
+				$('.helper-videos').hide();
+				$('#helperVideo').attr('src', '');
 
+		}
+	})
 
 </script>
 

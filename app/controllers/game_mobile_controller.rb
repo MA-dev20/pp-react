@@ -488,6 +488,18 @@ class GameMobileController < ApplicationController
 	    redirect_to gm_game_path
 	    return
     elsif params[:state] == 'ended'
+      @game.game_users.each do |guser|
+        cuser = CompanyUser.find_by(user: guser.user, company: @company)
+        if cuser.role == 'active'
+          cuser.update(role: 'inactive')
+        elsif cuser.role == 'active_user'
+          if cuser.user.company_users.count == 1
+            cuser.user.destroy
+          else
+            cuser.destroy
+          end
+        end
+      end
 	    @game.update(state: 'ended', active: false) if @game.state != "ended"
 	    redirect_to gm_game_path
 	    return

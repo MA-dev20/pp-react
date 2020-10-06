@@ -53,10 +53,10 @@ class GamesController < ApplicationController
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
           if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'inactive')
+            @company.company_users.create(user: @user, role: 'active')
             @company.user_users.create(user: @admin, userID: @user.id)
           else
-            @company.company_users.create(user: @user, role: 'inactive_user')
+            @company.company_users.create(user: @user, role: 'active_user')
           end
           @team = @game.team
           @team.users << @user if @team
@@ -78,9 +78,9 @@ class GamesController < ApplicationController
         @team = @game.team
         if @user.save(validate: false)
           if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'inactive')
+            @company.company_users.create(user: @user, role: 'active')
           else
-            @company.company_users.create(user: @user, role: 'inactive_user')
+            @company.company_users.create(user: @user, role: 'active_user')
           end
           @team.users << @user if @team
           redirect_to gm_game_path(email: params[:user][:email])
@@ -99,9 +99,9 @@ class GamesController < ApplicationController
       elsif @user && @user.fname && @user.lname
         if !@company.users.find_by(id: @user.id)
           if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'inactive')
+            @company.company_users.create(user: @user, role: 'active')
           else
-            @company.company_users.create(user: @user, role: 'inactive_user')
+            @company.company_users.create(user: @user, role: 'active_user')
           end
           @team = @game.team
           @team.users << @user if @team
@@ -111,8 +111,8 @@ class GamesController < ApplicationController
         return
       elsif @user
         if !@company.users.find_by(id: @user.id)
-          @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
+          @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
+          @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
           @team = @game.team
           @team.users << @user if @team
         end
@@ -123,8 +123,8 @@ class GamesController < ApplicationController
         @user = User.new(email: params[:user][:email])
         @team = @game.team
         if @user.save(validate: false)
-          @company.company_users.create(user: @user, role: 'inactive') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'inactive_user') if @admin_role == 'user'
+          @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
+          @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
           @team.users << @user if @team
           game_user_login @user
           redirect_to gm_new_name_path(@user)
