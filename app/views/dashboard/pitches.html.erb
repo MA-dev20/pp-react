@@ -51,7 +51,7 @@
             </label>
             <div class="form-field <%= flash[:game_url] ? 'red' : '' %>">
                 <div class="text">peterpitch.com/</div>
-                <%= f.text_field :password, class: 'custom-url-field' %>
+                <%= f.text_field :password, class: 'custom-url-field', required: true %>
             </div>
 
             <%= f.hidden_field :game_sound, value: true %>
