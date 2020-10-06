@@ -139,7 +139,7 @@
     </div>
 </div>
 <script>
-    new PerfectScrollbar("#scroll");
+
     $('.close').on('click', function() {
         $('.blur').hide();
     })
@@ -180,14 +180,6 @@
             toggle.removeClass('right-side');
             toggle.addClass('left-side');
             $('#game_game_sound').attr('value', 'false')
-        }
-    }
-
-    var pitches_count = '<%= @pitches&.count %>'
-    console.log(pitches_count)
-    if (pitches_count !== '') {
-        if (Number(pitches_count) >= 10) {
-            new PerfectScrollbar('#pitch-list');
         }
     }
 
