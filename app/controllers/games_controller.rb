@@ -51,7 +51,14 @@ class GamesController < ApplicationController
         redirect_to gm_game_path
         return
       elsif @user && @user.fname && @user.lname
-        if !@company.users.find_by(id: @user.id)
+        this_cuser = @company.company_users.find_by(user_id: @user.id)
+        if this_cuser
+          if this_cuser.role == 'inactive'
+            this_cuser.update(role: 'active')
+          elsif this_cuser.role == 'inactive_user'
+            this_cuser.update(role: 'active_user')
+          end
+        else
           if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'active')
             @company.user_users.create(user: @admin, userID: @user.id)
@@ -77,10 +84,19 @@ class GamesController < ApplicationController
         @user = User.new(email: params[:user][:email])
         @team = @game.team
         if @user.save(validate: false)
-          if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'active')
+          this_cuser = @company.company_users.find_by(user_id: @user.id)
+          if this_cuser
+            if this_cuser.role == 'inactive'
+              this_cuser.update(role: 'active')
+            elsif this_cuser.role == 'inactive_user'
+              this_cuser.update(role: 'active_user')
+            end
           else
-            @company.company_users.create(user: @user, role: 'active_user')
+            if @ability.can?(:create, User)
+              @company.company_users.create(user: @user, role: 'active')
+            else
+              @company.company_users.create(user: @user, role: 'active_user')
+            end
           end
           @team.users << @user if @team
           redirect_to gm_game_path(email: params[:user][:email])
@@ -97,7 +113,14 @@ class GamesController < ApplicationController
         redirect_to gm_game_path
         return
       elsif @user && @user.fname && @user.lname
-        if !@company.users.find_by(id: @user.id)
+        this_cuser = @company.company_users.find_by(user_id: @user.id)
+        if this_cuser
+          if this_cuser.role == 'inactive'
+            this_cuser.update(role: 'active')
+          elsif this_cuser.role == 'inactive_user'
+            this_cuser.update(role: 'active_user')
+          end
+        else
           if @ability.can?(:create, User)
             @company.company_users.create(user: @user, role: 'active')
           else
@@ -110,7 +133,14 @@ class GamesController < ApplicationController
         redirect_to gm_join_path
         return
       elsif @user
-        if !@company.users.find_by(id: @user.id)
+        this_cuser = @company.company_users.find_by(user_id: @user.id)
+        if this_cuser
+          if this_cuser.role == 'inactive'
+            this_cuser.update(role: 'active')
+          elsif this_cuser.role == 'inactive_user'
+            this_cuser.update(role: 'active_user')
+          end
+        else
           @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
           @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
           @team = @game.team

@@ -185,7 +185,7 @@
 					  </table>
 					</div>
 					<div class="btn inverted" onclick="chooseAll()">
-						Alle auswählen
+						Alle aktivieren
 					</div>
 					<%= f.submit 'speichern', class: 'btn' %>
 				<% end %>
@@ -193,9 +193,19 @@
 		</div>
 		<script type="text/javascript">
 			function chooseAll() {
-				<% @inactive_users.each do |iu| %>
-					$('#user_<%= iu.user_id %>').click();
-				<% end %>
+			 	var URL = "<%= activate_all_users_path(@company) %>";
+				$.ajax({
+					url: URL,
+					type: "post",
+					cache: false,
+					async: true,
+					contentType: false,
+					processData: false,
+				  beforeSend: function (xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+				  success: function (res) {
+					  location.reload();
+				  }
+				});
 			}
 			$('#inactive_user_form').on('submit', function(e) {
 		    e.preventDefault();
