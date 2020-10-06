@@ -1,5 +1,6 @@
 class PitchesController < ApplicationController
   before_action :set_user, only: [:copy_pitch]
+  before_action :set_user_ajax, except: [:copy_pitch]
   #GET pitches/:pitch_id/tasks/:task_id/setTaskOrder/:order
   def set_task_order
 	# @pitch = Pitch.find(params[:pitch_id])
@@ -573,8 +574,18 @@ class PitchesController < ApplicationController
         @company = current_company
       elsif user_signed_in?
         redirect_to dash_choose_company_path
+        return
       else
+        flash[:alert] = 'Bitte logge dich ein um dein Dashboard sehen zu können!'
         redirect_to root_path
+        return
+      end
+    end
+
+    def set_user_ajax
+      unless user_signed_in?
+        flash[:alert] = 'Bitte logge dich ein um dein Dashboard sehen zu können!'
+        render js: "window.location = '#{root_path}'"
       end
     end
 
