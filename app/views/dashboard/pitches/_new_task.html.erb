@@ -1,5 +1,6 @@
 <%= form_for :task, url: update_task_path(@pitch, @task), html: {id: "new_task_form"} do |f| %>
 <div class="form-group title">
+	<div class="help" id="help-title">?</div>
 	<%= f.hidden_field :user_id, value: @admin.id %>
 	<% if (@task.task_type != nil) && (@task.title == '' || @task.title == nil) %>
 	<%= f.text_field :title, class: 'form-field red', placeholder: 'Tippen, um Aufgabe hinzuzufügen, bspw. "Verkaufe das Catchword an einen Bestandskunden"', onchange: 'handleTitleChange(event)' %>
@@ -83,7 +84,7 @@
 				<%= form_for :list, url: create_task_list_path(@task, type: 'catchword'), html: {id: "add_cw_form"} do |cw| %>
 				<input type="hidden" name="list-name" class="list-name"></input>
 				<div class="title">Text</div>
-				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen</div>
+				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen.</div>
 				<div class="form-group fields">
 					<% if (@task.title != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list.catchwords.count == 0)) %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
@@ -406,7 +407,7 @@
 			<i class="far far-rating-criteria fa-check-square" id="ratingCheck" onclick="showRating()"></i>
 			<div class="title">Bewertungskriterien</div>
 			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"}, remote: true do |f| %>
-			<div class="subline">Du kannst bis zu 4 Bewertungskriterien hinzufügen</div>
+			<div class="subline">Du kannst bis zu 4 Bewertungskriterien hinzufügen.</div>
 			<div class="form-group-wrapper">
 				<div class="form-group">
 					<div class="star"><%= image_tag 'dash/icons/star.svg'%></div>
@@ -442,7 +443,7 @@
 		</div>
 		<%= form_for :list, url: create_task_list_path(@task, type: 'objection'), html: {id: "add_ol_form"} do |f| %>
 		<input type="hidden" name="list-name" class="list-name"></input>
-		<div class="subline">Reaktionen eintippen oderr Liste auswählen</div>
+		<div class="subline">Reaktionen eintippen oder Liste auswählen.</div>
 		<div class="form-group">
 			<div class="reaction-input-field-div">
 				<%= f.text_field :name , placeholder: "Reaktion eintippen", class: 'form-field list-name-cls' %>
@@ -1476,5 +1477,10 @@
 	$('#help-reaction').on('click', function() {
 		$('.helper-videos').show();
 		$('#helperVideo').attr('src',	"https://player.vimeo.com/video/465370702?autoplay=1");
+	})
+
+	$('#help-title').on('click', function() {
+		$('.helper-videos').show();
+		$('#helperVideo').attr('src',	"https://player.vimeo.com/video/465378762?autoplay=1");
 	})
 </script>
