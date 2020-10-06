@@ -556,6 +556,7 @@
 		top: 4vh; left: 19.5vw;
 		height: 82vh; width: 65vw;
 		padding: 0;
+		.subline {font-size: .8vw !important;}
 		.slide-preview {
 			height: 70vh; width: 100%;
 			margin: 1vh auto;
@@ -594,7 +595,7 @@
             padding-top: 1vh;
 
             .subline {
-                font-size: 1.5vh;
+                font-size: .8vw;
             }
 
 			.form-group {
