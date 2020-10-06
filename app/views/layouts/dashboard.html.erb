@@ -147,6 +147,9 @@
 			<%= image_tag @company.logo? ? @company.logo.url : 'logo-m.png' %>
 		</div>
 	</section>
+	<div class="helper-videos">
+		<iframe src="" width="640" height="564" frameborder="0" id="helperVideo"></iframe>
+	</div>
 	<section id="content">
 		<%= yield %>
 	</section>
@@ -253,7 +256,13 @@
 		$('.modal-blur').toggle();
 	}
 	new PerfectScrollbar('#content');
+	$('.helper-videos').on('click', function(e) {
+		if ($(e.target).is('.helper-videos')) {
+				$('.helper-videos').hide();
+				$('#helperVideo').attr('src', '');
 
+		}
+	})
 
 </script>
 

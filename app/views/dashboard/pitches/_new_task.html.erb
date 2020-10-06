@@ -29,6 +29,7 @@
 
 <div class="main-card-row1">
 	<div class="card time-limit">
+		<div class="help" id="help-timeLimit">?</div>
 		<div class="title">Zeitlimit</div>
 		<i class="far far-time fa-check-square" id="timeCheck" onclick="showTime()"></i>
 		<div class="subline">Lege die Zeit fest.</div>
@@ -48,6 +49,7 @@
 	</div>
 	<div class="add-cw-add-rating">
 		<div class="card add-catchword">
+			<div class="help" id="help-catchword">?</div>
 			<%
 			media_type = @task.task_medium&.media_type&.titleize
 			media_type = media_type.present? ? media_type : @task.task_type&.titleize
@@ -144,11 +146,7 @@
 					<% end %>
 				</div>
 				<script>
-					var cw_count = '<%= @task.catchword_list&.catchwords&.count %>';
-					console.log(cw_count);
-					if (cw_count !== '' && (Number(cw_count) > 4)) {
-						new PerfectScrollbar('.cw-list');
-					}
+					new PerfectScrollbar('.cw-list');
 				</script>
 				<div class="info">Wenn mehr als ein Text hinzugefügt wurde, wird für die Aufgabe einer zufällig ausgewählt.
 				</div>
@@ -404,6 +402,7 @@
 
 		</div>
 		<div class="card add-rating">
+			<div class="help" id="help-rating">?</div>
 			<i class="far far-rating-criteria fa-check-square" id="ratingCheck" onclick="showRating()"></i>
 			<div class="title">Bewertungskriterien</div>
 			<%= form_for :task, url: create_ratings_path(@pitch, task_id: @task.id), html: {id: "add_rating_form"}, remote: true do |f| %>
@@ -432,6 +431,7 @@
 		</div>
 	</div>
 	<div class="card add-reaction">
+		<div class="help" id="help-reaction">?</div>
 		<div class="checkbox-container">
 			<div class="form-group" id="show_ratings">
 				<div class="skip-election-group">
@@ -1461,5 +1461,20 @@
 		})
 	}
 
-
+	$('#help-timeLimit').on('click', function() {
+		$('.helper-videos').show();
+		$('#helperVideo').attr('src', 'https://player.vimeo.com/video/465321472?autoplay=1');
+	})
+	$('#help-rating').on('click', function() {
+		$('.helper-videos').show();
+		$('#helperVideo').attr('src',	"https://player.vimeo.com/video/465335102?autoplay=1");
+	})
+	$('#help-catchword').on('click', function() {
+		$('.helper-videos').show();
+		$('#helperVideo').attr('src',	"https://player.vimeo.com/video/465338345?autoplay=1");
+	})
+	$('#help-reaction').on('click', function() {
+		$('.helper-videos').show();
+		$('#helperVideo').attr('src',	"https://player.vimeo.com/video/465370702?autoplay=1");
+	})
 </script>
