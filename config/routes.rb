@@ -24,7 +24,6 @@ Rails.application.routes.draw do
 
   get 'dashboard/', to: 'dashboard#index', as: 'dashboard'
   get 'dashboard/choose_company', to: 'dashboard#choose_company', as: 'dash_choose_company'
-  get 'dashboard/games/:game_id/customize', to: 'dashboard#customize_game', as: 'dashboard_customize_game'
   get 'dashboard/teams', to: 'dashboard#teams', as: 'dashboard_teams'
   get 'dashboard/teams/:team_id', to: 'dashboard#teams', as: 'dashboard_team'
   get 'dashboard/teams/:team_id/stats', to: 'dashboard#team_stats', as: 'dashboard_team_stats'
@@ -40,7 +39,7 @@ Rails.application.routes.draw do
 
   post 'share/content/:medium_id', to: 'share#share_content', as: 'share_content'
   post 'share/pdf/:pdf_id', to: 'share#share_pdf', as: 'share_pdf'
-  post 'share/list/:type/:list_id', to: 'share#share_list', as: 'share_list'
+  post 'share/list/:list_id', to: 'share#share_list', as: 'share_list'
   post 'share/folder/:folder_id', to: 'share#share_folder', as: 'share_folder'
   post 'share/pitch/:pitch_id', to: 'share#share_pitch', as: 'share_pitch'
   post 'share/users/update_name', to: 'share#update_user'
@@ -98,11 +97,11 @@ Rails.application.routes.draw do
 
   post 'lists/new', to: 'list#create', as: 'create_list'
   post 'lists/:list_id/edit', to: 'list#update', as: 'edit_list'
-  put 'lists/:type/:list_id/delete', to: 'list#destroy', as: 'delete_list'
+  put 'lists/:list_id/delete', to: 'list#destroy', as: 'delete_list'
   post 'lists/:list_id/addEntry', to: 'list#add_entry', as: 'list_add_entry'
   post 'lists/:list_id/addSound', to: 'list#add_sounds', as: 'list_add_sounds'
   post 'lists/entry_edit', to: 'list#edit_entry', as: 'edit_entry'
-  post 'lists/:type/:list_id/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
+  post 'lists/:list_id/entry/:entry_id', to: 'list#delete_entry', as: 'delete_entry'
 
 
   get 'backoffice', to: 'backoffice#index', as: 'backoffice'
@@ -202,14 +201,6 @@ Rails.application.routes.draw do
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
   put 'company/:company_id/users/:user_id/set_role', to: 'users#set_role'
-
-  #Customize
-  post 'doanddonts/new', to: 'customize#new_doAndDont', as: "new_do_and_dont"
-  post 'rating/:rating_criterium_id/edit', to: 'customize#edit_rating', as: 'edit_rating'
-  put 'words/record/:id', to: 'customize#recordWord', as: "record_word"
-  put 'objections/record/:id', to: 'customize#recordObjection', as: "record_objection"
-
-  get 'delete/doAndDont/', to: 'customize#deleteDoAndDont', as: 'delete_doAndDont'
 
   #Comments
   post 'turns/:turn_id/comments/new', to: 'comments#create', as: 'new_comment'

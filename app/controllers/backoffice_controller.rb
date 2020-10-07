@@ -38,28 +38,13 @@ class BackofficeController < ApplicationController
   def company_content
     @folders = @company.content_folders.where(content_folder: nil)
     @files = @company.task_media.where(content_folder: nil).where.not(is_pdf: true)
-    @lists = []
-    @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
-      entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
-      @lists << entry
-    end
-    @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
-      entry = {type: 'objection', id: ol.id, name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-      @lists << entry
-    end
+    @lists = @company.lists.where(content_folder: nil)
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.where.not(is_pdf: true)
-      @lists = []
-      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
-        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
-        @lists << entry
-      end
-      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
-        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-        @lists << entry
-      end    end
+      @lists = @folder.lists
+    end
 
     if params[:audio]
       @content = TaskMedium.find(params[:audio])
@@ -69,11 +54,8 @@ class BackofficeController < ApplicationController
       @content = TaskMedium.find(params[:pdf])
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
-    elsif params[:catchword]
-      @listType = 'catchword'
-      @liste = CatchwordList.find(params[:catchword])
-    elsif params[:objection]
-      @liste = ObjectionList.find(params[:objection])
+    elsif params[:list]
+      @liste = List.find(params[:list])
     end
   end
 
@@ -126,11 +108,9 @@ class BackofficeController < ApplicationController
         @folders << @folder
       end
       @lists = []
-      @company.catchword_lists.where.not(name: 'task_list').search(params[:search]).each do |cl|
-        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
-      end
-      @company.objection_lists.where.not(name: 'task_list').search(params[:search]).each do |ol|
-        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      @company.lists.search(params[:search]).each do |list|
+        @list = {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        @lists << @list
       end
     else
       @folders = []
@@ -152,13 +132,9 @@ class BackofficeController < ApplicationController
           @files << @file
         end
       end
-      @company.catchword_lists.where(content_folder: nil).where.not(name: 'task_list').each do |cl|
-        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
-        @lists << entry
-      end
-      @company.objection_lists.where(content_folder: nil).where.not(name: 'task_list').each do |ol|
-        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-        @lists << entry
+      @company.lists.where(content_folder: nil).each do |list|
+        @list = {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        @lists << @list
       end
     end
     render json: {folders: @folders, files: @files, lists: @lists}
@@ -167,28 +143,12 @@ class BackofficeController < ApplicationController
   def content
     @folders = ContentFolder.where(available_for: 'global', content_folder: nil)
     @files = TaskMedium.where(available_for: 'global', content_folder: nil).where.not(is_pdf: true)
-    @lists = []
-    CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |cl|
-      entry = {type: 'catchword', id: cl.id, name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
-      @lists << entry
-    end
-    ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |ol|
-      entry = {type: 'objection', id: ol.id, name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-      @lists << entry
-    end
+    @lists = List.where(available_for: 'global', content_folder: nil)
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.where.not(is_pdf: true)
-      @lists = []
-      @folder.catchword_lists.where.not(name: 'task_list').each do |cl|
-        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
-        @lists << entry
-      end
-      @folder.objection_lists.where.not(name: 'task_list').each do |ol|
-        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-        @lists << entry
-      end
+      @lists = @folder.lists
     end
 
     if params[:audio]
@@ -199,10 +159,8 @@ class BackofficeController < ApplicationController
       @content = TaskMedium.find(params[:pdf])
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
-    elsif params[:catchword]
-      @liste = CatchwordList.find(params[:catchword])
-    elsif params[:objection]
-      @liste = ObjectionList.find(params[:objection])
+    elsif params[:list]
+      @liste = List.find(params[:list])
     end
   end
 
@@ -234,11 +192,9 @@ class BackofficeController < ApplicationController
         @folders << @folder
       end
       @lists = []
-      CatchwordList.where(available_for: 'global').where.not(name: 'task_list').search(params[:search]).each do |cl|
-        @lists << {id: cl.id, name: cl.name, entries: cl.catchwords.count, type: 'catchword', user_name: (cl.user.fname[0] + '. ' + cl.user.lname)}
-      end
-      ObjectionList.where(available_for: 'global').where.not(name: 'task_list').search(params[:search]).each do |ol|
-        @lists << {id: ol.id, name: ol.name, entries: ol.objections.count, type: 'objection', user_name: (ol.user.fname[0] + '. ' + ol.user.lname)}
+      List.where(available_for: 'global').search(params[:search]).each do |list|
+        @list = {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        @lists << @list
       end
     else
       @folders = []
@@ -260,13 +216,9 @@ class BackofficeController < ApplicationController
           @files << @file
         end
       end
-      CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |cl|
-        entry = {type: 'catchwords', name: cl.name, author: cl.user, count: cl.catchwords.count}
-        @lists << entry
-      end
-      ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list').each do |ol|
-        entry = {type: 'objections', name: ol.name, user_name: ol.user.fname[0] + '. ' + ol.user.lname}
-        @lists << entry
+      List.where(available_for: 'global', content_folder: nil).each do |list|
+        @list = {name: list.name, author: list.user, count: list.list_entries.count}
+        @lists << @list
       end
     end
     render json: {folders: @folders, files: @files, lists: @lists}

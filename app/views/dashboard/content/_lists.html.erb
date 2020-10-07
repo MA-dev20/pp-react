@@ -1,60 +1,54 @@
 <div class="lists" style="<%= @lists.count == 0 ? 'display: none' : 'display: block' %>">
   <h3>Listen</h3>
-  <% @lists.each do |f| %>
-    <div class="card" id='list_<%= f[:id] %>')">
-      <% if (f[:type] == 'catchword' && (can? :edit, CatchwordList.find(f[:id]))) || (f[:type] == 'objection' && (can? :edit, ObjectionList.find(f[:id]))) %>
+  <% @lists.each do |list| %>
+    <div class="card" id='list_<%= list.id %>')">
+      <% if (can? :edit, list) %>
       <div class="dropdown">
         <i class="fas fa-ellipsis-v dropdown-icon" aria-hidden="true" onclick="toggleDropdownContent(this)"></i>
         <div class="dropdown-Menu">
-          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
+          <div class="point" data-type="list" data-id="<%= list.id %>" onclick="showMedia(this)">
             <i class="fa fa-pencil-alt"></i>Bearbeiten
           </div>
           <% if controller.controller_name != "backoffice" %>
-          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="shareList(this)">
+          <div class="point" data-id="<%= list.id %>" onclick="shareList(this)">
             <i class="fa fa-share-alt"></i>Freigeben
           </div>
           <% end %>
-          <div class="point" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="deleteList(this)">
+          <div class="point" data-id="<%= list.id %>" onclick="deleteList(this)">
             <%= image_tag 'dash/new_icons/trash.svg', class: 'delete' %>Löschen
           </div>
         </div>
       </div>
       <% end %>
-      <div class="thumb" data-type="<%= f[:type] %>" data-id="<%= f[:id] %>" onclick="showMedia(this)">
+      <div class="thumb" data-type="list" data-id="<%= list.id %>" onclick="showMedia(this)">
           <div class="list-icon">
-            <% if f[:type] == 'catchword' %>
             <%= image_tag 'dash/no-image-icon.png' %>
-            <% else %>
-            <svg class="icon add" viewbox="0 0 144 144" onclick="toggleNewContent()"><use xlink:href="#handIcon" /></svg>
-            <% end %>
           </div>
           <%= image_tag 'dash/placeholder.png', class: 'image' %>
       </div>
       <div class="text">
-          <div class="title" id="media_title_<%= f[:id] %>"><%= f[:name] %><div class="ellipsis">...</div></div>
-          <div class="time"><%= image_tag 'dash/no-image-icon.png' %><%= f[:user_name] %></div>
+          <div class="title" id="media_title_<%= list.id %>"><%= list.name %><div class="ellipsis">...</div></div>
+          <div class="time"><%= image_tag 'dash/no-image-icon.png' %><%= list.user.fname[0] %>. <%= list.user.lname %></div>
       </div>
 
     </div>
     <script type="text/javascript">
-      checkOverflow('media_title_<%= f[:id] %>');
+      checkOverflow('media_title_<%= list.id %>');
     </script>
   <% end %>
 </div>
 <script type="text/javascript">
   function shareList(e) {
-    var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
     <% if params[:folder_id] %>
-      location.replace('?folder_id=<%= params[:folder_id] %>&share_list='+mediaID+'&type='+type);
+      location.replace('?folder_id=<%= params[:folder_id] %>&share_list='+mediaID);
     <% else %>
-    location.replace('?share_list='+mediaID+'&type='+type);
+    location.replace('?share_list='+mediaID);
     <% end %>
   }
   function deleteList(e) {
-		var type = $(e).attr('data-type');
 		var mediaID = $(e).attr('data-id');
-		var URL = '/lists/'+ type + '/' + mediaID + '/delete';
+		var URL = '/lists/' + mediaID + '/delete';
 		$.ajax({
 			url: URL,
 			type: 'put',

@@ -270,7 +270,9 @@ class GamesController < ApplicationController
 	@task = @game.pitch.task_orders.find_by(order: @game.current_task).task
   @turn.update(task: @task)
 	if @task.task_type == 'catchword'
-	  @turn.update(catchword: @task.catchword_list.catchwords.sample)
+    @catchwords = @task.catchword_list.list_entries
+    @catchwords += @task.catchword_list.list&.list_entries
+	  @turn.update(list_entry: @catchwords.sample)
 	end
 	flash[:alert] = 'Konnte Entscheidung nicht speichern!' if !@turn.update(turn_params)
 	@turn.game.update(state: "play")

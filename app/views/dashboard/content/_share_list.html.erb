@@ -1,14 +1,10 @@
 <% if params[:share_list] %>
-<% if params[:type] == 'catchword' %>
-  <% this_list = CatchwordList.find(params[:share_list]) %>
-<% else %>
-  <% this_list = ObjectionList.find(params[:share_list]) %>
-<% end %>
+  <% this_list = List.find(params[:share_list]) %>
 <div class="background-blur" id="shareList" style="display: block">
   <div class="content-popup">
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'closeShareList()' %>
     <h3>Liste teilen mit:</h3>
-    <%= form_for :list, url: share_list_path(params[:type], this_list), html: {id: 'shareForm'} do |f| %>
+    <%= form_for :list, url: share_list_path(this_list), html: {id: 'shareForm'} do |f| %>
     <%= f.hidden_field :available_for, value: this_list.available_for %>
     <%= f.hidden_field :team_id, value: this_list.team_id %>
     <%= f.hidden_field :department_id, value: this_list.department_id %>
@@ -80,7 +76,7 @@
   }
   $('#shareForm').on('submit', function(e) {
     e.preventDefault();
-    var URL = '<%= share_list_path(params[:type], this_list) %>';
+    var URL = '<%= share_list_path(this_list) %>';
     var formData = new FormData(document.getElementById('shareForm'));
     $.ajax({
       url: URL,

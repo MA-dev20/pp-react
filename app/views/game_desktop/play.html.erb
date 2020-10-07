@@ -7,7 +7,7 @@
 <div id="game_channel" data-game-id='<%= @game.id %>'></div>
 <div id="count_channel" data-game-id='<%= @game.id %>'></div>
 <% if @task.task_type == 'catchword' %>
-<% @catchword = @turn.catchword %>
+<% @catchword = @turn.list_entry %>
 <% end %>
 <section id="timeroverlay">
 		<svg viewbox="0 0 100 100">

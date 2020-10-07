@@ -13,10 +13,8 @@ class User < ApplicationRecord
   has_many :user_users, dependent: :destroy
 
   has_many :content_folders
-  has_many :catchword_lists
-  has_many :catchwords
-  has_many :objection_lists
-  has_many :objections
+  has_many :lists
+  has_many :list_entries
   has_many :task_media
   has_many :task_pdfs
 
@@ -49,7 +47,7 @@ class User < ApplicationRecord
       end
     end
 
-    self.catchword_lists.each do |list|
+    self.lists.each do |list|
       if list.shared_contents.count != 0 || list.available_for != 'user'
         list.destroy
       else
@@ -57,20 +55,8 @@ class User < ApplicationRecord
       end
     end
 
-    self.objection_lists.each do |list|
-      if list.shared_contents.count != 0 || list.available_for != 'user'
-        list.destroy
-      else
-        list.update(user: nil)
-      end
-    end
-
-    self.catchwords.each do |word|
-      word.update(user: nil)
-    end
-
-    self.objections.each do |word|
-      word.update(user: nil)
+    self.list_entries.each do |entry|
+      entry.update(user: nil)
     end
 
     self.task_media.each do |media|

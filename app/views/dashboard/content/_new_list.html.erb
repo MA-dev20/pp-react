@@ -3,19 +3,15 @@
     <%= image_tag 'icons/close.svg', class: 'close', onclick: 'newList("close")' %>
     <h3>Neue Liste</h3>
     <%= form_for :list, url: create_list_path, html: {id: 'new-list-form'} do |f| %>
-      <%= f.hidden_field :type %>
       <%= f.hidden_field :content_folder_id, value: params[:folder_id] ? params[:folder_id] : nil %>
       <div class="audio" id="catchword_image">
         <%= image_tag 'dash/noImageIcon.svg' %>
-      </div>
-      <div class="audio" id="objection_image">
-        <svg viewbox="0 0 144 144" onclick="toggleNewContent()"><use xlink:href="#handIconBlack" /></svg>
       </div>
       <div class="form-group">
         <%= f.text_field :name, placeholder: 'Name der Liste hier eingeben', class: 'form-field' %>
       </div>
       <div class="btns">
-        <div class="btn inverted" onclick="newList('close')">Abbrechen</div>
+        <div class="btn inverted" onclick="newList()">Abbrechen</div>
         <div class="btn" onclick="submitList()">Erstellen</div>
       </div>
     <% end %>
@@ -42,29 +38,15 @@
           $('#list_name').css('border-color', 'red');
         } else {
           <% if params[:folder_id] %>
-          location.replace('?folder_id=<%= params[:folder_id] %>&' + $('#list_type').val() + '=' + res.id);
+          location.replace('?folder_id=<%= params[:folder_id] %>&list=' + res.id);
           <% else %>
-          location.replace('?' + $('#list_type').val() + '=' + res.id);
+          location.replace('?list=' + res.id);
           <% end %>
         }
       }
     })
   }
-  function newList(type) {
-    if( type == 'close' ) {
-      $('#new-list').hide();
-    } else if( type == 'catchword') {
-      $('#new-list h3').text('Neue Textliste')
-      $('#list_type').val(type);
-      $('#new-list').show();
-      $('#objection_image').hide();
-      $('#catchword_image').show();
-    } else {
-      $('#new-list h3').text('Neue Einwandliste')
-      $('#list_type').val(type);
-      $('#new-list').show();
-      $('#catchword_image').hide();
-      $('#objection_image').show();
-    }
+  function newList() {
+    $('#new-list').toggle();
   }
 </script>

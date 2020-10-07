@@ -375,7 +375,9 @@ class GameMobileController < ApplicationController
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
       @turn.update(task: @task)
 	    if @task.task_type == 'catchword'
-		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
+        @catchwords = @task.catchword_list.list_entries
+        @catchwords += @task.catchword_list.list.list_entries if @task.catchword_list.list
+		    @turn.update(catchword: @catchwords.sample)
 	    end
       @game.update(state: 'play', turn1: nil, turn2: nil) if @game.state != 'play'
       redirect_to gm_game_path
@@ -507,9 +509,9 @@ class GameMobileController < ApplicationController
   end
 
   def objection
-	@objection = Objection.find_by(name: params[:objection])
+	@objection = ListEntry.find_by(name: params[:objection])
 	if @objection
-	ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: @objection.name, objection_sound: @objection.sound? ? @objection.sound.url : ""
+	   ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: @objection.name, objection_sound: @objection.sound? ? @objection.sound.url : ""
 	else
 	  ActionCable.server.broadcast "count_#{@game.id}_channel", objection: true, objection_text: params[:objection], objection_sound: ""
 	end
