@@ -5,14 +5,14 @@ class ShareController < ApplicationController
     if params[:content][:email] != ''
       @new_users = []
       params[:content][:email].split(' ').each do |email|
-        @user = User.find_by(email: email)
+        @user = User.find_by(email: email.downcase)
         if @user
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company
           end
           @user.shared_content.create(task_medium: @content)
         else
-          @user = User.new(email: email)
+          @user = User.new(email: email.downcase)
           @user.save(validate: false)
           @user.company_users.create(company: @company, role: 'user')
           @user.shared_content.create(task_medium: @content)
@@ -37,7 +37,7 @@ class ShareController < ApplicationController
     if params[:content][:email] != ''
       @new_users = []
       params[:content][:email].split(' ').each do |email|
-        @user = User.find_by(email: email)
+        @user = User.find_by(email: email.downcase)
         if @user
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company
@@ -91,7 +91,7 @@ class ShareController < ApplicationController
     if params[:list][:email] != ''
       @new_users = []
       params[:list][:email].split(' ').each do |email|
-        @user = User.find_by(email: email)
+        @user = User.find_by(email: email.downcase)
         if @user
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company
@@ -125,7 +125,7 @@ class ShareController < ApplicationController
     if params[:folder][:email] != ''
       @new_users = []
       params[:folder][:email].split(' ').each do |email|
-        @user = User.find_by(email: email)
+        @user = User.find_by(email: email.downcase)
         if @user
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company
@@ -157,7 +157,7 @@ class ShareController < ApplicationController
     if params[:pitch][:email] != ''
       @new_users = []
       params[:pitch][:email].split(' ').each do |email|
-        @user = User.find_by(email: email)
+        @user = User.find_by(email: email.downcase)
         if @user
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company

@@ -40,7 +40,7 @@ class GamesController < ApplicationController
   end
 
   def email
-	  @user = User.find_by(email: params[:user][:email])
+	  @user = User.find_by(email: params[:user][:email].downcase)
     @game_user = @game.game_users.find_by(user: @user) if @user
     @company = @game.company
     @admin_role = @company.company_users.find_by(user: @game.user).role
@@ -208,7 +208,7 @@ class GamesController < ApplicationController
         if @user.avatar?
           ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
         else
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id, user_id: @user.id
+          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
         end
         redirect_to gm_game_path
     	  return
