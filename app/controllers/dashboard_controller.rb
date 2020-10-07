@@ -5,8 +5,8 @@ class DashboardController < ApplicationController
   layout "dashboard"
 
   def content
-    @peters_count = ContentFolder.select{|cf| cf.available_for == 'global'}.size + TaskMedium.select{|tm| tm.available_for == 'global' && tm.is_pdf != true}.size + CatchwordList.select{|cl| cl.available_for == 'global' && cl.name != 'task_list'}.size + ObjectionList.select{|ol| ol.available_for == 'global' && ol.name != 'task_list'}.size
-    @shared_count = @company.content_folders.accessible_by(current_ability).where.not(user: @admin).count + @company.task_media.accessible_by(current_ability).where.not(user: @admin, is_pdf: true).count + @company.catchword_lists.accessible_by(current_ability).where.not(user: @admin, name: 'task_list').count + @company.objection_lists.where.not(user: @admin, name: 'task_list').count
+    @peters_count = ContentFolder.select{|cf| cf.available_for == 'global'}.size + TaskMedium.select{|tm| tm.available_for == 'global' && tm.is_pdf != true}.size + List.select{|list| list.available_for == 'global'}.size
+    @shared_count = @company.content_folders.accessible_by(current_ability).where.not(user: @admin).count + @company.task_media.accessible_by(current_ability).where.not(user: @admin, is_pdf: true).count + @company.lists.accessible_by(current_ability).where.not(user: @admin).count
     if !(can? :create, ContentFolder)
       if @peters_count == 0
         redirect_to dashboard_shared_content_path if @shared_count != 0
@@ -20,25 +20,13 @@ class DashboardController < ApplicationController
     @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
     @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(is_pdf: true)
     @pdfs = @company.task_pdfs.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
-    @lists = []
-    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'catchword', name: cl.name}
-    end
-    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'objection', name: cl.name}
-    end
+    @lists = @company.lists.includes(:user).accessible_by(current_ability).where(content_folder: nil, user: @admin)
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders.accessible_by(current_ability)
       @files = @folder.task_media.accessible_by(current_ability).where.not(is_pdf: true)
       @pdfs = @folder.task_pdfs.accessible_by(current_ability)
-      @lists = []
-      @folder.catchword_lists.accessible_by(current_ability).each do |cl|
-        @lists << {id: cl.id, type: 'catchword', name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
-      end
-      @folder.objection_lists.accessible_by(current_ability).each do |cl|
-        @lists << {id: cl.id, type: 'objection', name: cl.name, user_name: cl.user.fname[0] + '. ' + cl.user.lname}
-      end
+      @lists = @folder.lists.accessible_by(current_ability)
     end
     if params[:audio]
       @content = TaskMedium.find(params[:audio])
@@ -49,11 +37,8 @@ class DashboardController < ApplicationController
       @slides = @content.task_media
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
-    elsif params[:catchword]
-      @listType = 'catchword'
-      @liste = CatchwordList.find(params[:catchword])
-    elsif params[:objection]
-      @liste = ObjectionList.find(params[:objection])
+    elsif params[:list]
+      @liste = List.find(params[:list])
     end
   end
 
@@ -72,32 +57,12 @@ class DashboardController < ApplicationController
   def shared_content
     @folders = @company.content_folders.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     @files = @company.task_media.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
-    @lists = []
-    @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
-      if list.user
-        @lists << {id: list.id, type: 'catchword', name: list.name, user_name: list.user.fname[0] + '. ' + list.user.lname}
-      else
-        @lists << {id: list.id, type: 'catchword', name: list.name, user_name: 'Gelöschter Nutzer'}
-      end
-    end
-    @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list').each do |list|
-      if list.user
-        @lists << {id: list.id, type: 'objection', name: list.name, user_name: list.user.fname[0] + '. ' + list.user.lname}
-      else
-        @lists << {id: list.id, type: 'objection', name: list.name, user_name: 'Gelöschter Nutzer'}
-      end
-    end
+    @lists = @company.lists.includes(:user).accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media
-      @lists = []
-      @folder.catchword_lists.each do |cl|
-        @lists << {id: cl.id, type: 'catchword', name: cl.name}
-      end
-      @folder.objection_lists.each do |cl|
-        @lists << {id: cl.id, type: 'objection', name: cl.name}
-      end
+      @lists = @folder.lists
     end
     if params[:audio]
       @content = TaskMedium.find(params[:audio])
@@ -107,43 +72,20 @@ class DashboardController < ApplicationController
       @content = TaskMedium.find(params[:pdf])
     elsif params[:video]
       @content = TaskMedium.find(params[:video])
-    elsif params[:catchword]
-      @listType = 'catchword'
-      @liste = CatchwordList.find(params[:catchword])
-    elsif params[:objection]
-      @liste = ObjectionList.find(params[:objection])
+    elsif params[:list]
+      @liste = List.find(params[:list])
     end
   end
 
   def peters_content
     @folders = ContentFolder.where(content_folder: nil, available_for: 'global')
-    @folders += ContentFolder.where(content_folder: nil, available_for: 'global_hidden')
     @files = TaskMedium.where(content_folder: nil, available_for: 'global').where.not(is_pdf: true)
-    @files = TaskMedium.where(content_folder: nil, available_for: 'global_hidden').where.not(is_pdf: true)
-    @lists = []
-    CatchwordList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'catchword', name: cl.name}
-    end
-    CatchwordList.where(content_folder: nil, available_for: 'global_hidden').where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'catchword', name: cl.name}
-    end
-    ObjectionList.where(content_folder: nil, available_for: 'global').where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'objection', name: cl.name}
-    end
-    ObjectionList.where(content_folder: nil, available_for: 'global_hidden').where.not(name: 'task_list').each do |cl|
-      @lists << {id: cl.id, type: 'objection', name: cl.name}
-    end
+    @lists = List.where(content_folder: nil, available_for: 'global')
     if params[:folder_id]
       @folder = ContentFolder.find(params[:folder_id])
       @folders = @folder.content_folders
       @files = @folder.task_media.where.not(is_pdf: true)
-      @lists = []
-      @folder.catchword_lists.each do |cl|
-        @lists << {id: cl.id, type: 'catchword', name: cl.name}
-      end
-      @folder.objection_lists.each do |cl|
-        @lists << {id: cl.id, type: 'objection', name: cl.name}
-      end
+      @lists = @folder.lists
     end
   end
 
@@ -153,28 +95,23 @@ class DashboardController < ApplicationController
     if @folder
       files = TaskMedium.where(content_folder: @folder)
       folders = ContentFolder.where(content_folder: @folder)
-      cw = CatchwordList.where(content_folder: @folder).where.not(name: 'task_list')
-      ol = ObjectionList.where(content_folder: @folder).where.not(name: 'task_list')
+      lists = List.where(content_folder: @folder)
     elsif level == 'root'
       files = TaskMedium.accessible_by(current_ability)
       folders = ContentFolder.accessible_by(current_ability)
-      cw = CatchwordList.accessible_by(current_ability).where.not(name: 'task_list')
-      ol = ObjectionList.accessible_by(current_ability).where.not(name: 'task_list')
+      lists = List.accessible_by(current_ability)
     elsif level == 'user'
-      files = TaskMedium.accessible_by(current_ability)
-      folders = ContentFolder.accessible_by(current_ability)
-      cw = CatchwordList.accessible_by(current_ability).where.not(name: 'task_list')
-      ol = ObjectionList.accessible_by(current_ability).where.not(name: 'task_list')
+      files = @company.task_media.where(user: @admin).accessible_by(current_ability)
+      folders = @company.content_folders.where(user: @admin).accessible_by(current_ability)
+      lists = @company.lists.where(user: @admin).accessible_by(current_ability)
     elsif level == 'shared'
       files = @company.task_media.where.not(user: @admin).accessible_by(current_ability)
       folders = @company.content_folders.where.not(user: @admin).accessible_by(current_ability)
-      cw = @company.catchword_lists.where.not(user: @admin).accessible_by(current_ability).where.not(name: 'task_list')
-      ol = @company.objection_lists.where.not(user: @admin).accessible_by(current_ability).where.not(name: 'task_list')
+      lists = @company.lists.where.not(user: @admin).accessible_by(current_ability)
     elsif level == 'peters'
       files = TaskMedium.where(available_for: 'global')
       folders = ContentFolder.where(available_for: 'global')
-      cw = CatchwordList.where(available_for: 'global').where.not(name: 'task_list')
-      ol = ObjectionList.where(available_for: 'global').where.not(name: 'task_list')
+      lists = List.where(available_for: 'global')
     end
     @files = []
     @folders = []
@@ -199,11 +136,8 @@ class DashboardController < ApplicationController
         @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
         @folders << @folder
       end
-      cw.search(params[:search]).each do |list|
-        @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
-      end
-      ol.search(params[:search]).each do |list|
-        @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+      lists.search(params[:search]).each do |list|
+        @lists << {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
       end
     else
       if level == 'root'
@@ -212,22 +146,18 @@ class DashboardController < ApplicationController
       elsif level == 'shared'
         files = @company.task_media.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
         folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
-        cw = @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list')
-        ol = @company.objection_lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin, name: 'task_list')
+        lists = @company.lists.accessible_by(current_ability).where(content_folder: nil).where.not(user: @admin)
       elsif level == 'user'
         files = @company.task_media.accessible_by(current_ability).where(content_folder: nil, user: @admin)
         folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil, user: @admin)
-        cw = @company.catchword_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list')
-        ol = @company.objection_lists.accessible_by(current_ability).where(content_folder: nil, user: @admin).where.not(name: 'task_list')
+        lists = @company.lists.accessible_by(current_ability).where(content_folder: nil, user: @admin)
       elsif level == 'peters'
         files = TaskMedium.where(available_for: 'global', content_folder: nil)
         files += TaskMedium.where(available_for: 'global_hidden', content_folder: nil)
         folders = ContentFolder.where(available_for: 'global', content_folder: nil)
         folders += ContentFolder.where(available_for: 'global_hidden', content_folder: nil)
-        cw = CatchwordList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
-        cw += CatchwordList.where(available_for: 'global_hidden', content_folder: nil).where.not(name: 'task_list')
-        ol = ObjectionList.where(available_for: 'global', content_folder: nil).where.not(name: 'task_list')
-        ol += ObjectionList.where(available_for: 'global_hidden', content_folder: nil).where.not(name: 'task_list')
+        lists = List.where(available_for: 'global', content_folder: nil)
+        lists += List.where(available_for: 'global_hidden', content_folder: nil)
       end
       if @folder
         files.each do |file|
@@ -249,11 +179,8 @@ class DashboardController < ApplicationController
           @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
           @folders << @folder
         end
-        cw.each do |list|
-          @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
-        end
-        ol.each do |list|
-          @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        lists.each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
         end
       else
         files.each do |file|
@@ -275,11 +202,8 @@ class DashboardController < ApplicationController
           @folder = {id: folder.id, title: folder.name, author: folder.user.fname[0] + '. ' + folder.user.lname }
           @folders << @folder
         end
-        cw.where(content_folder: nil).each do |list|
-          @lists << {id: list.id, name: list.name, entries: list.catchwords.count, type: 'catchword', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
-        end
-        ol.where(content_folder: nil).each do |list|
-          @lists << {id: list.id, name: list.name, entries: list.objections.count, type: 'objection', user_name: (list.user.fname[0] + '. ' + list.user.lname)}
+        lists.where(content_folder: nil).each do |list|
+          @lists << {id: list.id, name: list.name, entries: list.list_entries.count, user_name: (list.user.fname[0] + '. ' + list.user.lname)}
         end
       end
     end
@@ -295,33 +219,6 @@ class DashboardController < ApplicationController
   end
 
   def index
-  end
-
-  def customize_game
-	@game = Game.find(params[:game_id])
-	@team = @game.team
-	@uCL = @admin.catchword_lists.order('name')
-	@cCL = @company.catchword_lists.where.not(user: @admin).order('name')
-	@pCL = CatchwordList.where(company_id: nil, user_id: nil, game_id: nil).order('name')
-	@uOL = @admin.objection_lists.order('name')
-	@cOL = @company.objection_lists.where.not(user: @admin).order('name')
-	@pOL = ObjectionList.where(company_id: nil, user_id: nil, game_id: nil).order('name')
-	@uRL = @admin.rating_lists.order('name')
-	@cRL = @company.rating_lists.where.not(user: @admin).order('name')
-	@pRL = RatingList.where(company_id: nil, user_id: nil).order('name')
-	@pitches = []
-	@admin.games.each do |p|
-	  p.game_turns.each do |t|
-	  	if t.pitch_video && t.pitch_video.favorite
-		  minutes = t.pitch_video.duration / 60
-		  minutes = minutes < 10 ? '0' + minutes.to_s : minutes.to_s
-		  seconds = t.pitch_video.duration % 60
-		  seconds = seconds < 10 ? '0' + seconds.to_s : seconds.to_s
-		  rating = t.ges_rating ? t.ges_rating / 10.0 : '?'
-		  @pitches << {id: t.pitch_video.id, video: t.pitch_video, duration: minutes + ':' + seconds, word: t.catchword, user: t.user, rating: rating}
-	  	end
-	  end
-	end
   end
 
   def teams
@@ -389,7 +286,7 @@ class DashboardController < ApplicationController
   	    end
         my_rating = (my_rating / cust_rating.length).round(1) if my_rating
         if t.task.task_type == 'catchword'
-          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.catchword.name}
+          cust_task << {id: t.task, type: t.task.task_type, title: t.task.title, catchword: t.list_entry ? t.list_entry.name : 'Inhalt wurde entfernt'}
         elsif t.task.task_medium_id.nil?
           cust_task << {id: t.task, type: 'deleted', title: t.task.title}
         elsif t.task.task_type == 'audio'
@@ -580,13 +477,9 @@ class DashboardController < ApplicationController
     flash[:alert] = 'Der Pitch existiert nicht mehr!'
     redirect_to dashboard_pitches_path
 	end
-	@cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
-  @cw_lists += CatchwordList.where(available_for: 'global').where.not(name: 'task_list')
-  @cw_lists += CatchwordList.where(available_for: 'global_hidden').where.not(name: 'task_list')
-	@ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
-  @ol_list += ObjectionList.where(available_for: 'global').where.not(name: 'task_list')
-  @ol_list += ObjectionList.where(available_for: 'global_hidden').where.not(name: 'task_list')
-
+	@lists = @company.lists.accessible_by(current_ability)
+  @lists += List.where(available_for: 'global').where.not(company: @company)
+  @lists += List.where(available_for: 'global_hidden').where.not(company: @company)
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
     if params[:folder_id]
@@ -663,8 +556,7 @@ class DashboardController < ApplicationController
     @task_order = TaskOrder.find_by(pitch_id: @pitch.id, task_id: @task.id)
     @task_type = @task.task_type
     @admin = current_user
-    @cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
-    @ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
+    @lists = @company.lists.accessible_by(current_ability)
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
     @files = ''
     @type = ''

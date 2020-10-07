@@ -187,7 +187,9 @@ class GameDesktopController < ApplicationController
       @turn = GameTurn.find_by(id: @game.current_turn) if @game.current_turn
 	    @task = @pitch.task_orders.find_by(order: @game.current_task).task
 	    if @task.task_type == 'catchword'
-		    @turn.update(catchword: @task.catchword_list.catchwords.sample)
+        @catchwords = @task.catchword_list.list_entries
+        @catchwords += @task.catchword_list.list.list_entries if @task.catchword_list.list
+		    @turn.update(list_entry: @catchwords.sample)
 	    end
       @game.update(state: 'play', turn1: nil, turn2: nil) if @game.state != 'play'
       redirect_to gd_game_path

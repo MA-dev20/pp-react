@@ -1,33 +1,19 @@
 class CatchwordList < ApplicationRecord
-  belongs_to :company, required: false
-  belongs_to :department, required: false
-  belongs_to :team, required: false
-  belongs_to :user, required: false
-  belongs_to :content_folder, required: false
-  belongs_to :game, required: false
-  has_many :catchword_list_catchwords, dependent: :destroy
-  has_many :catchwords, through: :catchword_list_catchwords
-  has_many :shared_contents, dependent: :destroy
-
-  before_create do
-	self.image = Random.rand(8)
-  end
+  belongs_to :list, required: false
+  has_many :catchword_list_entries, dependent: :destroy
+  has_many :list_entries, through: :catchword_list_entries
 
   before_save do
-    if self.content_folder
-      self.available_for = self.content_folder.available_for
+    if self.list_entries.count != 0
+      self.valide = true
+    elsif self.list && self.list.list_entries.count != 0
+      self.valide = true
+    else
+      self.valide = false
     end
   end
-
-  def image_url
-	return 'randomPics/catchwords/'+(self.image + 1).to_s+'.jpg'
-  end
-
-  def self.search(search)
-    if search
-      where('lower(name) LIKE ?', "%#{search.downcase}%")
-    else
-      scoped
+  after_save do
+    if self.valide
     end
   end
 end

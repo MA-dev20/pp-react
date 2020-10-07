@@ -83,11 +83,7 @@ class ShareController < ApplicationController
   end
 
   def share_list
-    if params[:type] == 'catchword'
-      @list = CatchwordList.find(params[:list_id])
-    else
-      @list = ObjectionList.find(params[:list_id])
-    end
+    @list = List.find(params[:list_id])
     if params[:list][:email] != ''
       @new_users = []
       params[:list][:email].split(' ').each do |email|
@@ -96,14 +92,12 @@ class ShareController < ApplicationController
           if !@user.company_users.find_by(company: @company)
             @user.companies << @company
           end
-          @user.shared_content.create(catchword_list: @list) if params[:type] == 'catchword'
-          @user.shared_content.create(objection_list: @list) if params[:type] == 'objection'
+          @user.shared_content.create(list: @list)
         else
           @user = User.new(email: email)
           @user.save(validate: false)
           @user.company_users.create(company: @company, role: 'user')
-          @user.shared_content.create(catchword_list: @list) if params[:type] == 'catchword'
-          @user.shared_content.create(objection_list: @list) if params[:type] == 'objection'
+          @user.shared_content.create(list: @list)
           @new_users << @user
         end
       end

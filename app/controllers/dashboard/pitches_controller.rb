@@ -14,7 +14,6 @@ module Dashboard
 
         def new
           @pitch = @admin.pitches.create()
-		 	    @cw_lists = @company.catchword_lists.accessible_by(current_ability).all
         end
 
 		def create_task
@@ -145,8 +144,7 @@ module Dashboard
         end
 
         def get_cw_reactions
-            @cw_lists = @company.catchword_lists.accessible_by(current_ability).order('name').includes(:catchwords)
-	        @obj_lists = @company.objection_lists.accessible_by(current_ability).order('name').includes(:objections)
+            @lists = @company.lists.accessible_by(current_ability).order('name').includes(:list_entries)
         end
     end
 end

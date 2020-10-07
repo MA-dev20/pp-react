@@ -1,26 +1,4 @@
 module GamesHelper
-  def build_catchwords(game, params)
-	@game = game
-	@wl = game.catchword_list
-	@wl.catchwords.clear if !@wl.nil?
-	@wl = CatchwordList.create(game_id: @game.id) if @wl.nil?
-	params.each do |p|
-	  @temp = CatchwordList.find(p)
-	  @wl.catchwords << @temp.catchwords
-	end
-  end
-
-  def build_objections(game, params)
-	@game = game
-	@ol = @game.objection_list
-	@ol.objections.clear if !@ol.nil?
-	@ol = ObjectionList.create(game_id: @game.id) if @ol.nil?
-	params.each do |p|
-	  @temp = ObjectionList.find(p)
-	  @ol.objections << @temp.objections
-	end
-  end
-
   def generate_qr(text)
     qrcode = RQRCode::QRCode.new( text, :size => 5 )
 	html = qrcode.as_html

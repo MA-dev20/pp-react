@@ -86,9 +86,9 @@
 				<div class="title">Text</div>
 				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen.</div>
 				<div class="form-group fields">
-					<% if (@task.title != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list.catchwords.count == 0)) %>
+					<% if (@task.title != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list&.valide && @task.catchword_list.list_entries.count == 0)) %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
-					<% elsif (@task.task_type != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list.catchwords.count == 0)) %>
+					<% elsif (@task.task_type != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list&.valide && @task.catchword_list.list_entries.count == 0)) %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
 					<% else %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name' %>
@@ -98,7 +98,7 @@
 					</div>
 					<div class="cw custom-select cw-dropdown" onclick="openList('catchword')">Liste auswählen
 						<div class="sub-cs" id="cw-options">
-							<% @cw_lists.each do |list| %>
+							<% @lists.each do |list| %>
 							<!-- <div class="option" onclick="handleClick('catchword', '<%= list.id %>')"> -->
 							<div class="option" onclick="sendListToServer('cw', '<%= list.id %>')">
 								<span class="basket-name vw"><%= list.name %></span>
@@ -108,47 +108,28 @@
 					</div>
 				</div>
 				<div class="words-list cw-list">
-					<% if @task.catchword_list.present? %>
-					<% if @task.catchword_list.catchwords.count != @task.catchword_list.catchwords.count %>
-					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != @task.catchword_list.catchwords.count %> -->
-						<% catchword_list = [] %>
-						<% @task.catchword_list.catchwords.each do |word| %>
-							<% if cannot? :read, word %>
-								<% @entry = {list: word.catchword_lists.where.not(name: 'task_list').first.id, name: word.catchword_lists.where.not(name: 'task_list').first.name} %>
-								<% if !catchword_list.include?(@entry) %>
-									<% catchword_list << @entry %>
-								<% end %>
+					<% if @task.catchword_list %>
+						<% if @task.catchword_list.list %>
+							<div class="title list-title">Listen</div>
+							<div class="words-wrapper">
+								<div class="word"><%= @task.catchword_list.list.name %></div>
+								<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: @task.catchword_list.list_id, type: 'catchword') %>" data-method="delete">
+								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+								</a>
+							</div>
+						<% end %>
+						<% if @task.catchword_list.list_entries.count != 0 %>
+							<div class="title list-title">Text</div>
+							<% @task.catchword_list.list_entries.each do |entry| %>
+								<div class="words-wrapper">
+									<div class="word"><%= entry.name %></div>
+										<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: entry.id, type: 'catchword') %>" data-method="delete">
+											<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+										</a>
+								</div>
+								<div class="hr-line"></div>
 							<% end %>
 						<% end %>
-						<div class="title list-title">Listen</div>
-						<% if catchword_list.present? %>
-						<% catchword_list.each do |list| %>
-						<div class="words-wrapper">
-							<div class="word">
-								<%= list[:name] %>
-							</div>
-							<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: list[:list], type: 'catchword') %>" data-method="delete">
-								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
-							</a>
-						</div>
-						<% end %>
-						<% end %>
-					<% end %>
-					<!-- <%# if @task.catchword_list.catchwords.accessible_by(current_ability).count != 0 %> -->
-					<% if @task.catchword_list.catchwords.count != 0 %>					
-					<div class="title list-title">Text</div>
-					<!-- <%# @task.catchword_list.catchwords.accessible_by(current_ability).each do |cw| %> -->
-					<% @task.catchword_list.catchwords.each do |cw| %>
-					<div class="words-wrapper">
-						<div class="word"><%= cw.name %></div>
-						<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword'), method: :delete, class: 'far fa-trash-alt remove' %>
-						<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: cw.id, type: 'catchword') %>" data-method="delete">
-							<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
-						</a>
-					</div>
-					<div class="hr-line"></div>
-					<% end %>
-					<% end %>
 					<% end %>
 				</div>
 				<script>
@@ -458,7 +439,7 @@
 			</div>
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reaktionen & Einwände
 				<div class="sub-cs" id="ol-options">
-					<% @ol_list.each do |list| %>
+					<% @lists.each do |list| %>
 					<!-- <div class="option" onclick="sendList('objection', '<%= list.id %>')"> -->
 					<div class="option" onclick="sendListToServer('objection', '<%= list.id %>')">
 						<span class="basker-name vw"><%= list.name %></span>
@@ -469,47 +450,31 @@
 		</div>
 		<div class="words-list ow-list">
 			<% if @task.objection_list.present? %>
-			<% if @task.objection_list.objections.accessible_by(current_ability).count != @task.objection_list.objections.count %>
-				<% objection_list = [] %>
-				<% @task.objection_list.objections.each do |word| %>
-					<% if cannot? :read, word %>
-						<% @entry = {list: word.objection_lists.first.id, name: word.objection_lists.first.name} %>
-						<% if !objection_list.include?(@entry) %>
-							<% objection_list << @entry %>
-						<% end %>
+				<% if @task.objection_list.list %>
+					<div class="title list-title">Listen</div>
+					<div class="words-wrapper">
+						<div class="word"><%= @task.objection_list.list.name %></div>
+						<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: @task.objection_list.list, type: 'objection') %>" data-method="delete">
+							<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+						</a>
+					</div>
+				<% end %>
+				<% if @task.objection_list.list_entries.count != 0 %>
+					<div class="title list-title">Reaktionen</div>
+					<% @task.objection_list.list_entries.each do |entry| %>
+						<div class="hr-line"></div>
+						<div class="words-wrapper">
+							<div class="word"><%= entry.name %></div>
+							<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: entry.id, type: 'objection') %>" data-method="delete">
+								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+							</a>
+						</div>
 					<% end %>
 				<% end %>
-				<div class="title list-title">Listen</div>
-				<% objection_list.each do |list| %>
-				<div class="words-wrapper">
-					<div class="word">
-						<%= list[:name] %>
-					</div>
-					<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: list[:list], type: 'objection') %>" data-method="delete">
-						<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
-					</a>
-				</div>
-				<% end %>
-			<% end %>
-			<div class="title list-title">Reaktionen</div>
-			<% @task.objection_list.objections.accessible_by(current_ability).each do |ow| %>
-			<div class="hr-line"></div>
-			<div class="words-wrapper">
-				<div class="word"><%= ow.name %></div>
-				<!-- <a class="fas fa-trash remove"></a> -->
-				<%#= link_to '', delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection'), method: :delete, class: 'far fa-trash-alt remove' %>
-				<a href="<%= delete_task_words_path(@pitch, task_id: @task.id, word_id: ow.id, type: 'objection') %>" data-method="delete">
-					<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
-				</a>
-			</div>
-			<% end %>
 			<% end %>
 		</div>
 		<script>
-			var ow_count = '<%= @task.objection_list&.objections&.count %>'
-			if (ow_count !== '' && (Number(ow_count) > 3)) {
-				new PerfectScrollbar('.ow-list');
-			}
+			new PerfectScrollbar('.ow-list');
 		</script>
 		<% end %>
 	</div>
@@ -1445,7 +1410,7 @@
 		if ($('.catchword-heading .media-options .active span').text().toLowerCase() === 'text') {
 			is_media_present = <%= @task.task_medium.present? %>
 		} else {
-			is_media_present = <%= @task.catchword_list&.catchwords&.present? || @task.task_medium.present? %>
+			is_media_present = <%= @task.catchword_list&.list_entries&.present? || @task.task_medium.present? %>
 		}
 		return is_media_present
 	}

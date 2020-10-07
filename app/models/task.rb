@@ -29,10 +29,10 @@ class Task < ApplicationRecord
 		if self.task_type == 'slide' && self.task_medium && self.task_medium.valide
 			self.update(valide: true) if !self.valide
 		elsif self.title.present? && self.title != ''
-			if self.task_type == 'catchword' && self.catchword_list&.catchwords.present?
+			if self.task_type == 'catchword' && self.catchword_list && self.catchword_list.valide
 				self.update(valide: true) if !self.valide
 			elsif self.task_type == ''
-				if self.catchword_list&.catchwords.present?
+				if self.catchword_list && self.catchword_list.valide
 					self.update(valide: true, task_type: 'catchword')
 				elsif self.task_medium && self.task_medium.valide
 					self.update(valide: true, task_type: self.task_medium.media_type)
@@ -46,6 +46,7 @@ class Task < ApplicationRecord
 		  self.update(valide: false) if self.valide
 	  end
 	end
+
     private
 
     def format_json_values value

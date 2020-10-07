@@ -3,7 +3,7 @@ class GameTurn < ApplicationRecord
   belongs_to :team, required: false
   belongs_to :user
   belongs_to :task, required: false
-  belongs_to :catchword, required: false
+  belongs_to :list_entry, required: false
   has_many :ratings, dependent: :destroy
   has_many :own_ratings, dependent: :destroy
   has_many :game_turn_ratings, dependent: :destroy

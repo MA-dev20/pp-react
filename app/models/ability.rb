@@ -52,20 +52,14 @@ class Ability
           can :read, Task, :user_id => user.id
           can :read, ContentFolder, :user_id => user.id
           can :read, TaskMedium, :user_id => user.id
-          can :read, CatchwordList, :user_id => user.id
-          can :read, ObjectionList, :user_id => user.id
+          can :read, List, :user_id => user.id
           can :create, Game
           can :read, Game, :user_id => user.id
           can :update, Game, :user_id => user.id
           can :destroy, Game, :user_id => user.id
-          user.catchword_lists.each do |list|
-            list.catchwords.each do |entry|
-              can :read, Catchword, :id => entry.id
-            end
-          end
-          user.objection_lists.each do |list|
-            list.objections.each do |entry|
-              can :read, Objection, :id => entry.id
+          user.lists.each do |list|
+            list.list_entries.each do |entry|
+              can :read, ListEntry, :id => entry.id
             end
           end
         end
@@ -78,10 +72,8 @@ class Ability
           can :destroy, ContentFolder, :user_id => user.id
           can :update, TaskMedium, :user_id => user.id
           can :destroy, TaskMedium, :user_id => user.id
-          can :update, CatchwordList, :user_id => user.id
-          can :destroy, CatchwordList, :user_id => user.id
-          can :update, ObjectionList, :user_id => user.id
-          can :destroy, ObjectionList, :user_id => user.id
+          can :update, List, :user_id => user.id
+          can :destroy, List, :user_id => user.id
         end
         can :read, PitchVideo, :user_id => user.id
         can :read, PitchVideo, :user_id => user.id
@@ -93,31 +85,19 @@ class Ability
         can :read, Pitch, :available_for => 'global'
         can :read, ContentFolder, :available_for => 'global'
         can :read, TaskMedium, :available_for => 'global'
-        can :read, CatchwordList, :available_for => 'global'
-        can :read, ObjectionList, :available_for => 'global'
+        can :read, List, :available_for => 'global'
         can :read, Pitch, :available_for => 'global_hidden'
         can :read, ContentFolder, :available_for => 'global_hidden'
         can :read, TaskMedium, :available_for => 'global_hidden'
-        can :read, CatchwordList, :available_for => 'global_hidden'
-        can :read, ObjectionList, :available_for => 'global_hidden'
-        CatchwordList.where(available_for: 'global_hidden').each do |list|
-          list.catchwords.each do |entry|
-            cannot :read, Catchword, :id => entry.id
+        can :read, List, :available_for => 'global_hidden'
+        List.where(available_for: 'global_hidden').each do |list|
+          list.list_entries.each do |entry|
+            cannot :read, ListEntry, :id => entry.id
           end
         end
-        ObjectionList.where(available_for: 'global_hidden').each do |list|
-          list.objections.each do |entry|
-            cannot :read, Objection, :id => entry.id
-          end
-        end
-        CatchwordList.where(available_for: 'global').each do |list|
-          list.catchwords.each do |entry|
-            can :read, Catchword, :id => entry.id
-          end
-        end
-        ObjectionList.where(available_for: 'global').each do |list|
-          list.objections.each do |entry|
-            can :read, Objection, :id => entry.id
+        List.where(available_for: 'global').each do |list|
+          list.list_entries.each do |entry|
+            can :read, ListEntry, :id => entry.id
           end
         end
 
@@ -126,13 +106,9 @@ class Ability
         end
         SharedContent.where(user: user).each do |sc|
           can :read, TaskMedium, :id => sc.task_medium_id
-          can :read, CatchwordList, :id => sc.catchword_list_id
-          can :read, ObjectionList, :id => sc.objection_list_id
-          sc.catchword_list.catchwords.each do |entry|
-            can :read, Catchword, :id => entry.id
-          end
-          sc.objection_list.objections.each do |entry|
-            can :read, Objection, :id => entry.id
+          can :read, List, :id => sc.list_id
+          sc.list.list_entries.each do |entry|
+            can :read, ListEntry, :id => entry.id
           end
         end
         SharedFolder.where(user: user).each do |sf|
@@ -149,16 +125,10 @@ class Ability
             can :read, Pitch, :team_id => team.id, :available_for => 'team'
             can :read, TaskMedium, :team_id => team.id, :available_for => 'team'
             can :read, ContentFolder, :team_id => team.id, :available_for => 'team'
-            can :read, CatchwordList, :team_id => team.id, :available_for => 'team'
-            can :read, ObjectionList, :team_id => team.id, :available_for => 'team'
-            CatchwordList.where(team: team, available_for: 'team').each do |list|
-              list.catchwords.each do |entry|
-                can :read, Catchword, :id => entry.id
-              end
-            end
-            ObjectionList.where(team: team, available_for: 'team').each do |list|
-              list.objections.each do |entry|
-                can :read, Objection, :id => entry.id
+            can :read, List, :team_id => team.id, :available_for => 'team'
+            List.where(team: team, available_for: 'team').each do |list|
+              list.list_entries.each do |entry|
+                can :read, ListEntry, :id => entry.id
               end
             end
           end
@@ -169,10 +139,8 @@ class Ability
             can :destroy, ContentFolder, :team_id => team.id, :available_for => 'team'
             can :update, TaskMedium, :team_id => team.id, :available_for => 'team'
             can :destroy, TaskMedium, :team_id => team.id, :available_for => 'team'
-            can :update, CatchwordList, :team_id => team.id, :available_for => 'team'
-            can :destroy, ObjectionList, :team_id => team.id, :available_for => 'team'
-            can :update, CatchwordList, :team_id => team.id, :available_for => 'team'
-            can :destroy, ObjectionList, :team_id => team.id, :available_for => 'team'
+            can :update, List, :team_id => team.id, :available_for => 'team'
+            can :destroy, List, :team_id => team.id, :available_for => 'team'
           end
         end
 
@@ -196,16 +164,10 @@ class Ability
               can :read, Pitch, :department_id => du.department_id, :available_for => 'department'
               can :read, TaskMedium, :department_id => du.department_id, :available_for => 'department'
               can :read, ContentFolder, :department_id => du.department_id, :available_for => 'department'
-              can :read, CatchwordList, :department_id => du.department_id, :available_for => 'department'
-              can :read, ObjectionList, :department_id => du.department_id, :available_for => 'department'
-              CatchwordList.where(department: du.department, available_for: 'department').each do |list|
-                list.catchwords.each do |entry|
-                  can :read, Catchword, :id => entry.id
-                end
-              end
-              ObjectionList.where(department: du.department, available_for: 'department').each do |list|
-                list.objections.each do |entry|
-                  can :read, Objection, :id => entry.id
+              can :read, List, :department_id => du.department_id, :available_for => 'department'
+              List.where(department: du.department, available_for: 'department').each do |list|
+                list.list_entries.each do |entry|
+                  can :read, ListEntry, :id => entry.id
                 end
               end
             end
@@ -217,10 +179,8 @@ class Ability
               can :destroy, ContentFolder, :department_id => du.department_id, :available_for => 'department'
               can :update, TaskMedium, :department_id => du.department_id, :available_for => 'department'
               can :destroy, TaskMedium, :department_id => du.department_id, :available_for => 'department'
-              can :update, CatchwordList, :department_id => du.department_id, :available_for => 'department'
-              can :destroy, ObjectionList, :department_id => du.department_id, :available_for => 'department'
-              can :update, CatchwordList, :department_id => du.department_id, :available_for => 'department'
-              can :destroy, ObjectionList, :department_id => du.department_id, :available_for => 'department'
+              can :update, List, :department_id => du.department_id, :available_for => 'department'
+              can :destroy, List, :department_id => du.department_id, :available_for => 'department'
             end
           end
         end
@@ -243,16 +203,10 @@ class Ability
           can :read, Pitch, :company_id => cu.company_id, :available_for => 'company'
           can :read, TaskMedium, :company_id => cu.company_id, :available_for => 'company'
           can :read, ContentFolder, :company_id => cu.company_id, :available_for => 'company'
-          can :read, CatchwordList, :company_id => cu.company_id, :available_for => 'company'
-          can :read, ObjectionList, :company_id => cu.company_id, :available_for => 'company'
-          CatchwordList.where(company: cu.company, available_for: 'company').each do |list|
-            list.catchwords.each do |entry|
-              can :read, Catchword, :id => entry.id
-            end
-          end
-          ObjectionList.where(company: cu.company, available_for: 'company').each do |list|
-            list.objections.each do |entry|
-              can :read, Objection, :id => entry.id
+          can :read, List, :company_id => cu.company_id, :available_for => 'company'
+          List.where(company: cu.company, available_for: 'company').each do |list|
+            list.list_entries.each do |entry|
+              can :read, ListEntry, :id => entry.id
             end
           end
         end
