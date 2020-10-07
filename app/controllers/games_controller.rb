@@ -40,7 +40,7 @@ class GamesController < ApplicationController
   end
 
   def email
-	  @user = User.find_by(email: params[:user][:email])
+	  @user = User.find_by(email: params[:user][:email].downcase)
     @game_user = @game.game_users.find_by(user: @user) if @user
     @company = @game.company
     @admin_role = @company.company_users.find_by(user: @game.user).role
@@ -78,10 +78,10 @@ class GamesController < ApplicationController
         redirect_to gm_game_path
         return
       elsif @user
-        redirect_to gm_game_path(email: params[:user][:email])
+        redirect_to gm_game_path(email: params[:user][:email].downcase)
         return
       else
-        @user = User.new(email: params[:user][:email])
+        @user = User.new(email: params[:user][:email].downcase)
         @team = @game.team
         if @user.save(validate: false)
           this_cuser = @company.company_users.find_by(user_id: @user.id)
@@ -99,7 +99,7 @@ class GamesController < ApplicationController
             end
           end
           @team.users << @user if @team
-          redirect_to gm_game_path(email: params[:user][:email])
+          redirect_to gm_game_path(email: params[:user][:email].downcase)
           return
         else
           flash[:alert] = 'Konnte Nutzer nicht anlegen!'
@@ -150,7 +150,7 @@ class GamesController < ApplicationController
         redirect_to gm_new_name_path(@user)
         return
       else
-        @user = User.new(email: params[:user][:email])
+        @user = User.new(email: params[:user][:email].downcase)
         @team = @game.team
         if @user.save(validate: false)
           @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
@@ -208,7 +208,7 @@ class GamesController < ApplicationController
         if @user.avatar?
           ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
         else
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id, user_id: @user.id
+          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
         end
         redirect_to gm_game_path
     	  return

@@ -395,7 +395,7 @@
 			<div class="content">
 				<div class="heading">Nutzer</div>
 				<div class="subheading">den Nutzer gibt es noch nicht. Wie heißt er?</div>
-				<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email])), html: {id: 'name_form'}) do |f| %>
+				<%= form_for(:user, url: name_game_path(@game, User.find_by(email: params[:email].downcase)), html: {id: 'name_form'}) do |f| %>
 					<%= f.hidden_field :site, value: 'admin_game_mobile' %>
 					<div class="form-group two-line" id="group_fname">
 						<%= f.text_field :fname, placeholder: 'Vorname', class: 'form-field', onfocus: "hideDots()", onblur: "showDots()", required: true %>

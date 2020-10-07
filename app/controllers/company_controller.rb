@@ -4,7 +4,7 @@ class CompanyController < ApplicationController
   def register
 	if Company.find_by(name: company_params[:name]).nil?
 	  @company = Company.new(company_params)
-    @user = User.find_by(email: user_params[:email])
+    @user = User.find_by(email: user_params[:email].downcase)
     @user = User.new(user_params) if !@user
 	  if @company.save
 	  begin
