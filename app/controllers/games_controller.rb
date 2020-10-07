@@ -78,10 +78,10 @@ class GamesController < ApplicationController
         redirect_to gm_game_path
         return
       elsif @user
-        redirect_to gm_game_path(email: params[:user][:email])
+        redirect_to gm_game_path(email: params[:user][:email].downcase)
         return
       else
-        @user = User.new(email: params[:user][:email])
+        @user = User.new(email: params[:user][:email].downcase)
         @team = @game.team
         if @user.save(validate: false)
           this_cuser = @company.company_users.find_by(user_id: @user.id)
@@ -99,7 +99,7 @@ class GamesController < ApplicationController
             end
           end
           @team.users << @user if @team
-          redirect_to gm_game_path(email: params[:user][:email])
+          redirect_to gm_game_path(email: params[:user][:email].downcase)
           return
         else
           flash[:alert] = 'Konnte Nutzer nicht anlegen!'
@@ -150,7 +150,7 @@ class GamesController < ApplicationController
         redirect_to gm_new_name_path(@user)
         return
       else
-        @user = User.new(email: params[:user][:email])
+        @user = User.new(email: params[:user][:email].downcase)
         @team = @game.team
         if @user.save(validate: false)
           @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
