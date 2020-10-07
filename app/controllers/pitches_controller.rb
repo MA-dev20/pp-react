@@ -464,25 +464,6 @@ class PitchesController < ApplicationController
   		end
   		end
   	  end
-  	elsif params[:type] == 'rating'
-  	  if @task.rating_list
-  		@list = @task.rating_list
-  	  else
-  		@list = RatingList.create(company: @task.company, user: @task.user, name: "task_list")
-  	    @task.update(rating_list_id: @list.id)
-  	  end
-  	  if params[:list][:name] && params[:list][:name] != ''
-  		if @list.rating_criteria.count < 4
-  		@entry = RatingCriterium.find_by(name: params[:list][:name])
-  		@entry = RatingCriterium.create(company: @task.company, user: @task.user, name: params[:list][:name]) if @entry.nil?
-  		@list.rating_criteria << @entry if @list.rating_criteria.find_by(name: params[:list][:name]).nil?
-  		end
-  	  elsif params[:list][:list_id]
-  		@rl = RatingList.find(params[:list][:list_id])
-  		@rl.rating_criteriaeach do |entry|
-  		@list.rating_criteria << entry if @list.rating_criteria.find_by(name: entry.name).nil?
-  		end
-  	  end
   	end
   	redirect_to dashboard_edit_pitch_path(@pitch, task_id: @task.id)
   end

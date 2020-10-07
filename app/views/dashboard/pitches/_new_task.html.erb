@@ -439,8 +439,7 @@
 			</div>
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reaktionen & Einwände
 				<div class="sub-cs" id="ol-options">
-					<% @lists.each do |list| %>
-					<!-- <div class="option" onclick="sendList('objection', '<%= list.id %>')"> -->
+					<% @lists.where.not(available_for: 'global_hidden').each do |list| %>
 					<div class="option" onclick="sendListToServer('objection', '<%= list.id %>')">
 						<span class="basker-name vw"><%= list.name %></span>
 					</div>
