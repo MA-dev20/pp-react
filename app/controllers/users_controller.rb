@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :check_user, except: [:edit_avatar]
   before_action :set_user, only: [:set_role, :edit, :edit_ajax, :edit_avatar, :destroy, :send_password]
-  before_action :set_company, only: [:set_role, :activate_users, :create]
+  before_action :set_company, only: [:set_role, :activate_users, :activate_all_users, :create]
   def create
     @user = User.find_by(email: user_params[:email])
     @team = Team.find_by(id: params[:team]) if params[:team]
@@ -90,6 +90,13 @@ class UsersController < ApplicationController
       else
         cu.destroy
       end
+    end
+    render json: {success: true}
+    return
+  end
+  def activate_all_users
+    @company.company_users.where(role: 'inactive').each do |cu|
+      cu.update(role: 'user')
     end
     render json: {success: true}
     return

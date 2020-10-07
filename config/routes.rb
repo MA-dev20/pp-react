@@ -198,6 +198,7 @@ Rails.application.routes.draw do
   get 'users/:user_id/send_password', to: 'users#send_password', as: 'user_send_password'
   post '/users/new_password', to: 'users#new_password', as: 'user_new_password'
   post 'company/:company_id/users/activate_users', to: 'users#activate_users', as: 'activate_users'
+  post 'company/:company_id/users/activate_all_users', to: 'users#activate_all_users', as: 'activate_all_users'
   put 'users/:user_id/avatar', to: 'users#edit_avatar', as: "update_avatar_user"
   get 'users/:user_id/destroy', to: 'users#destroy', as: 'destroy_user'
   put 'company/:company_id/users/:user_id/set_role', to: 'users#set_role'
