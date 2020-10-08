@@ -16,16 +16,16 @@
 <% end %>
 <div class="bottom big">
 	<% if @admin == @game.user %>
-	<%= link_to 'Aufgabe wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du den Pitch wiederholen möchtest?"} %>
+	<%= link_to 'Aufgabe wiederholen', gm_repeat_turn_path, class: 'btn inverted', data: {confirm: "Bist du sicher, dass du die Aufgabe wiederholen möchtest?"} %>
 	<% if @pitch.task_orders.find_by(order: @game.current_task + 1) %>
 	<%= link_to 'Feedbackrunde beenden', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
 	<% else %>
 	<% if @game.game_turn_ratings.count != 0 && (@game.show_ratings == 'one' || @game.show_ratings == 'all') %>
 		<%= link_to 'Zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
 	<% else %>
-		<%= link_to 'Pitch wiederholen', gm_set_state_path('', state: 'repeat'), class: 'btn'%>
+		<%= link_to 'Pitchrunde wiederholen', gm_set_state_path('', state: 'repeat'), class: 'btn', data: {confirm: "Bist du sicher, dass du diese Pitchrunde beenden und neu starten möchtest?"}%>
 	<% end %>
-	<%= link_to 'Pitch beenden!', gm_set_state_path(state: 'ended'), class: 'btn'%>
+	<%= link_to 'Runde beenden ohne Bestenliste!', gm_set_state_path(state: 'ended'), class: 'btn'%>
 	<% end %>
 	<% end %>
 </div>

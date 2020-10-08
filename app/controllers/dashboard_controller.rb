@@ -480,6 +480,8 @@ class DashboardController < ApplicationController
 	@lists = @company.lists.accessible_by(current_ability)
   @lists += List.where(available_for: 'global').where.not(company: @company)
   @lists += List.where(available_for: 'global_hidden').where.not(company: @company)
+  @listsWOh = @company.lists.accessible_by(current_ability)
+  @listsWOh += List.where(available_for: 'global').where.not(company: @company)
 	@folders = @admin.content_folders.where(content_folder: nil)
     @files = @admin.task_media.where(content_folder: nil)
     if params[:folder_id]
@@ -557,6 +559,10 @@ class DashboardController < ApplicationController
     @task_type = @task.task_type
     @admin = current_user
     @lists = @company.lists.accessible_by(current_ability)
+    @lists += List.where(available_for: 'global').where.not(company: @company)
+    @lists += List.where(available_for: 'global_hidden').where.not(company: @company)
+    @listWOh = @company.lists.accessible_by(current_ability)
+    @listWOh += List.where(available_for: 'global').where.not(company: @company)
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
     @files = ''
     @type = ''

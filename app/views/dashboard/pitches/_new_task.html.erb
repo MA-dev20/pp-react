@@ -86,12 +86,10 @@
 				<div class="title">Text</div>
 				<div class="subline">Text hier eingeben oder vorhandene Textliste auswählen.</div>
 				<div class="form-group fields">
-					<% if (@task.title != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list&.valide && @task.catchword_list.list_entries.count == 0)) %>
-					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
-					<% elsif (@task.task_type != nil) && (@task.catchword_list.nil? || (@task.catchword_list && @task.catchword_list&.valide && @task.catchword_list.list_entries.count == 0)) %>
-					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
-					<% else %>
+					<% if @task.catchword_list && @task.catchword_list.valide %>
 					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name' %>
+					<% else %>
+					<%= cw.text_field :name, placeholder: 'Text hier eingeben', class: 'form-field cw-list-name red' %>
 					<% end %>
 					<div class="add-cw">
 						<%= inline_svg_tag "dash/new_icons/plus_button.svg", class: 'add-cs-img add-cw-img cw-image plus-cust-icon' %>
@@ -110,12 +108,14 @@
 				<div class="words-list cw-list">
 					<% if @task.catchword_list %>
 						<% if @task.catchword_list.list %>
+							<div class="" id="list">
 							<div class="title list-title">Listen</div>
 							<div class="words-wrapper">
 								<div class="word"><%= @task.catchword_list.list.name %></div>
 								<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: @task.catchword_list.list_id, type: 'catchword') %>" data-method="delete">
 								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
 								</a>
+							</div>
 							</div>
 						<% end %>
 						<% if @task.catchword_list.list_entries.count != 0 %>
@@ -439,7 +439,7 @@
 			</div>
 			<div class="ol ol-text-field custom-select" onclick="openList('objection')">Reaktionen & Einwände
 				<div class="sub-cs" id="ol-options">
-					<% @lists.where.not(available_for: 'global_hidden').each do |list| %>
+					<% @listsWOh.each do |list| %>
 					<div class="option" onclick="sendListToServer('objection', '<%= list.id %>')">
 						<span class="basker-name vw"><%= list.name %></span>
 					</div>
@@ -450,12 +450,14 @@
 		<div class="words-list ow-list">
 			<% if @task.objection_list.present? %>
 				<% if @task.objection_list.list %>
-					<div class="title list-title">Listen</div>
-					<div class="words-wrapper">
-						<div class="word"><%= @task.objection_list.list.name %></div>
-						<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: @task.objection_list.list, type: 'objection') %>" data-method="delete">
-							<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
-						</a>
+					<div class="" id="list">
+						<div class="title list-title">Listen</div>
+						<div class="words-wrapper">
+							<div class="word"><%= @task.objection_list.list.name %></div>
+							<a href="<%= delete_task_list_path(@pitch, task_id: @task.id, list_id: @task.objection_list.list, type: 'objection') %>" data-method="delete">
+								<%= image_tag 'dash/new_icons/trash.svg', class: 'remove trash-icon' %>
+							</a>
+						</div>
 					</div>
 				<% end %>
 				<% if @task.objection_list.list_entries.count != 0 %>
@@ -717,67 +719,63 @@
 				word: word
             },
             success: function (res) {
-				if (res.obj_type) {
-					if (res.obj_list) {
-						objections = res.objections[0]
-						objections.map(obj => {
-							var word_wrapper = '<div class="words-wrapper">'
-							word_wrapper += `<div class="word">${obj.name}</div>`
-							word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${obj.id}" data-method="delete">`
-							word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-							word_wrapper += '</a>'
-							word_wrapper += '</div>'
-							$('.ow-list').append('<div class="hr-line"></div>');
-							$('.ow-list').append(word_wrapper);
-							$('.list-name-cls').val('');
-						})
-					} else {
-						var word_wrapper = '<div class="words-wrapper">'
-						word_wrapper += `<div class="word">${res.word}</div>`
-						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.word_id}" data-method="delete">`
-						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-						word_wrapper += '</a>'
-						word_wrapper += '</div>'
+					if (res.type == 'objection_list') {
+						var word_wrapper = '<div class="words-wrapper">';
+						word_wrapper += `<div class="word">${res.list}</div>`;
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.list_id}" data-method="delete">`;
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>';
+						word_wrapper += '</a>';
+						word_wrapper += '</div>';
+						if ($('.ow-list #list').length > 0) {
+							var listHtml = '<div class="title list-title">Listen</div>';
+							listHtml += word_wrapper;
+							$('.ow-list #list').html(listHtml);
+						} else {
+							var listHtml = '<div id="list"><div class="title list-title">Listen</div>';
+							listHtml += word_wrapper;
+							listHtml += '</div>';
+							$('.ow-list').prepend(listHtml);
+						}
+					} else if (res.type == 'objection') {
+						var word_wrapper = '<div class="words-wrapper">';
+						word_wrapper += `<div class="word">${res.entry}</div>`;
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=objection&amp;word_id=${res.entry_id}" data-method="delete">`;
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>';
+						word_wrapper += '</a>';
+						word_wrapper += '</div>';
 						$('.ow-list').append('<div class="hr-line"></div>');
 						$('.ow-list').append(word_wrapper);
 						$('.list-name-cls').val('');
-					}
-
-					if ($('.ow-list .words-wrapper').length > 3) {
-						new PerfectScrollbar('.ow-list');
-					}
-				} else {
-					if (res.cw_list) {
-						catchwords = res.catchwords[0]
-						catchwords.map(cw => {
-							var word_wrapper = '<div class="words-wrapper">'
-							word_wrapper += `<div class="word">${cw.name}</div>`
-							word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${cw.id}" data-method="delete">`
-							word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-							word_wrapper += '</a>'
-							word_wrapper += '</div>'
-							$('.cw-list').append(word_wrapper);
-							$('.cw-list').append('<div class="hr-line"></div>');
-							$('.cw-list-name').val('');
-						})
-					} else {
-						var word_wrapper = '<div class="words-wrapper">'
-						word_wrapper += `<div class="word">${res.word}</div>`
-						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${res.word_id}" data-method="delete">`
-						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>'
-						word_wrapper += '</a>'
-						word_wrapper += '</div>'
+					} else if (res.type == 'cw_list') {
+						var word_wrapper = '<div class="words-wrapper">';
+						word_wrapper += `<div class="word" id="list">${res.list}</div>`;
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${res.list_id}" data-method="delete">`;
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>';
+						word_wrapper += '</a>';
+						word_wrapper += '</div>';
+						if ($('.cw-list #list').length > 0) {
+							var listHtml = '<div class="title list-title">Listen</div>';
+							listHtml += word_wrapper;
+							$('.cw-list #list').html(listHtml);
+						} else {
+							var listHtml = '<div id="list"><div class="title list-title">Listen</div>';
+							listHtml += word_wrapper;
+							listHtml += '</div>';
+							$('.cw-list').prepend(listHtml);
+						}
+					} else if (res.type == 'cw') {
+						var word_wrapper = '<div class="words-wrapper">';
+						word_wrapper += `<div class="word">${res.entry}</div>`;
+						word_wrapper += `<a href="/pitches/${res.pitch_id}/task/${res.task_id}/words?type=catchword&amp;word_id=${res.entry_id}" data-method="delete">`;
+						word_wrapper += '<%= image_tag "dash/new_icons/trash.svg", class: "remove trash-icon" %>';
+						word_wrapper += '</a>';
+						word_wrapper += '</div>';
 						$('.cw-list').append(word_wrapper);
 						$('.cw-list').append('<div class="hr-line"></div>');
 						$('.cw-list-name').val('');
 					}
-
-					if ($('.cw-list .words-wrapper').length > 3) {
-						new PerfectScrollbar('.cw-list');
-					}
-				}
-            }
-        })
+        },
+      })
 	}
 
 	$( ".list-name-cls" ).keydown(function() {
