@@ -561,8 +561,8 @@ class DashboardController < ApplicationController
     @lists = @company.lists.accessible_by(current_ability)
     @lists += List.where(available_for: 'global').where.not(company: @company)
     @lists += List.where(available_for: 'global_hidden').where.not(company: @company)
-    @listWOh = @company.lists.accessible_by(current_ability)
-    @listWOh += List.where(available_for: 'global').where.not(company: @company)
+    @listsWOh = @company.lists.accessible_by(current_ability)
+    @listsWOh += List.where(available_for: 'global').where.not(company: @company)
     @folders = @company.content_folders.accessible_by(current_ability).where(content_folder: nil)
     @files = ''
     @type = ''
