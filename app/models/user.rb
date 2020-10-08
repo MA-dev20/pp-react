@@ -38,6 +38,8 @@ class User < ApplicationRecord
   has_many :pitch_videos
   has_many :comments
 
+  before_save { self.email.downcase! }
+
   before_destroy do
     self.content_folders.each do |folder|
       if folder.shared_folders.count != 0 || folder.available_for != 'user'

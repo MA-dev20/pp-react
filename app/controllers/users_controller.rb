@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:set_role, :edit, :edit_ajax, :edit_avatar, :destroy, :send_password]
   before_action :set_company, only: [:set_role, :activate_users, :activate_all_users, :create]
   def create
-    @user = User.find_by(email: user_params[:email])
+    @user = User.find_by(email: user_params[:email].downcase)
     @team = Team.find_by(id: params[:team]) if params[:team]
     @companyUser = @company.company_users.find_by(user: @user) if @user
     if @user
@@ -127,7 +127,7 @@ class UsersController < ApplicationController
   end
 
   def new_password
-	@user = User.find_by(email: params[:user][:email])
+	@user = User.find_by(email: params[:user][:email].downcase)
   end
 
   def edit_avatar
