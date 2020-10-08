@@ -217,10 +217,8 @@ class Ability
           can :destroy, ContentFolder, :company_id => cu.company_id, :available_for => 'company'
           can :update, TaskMedium, :company_id => cu.company_id, :available_for => 'company'
           can :destroy, TaskMedium, :company_id => cu.company_id, :available_for => 'company'
-          can :update, CatchwordList, :company_id => cu.company_id, :available_for => 'company'
-          can :destroy, ObjectionList, :company_id => cu.company_id, :available_for => 'company'
-          can :update, CatchwordList, :company_id => cu.company_id, :available_for => 'company'
-          can :destroy, ObjectionList, :company_id => cu.company_id, :available_for => 'company'
+          can :update, List, :company_id => cu.company_id, :available_for => 'company'
+          can :destroy, List, :company_id => cu.company_id, :available_for => 'company'
         end
       end
     end

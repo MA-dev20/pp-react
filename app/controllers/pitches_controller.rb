@@ -6,8 +6,11 @@ class PitchesController < ApplicationController
 		@pitch = Pitch.where(id: params[:pitch_id]).includes(:task_orders).first
 	  @admin = current_user
 	  @company = current_company
-	  @cw_lists = @company.catchword_lists.accessible_by(current_ability).where.not(name: 'task_list')
-	  @ol_list = @company.objection_lists.accessible_by(current_ability).where.not(name: 'task_list')
+	  @lists = @company.lists.accessible_by(current_ability)
+    @lists += List.where(available_for: 'global')
+    @lists += List.where(available_for: 'global_hidden')
+    @listsWOh = @company.lists.accessible_by(current_ability)
+    @listsWOh += List.where(available_for: 'global')
 	  @task_order = TaskOrder.find(params[:task_id])
 	  @order = params[:order].to_i
 	  @task_orders = @pitch.task_orders.select{|to| to.id != params[:task_id]}
@@ -383,14 +386,10 @@ class PitchesController < ApplicationController
 
       if params[:list_id].present?
         @list.update(list_id: params[:list_id])
-        render json: { task_id: @task.id, pitch_id: @pitch.id, word: @list.list.name, word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
-        return
       elsif (params["word"].present? && params["word"] != '')
         @entry = @company.list_entries.find_by(name: params["word"])
         @entry = @company.list_entries.create(user: current_user, name: params["word"]) if @entry.nil?
         @list.list_entries << @entry
-        render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["word"], word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
-        return
       end
 
   	else
@@ -410,12 +409,12 @@ class PitchesController < ApplicationController
   		end
   		@task.update(task_type: 'catchword', task_medium_id: nil)
       @task.update(valide: true) if @task.title && !@task.valide
-      if params["word"]
-        render json: { task_id: @task.id, pitch_id: @pitch.id, word: params["word"], word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
-      elsif params[:list_id]
-        render json: { task_id: @task.id, pitch_id: @pitch.id, word: @list.list.name, word_id: @entry&.id, obj_list: objections.present?, obj_type: params[:type] == 'objection', objections: objections, cw_list: catchwords.present?, catchwords: catchwords }
-      end
   	end
+    if params[:list_id].present?
+      render json: {type: params[:type] + '_list', task_id: @task.id, pitch_id: @pitch.id, list: @list.list.name, list_id: @list.list.id}
+    else
+      render json: {type: params[:type], task_id: @task.id, pitch_id: @pitch.id, entry: params["word"], entry_id: @entry&.id}
+    end
 
   end
 
@@ -462,25 +461,6 @@ class PitchesController < ApplicationController
   		if @list.list_entries.find_by(name: entry.name).nil?
   			@list.list_entries << entry
   		end
-  		end
-  	  end
-  	elsif params[:type] == 'rating'
-  	  if @task.rating_list
-  		@list = @task.rating_list
-  	  else
-  		@list = RatingList.create(company: @task.company, user: @task.user, name: "task_list")
-  	    @task.update(rating_list_id: @list.id)
-  	  end
-  	  if params[:list][:name] && params[:list][:name] != ''
-  		if @list.rating_criteria.count < 4
-  		@entry = RatingCriterium.find_by(name: params[:list][:name])
-  		@entry = RatingCriterium.create(company: @task.company, user: @task.user, name: params[:list][:name]) if @entry.nil?
-  		@list.rating_criteria << @entry if @list.rating_criteria.find_by(name: params[:list][:name]).nil?
-  		end
-  	  elsif params[:list][:list_id]
-  		@rl = RatingList.find(params[:list][:list_id])
-  		@rl.rating_criteriaeach do |entry|
-  		@list.rating_criteria << entry if @list.rating_criteria.find_by(name: entry.name).nil?
   		end
   	  end
   	end

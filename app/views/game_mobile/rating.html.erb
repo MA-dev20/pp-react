@@ -18,7 +18,7 @@
 			<% if @game.show_ratings == 'one' || @game.show_ratings == 'all' %>
 				<%= link_to 'Zur Bestenliste', gm_set_slide_path(@game.current_task + 1), class: 'btn'%>
 			<% end %>
-			<%= link_to 'Pitch beenden!', gm_set_state_path(state: 'ended'), class: 'btn'%>
+			<%= link_to 'Runde beenden ohne Bestenliste!', gm_set_state_path(state: 'ended'), class: 'btn'%>
 		<% end %>
 	<% end %>
 </div>

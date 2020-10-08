@@ -178,13 +178,19 @@
 		<div class="content">
 			<div class="heading">Einwände</div>
   		<div class="subheading">Überasche den Nutzer mit einem Einwand!</div>
-				<% @objections = @task.objection_list.list_entries %>
-				<% @objections += @task.objection_list.list&.list_entries %>
-				<% @objections.each do |o| %>
+				<% if @task.objection_list.list %>
+				<% @task.objection_list.list.list_entries.each do |o| %>
+					<div class="user" onclick="sendObjection('<%= o.name %>')">
+						<div class="objection"><%= o.name %></div>
+						<svg class="next_objection" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
+					</div>
+				<% end %>
+				<% @task.objection_list.list_entries.each do |o| %>
 				<div class="user" onclick="sendObjection('<%= o.name %>')">
 					<div class="objection"><%= o.name %></div>
 					<svg class="next_objection" viewbox="0 0 144 144"><use xlink:href="#nextIcon" />
 				</div>
+				<% end %>
 				<% end %>
 		</div>
 	</section>
