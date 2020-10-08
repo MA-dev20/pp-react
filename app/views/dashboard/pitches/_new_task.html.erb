@@ -763,6 +763,9 @@
 							listHtml += '</div>';
 							$('.cw-list').prepend(listHtml);
 						}
+						if( $('.cw-list-name').hasClass('red') ) {
+							$('.cw-list-name').removeClass('red');
+						}
 					} else if (res.type == 'cw') {
 						var word_wrapper = '<div class="words-wrapper">';
 						word_wrapper += `<div class="word">${res.entry}</div>`;
@@ -773,6 +776,9 @@
 						$('.cw-list').append(word_wrapper);
 						$('.cw-list').append('<div class="hr-line"></div>');
 						$('.cw-list-name').val('');
+						if( $('.cw-list-name').hasClass('red') ) {
+							$('.cw-list-name').removeClass('red');
+						}
 					}
         },
       })
