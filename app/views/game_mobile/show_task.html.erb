@@ -15,7 +15,8 @@
 		?
 	</div>
 </div>
-<div class="bottom">
+<div class="bottom big">
+  <%= link_to 'Zum Voting', gm_set_state_path(state: 'choose'), class: 'btn inverted' %>
   <%= link_to 'Wähle User', gm_game_path(this_task: @pitch.task_orders.find_by(order: @game.current_task).task, show_task: true), class: 'btn' %>
 </div>
 <% else %>
