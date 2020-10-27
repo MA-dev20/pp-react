@@ -93,6 +93,7 @@
 	var inputAvatar = document.getElementById('teaser_logo');
 	var image = document.getElementById('logo_image');
   var avatar = document.getElementById('logo');
+  var cropper = new Cropper(image, {aspectRatio: 1,});
 
 	inputAvatar.addEventListener('change', function(e) {
 		var files = e.target.files;
