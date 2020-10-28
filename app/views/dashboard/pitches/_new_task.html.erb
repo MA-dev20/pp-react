@@ -1135,6 +1135,7 @@
 
 	var inputAvatar = document.getElementById('task_medium_image');
 	var image = document.getElementById('media_image');
+	var cropper = null;
 	inputAvatar.addEventListener('change', function (e) {
 		var files = e.target.files;
 		var done = function (url) {

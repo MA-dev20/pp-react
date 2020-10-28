@@ -236,7 +236,7 @@
 	})(jQuery);
 	var inputAvatar = document.getElementById('user_avatar');
 	var image = document.getElementById('user_image');
-	var cropper;
+	var cropper = null;
 
 	inputAvatar.addEventListener('change', function(e) {
 		var files = e.target.files;

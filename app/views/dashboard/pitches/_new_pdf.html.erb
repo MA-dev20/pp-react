@@ -479,6 +479,7 @@
 
 	var pdfInputAvatar = document.getElementById('pdf_task_medium_image');
 	var pdfImage = document.getElementById('pdf_media_image');
+	var pdfCropper = null;
 	$('#pdf_task_medium_image').on('change', function (e) {
 		var files = e.target.files;
 		var done = function (url) {

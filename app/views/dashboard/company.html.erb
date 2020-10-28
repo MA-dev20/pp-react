@@ -61,7 +61,7 @@
 	})(jQuery);
 	var inputLogo = document.getElementById('company_logo');
 	var image = document.getElementById('company_image');
-	var cropper;
+	var cropper = null;
 
 	inputLogo.addEventListener("change", function(e) {
 		var files = e.target.files;
