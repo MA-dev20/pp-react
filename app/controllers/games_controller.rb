@@ -40,50 +40,80 @@ class GamesController < ApplicationController
   end
 
   def email
-	  @user = User.find_by(email: params[:user][:email].downcase)
-    @game_user = @game.game_users.find_by(user: @user) if @user
-    @company = @game.company
-    @admin_role = @company.company_users.find_by(user: @game.user).role
-    @ability = Ability.new(@game.user)
-    if params[:user][:site] == 'admin_game_mobile'
-      if @user && @game_user
-        flash[:success] = 'Nutzer hinzugefügt!'
-        redirect_to gm_game_path
-        return
-      elsif @user && @user.fname && @user.lname
-        this_cuser = @company.company_users.find_by(user_id: @user.id)
-        if this_cuser
-          if this_cuser.role == 'inactive'
-            this_cuser.update(role: 'active')
-          elsif this_cuser.role == 'inactive_user'
-            this_cuser.update(role: 'active_user')
-          end
-        else
-          if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'active')
-            @company.user_users.create(user: @admin, userID: @user.id)
+    if params[:user][:email] != ''
+  	  @user = User.find_by(email: params[:user][:email].downcase)
+      @game_user = @game.game_users.find_by(user: @user) if @user
+      @company = @game.company
+      @admin_role = @company.company_users.find_by(user: @game.user).role
+      @ability = Ability.new(@game.user)
+      if params[:user][:site] == 'admin_game_mobile'
+        if @user && @game_user
+          flash[:success] = 'Nutzer hinzugefügt!'
+          redirect_to gm_game_path
+          return
+        elsif @user && @user.fname && @user.lname
+          this_cuser = @company.company_users.find_by(user_id: @user.id)
+          if this_cuser
+            if this_cuser.role == 'inactive'
+              this_cuser.update(role: 'active')
+            elsif this_cuser.role == 'inactive_user'
+              this_cuser.update(role: 'active_user')
+            end
           else
-            @company.company_users.create(user: @user, role: 'active_user')
+            if @ability.can?(:create, User)
+              @company.company_users.create(user: @user, role: 'active')
+              @company.user_users.create(user: @admin, userID: @user.id)
+            else
+              @company.company_users.create(user: @user, role: 'active_user')
+            end
+            @team = @game.team
+            @team.users << @user if @team
           end
-          @team = @game.team
-          @team.users << @user if @team
-        end
-        @game_user = @game.game_users.create(user: @user, play: true, company: @company)
-        if @user.avatar?
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
+          @game_user = @game.game_users.create(user: @user, play: true, company: @company)
+          if @user.avatar?
+            ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
+          else
+            ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
+          end
+          flash[:success] = 'Nutzer hinzugefügt!'
+          redirect_to gm_game_path
+          return
+        elsif @user
+          redirect_to gm_game_path(email: params[:user][:email].downcase)
+          return
         else
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
+          @user = User.new(email: params[:user][:email].downcase)
+          @team = @game.team
+          if @user.save(validate: false)
+            this_cuser = @company.company_users.find_by(user_id: @user.id)
+            if this_cuser
+              if this_cuser.role == 'inactive'
+                this_cuser.update(role: 'active')
+              elsif this_cuser.role == 'inactive_user'
+                this_cuser.update(role: 'active_user')
+              end
+            else
+              if @ability.can?(:create, User)
+                @company.company_users.create(user: @user, role: 'active')
+              else
+                @company.company_users.create(user: @user, role: 'active_user')
+              end
+            end
+            @team.users << @user if @team
+            redirect_to gm_game_path(email: params[:user][:email].downcase)
+            return
+          else
+            flash[:alert] = 'Konnte Nutzer nicht anlegen!'
+            redirect_to gm_game_path
+          end
         end
-        flash[:success] = 'Nutzer hinzugefügt!'
-        redirect_to gm_game_path
-        return
-      elsif @user
-        redirect_to gm_game_path(email: params[:user][:email].downcase)
-        return
       else
-        @user = User.new(email: params[:user][:email].downcase)
-        @team = @game.team
-        if @user.save(validate: false)
+        if @user && @game_user
+          game_user_login @user
+          flash[:success] = 'Erfolgreich beigetreten!'
+          redirect_to gm_game_path
+          return
+        elsif @user && @user.fname && @user.lname
           this_cuser = @company.company_users.find_by(user_id: @user.id)
           if this_cuser
             if this_cuser.role == 'inactive'
@@ -97,95 +127,79 @@ class GamesController < ApplicationController
             else
               @company.company_users.create(user: @user, role: 'active_user')
             end
+            @team = @game.team
+            @team.users << @user if @team
           end
-          @team.users << @user if @team
-          redirect_to gm_game_path(email: params[:user][:email].downcase)
+          game_user_login @user
+          redirect_to gm_join_path
           return
-        else
-          flash[:alert] = 'Konnte Nutzer nicht anlegen!'
-          redirect_to gm_game_path
-        end
-      end
-    else
-      if @user && @game_user
-        game_user_login @user
-        flash[:success] = 'Erfolgreich beigetreten!'
-        redirect_to gm_game_path
-        return
-      elsif @user && @user.fname && @user.lname
-        this_cuser = @company.company_users.find_by(user_id: @user.id)
-        if this_cuser
-          if this_cuser.role == 'inactive'
-            this_cuser.update(role: 'active')
-          elsif this_cuser.role == 'inactive_user'
-            this_cuser.update(role: 'active_user')
-          end
-        else
-          if @ability.can?(:create, User)
-            @company.company_users.create(user: @user, role: 'active')
+        elsif @user
+          this_cuser = @company.company_users.find_by(user_id: @user.id)
+          if this_cuser
+            if this_cuser.role == 'inactive'
+              this_cuser.update(role: 'active')
+            elsif this_cuser.role == 'inactive_user'
+              this_cuser.update(role: 'active_user')
+            end
           else
-            @company.company_users.create(user: @user, role: 'active_user')
+            @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
+            @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
+            @team = @game.team
+            @team.users << @user if @team
           end
-          @team = @game.team
-          @team.users << @user if @team
-        end
-        game_user_login @user
-        redirect_to gm_join_path
-        return
-      elsif @user
-        this_cuser = @company.company_users.find_by(user_id: @user.id)
-        if this_cuser
-          if this_cuser.role == 'inactive'
-            this_cuser.update(role: 'active')
-          elsif this_cuser.role == 'inactive_user'
-            this_cuser.update(role: 'active_user')
-          end
-        else
-          @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
-          @team = @game.team
-          @team.users << @user if @team
-        end
-        game_user_login @user
-        redirect_to gm_new_name_path(@user)
-        return
-      else
-        @user = User.new(email: params[:user][:email].downcase)
-        @team = @game.team
-        if @user.save(validate: false)
-          @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
-          @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
-          @team.users << @user if @team
           game_user_login @user
           redirect_to gm_new_name_path(@user)
           return
         else
-          flash[:alert] = 'Konnte Nutzer nicht anlegen!'
-          redirect_to gm_login_path
+          @user = User.new(email: params[:user][:email].downcase)
+          @team = @game.team
+          if @user.save(validate: false)
+            @company.company_users.create(user: @user, role: 'active') if @admin_role != 'user'
+            @company.company_users.create(user: @user, role: 'active_user') if @admin_role == 'user'
+            @team.users << @user if @team
+            game_user_login @user
+            redirect_to gm_new_name_path(@user)
+            return
+          else
+            flash[:alert] = 'Konnte Nutzer nicht anlegen!'
+            redirect_to gm_login_path
+          end
         end
       end
+    else
+      flash[:alert] = 'bitte gib eine gültige Mail Adresse an!'
+      redirect_to gm_login_path
     end
   end
 
   def name
 	  @user = User.find(params[:user_id])
 	  password = SecureRandom.urlsafe_base64(8)
-	  @user.update(fname: params[:user][:fname], lname: params[:user][:lname], password: password)
-    @company = @game.company
-    if params[:user][:site] == 'admin_game_mobile'
-      @game_user = @game.game_users.find_by(user: @user)
-      if !@game_user
-        @game_user = @game.game_users.create(user: @user, play: true, company: @company)
-        if @user.avatar?
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
-        else
-          ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
+	  if @user.update(fname: params[:user][:fname], lname: params[:user][:lname], password: password)
+      @company = @game.company
+      if params[:user][:site] == 'admin_game_mobile'
+        @game_user = @game.game_users.find_by(user: @user)
+        if !@game_user
+          @game_user = @game.game_users.create(user: @user, play: true, company: @company)
+          if @user.avatar?
+            ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, avatar: @user.avatar.url, state: @game.state, user_id: @user.id
+          else
+            ActionCable.server.broadcast "count_#{@game.id}_channel", count: @game.game_users.where(play: true).count, name: @user.fname[0].capitalize + @user.lname[0].capitalize, state: @game.state, user_id: @user.id
+          end
         end
+        flash[:success] = 'Nutzer hinzugefügt!'
+        redirect_to gm_game_path
+        return
+      else
+  	    redirect_to gm_join_path
+        return
       end
-      flash[:success] = 'Nutzer hinzugefügt!'
-      redirect_to gm_game_path
     else
-	    redirect_to gm_join_path
+      game_user_logout
+      @user.destroy
+      flash[:alert] = "Konnte Nutzer nicht speichern!"
+      redirect_to gm_login_path
+      return
     end
   end
   def create_game_user
