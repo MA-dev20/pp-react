@@ -4,7 +4,7 @@
 <%= form_for(:user, url: email_game_path(@game), html: {id: 'email_form', autocomplete: 'off'}) do |f| %>
 <div class="middle">
 	<div class="form-group single-line">
-		<%= f.email_field :email, placeholder: 'E-Mail', onfocus: "hideDots()", onblur: "showDots()", class: 'form-field' %>
+		<%= f.email_field :email, placeholder: 'E-Mail', onfocus: "hideDots()", onblur: "showDots()", class: 'form-field', required: true %>
 	</div>
 </div>
 <div class="dots">
