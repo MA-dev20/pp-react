@@ -5,8 +5,8 @@
 	<h1>Nutzerauswahl</h1>
   <h3>Anstelle des Votings kannst du hier selbst einen Nutzer bestimmen!</h3>
   <% else %>
-	<h1>Die Aufgabe!</h1>
-	<h3>Lies dir die Aufgabe aufmerksam durch!</h3>
+  <h1>Kopf hoch!</h1>
+	<h3>Die Musik spielt gerade auf dem Hauptbildschirm</h3>
   <% end %>
 </div>
 <% if @admin == @game.user %>
@@ -21,6 +21,8 @@
 </div>
 <% else %>
 <div class="middle" id="task-middle">
-	<div class="card"><%= @task.title %></div>
+  <div class="icon shake">
+		<i class="fas fa-desktop"></i>
+	</div>
 </div>
 <% end %>
